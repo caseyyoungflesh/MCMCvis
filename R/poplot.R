@@ -1,7 +1,6 @@
 #' Plots posterior distributions
 #'
 #' @param data Matrix of MCMC chains
-#' @param WID Height?
 #' @param LML Lower bounds x-axis
 #' @param LMH upper bounds x-axis
 #' @section Details:
@@ -10,10 +9,10 @@
 #' @export
 
 
-poplot <- function(data, WID=.2, LML = -1, LMH= 1) #WID= height of density strips, LML, LMH = x-axis bounds
+poplot <- function(data, LML = -1, LMH= 1) #WID= height of density strips, LML, LMH = x-axis bounds
 {
   #for debug
-  #WID=.2
+  WID=.2
   #LML = -1
   #LMH = 1
   #data <- OR_chains_beta
