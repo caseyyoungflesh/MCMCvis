@@ -7,5 +7,6 @@ The package currently contains one function:
 
 You can install the latest version with
 ```{r}
+install.packages('devtools')
 devtools::install_github('caseyyoungflesh/post')
 ```
