@@ -1,5 +1,5 @@
 # post
-post is a package used to produce visualizations of Bayesian posterior chains.
+post is an R package used to produce visualizations of Bayesian posterior chains.
 
 It currently containts one function:
 
