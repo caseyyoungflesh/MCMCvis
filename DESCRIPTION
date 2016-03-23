@@ -1,0 +1,19 @@
+Package: post
+Type: Package
+Title: Plots posterior distributions
+Version: 0.1.0
+Author: Casey Youngflesh
+Maintainer: Casey Youngflesh <casey.youngflesh@stonybrook.edu>
+Description: Package to plot posterior distribution from MCMC
+    chains. Able to visualize many publication ready
+    distributions on a single plot.
+License: GPL-3
+LazyData: TRUE
+Imports:
+    lattice,
+    denstrip,
+    ggplot2,
+    reshape2
+Depends:
+    R (>= 3.2.3)
+RoxygenNote: 5.0.1
