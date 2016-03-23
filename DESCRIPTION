@@ -8,6 +8,8 @@ Description: Package to plot posterior distribution from MCMC
     chains. Able to visualize many publication ready
     distributions on a single plot.
 License: GPL-3
+URL: http://github.com/caseyyoungflesh/post
+BugReports: http://github.com/caseyyoungflesh/post/issues
 LazyData: TRUE
 Imports:
     lattice,
