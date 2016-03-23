@@ -14,10 +14,34 @@ poplot(data, LML = -1, LMH = 1)
 \item{LMH}{upper bounds x-axis}
 }
 \description{
-Plots posterior distributions
+Function plots the posterior distributions obtained from MCMC
+chains output from a Bayesian model.
 }
 \section{Details}{
 
 Chains should be in columns of input matrix
+}
+
+\section{Notes}{
+
+Wrapper for denstrip package, as highlighted by Jackson (2008). Example can be seen in
+Zipkin et al. 2014, figure 3.
+}
+
+\section{References}{
+
+Jackson, C. H. 2008. Displaying Uncertainty With Shading. The American Statistician 62:340-347.
+
+Zipkin, E. F., T. S. Sillett, E. H. C. Grant, R. B. Chandler,
+and J. A. Royle. 2014. Inferences about population dynamics
+from count data using multistate models: a comparison to
+capture-recapture approaches. Ecology and Evolution 4:417-426.
+}
+\examples{
+x1 <- rnorm(1000, mean=0.5)
+x2 <- rnorm(1000, mean=0)
+data <- cbind(x1, x2)
+poplot(data)
+
 }
 
