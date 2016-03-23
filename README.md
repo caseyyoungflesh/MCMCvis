@@ -1,7 +1,7 @@
 # post
 post is an R package used to produce visualizations of Bayesian posterior chains.
 
-It currently containts one function:
+The package currently contains one function:
 
 - poplot
 
