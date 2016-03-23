@@ -14,7 +14,6 @@ LazyData: TRUE
 Imports:
     lattice,
     denstrip,
-    ggplot2,
     reshape2
 Depends:
     R (>= 3.2.3)

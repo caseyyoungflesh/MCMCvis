@@ -1,3 +1,0 @@
-#dev script
-
-require(devtools)

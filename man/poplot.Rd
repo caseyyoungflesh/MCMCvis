@@ -4,12 +4,10 @@
 \alias{poplot}
 \title{Plots posterior distributions}
 \usage{
-poplot(data, WID = 0.2, LML = -1, LMH = 1)
+poplot(data, LML = -1, LMH = 1)
 }
 \arguments{
 \item{data}{Matrix of MCMC chains}
-
-\item{WID}{Height?}
 
 \item{LML}{Lower bounds x-axis}
 

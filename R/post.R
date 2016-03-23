@@ -6,7 +6,6 @@
 #' @section Details:
 #' At the moment, just the function 'poplot' is available
 #'
-#' @section Note
 #'
 #' @section Author(s):
 #' Casey Youngflesh <casey.youngflesh@stonybrook.edu>
