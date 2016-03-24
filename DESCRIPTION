@@ -1,13 +1,13 @@
 Package: post
 Type: Package
-Title: Plots posterior distributions
-Version: 0.1.0
+Title: Summarizes posterior MCMC chains
+Version: 0.2.0
 Author: Casey Youngflesh
 Maintainer: Casey Youngflesh <casey.youngflesh@stonybrook.edu>
-Description: Package to plot posterior distribution from MCMC
-    chains. Able to visualize many publication ready
-    distributions on a single plot.
-License: GPL-3
+Description: The post package assists with summarizing posterior MCMC
+    chains (including parameter estimate extraction, chain extraction, and
+    visualizing posterior distributions), obtained from Bayesian model ouput.
+    License: GPL-3
 URL: http://github.com/caseyyoungflesh/post
 BugReports: http://github.com/caseyyoungflesh/post/issues
 LazyData: TRUE

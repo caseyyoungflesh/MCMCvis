@@ -31,7 +31,7 @@ poplot <- function(data, LML = -1, LMH= 1) #WID= height of density strips, LML, 
 {
   #for debug
   #-------------#
-  #WID=.2
+
   #LML = -1
   #LMH = 1
   #x1 <- rnorm(1000, mean=.5)
@@ -40,18 +40,24 @@ poplot <- function(data, LML = -1, LMH= 1) #WID= height of density strips, LML, 
   #-------------#
 
 
+  #plotting parameters
+  WID <- .2 #height of bar (don't know if this matters)
+  W <- 3 #height of mean tick
+  W2 <- 3 #height of 95% CI tick
+  CI_col <- "grey87" #color of CI tick
+
+
+  #data
   chains <- as.data.frame(data)
-
   X <- NCOL(data)
-  idx<-X:1
+  idx <- X:1
+  labs <- colnames(data)[idx] #apply and sort labels
+  mp <- suppressMessages(reshape2::melt(chains[,idx], value.name='value')) #melt
+  qdata <- apply(chains, 2, quantile, probs=c(.025,.975)) #quantiles of chains
 
-  # apply and sort labels
-  labs = colnames(data)[idx]
 
-  mp= suppressMessages(reshape2::melt(chains[,idx], value.name='value'))
-
-  #x11()
-  rpp = bwplot(variable~value,data=mp,
+  #create plot object
+  rpp <- bwplot(variable~value,data=mp,
                xlab=list(label="Parameter probability values",cex=1.3),
                xlim=c(LML, LMH),
                panel = function(x, y)
@@ -70,18 +76,14 @@ poplot <- function(data, LML = -1, LMH= 1) #WID= height of density strips, LML, 
                scales=list(col=1,cex=1,x=list(col=1),
                            y=list(draw=T,labels=labs)))
 
+  #print plot object
   print(rpp)
 
-  lattice::trellis.focus()
   #top and bottom lines
+  lattice::trellis.focus()
   lattice::panel.lines(c(LML,LMH),c(0.4,0.4), col="black")
   lattice::panel.lines(c(LML,LMH),c(X+.6,X+.6), col="black")
-  #trellis.unfocus()
 
-  #width mean line
-  W <- 3
-  #width 95% CI lines
-  W2 <- 3
 
   #mean hashes
   for (i in 1:X)
@@ -90,22 +92,22 @@ poplot <- function(data, LML = -1, LMH= 1) #WID= height of density strips, LML, 
     lattice::panel.lines(c(median(chains[,i])), c(TMP-.25, TMP+.25), lwd=W, col='black')
   }
 
-  qdata <- apply(chains, 2, quantile, probs=c(.025,.975))
 
   #Lower CI
   for(i in 1:X)
   {
     TMP<- X-i+1
     #i <- 6
-    lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-.25, TMP+.25), col="grey87", lwd=W2)
+    lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-.25, TMP+.25), col= CI_col, lwd=W2)
   }
+
 
   #Upper CI
   for(i in 1:X)
   {
     TMP<- X-i+1
     #i <- 6
-    lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-.25, TMP+.25), col="grey87", lwd=W2)
+    lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-.25, TMP+.25), col= CI_col, lwd=W2)
   }
 
 
