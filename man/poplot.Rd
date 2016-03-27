@@ -4,14 +4,52 @@
 \alias{poplot}
 \title{Plots posterior distributions}
 \usage{
-poplot(data, LML = -1, LMH = 1)
+poplot(object,
+        params = "all",
+        input = "jags_object",
+        quantiles = c(0.025, 0.975),
+        centrality = "mean",
+        xlim,
+        xlab = "Parameter probability values",
+        ylab,
+        main,
+        dbar_height = 0.2,
+        tick_height = 0.5,
+        tick_width = 3)
 }
 \arguments{
-\item{data}{Matrix of MCMC chains}
+\item{object}{JAGS model object or matrix of MCMC chains.}
 
-\item{LML}{Lower bounds x-axis}
+\item{params}{Character string (or vector of character strings) denoting parameters to be
+returned in summary output. Partial names may be used to return all parameters containing
+that set of characters. Default \code{all} returns all parameters in summary output.}
 
-\item{LMH}{upper bounds x-axis}
+\item{input}{Indicates the nature of the \code{object} argument. Valid entries are
+\code{jags_object} (for JAGS model object) and \code{chains} (for matrix of MCMC
+chains).}
+
+\item{quantiles}{Numerical vecor of length 2, giving which quantiles to plot. Default plot 95\%
+credible intervals.}
+
+\item{centrality}{Indicates which measure of centrality to plot. Valid options are \code{mean}
+and \code{median}.}
+
+\item{xlim}{Numerical vector of length 2, indicating range of x-axis.}
+
+\item{xlab}{Character string labeling x-axis.}
+
+\item{ylab}{Character string (or vector of character strings if plotting > 1 parameter) labeling
+y-axis. Default option will use parameter names from model (or chains) object. Option \code{NULL} will
+return plot with no labels on y-axis. Specifying labels in the argument will make use of these
+rather than parameter names in model (or chains) object.}
+
+\item{main}{Character string labeling title of plot.}
+
+\item{dbar_height}{Height of density bar in plot.}
+
+\item{tick_height}{Height of ticks in plot.}
+
+\item{tick_width}{Width of ticks in plot.}
 }
 \description{
 Function plots the posterior distributions obtained from MCMC
@@ -19,13 +57,16 @@ chains output from a Bayesian model.
 }
 \section{Details}{
 
-Chains should be in columns of input matrix
+For \code{input = 'chains'}, each column of \code{object} should contain MCMC output for
+a single parameter. Each row represents one iteration in the chain.
+
+If JAGS model objects are used, output must be from the \code{R2jags} package.
 }
 
 \section{Notes}{
 
-Wrapper for denstrip package, as highlighted by Jackson (2008). Example can be seen in
-Zipkin et al. 2014, figure 3.
+Plots derived from the denstrip package, as highlighted in Jackson (2008). Generalized code
+for Zipkin et al. 2014, figure 3.
 }
 
 \section{References}{
@@ -41,7 +82,7 @@ capture-recapture approaches. Ecology and Evolution 4:417-426.
 x1 <- rnorm(1000, mean=0.5)
 x2 <- rnorm(1000, mean=0)
 data <- cbind(x1, x2)
-poplot(data)
+poplot(data, input = 'chains')
 
 }
 

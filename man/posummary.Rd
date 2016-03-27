@@ -2,24 +2,39 @@
 % Please edit documentation in R/posummary.R
 \name{posummary}
 \alias{posummary}
-\title{Summary function for jags object}
+\title{Summary function for JAGS object}
 \usage{
-posummary(jags_object, params = "all")
+posummary(object, params = "all", Rhat = TRUE)
 }
 \arguments{
-\item{jags_object}{Output from jags model}
+\item{object}{JAGS model object - output from JAGS model}
 
-\item{params}{Parameters of interest from jags object. Partial names
-may be used to return all object containing that name.}
+\item{params}{Character string (or vector of character strings) denoting parameters to be
+returned in summary output. Partial names may be used to return all parameters containing
+that set of characters. Default \code{'all'} returns all parameters in summary output.}
+
+\item{Rhat}{If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
+and if \code{FALSE}, Rhat output is masked.}
 }
 \value{
-Summary data (mean, 95\% quantile, R_hat) for particular parameters of interest
+\code{posummary(params='all')} returns summary data for all parameters contained within
+JAGS model object.
+
+\code{posummary(params=c('beta[1]', 'beta[2]'))} returns summary data for just parameters
+\code{'beta[1]'} and \code{'beta[2]'}.
+
+\code{posummary(params=c('beta'))} returns summary data for all parameters containing \code{'beta'}
+ in their name.
+
+ Default summary information includes (posterior mean, 2.5\% quantile, median, 97.5\% quantile,
+ and Rhat).
 }
 \description{
-Simplifies extracting info for particular parameters from jags object
+Extracts summary information for specific parameters of interests from JAGS object
+output from JAGS model fit in R
 }
 \section{Details}{
 
-Output from R2jags only right now.
+Function currently only supports JAGS model objects output by \code{R2jags} package.
 }
 
