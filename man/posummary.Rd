@@ -4,10 +4,7 @@
 \alias{posummary}
 \title{Summary function for MCMC output}
 \usage{
-posummary(object,
-          params = "all",
-          input = "jags_object",
-          Rhat = TRUE)
+posummary(object, params = "all", input = "jags_object", Rhat = TRUE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See \code{input} argument and DETAILS below.}

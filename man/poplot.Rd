@@ -9,6 +9,7 @@ poplot(object,
         input = "jags_object",
         quantiles = c(0.025, 0.975),
         centrality = "mean",
+        g_lines = 0,
         xlim,
         xlab = "Parameter probability values",
         ylab,
@@ -21,20 +22,28 @@ poplot(object,
 \item{object}{Object containing MCMC output. See \code{input} argument and DETAILS below.}
 
 \item{params}{Character string (or vector of character strings) denoting parameters to be
-returned in summary output. Partial names may be used to return all parameters containing
-that set of characters.
+plotted. Partial names may be used to plot all parameters containing that set of characters.
 
-Default \code{all} returns chains for all parameters.}
+Default \code{all} plots posteriors for all parameters. See VALUE below.}
 
 \item{input}{Indicates the nature of the \code{object} argument.
 
 Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
-\item{quantiles}{Numerical vecor of length 2, indicating which quantiles to plot. Default plots 95\%
-credible intervals.}
+\item{quantiles}{Numerical vecor of length 2, indicating which quantiles to plot.
 
-\item{centrality}{Indicates which measure of centrality to plot. Valid options are \code{mean}
+Default plots 95\% credible intervals.}
+
+\item{centrality}{Indicates which measure of centrality to plot.
+
+Valid options are \code{mean}
 and \code{median}.}
+
+\item{g_lines}{Numerical vector indicating where vertical reference lines should be created.
+
+Default is \code{g_lines = 0}.
+
+Argument \code{NULL} will plot no guidelines.}
 
 \item{xlim}{Numerical vector of length 2, indicating range of x-axis.}
 
@@ -58,13 +67,13 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 \item{tick_width}{Width of ticks in plot.}
 }
 \value{
-\code{posummary(params='all')} returns posterior plots for all parameters contained within
+\code{posummary(params = 'all')} returns posterior plots for all parameters contained within
 JAGS model object.
 
-\code{posummary(params=c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
+\code{posummary(params = c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
 \code{beta[1]} and \code{beta[2]}.
 
-\code{posummary(params=c('beta'))} returns posterior plots for all parameters containing \code{beta}
+\code{posummary(params = 'beta')} returns posterior plots for all parameters containing \code{beta}
  in their name.
 }
 \description{

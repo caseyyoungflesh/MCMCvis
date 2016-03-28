@@ -4,9 +4,7 @@
 \alias{pochains}
 \title{Extract posterior chains from MCMC output}
 \usage{
-pochains(object,
-          params = "all",
-          input = "jags_object")
+pochains(object, params = "all", input = "jags_object")
 }
 \arguments{
 \item{object}{Object containing MCMC output. See \code{input} argument and DETAILS below.}

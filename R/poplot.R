@@ -6,17 +6,25 @@
 #'
 #' @param object Object containing MCMC output. See \code{input} argument and DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be
-#' returned in summary output. Partial names may be used to return all parameters containing
-#' that set of characters.
+#' plotted. Partial names may be used to plot all parameters containing that set of characters.
 #'
-#' Default \code{all} returns chains for all parameters.
+#' Default \code{all} plots posteriors for all parameters. See VALUE below.
 #' @param input Indicates the nature of the \code{object} argument.
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
-#' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot. Default plots 95\%
-#' credible intervals.
-#' @param centrality Indicates which measure of centrality to plot. Valid options are \code{mean}
+#' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot.
+#'
+#' Default plots 95\% credible intervals.
+#' @param centrality Indicates which measure of centrality to plot.
+#'
+#' Valid options are \code{mean}
 #' and \code{median}.
+#' @param g_lines Numerical vector indicating where vertical reference lines should be created.
+#'
+#' Default is \code{g_lines = 0}.
+#'
+#' Argument \code{NULL} will plot no guidelines.
+#'
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param xlab Character string labeling x-axis.
 #' @param ylab Character string (or vector of character strings if plotting > 1 parameter) labeling
@@ -43,13 +51,13 @@
 #' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
 #' for Zipkin et al. 2014, figure 3.
 #'
-#' @return \code{posummary(params='all')} returns posterior plots for all parameters contained within
+#' @return \code{posummary(params = 'all')} returns posterior plots for all parameters contained within
 #' JAGS model object.
 #'
-#' \code{posummary(params=c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
+#' \code{posummary(params = c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
 #' \code{beta[1]} and \code{beta[2]}.
 #'
-#' \code{posummary(params=c('beta'))} returns posterior plots for all parameters containing \code{beta}
+#' \code{posummary(params = 'beta')} returns posterior plots for all parameters containing \code{beta}
 #'  in their name.
 #'
 #' @section References:
@@ -68,11 +76,13 @@
 #'
 #' @export
 
+
 poplot <- function(object,
                    params= 'all',
                    input = 'jags_object',
                    quantiles = c(0.025, 0.975),
                    centrality = 'mean',
+                   g_lines = 0,
                    xlim,
                    xlab = 'Parameter probability values',
                    ylab,
@@ -257,13 +267,19 @@ poplot <- function(object,
                main = Tmain,
                panel = function(x, y)
                {
-                 #grid.segments(1,0,0,0)
                  xlist <- split(mp$value, factor(mp$variable))
                  xlist <- split(x, factor(y))
 
+                 if(!is.null(g_lines))
+                 {
+                  for (k in 1: length(g_lines))
+                  {
+                    panel.abline(v=g_lines[k], lty = "dotted", col = "black")
+                  }
+                 }
+
                  for (i in seq(along = xlist))
                  {
-                   #panel.grid(h=c(0), col='grey')
                    denstrip::panel.denstrip(x = xlist[[i]], at = i,
                                             width = WID, colmax = 'black', colmin = 'white')
                  }
@@ -280,9 +296,16 @@ poplot <- function(object,
                   xlim= xlim,
                   panel = function(x, y)
                   {
-                    #grid.segments(1,0,0,0)
                     xlist <- split(mp$value, factor(mp$variable))
                     xlist <- split(x, factor(y))
+
+                    if(!is.null(g_lines))
+                    {
+                      for (k in 1: length(g_lines))
+                      {
+                        panel.abline(v=g_lines[k], lty = "dotted", col = "black")
+                      }
+                    }
 
                     for (i in seq(along=xlist))
                     {
