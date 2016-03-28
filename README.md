@@ -7,7 +7,7 @@ The package currently contains three functions:
 
 - `posummary` - summarize MCMC output for particular parameters of interest
 - `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
-- `poplot` - plot posterior distributions from MCMC output for paticular parameters of interest
+- `poplot` - plot posterior distributions from MCMC output for particular parameters of interest
 
 
 Installation
