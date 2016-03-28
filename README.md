@@ -1,32 +1,14 @@
-post
+potools
 ====
 
-**post** is an R package used to summarize posterior MCMC chains (including parameter estimate extraction, chains extraction, and visualizing posterior distributions), obtained from Bayesian model output.
-
+**potools** is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model ouput fit with JAGS or other MCMC samplers.
 
 The package currently contains three functions:
 
-- posummary
-- pochains
-- poplot
+- `posummary` - summarize MCMC output for particular parameters of interest
+- `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
+- `poplot` - plot posterior distributions from MCMC output for paticular parameters of interest
 
-Workflow
---------
-
-These functions are designed to be used in a workflow.
-
-1) `posummary` - the summary information is extracted from the jags object
-
-2) `pochains` - the posterior chains of interest are extracted from the jags object
-
-3) `poplot` - the posterior chains of interest are plotted using density bars
-
-
-```{r}
-posummary(jags_object, params)
-chains <- pochains(jags_object, params)
-poplot(chains)
-```
 
 Installation
 ------------
@@ -34,5 +16,5 @@ Installation
 You can install the latest version with:
 ```{r}
 install.packages('devtools')
-devtools::install_github('caseyyoungflesh/post')
+devtools::install_github('caseyyoungflesh/potools')
 ```
