@@ -1,15 +1,18 @@
-#' Plots posterior distributions
+#' Plot posterior distributions from MCMC output
 #'
-#' Function plots the posterior distributions obtained from MCMC
-#' chains output from a Bayesian model.
+#' Plot the posterior distributions from MCMC output for specific parameters of interest. All posterior
+#' parameter estimates are plotted on the same plot using density strips, similar to a caterpillar plot.
 #'
-#' @param object JAGS model object or matrix of MCMC chains.
+#'
+#' @param object Object containing MCMC output. See \code{input} argument and DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be
 #' returned in summary output. Partial names may be used to return all parameters containing
-#' that set of characters. Default \code{all} returns all parameters in summary output.
-#' @param input Indicates the nature of the \code{object} argument. Valid entries are
-#' \code{jags_object} (for JAGS model object) and \code{chains} (for matrix of MCMC
-#' chains).
+#' that set of characters.
+#'
+#' Default \code{all} returns chains for all parameters.
+#' @param input Indicates the nature of the \code{object} argument.
+#'
+#' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
 #' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot. Default plots 95\%
 #' credible intervals.
 #' @param centrality Indicates which measure of centrality to plot. Valid options are \code{mean}
@@ -17,22 +20,37 @@
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param xlab Character string labeling x-axis.
 #' @param ylab Character string (or vector of character strings if plotting > 1 parameter) labeling
-#' y-axis. Specifying labels in the argument will use these to label axis. Default option will use
-#' parameter names from model (or chains) object. Option \code{NULL} will return plot with no labels
-#' on y-axis.
+#' y-axis.
+#'
+#' Specifying labels in the argument will use these to label axis.
+#'
+#' Default option will use parameter names from \code{object}.
+#'
+#' Option \code{NULL} will return plot with no labels on y-axis.
 #' @param main Character string indicating title of plot.
 #' @param dbar_height Height of density bar in plot.
 #' @param tick_height Height of ticks in plot.
 #' @param tick_width Width of ticks in plot.
 #' @section Details:
-#' For \code{input = 'chains'}, each column of \code{object} should contain MCMC output for
-#' a single parameter. Each row represents one iteration in the chain.
+#' For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
 #'
-#' If JAGS model object is used, output must be from the \code{R2jags} package.
+#' For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
+#'
+#' For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
+#' chain for a single parameter. Each row represents one iteration in the chain.
 #'
 #' @section Notes:
 #' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
 #' for Zipkin et al. 2014, figure 3.
+#'
+#' @return \code{posummary(params='all')} returns posterior plots for all parameters contained within
+#' JAGS model object.
+#'
+#' \code{posummary(params=c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
+#' \code{beta[1]} and \code{beta[2]}.
+#'
+#' \code{posummary(params=c('beta'))} returns posterior plots for all parameters containing \code{beta}
+#'  in their name.
 #'
 #' @section References:
 #' Jackson, C. H. 2008. Displaying Uncertainty With Shading. The American Statistician 62:340-347.
@@ -49,12 +67,6 @@
 #' poplot(data, input = 'chains')
 #'
 #' @export
-
-#TO DO
-#figure out how to make it not plot twice
-
-
-
 
 poplot <- function(object,
                    params= 'all',
@@ -93,12 +105,24 @@ poplot <- function(object,
   {
     if(typeof(object) == 'list')
     {
-      data <- pochains(object, params= params)
+      data <- pochains(object, params= params, input= 'jags_object')
     }else
     {
       stop('object type and input do not match')
     }
   }
+
+  if(input == 'mcmc_list')
+  {
+    if(coda::is.mcmc.list(object) == TRUE)
+    {
+      data <- pochains(object, params= params, input= 'mcmc_list')
+    }else
+    {
+      stop('object type and input do not match')
+    }
+  }
+
   if(input == 'chains')
   {
    if(typeof(object) == 'double')
@@ -140,7 +164,7 @@ poplot <- function(object,
      stop('object type and input do not match')
    }
   }
-  if(input != 'jags_object' & input != 'chains')
+  if(input != 'jags_object' & input != 'chains' & input != 'mcmc_list')
   {
     stop(paste0(input,' is not a valid entry for the argument "input"'))
   }
@@ -225,7 +249,7 @@ poplot <- function(object,
   }
 
   # create plot object ------------------------------------------------------
-?bwplot
+
     if (missing(xlim))
     {
       rpp <- bwplot(variable ~ value, data = mp,
@@ -279,7 +303,7 @@ poplot <- function(object,
 
   # Top and bottom lines ----------------------------------------------------
 
-  lattice::trellis.focus()
+  lattice::trellis.focus(highlight=FALSE)
 
   x_limits <- rpp$x.limits
   lattice::panel.lines(c(x_limits[1],x_limits[2]),c(0.4,0.4), col="black")

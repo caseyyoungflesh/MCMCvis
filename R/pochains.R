@@ -1,30 +1,85 @@
-#' Chain extraction for jags object
+#' Extract posterior chains from MCMC output
 #'
-#' Extracts posterior MCMC chains from JAGS object output by JAGS model fit in R
+#' Extract posterior chains from MCMC output for specific parameters of interest.
 #'
-#' @param object JAGS model object - output from JAGS model
+#' @param object Object containing MCMC output. See \code{input} argument and DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be
 #' returned in summary output. Partial names may be used to return all parameters containing
-#' that set of characters. Default \code{'all'} returns all parameters in summary output.
-#' @section Details:
-#' Function currently only supports JAGS model objects output by \code{R2jags} package.
+#' that set of characters.
 #'
-#' @return \code{pochains(params='all')} returns MCMC chains for all parameters contained within
+#' Default \code{all} returns chains for all parameters.
+#' @param input Indicates the nature of the \code{object} argument.
+#'
+#' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
+#' @section Details:
+#' For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
+#'
+#' For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
+#'
+#' For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
+#' chain for a single parameter. Each row represents one iteration in the chain.
+#'
+#' @return \code{posummary(params='all')} returns posterior chains for all parameters contained within
 #' JAGS model object.
 #'
-#' \code{pochains(params=c('beta[1]', 'beta[2]'))} returns MCMC chains for just parameters
-#' \code{'beta[1]'} and \code{'beta[2]'}.
+#' \code{posummary(params=c('beta[1]', 'beta[2]'))} returns posterior chains for just parameters
+#' \code{beta[1]} and \code{beta[2]}.
 #'
-#' \code{pochains(params=c('beta'))} returns MCMC chains for all parameters containing \code{'beta'}
+#' \code{posummary(params=c('beta'))} returns posterior chains for all parameters containing \code{beta}
 #'  in their name.
 #'
 #' @export
 
 
-pochains <- function(object, params = 'all')
+pochains <- function(object,
+                     params = 'all',
+                     input = 'jags_object')
 {
-  temp <- object$BUGSoutput$sims.matrix
-  names <- colnames(temp)
+  if (input == 'mcmc_list')
+  {
+    if(coda::is.mcmc.list(object) == TRUE)
+    {
+      temp_in <- object
+      names <- colnames(temp_in[[1]])
+      n_chains <- length(lengths(temp_in))
+
+      temp <- c()
+      for (i in 1:n_chains)
+      {
+        temp <- rbind(temp, temp_in[[i]])
+      }
+    }else
+    {
+      stop('object type and input do not match')
+    }
+  }
+
+
+  if (input == 'chains')
+  {
+    if(typeof(object) == 'double')
+    {
+      temp <- object
+      names <- colnames(temp)
+    }else
+    {
+      stop('object type and input do not match')
+    }
+  }
+
+
+  if (input == 'jags_object')
+  {
+    if(typeof(object) == 'list')
+    {
+      temp <- object$BUGSoutput$sims.matrix
+      names <- colnames(temp)
+    }else
+    {
+      stop('object type and input do not match')
+    }
+  }
+
 
   if (length(params) == 1)
   {

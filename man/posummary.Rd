@@ -2,16 +2,25 @@
 % Please edit documentation in R/posummary.R
 \name{posummary}
 \alias{posummary}
-\title{Summary function for JAGS object}
+\title{Summary function for MCMC output}
 \usage{
-posummary(object, params = "all", Rhat = TRUE)
+posummary(object,
+          params = "all",
+          input = "jags_object",
+          Rhat = TRUE)
 }
 \arguments{
-\item{object}{JAGS model object - output from JAGS model}
+\item{object}{Object containing MCMC output. See \code{input} argument and DETAILS below.}
 
 \item{params}{Character string (or vector of character strings) denoting parameters to be
 returned in summary output. Partial names may be used to return all parameters containing
-that set of characters. Default \code{'all'} returns all parameters in summary output.}
+that set of characters.
+
+Default \code{all} returns all parameters in summary output.}
+
+\item{input}{Indicates the nature of the \code{object} argument.
+
+Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
 \item{Rhat}{If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
 and if \code{FALSE}, Rhat output is masked.}
@@ -21,20 +30,30 @@ and if \code{FALSE}, Rhat output is masked.}
 JAGS model object.
 
 \code{posummary(params=c('beta[1]', 'beta[2]'))} returns summary data for just parameters
-\code{'beta[1]'} and \code{'beta[2]'}.
+\code{beta[1]} and \code{beta[2]}.
 
-\code{posummary(params=c('beta'))} returns summary data for all parameters containing \code{'beta'}
+\code{posummary(params=c('beta'))} returns summary data for all parameters containing \code{beta}
  in their name.
-
- Default summary information includes (posterior mean, 2.5\% quantile, median, 97.5\% quantile,
- and Rhat).
 }
 \description{
-Extracts summary information for specific parameters of interests from JAGS object
-output from JAGS model fit in R
+Extract summary information from MCMC output for specific parameters of interest.
 }
 \section{Details}{
 
-Function currently only supports JAGS model objects output by \code{R2jags} package.
+For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
+
+For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
+
+For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
+chain for a single parameter. Each row represents one iteration in the chain.
+}
+
+\section{Notes}{
+
+ Default summary information includes (parameter posterior mean, 2.5\% quantile, median, 97.5\%
+ quantile, and Gelman-Rubin convergence statistic (Rhat)).
+
+For \code{mcmc.list} objects, Gelman-Rubin convergence statistic  (Rhat) is calculated using the
+\code{gelman.diag} function in the \code{coda} package.
 }
 

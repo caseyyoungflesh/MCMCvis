@@ -1,7 +1,7 @@
 Package: potools
 Type: Package
 Title: Summarizes posterior MCMC chains
-Version: 0.3.0
+Version: 0.4.0
 Author: Casey Youngflesh
 Maintainer: Casey Youngflesh <casey.youngflesh@stonybrook.edu>
 Description: The post package assists with summarizing posterior MCMC
@@ -16,5 +16,6 @@ Imports:
     reshape2
 Depends:
     R (>= 3.2.3),
-    lattice
+    lattice,
+    coda
 RoxygenNote: 5.0.1
