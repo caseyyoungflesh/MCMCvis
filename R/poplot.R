@@ -204,7 +204,7 @@ poplot <- function(object,
         {
           if (length(ylab) == X)
           {
-            labs <- ylab
+            labs <- sort(ylab, decreasing =TRUE)
           }else
           {
             stop('ylab length not equal to number of parameters')
@@ -275,7 +275,7 @@ poplot <- function(object,
                  {
                   for (k in 1: length(g_lines))
                   {
-                    lattice::panel.abline(v=g_lines[k], lty = "dotted", col = "black")
+                    panel.abline(v=g_lines[k], lty = "dotted", col = "black")
                   }
                  }
 
@@ -304,7 +304,7 @@ poplot <- function(object,
                     {
                       for (k in 1: length(g_lines))
                       {
-                        lattice::panel.abline(v=g_lines[k], lty = "dotted", col = "black")
+                        panel.abline(v=g_lines[k], lty = "dotted", col = "black")
                       }
                     }
 
