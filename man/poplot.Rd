@@ -4,19 +4,10 @@
 \alias{poplot}
 \title{Plot posterior distributions from MCMC output}
 \usage{
-poplot(object,
-        params = "all",
-        input = "jags_object",
-        quantiles = c(0.025, 0.975),
-        centrality = "mean",
-        g_lines = 0,
-        xlim,
-        xlab = "Parameter probability values",
-        ylab,
-        main,
-        dbar_height = 0.2,
-        tick_height = 0.5,
-        tick_width = 3)
+poplot(object, params = "all", input = "jags_object", g_lines = 0,
+  quantiles = c(0.025, 0.975), centrality = "mean", xlim,
+  xlab = "Parameter probability values", ylab, main, dbar_height = 0.2,
+  tick_height = 0.5, tick_width = 3)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See \code{input} argument and DETAILS below.}
@@ -30,6 +21,12 @@ Default \code{all} plots posteriors for all parameters. See VALUE below.}
 
 Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
+\item{g_lines}{Numerical vector indicating where vertical reference lines should be created.
+
+Default is \code{g_lines = 0}.
+
+Argument \code{NULL} will plot no guidelines.}
+
 \item{quantiles}{Numerical vecor of length 2, indicating which quantiles to plot.
 
 Default plots 95\% credible intervals.}
@@ -38,12 +35,6 @@ Default plots 95\% credible intervals.}
 
 Valid options are \code{mean}
 and \code{median}.}
-
-\item{g_lines}{Numerical vector indicating where vertical reference lines should be created.
-
-Default is \code{g_lines = 0}.
-
-Argument \code{NULL} will plot no guidelines.}
 
 \item{xlim}{Numerical vector of length 2, indicating range of x-axis.}
 

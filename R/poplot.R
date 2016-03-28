@@ -12,6 +12,12 @@
 #' @param input Indicates the nature of the \code{object} argument.
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
+#' @param g_lines Numerical vector indicating where vertical reference lines should be created.
+#'
+#' Default is \code{g_lines = 0}.
+#'
+#' Argument \code{NULL} will plot no guidelines.
+#'
 #' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot.
 #'
 #' Default plots 95\% credible intervals.
@@ -19,12 +25,6 @@
 #'
 #' Valid options are \code{mean}
 #' and \code{median}.
-#' @param g_lines Numerical vector indicating where vertical reference lines should be created.
-#'
-#' Default is \code{g_lines = 0}.
-#'
-#' Argument \code{NULL} will plot no guidelines.
-#'
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param xlab Character string labeling x-axis.
 #' @param ylab Character string (or vector of character strings if plotting > 1 parameter) labeling
@@ -75,14 +75,15 @@
 #' poplot(data, input = 'chains')
 #'
 #' @export
+#' @import lattice
 
 
 poplot <- function(object,
                    params= 'all',
                    input = 'jags_object',
+                   g_lines = 0,
                    quantiles = c(0.025, 0.975),
                    centrality = 'mean',
-                   g_lines = 0,
                    xlim,
                    xlab = 'Parameter probability values',
                    ylab,
@@ -262,7 +263,7 @@ poplot <- function(object,
 
     if (missing(xlim))
     {
-      rpp <- bwplot(variable ~ value, data = mp,
+      rpp <- lattice::bwplot(variable ~ value, data = mp,
                xlab = list(label = xlab,cex = 1.3),
                main = Tmain,
                panel = function(x, y)
@@ -274,7 +275,7 @@ poplot <- function(object,
                  {
                   for (k in 1: length(g_lines))
                   {
-                    panel.abline(v=g_lines[k], lty = "dotted", col = "black")
+                    lattice::panel.abline(v=g_lines[k], lty = "dotted", col = "black")
                   }
                  }
 
@@ -290,7 +291,7 @@ poplot <- function(object,
     {
       if (length(xlim)==2 & typeof(xlim) == 'double')
       {
-        rpp <- bwplot(variable~value,data=mp,
+        rpp <- lattice::bwplot(variable~value,data=mp,
                   xlab=list(label= xlab, cex=1.3),
                   main = Tmain,
                   xlim= xlim,
@@ -303,7 +304,7 @@ poplot <- function(object,
                     {
                       for (k in 1: length(g_lines))
                       {
-                        panel.abline(v=g_lines[k], lty = "dotted", col = "black")
+                        lattice::panel.abline(v=g_lines[k], lty = "dotted", col = "black")
                       }
                     }
 

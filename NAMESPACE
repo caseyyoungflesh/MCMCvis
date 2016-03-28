@@ -3,3 +3,5 @@
 export(pochains)
 export(poplot)
 export(posummary)
+import(coda)
+import(lattice)

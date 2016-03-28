@@ -38,6 +38,7 @@
 #'  in their name.
 #'
 #' @export
+#' @import coda
 
 posummary <- function(object,
                       params = 'all',
@@ -62,7 +63,7 @@ posummary <- function(object,
       bind_LCI <- apply(ch_bind, 2, quantile, probs= 0.025)
       bind_med <- apply(ch_bind,2, median)
       bind_UCI <- apply(ch_bind, 2, quantile, probs= 0.975)
-      r_hat <- gelman.diag(temp)$psrf[,1]
+      r_hat <- coda::gelman.diag(temp)$psrf[,1]
 
       mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
       colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
