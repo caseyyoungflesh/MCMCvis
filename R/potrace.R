@@ -1,0 +1,81 @@
+#' Plot MCMC chains to check for convergence
+#'
+#' Plot MCMC chains for specific parameters of interest.
+#'
+#'
+#' @param object Object containing MCMC output. See \code{input} argument and DETAILS below.
+#' @param params Character string (or vector of character strings) denoting parameters to be
+#' plotted. Partial names may be used to plot all parameters containing that set of characters.
+#'
+#' Default \code{all} plots posteriors for all parameters. See VALUE below.
+#' @param input Indicates the nature of the \code{object} argument.
+#'
+#' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
+#' @param g_lines Numerical vector indicating where vertical reference lines should be created.
+#'
+#' Default is \code{g_lines = 0}.
+#'
+#' Argument \code{NULL} will plot no guidelines.
+#'
+#' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot.
+#'
+#' Default plots 95\% credible intervals.
+#' @param centrality Indicates which measure of centrality to plot.
+#'
+#' Valid options are \code{mean}
+#' and \code{median}.
+#' @param xlim Numerical vector of length 2, indicating range of x-axis.
+#' @param xlab Character string labeling x-axis.
+#' @param ylab Character string (or vector of character strings if plotting > 1 parameter) labeling
+#' y-axis.
+#'
+#' Specifying labels in the argument will use these to label axis.
+#'
+#' Default option will use parameter names from \code{object}.
+#'
+#' Option \code{NULL} will return plot with no labels on y-axis.
+#' @param main Character string indicating title of plot.
+#' @param dbar_height Height of density bar in plot.
+#' @param tick_height Height of ticks in plot.
+#' @param tick_width Width of ticks in plot.
+#' @section Details:
+#' For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
+#'
+#' For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
+#'
+#' For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
+#' chain for a single parameter. Each row represents one iteration in the chain.
+#'
+#' @section Notes:
+#' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
+#' for Zipkin et al. 2014, figure 3.
+#'
+#' @return \code{posummary(params = 'all')} returns posterior plots for all parameters contained within
+#' JAGS model object.
+#'
+#' \code{posummary(params = c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
+#' \code{beta[1]} and \code{beta[2]}.
+#'
+#' \code{posummary(params = 'beta')} returns posterior plots for all parameters containing \code{beta}
+#'  in their name.
+#'
+#' @examples
+#' x1 <- rnorm(1000, mean=0.5)
+#' x2 <- rnorm(1000, mean=0)
+#' data <- cbind(x1, x2)
+#' poplot(data, input = 'chains')
+#'
+#' @export
+#' @import lattice
+
+
+potrace <- function(object,
+                      params = 'all')
+{
+  if(coda::is.mcmc.list(object) == TRUE)
+  {
+    temp <- object
+    names <- colnames(temp[[1]])
+    n_chains <- length(temp)
+    <- time(temp)
+

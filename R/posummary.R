@@ -40,24 +40,19 @@
 #' @export
 #' @import coda
 
+
 posummary <- function(object,
                       params = 'all',
-                      input = 'jags_object',
                       Rhat = TRUE)
 {
-  if (input == 'mcmc_list')
-  {
-    if(coda::is.mcmc.list(object) == TRUE)
+object <- ML
+     if(coda::is.mcmc.list(object) == TRUE)
     {
       temp <- object
       names <- colnames(temp[[1]])
-      n_chains <- length(lengths(temp))
+      n_chains <- length(temp)
 
-      ch_bind <- c()
-      for (i in 1:n_chains)
-      {
-        ch_bind <- rbind(ch_bind, temp[[i]])
-      }
+      ch_bind <- do.call('rbind', temp)
 
       bind_mn <- apply(ch_bind, 2, mean)
       bind_LCI <- apply(ch_bind, 2, quantile, probs= 0.025)
@@ -98,20 +93,14 @@ posummary <- function(object,
 
         OUT <- mcmc_summary[g_filt,]
       }
-    }else
-    {
-      stop('object type and input do not match')
     }
-  }
 
 
-  if (input == 'chains')
-  {
+
     if(typeof(object) == 'double')
     {
       temp <- object
       names <- colnames(temp)
-
 
       bind_mn <- apply(temp, 2, mean)
       bind_LCI <- apply(temp, 2, quantile, probs= 0.025)
@@ -157,20 +146,12 @@ posummary <- function(object,
         OUT <- mcmc_summary[g_filt,]
       }
 
-    }else
-    {
-      stop('object type and input do not match')
     }
-  }
 
-
-  if (input == 'jags_object')
-  {
-    if(typeof(object) == 'list')
+    if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
     {
       temp <- object$BUGSoutput$summary
       names <- rownames(temp)
-
 
       if (length(params) == 1)
       {
@@ -202,10 +183,14 @@ posummary <- function(object,
 
         OUT <- temp[g_filt, c(1,3,5,7,8)]
       }
-    }else
-    {
-      stop('object type and input do not match')
     }
+
+
+  if(coda::is.mcmc.list(object) != TRUE &
+     typeof(object) != 'double' &
+     typeof(object) != 'list')
+  {
+      stop('Invalid object type. Input must be mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
 
