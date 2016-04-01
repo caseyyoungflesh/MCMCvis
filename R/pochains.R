@@ -32,54 +32,28 @@
 
 
 pochains <- function(object,
-                     params = 'all',
-                     input = 'jags_object')
+                     params = 'all')
 {
-  if (input == 'mcmc_list')
-  {
     if(coda::is.mcmc.list(object) == TRUE)
     {
-      temp_in <- object
-      names <- colnames(temp_in[[1]])
-      n_chains <- length(lengths(temp_in))
+      temp <- object
+      names <- colnames(temp[[1]])
+      n_chains <- length(temp)
 
-      temp <- c()
-      for (i in 1:n_chains)
-      {
-        temp <- rbind(temp, temp_in[[i]])
-      }
-    }else
-    {
-      stop('object type and input do not match')
+      ch_bind <- do.call('rbind', temp)
     }
-  }
 
-
-  if (input == 'chains')
-  {
     if(typeof(object) == 'double')
     {
       temp <- object
       names <- colnames(temp)
-    }else
-    {
-      stop('object type and input do not match')
     }
-  }
 
-
-  if (input == 'jags_object')
-  {
-    if(typeof(object) == 'list')
+    if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
     {
       temp <- object$BUGSoutput$sims.matrix
       names <- colnames(temp)
-    }else
-    {
-      stop('object type and input do not match')
     }
-  }
-
 
   if (length(params) == 1)
   {
