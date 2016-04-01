@@ -3,5 +3,6 @@
 export(pochains)
 export(poplot)
 export(posummary)
+export(potrace)
 import(coda)
 import(lattice)

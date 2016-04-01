@@ -2,24 +2,18 @@
 #'
 #' Extract summary information from MCMC output for specific parameters of interest.
 #'
-#' @param object Object containing MCMC output. See \code{input} argument and DETAILS below.
+#' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be
 #' returned in summary output. Partial names may be used to return all parameters containing
 #' that set of characters.
 #'
 #' Default \code{all} returns all parameters in summary output.
-#' @param input Indicates the nature of the \code{object} argument.
-#'
-#' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
 #' @param Rhat If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
 #' and if \code{FALSE}, Rhat output is masked.
 #' @section Details:
-#' For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
-#'
-#' For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
-#'
-#' For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
-#' chain for a single parameter. Each row represents one iteration in the chain.
+#' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
+#' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
+#' representing iterations in the chain).
 #'
 #' @section Notes:
 #'  Default summary information includes (parameter posterior mean, 2.5\% quantile, median, 97.5\%
@@ -50,7 +44,6 @@ object <- ML
     {
       temp <- object
       names <- colnames(temp[[1]])
-      n_chains <- length(temp)
 
       ch_bind <- do.call('rbind', temp)
 

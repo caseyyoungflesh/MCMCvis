@@ -4,29 +4,24 @@
 \alias{pochains}
 \title{Extract posterior chains from MCMC output}
 \usage{
-pochains(object, params = "all", input = "jags_object")
+pochains(object, params = "all")
 }
 \arguments{
-\item{object}{Object containing MCMC output. See \code{input} argument and DETAILS below.}
+\item{object}{Object containing MCMC output. See DETAILS below.}
 
-\item{params}{Character string (or vector of character strings) denoting parameters to be
-returned in summary output. Partial names may be used to return all parameters containing
-that set of characters.
+\item{params}{Character string (or vector of character strings) denoting parameters of interest.
+Partial names may be used to return all parameters containing that set of characters.
 
 Default \code{all} returns chains for all parameters.}
-
-\item{input}{Indicates the nature of the \code{object} argument.
-
-Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 }
 \value{
-\code{posummary(params='all')} returns posterior chains for all parameters contained within
+\code{pochains(params='all')} returns chains for all parameters contained within
 JAGS model object.
 
-\code{posummary(params=c('beta[1]', 'beta[2]'))} returns posterior chains for just parameters
+\code{pochains(params=c('beta[1]', 'beta[2]'))} returns chains for just parameters
 \code{beta[1]} and \code{beta[2]}.
 
-\code{posummary(params=c('beta'))} returns posterior chains for all parameters containing \code{beta}
+\code{pochains(params=c('beta'))} returns chains for all parameters containing \code{beta}
  in their name.
 }
 \description{
@@ -34,11 +29,8 @@ Extract posterior chains from MCMC output for specific parameters of interest.
 }
 \section{Details}{
 
-For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
-
-For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
-
-For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
-chain for a single parameter. Each row represents one iteration in the chain.
+\code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
+package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
+representing iterations in the chain).
 }
 

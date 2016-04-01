@@ -4,7 +4,7 @@
 #' parameter estimates are plotted on the same plot using density strips, similar to a caterpillar plot.
 #'
 #'
-#' @param object Object containing MCMC output. See \code{input} argument and DETAILS below.
+#' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be
 #' plotted. Partial names may be used to plot all parameters containing that set of characters.
 #'
@@ -23,8 +23,8 @@
 #' Default plots 95\% credible intervals.
 #' @param centrality Indicates which measure of centrality to plot.
 #'
-#' Valid options are \code{mean}
-#' and \code{median}.
+#' Valid options are \code{mean} and \code{median}.
+#'
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param xlab Character string labeling x-axis.
 #' @param ylab Character string (or vector of character strings if plotting > 1 parameter) labeling
@@ -40,25 +40,19 @@
 #' @param tick_height Height of ticks in plot.
 #' @param tick_width Width of ticks in plot.
 #' @section Details:
-#' For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
-#'
-#' For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
-#'
-#' For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
-#' chain for a single parameter. Each row represents one iteration in the chain.
+#' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
+#' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
+#' representing iterations in the chain).
 #'
 #' @section Notes:
 #' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
 #' for Zipkin et al. 2014, figure 3.
 #'
-#' @return \code{posummary(params = 'all')} returns posterior plots for all parameters contained within
-#' JAGS model object.
+#' @return \code{poplot(params = 'all')} plots posteriors for all parameters.
 #'
-#' \code{posummary(params = c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
-#' \code{beta[1]} and \code{beta[2]}.
+#' \code{poplot(params = c('beta[1]', 'beta[2]'))} plots posteriors for just parameters \code{beta[1]} and \code{beta[2]}.
 #'
-#' \code{posummary(params = 'beta')} returns posterior plots for all parameters containing \code{beta}
-#'  in their name.
+#' \code{poplot(params = 'beta')} plots posteriors for all parameters containing \code{beta} in their name.
 #'
 #' @section References:
 #' Jackson, C. H. 2008. Displaying Uncertainty With Shading. The American Statistician 62:340-347.
@@ -72,7 +66,7 @@
 #' x1 <- rnorm(1000, mean=0.5)
 #' x2 <- rnorm(1000, mean=0)
 #' data <- cbind(x1, x2)
-#' poplot(data, input = 'chains')
+#' poplot(data)
 #'
 #' @export
 #' @import lattice
@@ -80,7 +74,6 @@
 
 poplot <- function(object,
                    params= 'all',
-                   input = 'jags_object',
                    g_lines = 0,
                    quantiles = c(0.025, 0.975),
                    centrality = 'mean',
@@ -112,73 +105,16 @@ poplot <- function(object,
 
   # Input data --------------------------------------------------------------
 
-  if(input == 'jags_object')
+
+  data <- pochains(object, params= params)
+
+  if(coda::is.mcmc.list(object) != TRUE &
+     typeof(object) != 'double' &
+     typeof(object) != 'list')
   {
-    if(typeof(object) == 'list')
-    {
-      data <- pochains(object, params= params, input= 'jags_object')
-    }else
-    {
-      stop('object type and input do not match')
-    }
+    stop('Invalid object type. Input must be mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
-  if(input == 'mcmc_list')
-  {
-    if(coda::is.mcmc.list(object) == TRUE)
-    {
-      data <- pochains(object, params= params, input= 'mcmc_list')
-    }else
-    {
-      stop('object type and input do not match')
-    }
-  }
-
-  if(input == 'chains')
-  {
-   if(typeof(object) == 'double')
-   {
-     names <- colnames(object)
-
-    if (length(params) == 1)
-    {
-      if (params == 'all')
-      {
-        data <- object
-      }else
-      {
-        get.cols <- grep(paste(params), names, fixed=TRUE)
-        data <- object[,get.cols]
-      }
-    }else
-    {
-      grouped <- c()
-      for (i in 1:length(params))
-      {
-        get.cols <- grep(paste(params[i]), names, fixed=TRUE)
-        grouped <- c(grouped, get.cols)
-      }
-
-      to.rm <- which(duplicated(grouped))
-      if(length(to.rm) >0)
-      {
-        g_filt <- grouped[-to.rm]
-      }else
-      {
-        g_filt <- grouped
-      }
-
-      data <- object[,g_filt]
-    }
-   }else
-   {
-     stop('object type and input do not match')
-   }
-  }
-  if(input != 'jags_object' & input != 'chains' & input != 'mcmc_list')
-  {
-    stop(paste0(input,' is not a valid entry for the argument "input"'))
-  }
 
   # Process data ------------------------------------------------------------
 
@@ -263,6 +199,7 @@ poplot <- function(object,
 
     if (missing(xlim))
     {
+
       rpp <- lattice::bwplot(variable ~ value, data = mp,
                xlab = list(label = xlab,cex = 1.3),
                main = Tmain,
@@ -323,6 +260,7 @@ poplot <- function(object,
       }
     }
 
+
   print(rpp)
 
   # Top and bottom lines ----------------------------------------------------
@@ -333,7 +271,7 @@ poplot <- function(object,
   lattice::panel.lines(c(x_limits[1],x_limits[2]),c(0.4,0.4), col="black")
   lattice::panel.lines(c(x_limits[1],x_limits[2]),c(X+.6,X+.6), col="black")
 
-  # Hashes - centrality -----------------------------------------------------------
+  # Hashes - centrality and CI -----------------------------------------------------------
 
   if (centrality == 'median')
   {
@@ -341,6 +279,8 @@ poplot <- function(object,
     {
       TMP<- X-i+1
       lattice::panel.lines(c(median(chains[,i])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
+      lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
+      lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
     }
   }
   if (centrality == 'mean')
@@ -349,27 +289,13 @@ poplot <- function(object,
     {
       TMP<- X-i+1
       lattice::panel.lines(c(mean(chains[,i])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
+      lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
+      lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
     }
   }
   if (centrality != 'median' & centrality != 'mean')
   {
     stop(paste0(centrality,' is not a valid entry for the argument "centrality"'))
-  }
-
-  # Lower CI ----------------------------------------------------------------
-
-  for(i in 1:X)
-  {
-    TMP<- X-i+1
-    lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
-  }
-
-  # Upper CI ----------------------------------------------------------------
-
-  for(i in 1:X)
-  {
-    TMP<- X-i+1
-    lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
   }
 
 

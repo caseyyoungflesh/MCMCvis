@@ -68,14 +68,21 @@
 #' @export
 #' @import lattice
 
+object <- as.mcmc(SD_out)
 
 potrace <- function(object,
-                      params = 'all')
+                    params = 'all')
 {
   if(coda::is.mcmc.list(object) == TRUE)
   {
     temp <- object
     names <- colnames(temp[[1]])
     n_chains <- length(temp)
-    <- time(temp)
+    it <- time(temp)
 
+
+
+
+  }
+}
+}

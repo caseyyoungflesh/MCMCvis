@@ -4,22 +4,17 @@
 \alias{poplot}
 \title{Plot posterior distributions from MCMC output}
 \usage{
-poplot(object, params = "all", input = "jags_object", g_lines = 0,
-  quantiles = c(0.025, 0.975), centrality = "mean", xlim,
-  xlab = "Parameter probability values", ylab, main, dbar_height = 0.2,
-  tick_height = 0.5, tick_width = 3)
+poplot(object, params = "all", g_lines = 0, quantiles = c(0.025, 0.975),
+  centrality = "mean", xlim, xlab = "Parameter probability values", ylab,
+  main, dbar_height = 0.2, tick_height = 0.5, tick_width = 3)
 }
 \arguments{
-\item{object}{Object containing MCMC output. See \code{input} argument and DETAILS below.}
+\item{object}{Object containing MCMC output. See DETAILS below.}
 
 \item{params}{Character string (or vector of character strings) denoting parameters to be
 plotted. Partial names may be used to plot all parameters containing that set of characters.
 
 Default \code{all} plots posteriors for all parameters. See VALUE below.}
-
-\item{input}{Indicates the nature of the \code{object} argument.
-
-Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
 \item{g_lines}{Numerical vector indicating where vertical reference lines should be created.
 
@@ -33,8 +28,7 @@ Default plots 95\% credible intervals.}
 
 \item{centrality}{Indicates which measure of centrality to plot.
 
-Valid options are \code{mean}
-and \code{median}.}
+Valid options are \code{mean} and \code{median}.}
 
 \item{xlim}{Numerical vector of length 2, indicating range of x-axis.}
 
@@ -56,16 +50,17 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 \item{tick_height}{Height of ticks in plot.}
 
 \item{tick_width}{Width of ticks in plot.}
+
+\item{input}{Indicates the nature of the \code{object} argument.
+
+Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 }
 \value{
-\code{posummary(params = 'all')} returns posterior plots for all parameters contained within
-JAGS model object.
+\code{poplot(params = 'all')} plots posteriors for all parameters.
 
-\code{posummary(params = c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
-\code{beta[1]} and \code{beta[2]}.
+\code{poplot(params = c('beta[1]', 'beta[2]'))} plots posteriors for just parameters \code{beta[1]} and \code{beta[2]}.
 
-\code{posummary(params = 'beta')} returns posterior plots for all parameters containing \code{beta}
- in their name.
+\code{poplot(params = 'beta')} plots posteriors for all parameters containing \code{beta} in their name.
 }
 \description{
 Plot the posterior distributions from MCMC output for specific parameters of interest. All posterior
@@ -73,12 +68,9 @@ parameter estimates are plotted on the same plot using density strips, similar t
 }
 \section{Details}{
 
-For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
-
-For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
-
-For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
-chain for a single parameter. Each row represents one iteration in the chain.
+\code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
+package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
+representing iterations in the chain).
 }
 
 \section{Notes}{
