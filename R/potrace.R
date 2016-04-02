@@ -21,8 +21,24 @@
 #' @import ggplot2
 #' @export
 
+object <- SD_out
+params = 'beta'
+
+ptm <- proc.time()
+potrace(SD_out, params='beta')
+proc.time() - ptm
+
+t1= '/Users/caseyyoungflesh/Google Drive/R/potools/'
+ptm <- proc.time()
+potrace(SD_out, params='beta', pdf = TRUE, wd= t1)
+proc.time() - ptm
+
+
+
 potrace <- function(object,
-                    params = 'all')
+                    params = 'all',
+                    pdf = FALSE,
+                    wd = getwd())
 {
   if(coda::is.mcmc.list(object) == TRUE)
   {
@@ -30,95 +46,84 @@ potrace <- function(object,
   }
   if(coda::is.mcmc.list(object) == FALSE & typeof(object) == 'list')
   {
-    temp <- as.mcmc(object)
+    x <- object$BUGSoutput
+    mclist <- vector("list", x$n.chains)
+    mclis <- vector("list", x$n.chains)
+    strt <- x$n.burnin + 1
+    end <- x$n.iter
+    ord <- dimnames(x$sims.array)[[3]]
+    for (i in 1:x$n.chains) {
+      tmp1 <- x$sims.array[, i, ord]
+      mclis[[i]] <- mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+    }
+    temp <- as.mcmc.list(mclis)
   }
   if(coda::is.mcmc.list(object) == FALSE & typeof(object) != 'list')
   {
     stop('Invalid input type. Object must be of type mcmc.list or R2jags output.')
   }
 
-    names <- colnames(temp[[1]])
-    n_chains <- length(temp)
-    it <- 1:nrow(temp[[1]])
+  names <- colnames(temp[[1]])
+  n_chains <- length(temp)
+  it <- 1:nrow(temp[[1]])
 
-    if (length(params) == 1)
+  if (length(params) == 1)
+  {
+    if (params == 'all')
     {
-      if (params == 'all')
-      {
-        g_filt <- 1:length(names)
-      }else
-      {
-        g_filt <- grep(paste(params), names, fixed=TRUE)
-      }
+      g_filt <- 1:length(names)
     }else
     {
-      grouped <- c()
-      for (i in 1:length(params))
-      {
-        get.cols <- grep(paste(params[i]), names, fixed=TRUE)
-        grouped <- c(grouped, get.cols)
-      }
-
-      to.rm <- which(duplicated(grouped))
-      if(length(to.rm) >0)
-      {
-        g_filt <- grouped[-to.rm]
-      }else
-      {
-        g_filt <- grouped
-      }
+      g_filt <- grep(paste(params), names, fixed=TRUE)
     }
-
-    g_out <- NULL
-    for (j in 1: length(g_filt))
-    {
-      tmlt <- do.call('cbind', temp[,g_filt[j]])
-
-      tplt <- reshape2::melt(data.frame(Iteration= it,tmlt), id='Iteration')
-      g <- with(tplt, ggplot2::ggplot(tplt, aes(Iteration, value, color= variable)) +
-        geom_line(alpha=.6) +
-        theme_bw() +
-        ggtitle(paste0(names[g_filt[j]])) +
-        guides(color=FALSE))
-
-      g_out[[j]] <- g
-    }
-
-  lgf <- length(g_filt)
-  for (i in seq(1,lgf, by=6))
+  }else
   {
-    if (lgf-i >= 5)
+    grouped <- c()
+    for (i in 1:length(params))
     {
-      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
-                              g_out[[i+2]], g_out[[i+3]],
-                              g_out[[i+4]], g_out[[i+5]],
-                              nrow=3, ncol=2)
+      get.cols <- grep(paste(params[i]), names, fixed=TRUE)
+      grouped <- c(grouped, get.cols)
     }
-    if (lgf-i >=4 & lgf-i < 5)
+
+    to.rm <- which(duplicated(grouped))
+    if(length(to.rm) >0)
     {
-      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
-                              g_out[[i+2]], g_out[[i+3]],
-                              g_out[[i+4]], nrow=3, ncol=2)
-    }
-    if (lgf-i >=3 & lgf-i < 4)
+      g_filt <- grouped[-to.rm]
+    }else
     {
-      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
-                              g_out[[i+2]], g_out[[i+3]],
-                              nrow=3, ncol=2)
+      g_filt <- grouped
     }
-    if (lgf-i >=2 & lgf-i < 3)
-    {
-      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
-                              g_out[[i+2]], nrow=3, ncol=2)
-    }
-    if (lgf-i >=1 & lgf-i < 2)
-    {
-      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
-                              nrow=3, ncol=2)
-    }
-    if (lgf-i < 1)
-    {
-      gridExtra::grid.arrange(g_out[[i]], nrow=3, ncol=2)
-    }
+  }
+
+  if(pdf == TRUE)
+  {
+    setwd(wd)
+    pdf(file= 'potrace.pdf')
+  }
+
+  layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
+  par(mar=c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+  par(mgp=c(2.5,1,0)) #axis text distance
+  gg_color_hue <- function(n)
+  {
+    hues = seq(15, 375, length=n+1)
+    hcl(h=hues, l=65, c=100)[1:n]
+  }
+  colors <- gg_color_hue(n_chains)
+  gg_cols <- col2rgb(colors)/255
+
+
+  for (j in 1: length(g_filt))
+  {
+    tmlt <- do.call('cbind', temp[,g_filt[j]])
+    matplot(it, tmlt, lty= 1, type='l', main = paste0(names[g_filt[j]]),
+            col= rgb(red= gg_cols[1,], green= gg_cols[2,],
+                     blue= gg_cols[3,], alpha = 0.6),
+            xlab= 'Iteration', ylab= 'Value')
+  }
+
+  if(pdf == TRUE)
+  {
+    invisible(dev.off())
   }
 }

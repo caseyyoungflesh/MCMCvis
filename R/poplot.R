@@ -117,13 +117,43 @@ poplot <- function(object,
 
   # Process data ------------------------------------------------------------
 
+  if (centrality == 'mean')
+  {
+
+  }
+  if (centrality != 'median' & centrality != 'mean')
+  {
+    stop(paste0(centrality,' is not a valid entry for the argument "centrality"'))
+  }
+
   if (NCOL(data) > 1)
   {
     if (length(quantiles)==2 & typeof(quantiles) == 'double')
     {
       chains <- as.data.frame(data)
       X <- NCOL(data)
-      idx <- X:1
+
+      if (rank == TRUE)
+      {
+        if (centrality == 'median')
+        {
+          tsrt <- median(chains)
+          #SORT HERE
+        }
+        if (centrality == 'mean')
+        {
+          tsrt <- mean(chains)
+          #SORT HERE
+        }
+        if (centrality != 'median' & centrality != 'mean')
+        {
+          stop(paste0(centrality,' is not a valid entry for the argument "centrality"'))
+        }
+      }
+      if (rank == FALSE)
+      {
+        idx <- X:1
+      }
 
       if (missing(ylab))
       {
