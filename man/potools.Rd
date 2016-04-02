@@ -17,7 +17,7 @@ The following functions are currently available:
 
      -\code{posummary} (summarize MCMC output for particular parameters of interest)
 
-     -\code{potrace} (plots chains for particular parameters of interest to check for convergence)
+     -\code{potrace} (plot MCMC chains for particular parameters of interest to check for convergence)
 
      -\code{pochains} (extract posterior chains from MCMC output for particular parameters of interest)
 
