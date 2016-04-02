@@ -19,7 +19,6 @@
 #'
 #' \code{potrace(params=c('beta'))} returns chains for all parameters containing \code{beta} in their name.
 #'
-#' @import ggplot2
 #' @export
 
 

@@ -13,9 +13,7 @@ BugReports: http://github.com/caseyyoungflesh/potools/issues
 LazyData: TRUE
 Imports:
     denstrip,
-    reshape2,
-    ggplot2,
-    gridExtra
+    reshape2
 Depends:
     R (>= 3.2.3),
     lattice,
