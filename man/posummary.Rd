@@ -19,8 +19,7 @@ Default \code{all} returns all parameters in summary output.}
 and if \code{FALSE}, Rhat output is masked.}
 }
 \value{
-\code{posummary(params='all')} returns summary data for all parameters contained within
-JAGS model object.
+\code{posummary(params='all')} returns summary data for all parameters.
 
 \code{posummary(params=c('beta[1]', 'beta[2]'))} returns summary data for just parameters
 \code{beta[1]} and \code{beta[2]}.

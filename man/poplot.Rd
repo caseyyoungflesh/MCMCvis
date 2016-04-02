@@ -92,7 +92,7 @@ capture-recapture approaches. Ecology and Evolution 4:417-426.
 x1 <- rnorm(1000, mean=0.5)
 x2 <- rnorm(1000, mean=0)
 data <- cbind(x1, x2)
-poplot(data, input = 'chains')
+poplot(data)
 
 }
 

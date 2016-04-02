@@ -15,8 +15,7 @@ Partial names may be used to return all parameters containing that set of charac
 Default \code{all} returns chains for all parameters.}
 }
 \value{
-\code{pochains(params='all')} returns chains for all parameters contained within
-JAGS model object.
+\code{pochains(params='all')} returns chains for all parameters.
 
 \code{pochains(params=c('beta[1]', 'beta[2]'))} returns chains for just parameters
 \code{beta[1]} and \code{beta[2]}.

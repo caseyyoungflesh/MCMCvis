@@ -13,8 +13,7 @@
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
 #' representing iterations in the chain).
 #'
-#' @return \code{pochains(params='all')} returns chains for all parameters contained within
-#' JAGS model object.
+#' @return \code{pochains(params='all')} returns chains for all parameters.
 #'
 #' \code{pochains(params=c('beta[1]', 'beta[2]'))} returns chains for just parameters
 #' \code{beta[1]} and \code{beta[2]}.

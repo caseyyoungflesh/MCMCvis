@@ -1,74 +1,24 @@
 #' Plot MCMC chains to check for convergence
 #'
 #' Plot MCMC chains for specific parameters of interest.
+#' @param object Object containing MCMC output. See DETAILS below.
+#' @param params Character string (or vector of character strings) denoting parameters of interest.
+#' Partial names may be used to return all parameters containing that set of characters.
 #'
-#'
-#' @param object Object containing MCMC output. See \code{input} argument and DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters to be
-#' plotted. Partial names may be used to plot all parameters containing that set of characters.
-#'
-#' Default \code{all} plots posteriors for all parameters. See VALUE below.
-#' @param input Indicates the nature of the \code{object} argument.
-#'
-#' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
-#' @param g_lines Numerical vector indicating where vertical reference lines should be created.
-#'
-#' Default is \code{g_lines = 0}.
-#'
-#' Argument \code{NULL} will plot no guidelines.
-#'
-#' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot.
-#'
-#' Default plots 95\% credible intervals.
-#' @param centrality Indicates which measure of centrality to plot.
-#'
-#' Valid options are \code{mean}
-#' and \code{median}.
-#' @param xlim Numerical vector of length 2, indicating range of x-axis.
-#' @param xlab Character string labeling x-axis.
-#' @param ylab Character string (or vector of character strings if plotting > 1 parameter) labeling
-#' y-axis.
-#'
-#' Specifying labels in the argument will use these to label axis.
-#'
-#' Default option will use parameter names from \code{object}.
-#'
-#' Option \code{NULL} will return plot with no labels on y-axis.
-#' @param main Character string indicating title of plot.
-#' @param dbar_height Height of density bar in plot.
-#' @param tick_height Height of ticks in plot.
-#' @param tick_width Width of ticks in plot.
+#' Default \code{all} returns chains for all parameters.
+
 #' @section Details:
-#' For \code{posummary(object, input = 'jags_object')}, input must be JAGS model object from \code{R2jags} package.
+#' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
+#' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
+#' representing iterations in the chain).
 #'
-#' For \code{posummary(object, input = 'mcmc_list')}, input must be of type \code{mcmc.list}.
+#' @return \code{potrace(params='all')} returns chains for all parameters.
 #'
-#' For \code{posummary(object, input = 'chains')}, each column of \code{object} should contain a posterior
-#' chain for a single parameter. Each row represents one iteration in the chain.
+#' \code{potrace(params=c('beta[1]', 'beta[2]'))} returns chains for just parameters \code{beta[1]} and \code{beta[2]}.
 #'
-#' @section Notes:
-#' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
-#' for Zipkin et al. 2014, figure 3.
-#'
-#' @return \code{posummary(params = 'all')} returns posterior plots for all parameters contained within
-#' JAGS model object.
-#'
-#' \code{posummary(params = c('beta[1]', 'beta[2]'))} returns posterior plots for just parameters
-#' \code{beta[1]} and \code{beta[2]}.
-#'
-#' \code{posummary(params = 'beta')} returns posterior plots for all parameters containing \code{beta}
-#'  in their name.
-#'
-#' @examples
-#' x1 <- rnorm(1000, mean=0.5)
-#' x2 <- rnorm(1000, mean=0)
-#' data <- cbind(x1, x2)
-#' poplot(data, input = 'chains')
+#' \code{potrace(params=c('beta'))} returns chains for all parameters containing \code{beta} in their name.
 #'
 #' @export
-#' @import lattice
-
-object <- as.mcmc(SD_out)
 
 potrace <- function(object,
                     params = 'all')
@@ -76,13 +26,98 @@ potrace <- function(object,
   if(coda::is.mcmc.list(object) == TRUE)
   {
     temp <- object
+  }
+  if(coda::is.mcmc.list(object) == FALSE & typeof(object) == 'list')
+  {
+    temp <- as.mcmc(object)
+  }
+  if(coda::is.mcmc.list(object) == FALSE & typeof(object) != 'list')
+  {
+    stop('Invalid input type. Object must be of type mcmc.list or R2jags output.')
+  }
+
     names <- colnames(temp[[1]])
     n_chains <- length(temp)
-    it <- time(temp)
+    it <- 1:nrow(temp[[1]])
 
+    if (length(params) == 1)
+    {
+      if (params == 'all')
+      {
+        g_filt <- 1:length(names)
+      }else
+      {
+        g_filt <- grep(paste(params), names, fixed=TRUE)
+      }
+    }else
+    {
+      grouped <- c()
+      for (i in 1:length(params))
+      {
+        get.cols <- grep(paste(params[i]), names, fixed=TRUE)
+        grouped <- c(grouped, get.cols)
+      }
 
+      to.rm <- which(duplicated(grouped))
+      if(length(to.rm) >0)
+      {
+        g_filt <- grouped[-to.rm]
+      }else
+      {
+        g_filt <- grouped
+      }
+    }
 
+    g_out <- NULL
+    for (j in 1: length(g_filt))
+    {
+      tmlt <- do.call('cbind', temp[,g_filt[j]])
 
+      tplt <- reshape2::melt(data.frame(Iteration= it,tmlt), id='Iteration')
+      g <- ggplot2::ggplot(tplt, aes(Iteration, value, color= variable)) +
+        geom_line(alpha=.6) +
+        theme_bw() +
+        ggtitle(paste0(names[g_filt[j]])) +
+        guides(color=FALSE)
+
+      g_out[[j]] <- g
+    }
+
+  lgf <- length(g_filt)
+  for (i in seq(1,lgf, by=6))
+  {
+    if (lgf-i >= 5)
+    {
+      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
+                              g_out[[i+2]], g_out[[i+3]],
+                              g_out[[i+4]], g_out[[i+5]],
+                              nrow=3, ncol=2)
+    }
+    if (lgf-i >=4 & lgf-i < 5)
+    {
+      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
+                              g_out[[i+2]], g_out[[i+3]],
+                              g_out[[i+4]], nrow=3, ncol=2)
+    }
+    if (lgf-i >=3 & lgf-i < 4)
+    {
+      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
+                              g_out[[i+2]], g_out[[i+3]],
+                              nrow=3, ncol=2)
+    }
+    if (lgf-i >=2 & lgf-i < 3)
+    {
+      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
+                              g_out[[i+2]], nrow=3, ncol=2)
+    }
+    if (lgf-i >=1 & lgf-i < 2)
+    {
+      gridExtra::grid.arrange(g_out[[i]], g_out[[i+1]],
+                              nrow=3, ncol=2)
+    }
+    if (lgf-i < 1)
+    {
+      gridExtra::grid.arrange(g_out[[i]], nrow=3, ncol=2)
+    }
   }
-}
 }

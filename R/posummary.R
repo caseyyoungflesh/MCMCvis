@@ -22,8 +22,7 @@
 #' For \code{mcmc.list} objects, Gelman-Rubin convergence statistic  (Rhat) is calculated using the
 #' \code{gelman.diag} function in the \code{coda} package.
 #'
-#' @return \code{posummary(params='all')} returns summary data for all parameters contained within
-#' JAGS model object.
+#' @return \code{posummary(params='all')} returns summary data for all parameters.
 #'
 #' \code{posummary(params=c('beta[1]', 'beta[2]'))} returns summary data for just parameters
 #' \code{beta[1]} and \code{beta[2]}.
