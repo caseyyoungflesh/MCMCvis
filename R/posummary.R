@@ -62,6 +62,10 @@ posummary <- function(object,
         }else
         {
           get.rows <- grep(paste(params), names, fixed=TRUE)
+          if (length(get.rows) < 1)
+          {
+            stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+          }
           OUT <- mcmc_summary[get.rows,]
         }
       }else
@@ -70,6 +74,10 @@ posummary <- function(object,
         for (i in 1:length(params))
         {
           get.rows <- grep(paste(params[i]), names, fixed=TRUE)
+          if (length(get.rows) < 1)
+          {
+            stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+          }
           grouped <- c(grouped, get.rows)
         }
 
@@ -114,6 +122,10 @@ posummary <- function(object,
         }else
         {
           get.rows <- grep(paste(params), names, fixed=TRUE)
+          if (length(get.rows) < 1)
+          {
+            stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+          }
           OUT <- mcmc_summary[get.rows,]
         }
       }else
@@ -122,6 +134,10 @@ posummary <- function(object,
         for (i in 1:length(params))
         {
           get.rows <- grep(paste(params[i]), names, fixed=TRUE)
+          if (length(get.rows) < 1)
+          {
+            stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+          }
           grouped <- c(grouped, get.rows)
         }
 
@@ -152,6 +168,10 @@ posummary <- function(object,
         }else
         {
           get.rows <- grep(paste(params), names, fixed=TRUE)
+          if (length(get.rows) < 1)
+          {
+            stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+          }
           OUT <- temp[get.rows, c(1,3,5,7,8)]
         }
       }else
@@ -160,6 +180,10 @@ posummary <- function(object,
         for (i in 1:length(params))
         {
           get.rows <- grep(paste(params[i]), names, fixed=TRUE)
+          if (length(get.rows) < 1)
+          {
+            stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+          }
           grouped <- c(grouped, get.rows)
         }
 

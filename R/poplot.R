@@ -20,6 +20,8 @@
 #' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot.
 #'
 #' Default plots 95\% credible intervals.
+#' @param rank If \code{TRUE} posteriors will ranked in decreasing order (based on
+#' specified measure of centrality) from top down.
 #' @param centrality Indicates which measure of centrality to plot.
 #'
 #' Valid options are \code{mean} and \code{median}.
@@ -36,8 +38,8 @@
 #' Option \code{NULL} will return plot with no labels on y-axis.
 #' @param main Character string indicating title of plot.
 #' @param dbar_height Height of density bar in plot.
-#' @param tick_height Height of ticks in plot.
-#' @param tick_width Width of ticks in plot.
+#' @param dbar_tick_height Height of ticks on density bar in plot.
+#' @param dbar_tick_width Width of ticks on density bar in plot.
 #' @section Details:
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
@@ -70,27 +72,27 @@
 #' @export
 #' @import lattice
 
-
 poplot <- function(object,
                    params= 'all',
                    g_lines = 0,
                    quantiles = c(0.025, 0.975),
+                   rank = FALSE,
                    centrality = 'mean',
                    xlim,
                    xlab = 'Parameter probability values',
                    ylab,
                    main,
                    dbar_height = 0.2,
-                   tick_height = 0.5,
-                   tick_width = 3)
+                   dbar_tick_height = 0.5,
+                   dbar_tick_width = 3)
 {
 
   # Plotting parameters -----------------------------------------------------
 
   WID <- dbar_height #height of bar
-  H <- ((tick_height-dbar_height)/2) #height of mean and CI ticks
-  W <- tick_width #thickness of mean tick
-  W2 <- tick_width #thickness of CI tick
+  H <- ((dbar_tick_height-dbar_height)/2) #height of mean and CI ticks
+  W <- dbar_tick_width #thickness of mean tick
+  W2 <- dbar_tick_width #thickness of CI tick
   MN_col <- 'black' #color of centrality tick
   CI_col <- 'grey87' #color of CI tick
 
@@ -117,18 +119,9 @@ poplot <- function(object,
 
   # Process data ------------------------------------------------------------
 
-  if (centrality == 'mean')
-  {
-
-  }
-  if (centrality != 'median' & centrality != 'mean')
-  {
-    stop(paste0(centrality,' is not a valid entry for the argument "centrality"'))
-  }
-
   if (NCOL(data) > 1)
   {
-    if (length(quantiles)==2 & typeof(quantiles) == 'double')
+    if (length(quantiles) == 2 & typeof(quantiles) == 'double')
     {
       chains <- as.data.frame(data)
       X <- NCOL(data)
@@ -137,13 +130,13 @@ poplot <- function(object,
       {
         if (centrality == 'median')
         {
-          tsrt <- median(chains)
-          #SORT HERE
+          tsrt <- apply(chains, 2, median)
+          idx <- order(tsrt, decreasing = TRUE)
         }
         if (centrality == 'mean')
         {
-          tsrt <- mean(chains)
-          #SORT HERE
+          tsrt <- apply(chains, 2, mean)
+          idx <- order(tsrt, decreasing = FALSE)
         }
         if (centrality != 'median' & centrality != 'mean')
         {
@@ -157,7 +150,7 @@ poplot <- function(object,
 
       if (missing(ylab))
       {
-        labs <- colnames(data)[idx] #apply and sort labels
+        labs <- colnames(data)[idx]
       }
       if (!missing(ylab))
       {
@@ -169,7 +162,7 @@ poplot <- function(object,
         {
           if (length(ylab) == X)
           {
-            labs <- sort(ylab, decreasing =TRUE)
+            labs <- sort(ylab, decreasing =FALSE)
           }else
           {
             stop('ylab length not equal to number of parameters')
@@ -195,7 +188,7 @@ poplot <- function(object,
 
       if (missing(ylab))
       {
-        labs <- colnames(data)[idx] #apply and sort labels
+        labs <- colnames(data)[idx]
       }
       if (!missing(ylab))
       {
@@ -223,6 +216,7 @@ poplot <- function(object,
       stop('quantiles must be a numerical vector of length 2')
     }
   }
+
 
   # create plot object ------------------------------------------------------
 
@@ -302,11 +296,16 @@ poplot <- function(object,
 
   # Hashes - centrality and CI -----------------------------------------------------------
 
+
+
   if (centrality == 'median')
   {
     for (i in 1:X)
     {
-      TMP<- X-i+1
+      j <- idx[i]
+      #TMP<- X-j+1
+      TMP <- i
+
       lattice::panel.lines(c(median(chains[,i])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
       lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
       lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
@@ -316,10 +315,13 @@ poplot <- function(object,
   {
     for (i in 1:X)
     {
-      TMP<- X-i+1
-      lattice::panel.lines(c(mean(chains[,i])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
-      lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
-      lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
+      j <- idx[i]
+      #TMP <- X-i+1
+      TMP <- i
+
+      lattice::panel.lines(c(mean(chains[,j])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
+      lattice::panel.lines(c(rep(qdata[1,j],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
+      lattice::panel.lines(c(rep(qdata[2,j],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
     }
   }
   if (centrality != 'median' & centrality != 'mean')

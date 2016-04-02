@@ -5,8 +5,9 @@
 \title{Plot posterior distributions from MCMC output}
 \usage{
 poplot(object, params = "all", g_lines = 0, quantiles = c(0.025, 0.975),
-  centrality = "mean", xlim, xlab = "Parameter probability values", ylab,
-  main, dbar_height = 0.2, tick_height = 0.5, tick_width = 3)
+  rank = FALSE, centrality = "mean", xlim,
+  xlab = "Parameter probability values", ylab, main, dbar_height = 0.2,
+  dbar_tick_height = 0.5, dbar_tick_width = 3)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -27,6 +28,9 @@ Argument \code{NULL} will plot no guidelines.}
 \item{quantiles}{Numerical vecor of length 2, indicating which quantiles to plot.
 
 Default plots 95\% credible intervals.}
+
+\item{rank}{If \code{TRUE} posteriors will ranked in decreasing order (based on
+specified measure of centrality) from top down.}
 
 \item{centrality}{Indicates which measure of centrality to plot.
 
@@ -49,9 +53,9 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 
 \item{dbar_height}{Height of density bar in plot.}
 
-\item{tick_height}{Height of ticks in plot.}
+\item{dbar_tick_height}{Height of ticks on density bar in plot.}
 
-\item{tick_width}{Width of ticks in plot.}
+\item{dbar_tick_width}{Width of ticks on density bar in plot.}
 }
 \value{
 \code{poplot(params = 'all')} plots posteriors for all parameters.

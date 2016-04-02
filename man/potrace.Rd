@@ -4,7 +4,7 @@
 \alias{potrace}
 \title{Plot MCMC chains to check for convergence}
 \usage{
-potrace(object, params = "all")
+potrace(object, params = "all", pdf = FALSE, wd = getwd())
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -13,6 +13,10 @@ potrace(object, params = "all")
 Partial names may be used to return all parameters containing that set of characters.
 
 Default \code{all} returns chains for all parameters.}
+
+\item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
+
+\item{wd}{Working directory for pdf output. Default is current directory.}
 }
 \value{
 \code{potrace(params='all')} returns chains for all parameters.
@@ -26,8 +30,7 @@ Plot MCMC chains for specific parameters of interest.
 }
 \section{Details}{
 
-\code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
-package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
-representing iterations in the chain).
+\code{object} argument can be an \code{mcmc.list} object or an \code{R2jags} model object (output from the \code{R2jags}
+package).
 }
 

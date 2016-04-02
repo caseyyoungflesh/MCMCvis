@@ -55,6 +55,10 @@ pochains <- function(object,
     }else
     {
       get.cols <- grep(paste(params), names, fixed=TRUE)
+      if (length(get.cols) < 1)
+      {
+        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+      }
       OUT <- temp[,get.cols]
     }
   }else
@@ -64,6 +68,10 @@ pochains <- function(object,
     {
       #i <- 1
       get.cols <- grep(paste(params[i]), names, fixed=TRUE)
+      if (length(get.cols) < 1)
+      {
+        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+      }
       grouped <- c(grouped, get.cols)
     }
 
