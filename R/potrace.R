@@ -18,6 +18,7 @@
 #'
 #' \code{potrace(params=c('beta'))} returns chains for all parameters containing \code{beta} in their name.
 #'
+#' @import ggplot2
 #' @export
 
 potrace <- function(object,
@@ -74,11 +75,11 @@ potrace <- function(object,
       tmlt <- do.call('cbind', temp[,g_filt[j]])
 
       tplt <- reshape2::melt(data.frame(Iteration= it,tmlt), id='Iteration')
-      g <- ggplot2::ggplot(tplt, aes(Iteration, value, color= variable)) +
+      g <- with(tplt, ggplot2::ggplot(tplt, aes(Iteration, value, color= variable)) +
         geom_line(alpha=.6) +
         theme_bw() +
         ggtitle(paste0(names[g_filt[j]])) +
-        guides(color=FALSE)
+        guides(color=FALSE))
 
       g_out[[j]] <- g
     }

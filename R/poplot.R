@@ -9,7 +9,6 @@
 #' plotted. Partial names may be used to plot all parameters containing that set of characters.
 #'
 #' Default \code{all} plots posteriors for all parameters. See VALUE below.
-#' @param input Indicates the nature of the \code{object} argument.
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
 #' @param g_lines Numerical vector indicating where vertical reference lines should be created.

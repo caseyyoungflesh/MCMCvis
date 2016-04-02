@@ -38,7 +38,6 @@ posummary <- function(object,
                       params = 'all',
                       Rhat = TRUE)
 {
-object <- ML
      if(coda::is.mcmc.list(object) == TRUE)
     {
       temp <- object

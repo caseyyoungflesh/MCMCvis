@@ -14,7 +14,9 @@ poplot(object, params = "all", g_lines = 0, quantiles = c(0.025, 0.975),
 \item{params}{Character string (or vector of character strings) denoting parameters to be
 plotted. Partial names may be used to plot all parameters containing that set of characters.
 
-Default \code{all} plots posteriors for all parameters. See VALUE below.}
+Default \code{all} plots posteriors for all parameters. See VALUE below.
+
+Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
 \item{g_lines}{Numerical vector indicating where vertical reference lines should be created.
 
@@ -50,10 +52,6 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 \item{tick_height}{Height of ticks in plot.}
 
 \item{tick_width}{Width of ticks in plot.}
-
-\item{input}{Indicates the nature of the \code{object} argument.
-
-Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 }
 \value{
 \code{poplot(params = 'all')} plots posteriors for all parameters.
