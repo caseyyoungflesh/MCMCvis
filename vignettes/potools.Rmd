@@ -10,7 +10,7 @@ vignette: >
 
 ## Intro
 
-**potools** is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS or other MCMC samplers.
+`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS or other MCMC samplers.
 
 The package currently contains four functions:
 
@@ -18,6 +18,9 @@ The package currently contains four functions:
 - `potrace` - plot MCMC chains for particular parameters of interest to check for convergence
 - `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `poplot` - plot posterior distributions from MCMC output for particular parameters of interest
+
+While several packages currently exist to evaluate MCMC output, they do not support simple subsetting of model parameters and/or do not provide an option to properly visualize MCMC output, particularly with large numbers of parameters. `potools` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. 
+
 
 &nbsp;
 
@@ -91,7 +94,7 @@ apply(ex, 2, mean)
 
 ## poplot
 
-`poplot` is used to plot density strips for MCMC output. Black ticks are used to specify posterior mean or median (depending on measure of centrality specified), while grey ticks specify credible intervals (95% CI by default).
+`poplot` is used to plot density strips for MCMC output. Black ticks are used to specify posterior mean or median (depending on input for `centrality` argument), while grey ticks specify credible intervals (95% CI by default).
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, ylab = NULL)
@@ -119,7 +122,7 @@ poplot(MCMC_data, params = 'beta', rank = TRUE)
 
 &nbsp;
 
-Color can also be added using the `colors` argument. If colors are specified, there must be an input for each parameter to be plotted (i.e., the vector length of colors must match the number of parameters to be plotted).
+Color can be added using the `colors` argument. If colors are specified, there must be an input for each parameter to be plotted (i.e., the vector length of colors must match the number of parameters to be plotted).
 
 ```{r, fig.width=5, fig.height=6}
 #use ggplot colors
@@ -134,9 +137,9 @@ poplot(MCMC_data, params = 'beta', colors = ggcolors)
 
 &nbsp;
 
-A vertical guideline at 0 is plotted by default, but can be removed with `g_lines = NULL`. Multiple guidelines can be plotted as well.
+A vertical guideline at 0 is plotted by default, but can be removed with `g_lines = NULL`. Multiple guidelines can be plotted by concatenating argument input.
 
-Graphical parameters for x-axis limitation, axis labels, title, and density bar tick height and width can also be specified.
+Graphical parameters for x-axis limitation, axis labels, title, density bar height, and density bar tick height and width can also be specified.
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, params = c('alpha[4]', 'beta[4]', 'gamma[7]'), 
