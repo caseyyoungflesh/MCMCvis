@@ -23,7 +23,7 @@
 #' easily obtained for any parameter of interest within each function. Each function is designed to operate independently
 #' of one another.
 #'
-#' See vignette
+#' The vignette can be run using \code{vignette('potools')} if vignette is built.
 #'
 #' @section Author(s):
 #' Casey Youngflesh <casey.youngflesh@stonybrook.edu>
