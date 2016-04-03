@@ -17,5 +17,13 @@ Installation
 You can install the latest version with:
 ```{r}
 install.packages('devtools')
-devtools::install_github('caseyyoungflesh/potools')
+devtools::install_github('caseyyoungflesh/potools', build_vignettes = TRUE)
+```
+
+Vignette
+--------
+
+The vignette for this package can be run using:
+```{r}
+vignette('potools')
 ```
