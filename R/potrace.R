@@ -1,6 +1,8 @@
 #' Plot MCMC chains to check for convergence
 #'
-#' Plot MCMC chains for specific parameters of interest.
+#' Plot MCMC chains for specific parameters of interest. Option to print trace plots
+#' to pdf output, which greater increases review efficiency with large numbers of
+#' parameters.
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.

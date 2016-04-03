@@ -26,7 +26,9 @@ Default \code{all} returns chains for all parameters.}
 \code{potrace(params=c('beta'))} returns chains for all parameters containing \code{beta} in their name.
 }
 \description{
-Plot MCMC chains for specific parameters of interest.
+Plot MCMC chains for specific parameters of interest. Option to print trace plots
+to pdf output, which greater increases review efficiency with large numbers of
+parameters.
 }
 \section{Details}{
 
