@@ -19,13 +19,8 @@ Default \code{all} returns all parameters in summary output.}
 and if \code{FALSE}, Rhat output is masked.}
 }
 \value{
-\code{posummary(params='all')} returns summary data for all parameters.
-
-\code{posummary(params=c('beta[1]', 'beta[2]'))} returns summary data for just parameters
-\code{beta[1]} and \code{beta[2]}.
-
-\code{posummary(params=c('beta'))} returns summary data for all parameters containing \code{beta}
- in their name.
+Function returns summary information (including parameter posterior mean, 2.5\% quantile, median, 97.5\%
+ quantile, and Gelman-Rubin convergence statistic (Rhat)) for specified parameters.
 }
 \description{
 Extract summary information from MCMC output for specific parameters of interest.
@@ -39,10 +34,22 @@ representing iterations in the chain).
 
 \section{Notes}{
 
- Default summary information includes (parameter posterior mean, 2.5\% quantile, median, 97.5\%
- quantile, and Gelman-Rubin convergence statistic (Rhat)).
 
 For \code{mcmc.list} objects, Gelman-Rubin convergence statistic  (Rhat) is calculated using the
 \code{gelman.diag} function in the \code{coda} package.
+}
+\examples{
+#Load data
+data(MCMC_data)
+
+#Summary information for MCMC output
+posummary(MCMC_data)
+
+#Just 'beta' parameters
+posummary(MCMC_data, params= 'beta')
+
+#Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
+posummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+
 }
 

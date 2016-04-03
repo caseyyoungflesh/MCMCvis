@@ -15,13 +15,8 @@ Partial names may be used to return all parameters containing that set of charac
 Default \code{all} returns chains for all parameters.}
 }
 \value{
-\code{pochains(params='all')} returns chains for all parameters.
-
-\code{pochains(params=c('beta[1]', 'beta[2]'))} returns chains for just parameters
-\code{beta[1]} and \code{beta[2]}.
-
-\code{pochains(params=c('beta'))} returns chains for all parameters containing \code{beta}
- in their name.
+Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
+parameter are combined to one posterior chain.
 }
 \description{
 Extract posterior chains from MCMC output for specific parameters of interest.
@@ -31,5 +26,18 @@ Extract posterior chains from MCMC output for specific parameters of interest.
 \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
 representing iterations in the chain).
+}
+\examples{
+#Load data
+data(MCMC_data)
+
+#Extract MCMC chains
+ex <- pochains(MCMC_data)
+apply(ex, 2, mean)
+
+#Extract MCMC chains for just 'beta' parameters
+ex2 <- pochains(MCMC_data, params='beta')
+apply(ex2, 2, mean)
+
 }
 

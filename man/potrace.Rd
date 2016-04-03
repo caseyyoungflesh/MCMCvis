@@ -19,11 +19,7 @@ Default \code{all} returns chains for all parameters.}
 \item{wd}{Working directory for pdf output. Default is current directory.}
 }
 \value{
-\code{potrace(params='all')} returns chains for all parameters.
-
-\code{potrace(params=c('beta[1]', 'beta[2]'))} returns chains for just parameters \code{beta[1]} and \code{beta[2]}.
-
-\code{potrace(params=c('beta'))} returns chains for all parameters containing \code{beta} in their name.
+Function returns trace plots for specified parameters. Output can be printed to pdf if specified.
 }
 \description{
 Plot MCMC chains for specific parameters of interest. Option to print trace plots
@@ -34,5 +30,16 @@ parameters.
 
 \code{object} argument can be an \code{mcmc.list} object or an \code{R2jags} model object (output from the \code{R2jags}
 package).
+}
+\examples{
+#Load data
+data(MCMC_data)
+
+#Traceplot for all 'beta' parameters
+potrace(MCMC_data, params='beta')
+
+#Print traceplot output to pdf
+potrace(MCMC_data, pdf= TRUE)
+
 }
 

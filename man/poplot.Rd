@@ -58,11 +58,8 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 \item{dbar_tick_width}{Width of ticks on density bar in plot.}
 }
 \value{
-\code{poplot(params = 'all')} plots posteriors for all parameters.
-
-\code{poplot(params = c('beta[1]', 'beta[2]'))} plots posteriors for just parameters \code{beta[1]} and \code{beta[2]}.
-
-\code{poplot(params = 'beta')} plots posteriors for all parameters containing \code{beta} in their name.
+Function returns density strip plot, similar to caterpillar plot, for all specified parameters. Plotted output
+can be sorted by mean estimate.
 }
 \description{
 Plot the posterior distributions from MCMC output for specific parameters of interest. All posterior
@@ -91,10 +88,20 @@ from count data using multistate models: a comparison to
 capture-recapture approaches. Ecology and Evolution 4:417-426.
 }
 \examples{
-x1 <- rnorm(1000, mean=0.5)
-x2 <- rnorm(1000, mean=0)
-data <- cbind(x1, x2)
-poplot(data)
+#Load data
+data(MCMC_data)
+
+#Plot MCMC output
+poplot(MCMC_data, ylab=NULL)
+
+#Just 'beta' parameters
+poplot(MCMC_data, params= 'beta')
+
+#Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
+poplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+
+#Rank parameters by posterior mean
+poplot(MCMC_data, params= 'beta', rank=TRUE)
 
 }
 

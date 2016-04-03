@@ -13,13 +13,20 @@
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
 #' representing iterations in the chain).
 #'
-#' @return \code{pochains(params='all')} returns chains for all parameters.
+#' @return Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
+#' parameter are combined to one posterior chain.
 #'
-#' \code{pochains(params=c('beta[1]', 'beta[2]'))} returns chains for just parameters
-#' \code{beta[1]} and \code{beta[2]}.
+#' @examples
+#' #Load data
+#' data(MCMC_data)
 #'
-#' \code{pochains(params=c('beta'))} returns chains for all parameters containing \code{beta}
-#'  in their name.
+#' #Extract MCMC chains
+#' ex <- pochains(MCMC_data)
+#' apply(ex, 2, mean)
+#'
+#' #Extract MCMC chains for just 'beta' parameters
+#' ex2 <- pochains(MCMC_data, params='beta')
+#' apply(ex2, 2, mean)
 #'
 #' @export
 

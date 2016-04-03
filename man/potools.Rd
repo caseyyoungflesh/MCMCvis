@@ -23,9 +23,7 @@ The following functions are currently available:
 
      -\code{poplot} (plot posterior distributions from MCMC output for paticular parameters of interest)
 
- Each function accepts jags model output objects (from the \code{R2jags} package), \code{mcmc.list}
- objects (from the \code{coda} package), and MCMC output in matrix form (each column containing
- posterior estimates from an individual parameter).
+Example data for a \code{mcmc.list} object can be loaded using \code{data(MCMC_data)}.
 
 These tools make it possible to input the MCMC output object directly into the function, without significant
 prior manipulation. Summary information, trace plots, posterior chains, and posterior disritbution plots can be
