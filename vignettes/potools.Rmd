@@ -49,7 +49,7 @@ posummary(MCMC_data, params = 'beta[1]')
 
 `potrace` is used to plot trace plots to check for MCMC chain convergence. Particular parameters can also be specified, as with `posummary`.
 
-```{r, fig.width=6, fig.height=6}
+```{r, fig.width=5, fig.height=6}
 potrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]', 
                               'beta[4]', 'beta[5]', 'beta[6]'))
 ```
@@ -75,32 +75,39 @@ apply(ex, 2, mean)
 
 `poplot` is used to plot density strips for MCMC output. Black ticks are used to specify posterior mean or median (depending on measure of centrality specified), while grey ticks specify credible intervals (95% CI by default).
 
-```{r, fig.width=6, fig.height=6}
+```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, ylab = NULL)
 ```
 
 Specific paramters can be specified.
 
-```{r, fig.width=6, fig.height=6}
+```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, params = 'beta')
 ```
 
 Parameters can be ranked by posterior mean (or median) estimates using the `rank` argument.
 
-```{r, fig.width=6, fig.height=6}
+```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, params = 'beta', rank = TRUE)
 ```
 
 A vertical guideline at 0 is plotted by default, but can be removed with `g_lines = NULL`. Multiple guidlines can be plotted as well.
 
-```{r, fig.width=6, fig.height=6}
-poplot(MCMC_data, params = c('alpha[1]', 'beta[4]', 'gamma[7]'), g_lines = c(-40, -20, 0, 20, 40))
+Graphical parameters for x-axis limitation, axis labels, title, and density bar tick height and width can also be specified.
+
+```{r, fig.width=5, fig.height=6}
+poplot(MCMC_data, params = c('alpha[4]', 'beta[4]', 'gamma[7]'), 
+       g_lines = c(-20, 0, 20, 40),
+       xlim = c(-50, 25),
+       xlab = 'Posterior estimates',
+       ylab= c('An alpha parameter', 'A beta parameter', 'A gamma parameter'), 
+       main = 'potools plot',
+       dbar_height = 0.6,
+       dbar_t_height = 0.7,
+       dbar_t_width = 5)
 ```
 
-Graphical parameters for x and y-axis specification, axis labels, title, and density bar tick size can also be specified.
 
-For more information see:
 
-```{r, eval=FALSE}
-?poplot
-```
+For more information see `?poplot'
+

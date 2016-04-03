@@ -38,8 +38,8 @@
 #' Option \code{NULL} will return plot with no labels on y-axis.
 #' @param main Character string indicating title of plot.
 #' @param dbar_height Height of density bar in plot.
-#' @param dbar_tick_height Height of ticks on density bar in plot.
-#' @param dbar_tick_width Width of ticks on density bar in plot.
+#' @param dbar_t_height Height of ticks on density bar in plot.
+#' @param dbar_t_width Width of ticks on density bar in plot.
 #' @section Details:
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
@@ -89,17 +89,17 @@ poplot <- function(object,
                    xlab = 'Parameter probability values',
                    ylab,
                    main,
-                   dbar_height = 0.2,
-                   dbar_tick_height = 0.5,
-                   dbar_tick_width = 3)
+                   dbar_height = 0.25,
+                   dbar_t_height = 0.35,
+                   dbar_t_width = 3)
 {
 
   # Plotting parameters -----------------------------------------------------
 
   WID <- dbar_height #height of bar
-  H <- ((dbar_tick_height-dbar_height)/2) #height of mean and CI ticks
-  W <- dbar_tick_width #thickness of mean tick
-  W2 <- dbar_tick_width #thickness of CI tick
+  H <- (((dbar_t_height-dbar_height)/2)+(dbar_height/2)) #height of mean and CI ticks
+  W <- dbar_t_width #thickness of mean tick
+  W2 <- dbar_t_width #thickness of CI tick
   MN_col <- 'black' #color of centrality tick
   CI_col <- 'grey87' #color of CI tick
 

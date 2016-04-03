@@ -6,8 +6,8 @@
 \usage{
 poplot(object, params = "all", g_lines = 0, quantiles = c(0.025, 0.975),
   rank = FALSE, centrality = "mean", xlim,
-  xlab = "Parameter probability values", ylab, main, dbar_height = 0.2,
-  dbar_tick_height = 0.5, dbar_tick_width = 3)
+  xlab = "Parameter probability values", ylab, main, dbar_height = 0.25,
+  dbar_t_height = 0.35, dbar_t_width = 3)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -53,9 +53,9 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 
 \item{dbar_height}{Height of density bar in plot.}
 
-\item{dbar_tick_height}{Height of ticks on density bar in plot.}
+\item{dbar_t_height}{Height of ticks on density bar in plot.}
 
-\item{dbar_tick_width}{Width of ticks on density bar in plot.}
+\item{dbar_t_width}{Width of ticks on density bar in plot.}
 }
 \value{
 Function returns density strip plot, similar to caterpillar plot, for all specified parameters. Plotted output

@@ -29,6 +29,8 @@ These tools make it possible to input the MCMC output object directly into the f
 prior manipulation. Summary information, trace plots, posterior chains, and posterior disritbution plots can be
 easily obtained for any parameter of interest within each function. Each function is designed to operate independently
 of one another.
+
+The vignette can be run using \code{vignette('potools')} if vignette is built.
 }
 
 \section{Author(s)}{
