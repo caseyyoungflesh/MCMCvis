@@ -37,9 +37,12 @@
 #'
 #' Option \code{NULL} will return plot with no labels on y-axis.
 #' @param main Character string indicating title of plot.
+#' @param colors Vector of colors, indicating which color should should be used for each parameter. Default is 'black' for
+#' all parameters.
 #' @param dbar_height Height of density bar in plot.
 #' @param dbar_t_height Height of ticks on density bar in plot.
 #' @param dbar_t_width Width of ticks on density bar in plot.
+
 #' @section Details:
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
@@ -79,6 +82,7 @@
 #' @export
 #' @import lattice
 
+
 poplot <- function(object,
                    params= 'all',
                    g_lines = 0,
@@ -89,30 +93,13 @@ poplot <- function(object,
                    xlab = 'Parameter probability values',
                    ylab,
                    main,
+                   colors,
                    dbar_height = 0.25,
                    dbar_t_height = 0.35,
                    dbar_t_width = 3)
 {
 
-  # Plotting parameters -----------------------------------------------------
-
-  WID <- dbar_height #height of bar
-  H <- (((dbar_t_height-dbar_height)/2)+(dbar_height/2)) #height of mean and CI ticks
-  W <- dbar_t_width #thickness of mean tick
-  W2 <- dbar_t_width #thickness of CI tick
-  MN_col <- 'black' #color of centrality tick
-  CI_col <- 'grey87' #color of CI tick
-
-  if(missing(main))
-  {
-    Tmain <- ''
-  }else
-  {
-    Tmain <- main
-  }
-
   # Input data --------------------------------------------------------------
-
 
   data <- pochains(object, params= params)
 
@@ -224,6 +211,42 @@ poplot <- function(object,
     }
   }
 
+  # Plotting parameters -----------------------------------------------------
+
+  WID <- dbar_height #height of bar
+  H <- (dbar_t_height/2) #height of mean and CI ticks
+  W <- dbar_t_width #thickness of mean tick
+  W2 <- dbar_t_width #thickness of CI tick
+  MN_col <- 'black' #color of centrality tick
+  CI_col <- 'grey87' #color of CI tick
+
+
+  if(missing(main))
+  {
+    Tmain <- ''
+  }else
+  {
+    Tmain <- main
+  }
+
+  if (missing(colors))
+  {
+    COLORS <- rep('black', X)
+  }else
+  {
+    if (is.null(colors))
+    {
+      COLORS <- rep('black', X)
+    }else
+    {
+      if(length(colors) == X)
+      {
+        COLORS <- colors
+      }else
+        stop('length(colors) does not equal number of parameters to be plotted.')
+    }
+  }
+
 
   # create plot object ------------------------------------------------------
 
@@ -249,7 +272,7 @@ poplot <- function(object,
                  for (i in seq(along = xlist))
                  {
                    denstrip::panel.denstrip(x = xlist[[i]], at = i,
-                                            width = WID, colmax = 'black', colmin = 'white')
+                                            width = WID, colmax = COLORS[i], colmin = 'white')
                  }
                }, par.settings = list(axis.line = list(col = NA)),
                scales=list(col = 1,cex = 1, x = list(col = 1),
@@ -279,7 +302,7 @@ poplot <- function(object,
                     {
                       #panel.grid(h=c(0), col='grey')
                       denstrip::panel.denstrip(x=xlist[[i]], at=i,
-                                               width= WID, colmax='black', colmin= 'white')
+                                               width= WID, colmax= COLORS[i], colmin= 'white')
                     }
                   }, par.settings = list(axis.line = list(col=NA)),
                   scales=list(col=1,cex=1,x=list(col=1),
