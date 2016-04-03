@@ -19,3 +19,6 @@ Depends:
     lattice,
     coda
 RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -1,0 +1,106 @@
+---
+title: "'potools' package"
+author: "Casey Youngflesh"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Intro
+
+**potools** is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model ouput fit with JAGS or other MCMC samplers.
+
+The package currently contains four functions:
+
+- `posummary` - summarize MCMC output for particular parameters of interest
+- `potrace` - plot MCMC chains for particular parameters of interest to check for convergence
+- `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
+- `poplot` - plot posterior distributions from MCMC output for particular parameters of interest
+
+
+## posummary
+
+`posummary` is used to output summary information from MCMC output. This function accepts `mcmc.list` objects, `R2jags` model output, and matrices of MCMC output (one chain per column).
+
+```{r, message=FALSE}
+library(potools)
+
+data(MCMC_data)
+
+posummary(MCMC_data)
+```
+
+Specific parameters can be specified to subset summary information. Partial names may be used to specify any parameter containing that name. For instance, for all `beta` parameters.
+
+```{r}
+posummary(MCMC_data, params = 'beta')
+```
+
+Individual parameters can also be specified.
+
+```{r}
+posummary(MCMC_data, params = 'beta[1]')
+```
+
+
+## potrace
+
+`potrace` is used to plot trace plots to check for MCMC chain convergence. Particular parameters can also be specified, as with `posummary`.
+
+```{r, fig.width=6, fig.height=6}
+potrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]', 
+                              'beta[4]', 'beta[5]', 'beta[6]'))
+```
+
+Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. pdf document will be output to the current working directory by default, but another directory can be specified.
+
+```{r, eval=FALSE}
+potrace(MCMC_data, pdf = TRUE, wd = 'DIRECTORY HERE')
+```
+
+## pochains
+
+`pochains` is used to extract MCMC chains from MCMC objects. Chains can then be manipulated directly. Particular parameters can be specified as with other functions.
+
+```{r}
+ex <- pochains(MCMC_data, params = 'beta')
+
+#extract mean values for each parameter
+apply(ex, 2, mean)
+```
+
+## poplot
+
+`poplot` is used to plot density strips for MCMC output. Black ticks are used to specify posterior mean or median (depending on measure of centrality specified), while grey ticks specify credible intervals (95% CI by default).
+
+```{r, fig.width=6, fig.height=6}
+poplot(MCMC_data, ylab = NULL)
+```
+
+Specific paramters can be specified.
+
+```{r, fig.width=6, fig.height=6}
+poplot(MCMC_data, params = 'beta')
+```
+
+Parameters can be ranked by posterior mean (or median) estimates using the `rank` argument.
+
+```{r, fig.width=6, fig.height=6}
+poplot(MCMC_data, params = 'beta', rank = TRUE)
+```
+
+A vertical guideline at 0 is plotted by default, but can be removed with `g_lines = NULL`. Multiple guidlines can be plotted as well.
+
+```{r, fig.width=6, fig.height=6}
+poplot(MCMC_data, params = c('alpha[1]', 'beta[4]', 'gamma[7]'), g_lines = c(-40, -20, 0, 20, 40))
+```
+
+Graphical parameters for x and y-axis specification, axis labels, title, and density bar tick size can also be specified.
+
+For more information see:
+
+```{r, eval=FALSE}
+?poplot
+```
