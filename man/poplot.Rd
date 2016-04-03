@@ -6,8 +6,8 @@
 \usage{
 poplot(object, params = "all", g_lines = 0, quantiles = c(0.025, 0.975),
   rank = FALSE, centrality = "mean", xlim,
-  xlab = "Parameter probability values", ylab, main, dbar_height = 0.25,
-  dbar_t_height = 0.35, dbar_t_width = 3)
+  xlab = "Parameter probability values", ylab, main, colors,
+  dbar_height = 0.25, dbar_t_height = 0.35, dbar_t_width = 3)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -50,6 +50,9 @@ Default option will use parameter names from \code{object}.
 Option \code{NULL} will return plot with no labels on y-axis.}
 
 \item{main}{Character string indicating title of plot.}
+
+\item{colors}{Vector of colors, indicating which color should should be used for each parameter. Default is 'black' for
+all parameters.}
 
 \item{dbar_height}{Height of density bar in plot.}
 
