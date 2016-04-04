@@ -82,7 +82,6 @@
 #' @export
 #' @import lattice
 
-
 poplot <- function(object,
                    params= 'all',
                    g_lines = 0,
@@ -219,7 +218,8 @@ poplot <- function(object,
   W2 <- dbar_t_width #thickness of CI tick
   MN_col <- 'black' #color of centrality tick
   CI_col <- 'grey87' #color of CI tick
-
+  GCOL <- rgb(0,0,0,alpha = .5)
+  VTHICK <- 1
 
   if(missing(main))
   {
@@ -261,19 +261,20 @@ poplot <- function(object,
                  xlist <- split(mp$value, factor(mp$variable))
                  xlist <- split(x, factor(y))
 
-                 if(!is.null(g_lines))
-                 {
-                  for (k in 1: length(g_lines))
-                  {
-                    panel.abline(v=g_lines[k], lty = "dotted", col = "black")
-                  }
-                 }
-
                  for (i in seq(along = xlist))
                  {
                    denstrip::panel.denstrip(x = xlist[[i]], at = i,
                                             width = WID, colmax = COLORS[i], colmin = 'white')
                  }
+
+                 if(!is.null(g_lines))
+                 {
+                   for (k in 1: length(g_lines))
+                   {
+                     panel.abline(v=g_lines[k], lty = "dotted", col = GCOL, lwd = VTHICK)
+                   }
+                 }
+
                }, par.settings = list(axis.line = list(col = NA)),
                scales=list(col = 1,cex = 1, x = list(col = 1),
                            y = list(draw = T,labels = labs)))
@@ -290,20 +291,21 @@ poplot <- function(object,
                     xlist <- split(mp$value, factor(mp$variable))
                     xlist <- split(x, factor(y))
 
-                    if(!is.null(g_lines))
-                    {
-                      for (k in 1: length(g_lines))
-                      {
-                        panel.abline(v=g_lines[k], lty = "dotted", col = "black")
-                      }
-                    }
-
                     for (i in seq(along=xlist))
                     {
                       #panel.grid(h=c(0), col='grey')
                       denstrip::panel.denstrip(x=xlist[[i]], at=i,
                                                width= WID, colmax= COLORS[i], colmin= 'white')
                     }
+
+                    if(!is.null(g_lines))
+                    {
+                      for (k in 1: length(g_lines))
+                      {
+                        panel.abline(v=g_lines[k], lty = "dotted", col = GCOL, lwd = VTHICK)
+                      }
+                    }
+
                   }, par.settings = list(axis.line = list(col=NA)),
                   scales=list(col=1,cex=1,x=list(col=1),
                               y=list(draw=T,labels=labs)))
