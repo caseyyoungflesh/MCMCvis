@@ -219,19 +219,19 @@ posummary <- function(object,
   {
     if(Rhat == TRUE)
     {
-      print(OUT)
+      return(OUT)
     }else
     {
-      print(OUT[-5])
+      return(OUT[-5])
     }
   }else
   {
     if(Rhat == TRUE)
     {
-      print(OUT)
+      return(OUT)
     }else
     {
-      print(OUT[,-5])
+      return(OUT[,-5])
     }
   }
 }

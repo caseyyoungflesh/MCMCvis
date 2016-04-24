@@ -93,5 +93,7 @@ pochains <- function(object,
 
     OUT <- temp[,g_filt]
   }
+
+  return(OUT)
 }
 
