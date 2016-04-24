@@ -4,10 +4,11 @@
 \alias{poplot}
 \title{Plot posterior distributions from MCMC output}
 \usage{
-poplot(object, params = "all", g_lines = 0, quantiles = c(0.025, 0.975),
-  rank = FALSE, centrality = "mean", xlim,
+poplot(object, params = "all", g_line = 0, g_line_width = 1,
+  quantiles = c(0.025, 0.975), rank = FALSE, centrality = "mean", xlim,
   xlab = "Parameter probability values", ylab, main, colors,
-  dbar_height = 0.25, dbar_t_height = 0.35, dbar_t_width = 3)
+  dbar_height = 0.25, dbar_t_height = 0.35, dbar_t_width = 3,
+  CI_t_color = "grey75")
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -19,11 +20,13 @@ Default \code{all} plots posteriors for all parameters. See VALUE below.
 
 Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
-\item{g_lines}{Numerical vector indicating where vertical reference lines should be created.
+\item{g_line}{Numerical vector indicating where vertical reference lines should be created.
 
-Default is \code{g_lines = 0}.
+Default is \code{g_line = 0}.
 
 Argument \code{NULL} will plot no guidelines.}
+
+\item{g_line_width}{Width of vertical reference lines.}
 
 \item{quantiles}{Numerical vecor of length 2, indicating which quantiles to plot.
 
@@ -59,6 +62,8 @@ all parameters.}
 \item{dbar_t_height}{Height of ticks on density bar in plot.}
 
 \item{dbar_t_width}{Width of ticks on density bar in plot.}
+
+\item{CI_t_color}{Color of credible interval ticks.}
 }
 \value{
 Function returns density strip plot, similar to caterpillar plot, for all specified parameters. Plotted output

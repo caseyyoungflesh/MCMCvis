@@ -137,20 +137,22 @@ poplot(MCMC_data, params = 'beta', colors = ggcolors)
 
 &nbsp;
 
-A vertical guideline at 0 is plotted by default, but can be removed with `g_lines = NULL`. Multiple guidelines can be plotted by concatenating argument input.
+A vertical guideline at 0 is plotted by default, but can be removed with `g_line = NULL`. Multiple guidelines can be plotted by concatenating argument input.
 
-Graphical parameters for x-axis limitation, axis labels, title, density bar height, and density bar tick height and width can also be specified.
+Graphical parameters for x-axis limitation, axis labels, title, guidline thickness, density bar height, density bar tick height and width, and credible interval tick color can also be specified.
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, params = c('alpha[4]', 'beta[4]', 'gamma[7]'), 
-       g_lines = c(-20, 0, 20, 40),
+       g_line = c(-20, 0, 20, 40),
+       g_line_width = 3,
        xlim = c(-50, 25),
        xlab = 'Posterior estimates',
        ylab= c('An alpha parameter', 'A beta parameter', 'A gamma parameter'), 
        main = 'potools plot',
        dbar_height = 0.6,
        dbar_t_height = 0.7,
-       dbar_t_width = 5)
+       dbar_t_width = 5,
+       CI_t_color = 'grey99')
 ```
 
 
