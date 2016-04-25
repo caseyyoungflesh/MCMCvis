@@ -82,6 +82,10 @@ representing iterations in the chain).
 
 \section{Notes}{
 
+
+When specifying \code{rank = TRUE} and specifying labels for \code{ylab}, labels will be applied to parameters before
+they are ranked.
+
 Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
 for Zipkin et al. 2014, figure 3.
 }
