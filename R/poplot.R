@@ -23,10 +23,7 @@
 #'
 #' Default plots 95\% credible intervals.
 #' @param rank If \code{TRUE} posteriors will ranked in decreasing order (based on
-#' specified measure of centrality) from top down.
-#' @param centrality Indicates which measure of centrality to plot.
-#'
-#' Valid options are \code{mean} and \code{median}.
+#' median posterior estimate) from top down.
 #'
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param xlab Character string labeling x-axis.
@@ -52,15 +49,11 @@
 #' representing iterations in the chain).
 #'
 #' @section Notes:
-#'
-#' When specifying \code{rank = TRUE} and specifying labels for \code{ylab}, labels will be applied to parameters before
-#' they are ranked.
-#'
 #' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
 #' for Zipkin et al. 2014, figure 3.
 #'
 #' @return Function returns density strip plot, similar to caterpillar plot, for all specified parameters. Plotted output
-#' can be sorted by mean estimate.
+#' can be sorted by median estimate.
 #'
 #' @section References:
 #' Jackson, C. H. 2008. Displaying Uncertainty With Shading. The American Statistician 62:340-347.
@@ -83,7 +76,7 @@
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
 #' poplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
-#' #Rank parameters by posterior mean
+#' #Rank parameters by posterior median
 #' poplot(MCMC_data, params= 'beta', rank=TRUE)
 #'
 #' @export
@@ -95,7 +88,6 @@ poplot <- function(object,
                    g_line_width = 1,
                    quantiles = c(0.025, 0.975),
                    rank = FALSE,
-                   centrality = 'mean',
                    xlim,
                    xlab = 'Parameter probability values',
                    ylab,
@@ -130,20 +122,8 @@ poplot <- function(object,
 
       if (rank == TRUE)
       {
-        if (centrality == 'median')
-        {
           tsrt <- apply(chains, 2, median)
           idx <- order(tsrt, decreasing = TRUE)
-        }
-        if (centrality == 'mean')
-        {
-          tsrt <- apply(chains, 2, mean)
-          idx <- order(tsrt, decreasing = FALSE)
-        }
-        if (centrality != 'median' & centrality != 'mean')
-        {
-          stop(paste0(centrality,' is not a valid entry for the argument "centrality"'))
-        }
       }
       if (rank == FALSE)
       {
@@ -222,8 +202,8 @@ poplot <- function(object,
   # Plotting parameters -----------------------------------------------------
 
   WID <- dbar_height #height of bar
-  H <- (dbar_t_height/2) #height of mean and CI ticks
-  W <- dbar_t_width #thickness of mean tick
+  H <- (dbar_t_height/2) #height of median and CI ticks
+  W <- dbar_t_width #thickness of median tick
   W2 <- dbar_t_width #thickness of CI tick
   MN_col <- 'black' #color of centrality tick
   CI_col <- CI_t_color #color of CI tick
@@ -338,9 +318,6 @@ poplot <- function(object,
   # Hashes - centrality and CI -----------------------------------------------------------
 
 
-
-  if (centrality == 'median')
-  {
     for (i in 1:X)
     {
       j <- idx[i]
@@ -351,24 +328,6 @@ poplot <- function(object,
       lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
       lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
     }
-  }
-  if (centrality == 'mean')
-  {
-    for (i in 1:X)
-    {
-      j <- idx[i]
-      #TMP <- X-i+1
-      TMP <- i
-
-      lattice::panel.lines(c(mean(chains[,j])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
-      lattice::panel.lines(c(rep(qdata[1,j],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
-      lattice::panel.lines(c(rep(qdata[2,j],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
-    }
-  }
-  if (centrality != 'median' & centrality != 'mean')
-  {
-    stop(paste0(centrality,' is not a valid entry for the argument "centrality"'))
-  }
 
 
   lattice::trellis.unfocus()
