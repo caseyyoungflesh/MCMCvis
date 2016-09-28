@@ -90,7 +90,7 @@ require(potools)
 
 
 object <- MCMC_data
-params <- 'beta'
+params <- 'gamma'
 thin = 95
 thick = 50
 rank = FALSE
@@ -286,7 +286,7 @@ if (horizontal)
 
   m_char <- max(sapply(labels, nchar))
   #variable at LEFT position to account for differing label sizes - can be altered manually
-  par(mar=c(mar[1], (1 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]) + 0.1)
+  par(mar=c(mar[1], (1.5 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]) + 0.1)
 
 
 
@@ -300,19 +300,20 @@ if (horizontal)
 
 
   #bottom x-axis line
-  abline(h = 0.1, lwd = ax_th)
+  #abline(h = 0.1, lwd = ax_th)
   #top x-axis line
-  abline(h = len + 0.9, lwd =ax_th)
+  #abline(h = len + 0.9, lwd =ax_th)
   #bottom axis params
   axis(3, lwd.tick = ax_th, labels = FALSE,
-       at = tick_pos)
+       at = tick_pos, lwd = ax_th)
   #bottom axis params
   axis(1, lwd.tick = ax_th, labels = TRUE,
-       cex.axis = tick_text_sz, at = tick_pos) #bottom axis
+       at = tick_pos, lwd = ax_th,
+       cex.axis = tick_text_sz) #bottom axis
   #left axis params (labels)
   axis(2, at = (1:len)+0.1, tick = FALSE,
        labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
-       line = -0.75, cex.axis = tick_text_sz)
+       line = -1.5, cex.axis = tick_text_sz)
 
 
   #lheight par for making space!
