@@ -87,10 +87,10 @@ data(MCMC_data)
 
 
 
-plot(MCMC_data)
+
 
 object <- MCMC_data
-params <- 'all'
+params <- 'beta'
 thin = 95
 thick = 50
 rank = TRUE
@@ -128,7 +128,7 @@ function(object)
       }
       if (rank == FALSE)
       {
-        idx <- len:1
+        idx <- 1:len
       }
 
       #if (missing(ylab))
@@ -157,10 +157,10 @@ function(object)
       thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
       thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
 
-      thick_q <- apply(chains, 2, quantile, probs= thick_ci)
-      thin_q <- apply(chains, 2, quantile, probs= thin_ci)
+      thick_q <- apply(chains, 2, quantile, probs= thick_ci)[,idx]
+      thin_q <- apply(chains, 2, quantile, probs= thin_ci)[,idx]
 
-      medians <- apply(chains, 2, quantile, probs = 0.5)
+      medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
 
     #}else
     #{
@@ -168,75 +168,83 @@ function(object)
     #}
   #}
 
-  if (NCOL(data) == 1)
-  {
-    if (length(quantiles)==2 & typeof(quantiles) == 'double')
-    {
-      chains <- as.data.frame(data)
-      len <- NCOL(data)
-      idx <- len:1
-
-      if (missing(ylab))
-      {
-        labs <- colnames(data)[idx]
-      }
-      if (!missing(ylab))
-      {
-        if (is.null(ylab))
-        {
-          labs <- rep('', len)
-        }
-        if (!is.null(ylab))
-        {
-          if (length(ylab) == len)
-          {
-            labs <- ylab[idx]
-          }else
-          {
-            stop('ylab length not equal to number of parameters')
-          }
-        }
-      }
-
-
-      thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
-      thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
-
-      thick_q <- apply(chains, 2, quantile, probs= thick_ci)
-      thin_q <- apply(chains, 2, quantile, probs= thin_ci)
-
-      medians <- apply(chains, 2, quantile, probs = 0.5)
+  #if (NCOL(data) == 1)
+  #{
+  #  if (length(quantiles)==2 & typeof(quantiles) == 'double')
+  #  {
+  #    chains <- as.data.frame(data)
+  #    len <- NCOL(data)
+  #    idx <- len:1
+#
+ #     if (missing(ylab))
+  #    {
+   #     labs <- colnames(data)[idx]
+    #  }
+     # if (!missing(ylab))
+     # {
+      #   if (is.null(ylab))
+      #  {
+      #    labs <- rep('', len)
+      #  }
+      #  if (!is.null(ylab))
+      #  {
+      #    if (length(ylab) == len)
+      #    {
+      #      labs <- ylab[idx]
+      #    }else
+      #    {
+      #      stop('ylab length not equal to number of parameters')
+      #    }
+      #  }
+      #}
 
 
-    }else
-    {
-      stop('quantiles must be a numerical vector of length 2')
-    }
-  }
-}
+      #thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
+      #thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
+
+      #thick_q <- apply(chains, 2, quantile, probs= thick_ci)[,idx]
+      #thin_q <- apply(chains, 2, quantile, probs= thin_ci)[,idx]
+
+      #medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
 
 
+      #}else
+      #{
+      #stop('quantiles must be a numerical vector of length 2')
+      #}
+      #}
+#}
 
-bnd_q <- rbind(1:len, 1:len) # to bind with quantiles to plot them
+
 
 
 # base --------------------------------------------------------------------
 
 #plotting parameters
-med_sz <- 1.5 #size of median circles
-thick_sz <- 5 #thick CI width
-thin_sz <- 2 #thin CI width
-gr_col <- 'gray60' #color used for CI and medians
-zero_col <- 'gray0' #color used for 0 line
-mj_grd_col <- 'gray60' #major grid color
-mn_grd_col <- 'gray100' #minor grid color
+sp = 2 #spacing
+med_sz = 1.9 #size of median circles
+thick_sz = 5 #thick CI width
+thin_sz = 2 #thin CI width
+ax_th = 3#axis and tick thickness
+
+
+gr_col = 'gray60' #color used for CI and medians
+zero_col = 'gray60' #color used for 0 line
+mj_grd_col = 'gray100' #major grid color - not used currently
+mn_grd_col = 'gray60' #minor grid color - not used currently
 horizontal = TRUE
+
+
 xlab = 'x-axis' #should be changed to: if (missing(xlab)){xlab <- NULL}
 ylab = 'y-axis' #should be changed to: if (missing(ylab)){ylab <- NULL}
 main = '' #should be changed to : if (missing(ylab)){ylab <- ''}
-xlim = range(thin_q) #should be changed to: if (missing(xlim)){xlim <- range(thin_q)}
-ylim = c(0,len) #should be changed to: if (missing(ylim)){ylim <- c(0,len)}
-xlim = c(-50, 50)
+
+
+xlim = range(thin_q)*1.1 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.25}
+ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
+#xlim = c(-50, 50)
+
+
 
 
 #Determine which params have CI that overlap 0
@@ -263,16 +271,34 @@ for (i in 1:len)
 
 
 
+
+#positions bound together to plot CI
+blk_bnd <- rbind(black_cl, black_cl)
+gry_bnd <- rbind(gray_cl, gray_cl)
+wht_bnd <- rbind(white_cl, white_cl)
+
+
+
+
 #plot for horizontal
 if (horizontal)
 {
   #plot blank plot
   plot(medians, 1:len, xlim = xlim, ylim = ylim, type = "n",
-       ann = TRUE, #xaxt = "n", yaxt = "n", bty = "n",
-       xlab = xlab, ylab = ylab, main = main)
+       ann = TRUE, yaxt = "n", bty = "n",
+       xlab = xlab, ylab = ylab, main = main,
+       cex.axis = 1.2, cex.lab = 1.3) #cex.axis is tick labels, lab is axis label
 
-  #add major grid
-  grid(lty = 1, col = mj_grd_col)
+  abline(h = 0.1, lwd = ax_th)
+  abline(h = len + 0.9, lwd =ax_th)
+  axis(3, lwd.tick = ax_th, labels = FALSE) #top axis
+  axis(1, lwd.tick = ax_th, labels = FALSE) #bottom axis
+
+#----------------------------------------------#
+  #add major grid - both vert and horiz
+  #grid(lty = 1, col = mj_grd_col)
+
+  abline(v = axTicks(1), lty = 1, col = mn_grd_col)
 
   #create minor grid
   mm_dis <- (axTicks(1)[2]-axTicks(1)[1])/2 #distance between major and minor grid lines
@@ -282,36 +308,58 @@ if (horizontal)
   to.rm <- which(mn_ticks > xlim[2] | mn_ticks < xlim[1])
   if(length(to.rm) > 0)
   {
-    mn_ticks <- mn_ticks[to.rm]
+    mn_ticks <- mn_ticks[-to.rm]
   }else{}
 
   #plot minor grid
-  abline(v = mn_ticks, lty = 1, col = mn_grd_col)
+  #abline(v = mn_ticks, lty = 1, col = mn_grd_col)
+
+#----------------------------------------------------#
+
+
 
   #zero line
   abline(v=0, lty = 2, lwd = 3, col = zero_col)
 
-  #CI - thick
-  matlines(thick_q[,black_cl], bnd_q[,black_cl],
-           type = 'l', lty = 1, lwd = thick_sz, col = 'black') #black
-  matlines(thick_q[,gray_cl], bnd_q[,gray_cl],
-           type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #gray
-  matlines(thick_q[,white_cl], bnd_q[,white_cl],
-           type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+  #Black CI
+  if (!is.null(black_cl))
+  {
+    #Thick
+    matlines(thick_q[,black_cl], blk_bnd,
+             type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+    #Thin
+    matlines(thin_q[,black_cl], blk_bnd,
+             type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+  }
 
-  #CI - thin
-  matlines(thin_q[,black_cl], bnd_q[,black_cl],
-           type = 'l', lty = 1, lwd = thin_sz, col = 'black') #black
-  matlines(thin_q[,gray_cl], bnd_q[,gray_cl],
-           type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #gray
-  matlines(thin_q[,white_cl], bnd_q[,white_cl],
-           type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+  #Gray CI
+  if (!is.null(gray_cl))
+  {
+    matlines(thick_q[,gray_cl], gry_bnd,
+             type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #gray
+    matlines(thin_q[,gray_cl], gry_bnd,
+             type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #gray
+  }
+
+  #White CI
+  if (!is.null(white_cl))
+  {
+    matlines(thick_q[,white_cl], wht_bnd,
+             type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+    matlines(thin_q[,white_cl], wht_bnd,
+             type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+  }
 
 
   #Medians
-  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz-.1) #plot points over other plot features
+  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz*.9) #plot points over other plot features
   points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
   points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
   points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz) #Both CI overlap 0
 }
 
+
+
+
+#end of function
+}
