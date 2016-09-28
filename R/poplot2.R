@@ -230,8 +230,6 @@ ax_th = 3#axis and tick thickness
 
 gr_col = 'gray60' #color used for CI and medians
 zero_col = 'gray60' #color used for 0 line
-mj_grd_col = 'gray100' #major grid color - not used currently
-mn_grd_col = 'gray60' #minor grid color - not used currently
 horizontal = TRUE
 
 
@@ -293,28 +291,6 @@ if (horizontal)
   abline(h = len + 0.9, lwd =ax_th)
   axis(3, lwd.tick = ax_th, labels = FALSE) #top axis
   axis(1, lwd.tick = ax_th, labels = FALSE) #bottom axis
-
-#----------------------------------------------#
-  #add major grid - both vert and horiz
-  #grid(lty = 1, col = mj_grd_col)
-
-  abline(v = axTicks(1), lty = 1, col = mn_grd_col)
-
-  #create minor grid
-  mm_dis <- (axTicks(1)[2]-axTicks(1)[1])/2 #distance between major and minor grid lines
-  mn_ticks <- c(axTicks(1) - mm_dis, axTicks(1)[length(axTicks(1))] + mm_dis) #create minor ticks
-
-  #remove any that are outside the bounds of the xlim
-  to.rm <- which(mn_ticks > xlim[2] | mn_ticks < xlim[1])
-  if(length(to.rm) > 0)
-  {
-    mn_ticks <- mn_ticks[-to.rm]
-  }else{}
-
-  #plot minor grid
-  #abline(v = mn_ticks, lty = 1, col = mn_grd_col)
-
-#----------------------------------------------------#
 
 
 
