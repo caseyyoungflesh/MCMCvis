@@ -55,12 +55,14 @@
 #' When specifying \code{rank = TRUE} and specifying labels for \code{ylab}, labels will be applied to parameters before
 #' they are ranked.
 #'
-#' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
-#' for Zipkin et al. 2014, figure 3.
+#' Thanks to Cinner et al. 2016, whose Fig. 1 inspired this plot.
 #'
 #' @return Function returns density strip plot, similar to caterpillar plot, for all specified parameters. Plotted output
 #' can be sorted by mean estimate.
 #'
+#' @section References:
+#'
+#' Cinner, J.E., .... (2016) Bright spots among the world's coral reefs. Nature.
 #'
 #' @examples
 #' #Load data
@@ -89,21 +91,9 @@ plot(MCMC_data)
 
 object <- MCMC_data
 params <- 'all'
-g_line = 0
-g_line_width = 1
 thin = 95
 thick = 50
-rank = FALSE
-xlim
-xlab = 'Parameter probability values'
-ylab
-main
-colors
-dbar_height = 0.25
-dbar_t_height = 0.35
-dbar_t_width = 3
-CI_t_color = 'grey75'
-
+rank = TRUE
 
 
 function(object)
@@ -124,12 +114,12 @@ function(object)
 
   # Process data ------------------------------------------------------------
 
-  if (NCOL(data) > 1)
-  {
-    if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
-    {
+ # if (NCOL(data) > 1)
+  #{
+    #if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
+    #{
       chains <- as.data.frame(data)
-      X <- NCOL(data)
+      len <- NCOL(data)
 
       if (rank == TRUE)
       {
@@ -138,38 +128,31 @@ function(object)
       }
       if (rank == FALSE)
       {
-        idx <- X:1
+        idx <- len:1
       }
 
-      if (missing(ylab))
-      {
-        labs <- colnames(data)[idx]
-      }
-      if (!missing(ylab))
-      {
-        if (is.null(ylab))
-        {
-          labs <- rep('', X)
-        }
-        if (!is.null(ylab))
-        {
-          if (length(ylab) == X)
-          {
-            labs <- ylab[idx]
-          }else
-          {
-            stop('ylab length not equal to number of parameters')
-          }
-        }
-      }
+      #if (missing(ylab))
+      #{
+      #  labs <- colnames(data)[idx]
+      #}
+      #if (!missing(ylab))
+      #{
+      #  if (is.null(ylab))
+      #  {
+      #    labs <- rep('', X)
+      #  }
+      #  if (!is.null(ylab))
+      #  {
+      #    if (length(ylab) == X)
+      #    {
+      #      labs <- ylab[idx]
+      #    }else
+      #    {
+      #      stop('ylab length not equal to number of parameters')
+      #    }
+      #  }
+      #}
 
-
-      #Not sure what to do with mp object here
-      #
-      #
-      #thick_q (and thin) stand in for qdata object
-
-      mp <- suppressMessages(reshape2::melt(chains[,idx], value.name='value')) #melt
 
       thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
       thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
@@ -179,19 +162,19 @@ function(object)
 
       medians <- apply(chains, 2, quantile, probs = 0.5)
 
-    }else
-    {
-      stop('quantiles must be a numerical vector of length 2')
-    }
-  }
+    #}else
+    #{
+    #  stop('quantiles must be a numerical vector of length 2')
+    #}
+  #}
 
   if (NCOL(data) == 1)
   {
     if (length(quantiles)==2 & typeof(quantiles) == 'double')
     {
       chains <- as.data.frame(data)
-      X <- NCOL(data)
-      idx <- X:1
+      len <- NCOL(data)
+      idx <- len:1
 
       if (missing(ylab))
       {
@@ -201,11 +184,11 @@ function(object)
       {
         if (is.null(ylab))
         {
-          labs <- rep('', X)
+          labs <- rep('', len)
         }
         if (!is.null(ylab))
         {
-          if (length(ylab) == X)
+          if (length(ylab) == len)
           {
             labs <- ylab[idx]
           }else
@@ -214,18 +197,6 @@ function(object)
           }
         }
       }
-
-
-
-      #NOT sure about n_mp/mp objects here
-      #
-      #
-      #
-
-
-      n_mp <- suppressMessages(reshape2::melt(chains[,idx], value.name='value')) #melt
-      mp <- data.frame(variable = rep(paste0(params), nrow(n_mp)), value = n_mp)
-
 
 
       thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
@@ -246,17 +217,29 @@ function(object)
 
 
 
+bnd_q <- rbind(1:len, 1:len) # to bind with quantiles to plot them
+
+
 # base --------------------------------------------------------------------
 
-med_sz <- 1.3 #size of median circles
-thick_sz <- 4 #thick CI width
+#plotting parameters
+med_sz <- 1.5 #size of median circles
+thick_sz <- 5 #thick CI width
 thin_sz <- 2 #thin CI width
-gr_col <- 'gray' #which color gray is used for CI and medians
+gr_col <- 'gray60' #color used for CI and medians
+zero_col <- 'gray0' #color used for 0 line
+mj_grd_col <- 'gray60' #major grid color
+mn_grd_col <- 'gray100' #minor grid color
 horizontal = TRUE
+xlab = 'x-axis' #should be changed to: if (missing(xlab)){xlab <- NULL}
+ylab = 'y-axis' #should be changed to: if (missing(ylab)){ylab <- NULL}
+main = '' #should be changed to : if (missing(ylab)){ylab <- ''}
+xlim = range(thin_q) #should be changed to: if (missing(xlim)){xlim <- range(thin_q)}
+ylim = c(0,len) #should be changed to: if (missing(ylim)){ylim <- c(0,len)}
+xlim = c(-50, 50)
 
 
-len <- length(medians)
-
+#Determine which params have CI that overlap 0
 black_cl <- c() #95% CI (default) does not overlap 0
 gray_cl <- c() #50% CI (default) does not overlap 0
 white_cl <- c() #Both 50% and 95% CI (default) overlap 0
@@ -279,13 +262,34 @@ for (i in 1:len)
 }
 
 
-bnd_q <- rbind(1:len, 1:len) # to bind with quantiles to plot them
 
+#plot for horizontal
 if (horizontal)
 {
-  plot(medians, 1:len, xlim = range(thin_q))
-  #abline(h=1:len, col = gray(0.8)) #horizontal lines at parameters
-  abline(v=0, lty = 3, lwd = 3) #0 line
+  #plot blank plot
+  plot(medians, 1:len, xlim = xlim, ylim = ylim, type = "n",
+       ann = TRUE, #xaxt = "n", yaxt = "n", bty = "n",
+       xlab = xlab, ylab = ylab, main = main)
+
+  #add major grid
+  grid(lty = 1, col = mj_grd_col)
+
+  #create minor grid
+  mm_dis <- (axTicks(1)[2]-axTicks(1)[1])/2 #distance between major and minor grid lines
+  mn_ticks <- c(axTicks(1) - mm_dis, axTicks(1)[length(axTicks(1))] + mm_dis) #create minor ticks
+
+  #remove any that are outside the bounds of the xlim
+  to.rm <- which(mn_ticks > xlim[2] | mn_ticks < xlim[1])
+  if(length(to.rm) > 0)
+  {
+    mn_ticks <- mn_ticks[to.rm]
+  }else{}
+
+  #plot minor grid
+  abline(v = mn_ticks, lty = 1, col = mn_grd_col)
+
+  #zero line
+  abline(v=0, lty = 2, lwd = 3, col = zero_col)
 
   #CI - thick
   matlines(thick_q[,black_cl], bnd_q[,black_cl],
@@ -305,12 +309,9 @@ if (horizontal)
 
 
   #Medians
-  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
+  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz-.1) #plot points over other plot features
   points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
   points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
   points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz) #Both CI overlap 0
 }
-
-grid()
-
 
