@@ -85,7 +85,7 @@
 data(MCMC_data)
 
 
-
+require(potools)
 
 
 
@@ -226,6 +226,8 @@ med_sz = 2.4 #size of median circles
 thick_sz = 5 #thick CI width
 thin_sz = 2 #thin CI width
 ax_th = 3#axis and tick thickness
+tick_text_sz = 1.2 #tick label size
+axis_text_sz = 1.3 #axis label size
 
 
 gr_col = 'gray60' #color used for CI and medians
@@ -238,6 +240,7 @@ ylab = 'y-axis' #should be changed to: if (missing(ylab)){ylab <- NULL}
 main = '' #should be changed to : if (missing(ylab)){ylab <- ''}
 
 
+tick_pos = NULL #where ticks should be placed - should be changed to: if (missing())
 xlim = range(thin_q)*1.1 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.25}
 ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
 #xlim = c(-50, 50)
@@ -283,15 +286,22 @@ if (horizontal)
 {
   #plot blank plot
   plot(medians, 1:len, xlim = xlim, ylim = ylim, type = "n",
-       ann = TRUE, yaxt = "n", bty = "n",
+       ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n",
        xlab = xlab, ylab = ylab, main = main,
-       cex.axis = 1.2, cex.lab = 1.3) #cex.axis is tick labels, lab is axis label
+       cex.lab = axis_text_sz) #cex.axis is tick labels, lab is axis label
 
+  #bottom x-axis line
   abline(h = 0.1, lwd = ax_th)
+  #top x-axis line
   abline(h = len + 0.9, lwd =ax_th)
-  axis(3, lwd.tick = ax_th, labels = FALSE) #top axis
-  axis(1, lwd.tick = ax_th, labels = FALSE) #bottom axis
-
+  #bottom axis params
+  axis(3, lwd.tick = ax_th, labels = FALSE,
+       at = tick_pos)
+  #bottom axis params
+  axis(1, lwd.tick = ax_th, labels = TRUE,
+       cex.axis = tick_text_sz, at = tick_pos) #bottom axis
+  #left axis params (labels)
+  axis(2, at = 1:len, labels = TRUE)
 
 
   #zero line
@@ -341,9 +351,15 @@ if (horizontal)
 }
 
 
-#specify number of ticks
 #labels for y axis
 #feature to add space between lines
 #clean up into function
 #look at integrating other 'plot' features (look at caterplot)
 #rename function(s) - perhaps name poplot, other can be dstplot
+#add vertical argument
+
+#add to potrace
+
+#change names of functions
+
+#look at adding stan object compatibility
