@@ -339,3 +339,11 @@ if (horizontal)
 
 #end of function
 }
+
+
+#specify number of ticks
+#labels for y axis
+#feature to add space between lines
+#clean up into function
+#look at integrating other 'plot' features (look at caterplot)
+#rename function(s) - perhaps name poplot, other can be dstplot
