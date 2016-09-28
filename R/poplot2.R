@@ -235,16 +235,15 @@ zero_col = 'gray60' #color used for 0 line
 horizontal = TRUE
 
 
-xlab = 'x-axis' #should be changed to: if (missing(xlab)){xlab <- NULL}
-ylab = 'y-axis' #should be changed to: if (missing(ylab)){ylab <- NULL}
+xlab = 'Parameter Estimate' #should be changed to: if (missing(xlab)){xlab <- 'Parameter Estimate'}
+ylab = NULL #should be changed to: if (missing(ylab)){ylab <- NULL}
 main = '' #should be changed to : if (missing(ylab)){ylab <- ''}
+labels = names(medians) #y-axis labels - should be changed to : if (missing(labels)){labels <- names(medians)}
 
-
-tick_pos = NULL #where ticks should be placed - should be changed to: if (missing())
+tick_pos = NULL #where ticks should be placed - should be changed to: if (missing(tick_pos)){tick_pos <- NULL}
 xlim = range(thin_q)*1.1 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.25}
 ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
-#xlim = c(-50, 50)
-
+mar = c(5,4,4,2) #should be changed to: if (missing(mar)){mar <- c(5,4,4,2)}
 
 
 
@@ -284,11 +283,21 @@ wht_bnd <- rbind(white_cl, white_cl)
 #plot for horizontal
 if (horizontal)
 {
+
+  m_char <- max(sapply(labels, nchar))
+  #variable at LEFT position to account for differing label sizes - can be altered manually
+  par(mar=c(mar[1], (1 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]) + 0.1)
+
+
+
   #plot blank plot
   plot(medians, 1:len, xlim = xlim, ylim = ylim, type = "n",
-       ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n",
-       xlab = xlab, ylab = ylab, main = main,
+       ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
+       xlab = xlab, main = main,
+       #lab #number of ticks to plot on each axis
        cex.lab = axis_text_sz) #cex.axis is tick labels, lab is axis label
+
+
 
   #bottom x-axis line
   abline(h = 0.1, lwd = ax_th)
@@ -301,7 +310,12 @@ if (horizontal)
   axis(1, lwd.tick = ax_th, labels = TRUE,
        cex.axis = tick_text_sz, at = tick_pos) #bottom axis
   #left axis params (labels)
-  axis(2, at = 1:len, labels = TRUE)
+  axis(2, at = (1:len)+0.1, tick = FALSE,
+       labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
+       line = -0.75, cex.axis = tick_text_sz)
+
+
+  #lheight par for making space!
 
 
   #zero line
@@ -346,12 +360,13 @@ if (horizontal)
 
 
 
+#par(mar=c(5,4,4,2) + 0.1) #only needed if the ylab option is enabled
 
 #end of function
 }
 
 
-#labels for y axis
+#make all arguments same as base graphics
 #feature to add space between lines
 #clean up into function
 #look at integrating other 'plot' features (look at caterplot)
