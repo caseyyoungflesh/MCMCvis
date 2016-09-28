@@ -90,7 +90,9 @@ require(potools)
 
 
 object <- MCMC_data
-params <- 'gamma'
+params <- c('gamma[1]','gamma[2]','gamma[3]','gamma[4]',
+            'gamma[5]','gamma[6]','gamma[7]', 'gamma[8]')
+params <- c('gamma[1]', 'gamma[2]')
 thin = 95
 thick = 50
 rank = FALSE
@@ -221,13 +223,20 @@ function(object)
 # base --------------------------------------------------------------------
 
 #plotting parameters
-sp = 2 #spacing
+
+#len = 8 is baseline (med_sz = 2.4, thick_sz = 5, thin_sz = 2)
+sc <- len/8
+sc <- 7 - 8
+
 med_sz = 2.4 #size of median circles
-thick_sz = 5 #thick CI width
-thin_sz = 2 #thin CI width
-ax_th = 3#axis and tick thickness
-tick_text_sz = 1.2 #tick label size
-axis_text_sz = 1.3 #axis label size
+thick_sz = 5 #thick CI thickness
+thin_sz = 2 #thin CI thickness
+
+
+ax_th = 3 #x-axis and tick thickness
+x_tick_text_sz = 1.2 #x-axis tick label size
+y_tick_text_sz = 1.2 #y-axis tick label size
+x_axis_text_sz = 1.3 #axis label size
 
 
 gr_col = 'gray60' #color used for CI and medians
@@ -291,11 +300,11 @@ if (horizontal)
 
 
   #plot blank plot
-  plot(medians, 1:len, xlim = xlim, ylim = ylim, type = "n",
+  plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
        ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
        xlab = xlab, main = main,
        #lab #number of ticks to plot on each axis
-       cex.lab = axis_text_sz) #cex.axis is tick labels, lab is axis label
+       cex.lab = x_axis_text_sz) #cex.axis is tick labels, lab is axis label
 
 
 
@@ -309,11 +318,11 @@ if (horizontal)
   #bottom axis params
   axis(1, lwd.tick = ax_th, labels = TRUE,
        at = tick_pos, lwd = ax_th,
-       cex.axis = tick_text_sz) #bottom axis
+       cex.axis = x_tick_text_sz) #bottom axis
   #left axis params (labels)
-  axis(2, at = (1:len)+0.1, tick = FALSE,
+  axis(2, at = ((1:len)+0.02), tick = FALSE,
        labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
-       line = -1.5, cex.axis = tick_text_sz)
+       line = -1.5, cex.axis = y_tick_text_sz)
 
 
   #lheight par for making space!
@@ -353,10 +362,10 @@ if (horizontal)
 
 
   #Medians
-  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz*.9) #plot points over other plot features
+  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
   points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
   points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
-  points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz) #Both CI overlap 0
+  points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
 }
 
 
