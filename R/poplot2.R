@@ -93,7 +93,7 @@ object <- MCMC_data
 params <- 'beta'
 thin = 95
 thick = 50
-rank = TRUE
+rank = FALSE
 
 
 function(object)
@@ -222,7 +222,7 @@ function(object)
 
 #plotting parameters
 sp = 2 #spacing
-med_sz = 1.9 #size of median circles
+med_sz = 2.4 #size of median circles
 thick_sz = 5 #thick CI width
 thin_sz = 2 #thin CI width
 ax_th = 3#axis and tick thickness
