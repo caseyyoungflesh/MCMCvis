@@ -375,8 +375,8 @@ par(mar=c(5,4,4,2) + 0.1)
 }
 
 
-#rename function(s) - perhaps name poplot, other can be dstplot
 #modify help file
+#rename function(s) - perhaps name poplot, other can be dstplot
 #add density plots to potrace
 
 #Future
