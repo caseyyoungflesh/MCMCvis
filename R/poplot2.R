@@ -89,19 +89,26 @@ require(potools)
 data(MCMC_data)
 
 
-object <- MCMC_data
-params <- c('gamma[1]','gamma[2]','gamma[3]','gamma[4]',
-            'gamma[5]','gamma[6]','gamma[7]', 'gamma[8]')
-params <- c('beta')
-thin = 95
-thick = 50
-rank = FALSE
 
-
-function(object)
+poplot2 <- function(object,
+                    params = 'all',
+                    ref_line = 0,
+                    rank = FALSE,
+                    xlim,
+                    ylim,
+                    xlab,
+                    main,
+                    labels,
+                    med_sz = 1.5, #median dot size
+                    thick_sz = 5, #thick (50%) CI thickness
+                    thin_sz = 2, #thin (95%) CI thickness
+                    ax_sz = 3, #x-axis and tick thickness
+                    x_axis_text_sz = 1.3, #x-axis label size
+                    x_tick_text_sz = 1.2, #x-axis tick label size
+                    y_tick_text_sz = 1.2, #y-axis tick label size
+                    tick_pos,
+                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
-
-
 
 
   data <- pochains(object, params= params)
@@ -113,13 +120,19 @@ function(object)
     stop('Invalid object type. Input must be mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
+  #not yet an option for user to modify
+  thin = 95 #CI for thin line
+  thick = 50 #CI for thick line
+
+
 
   # Process data ------------------------------------------------------------
 
- # if (NCOL(data) > 1)
-  #{
-    #if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
-    #{
+
+  if (NCOL(data) > 1)
+  {
+    if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
+    {
       chains <- as.data.frame(data)
       len <- NCOL(data)
 
@@ -133,28 +146,6 @@ function(object)
         idx <- 1:len
       }
 
-      #if (missing(ylab))
-      #{
-      #  labs <- colnames(data)[idx]
-      #}
-      #if (!missing(ylab))
-      #{
-      #  if (is.null(ylab))
-      #  {
-      #    labs <- rep('', X)
-      #  }
-      #  if (!is.null(ylab))
-      #  {
-      #    if (length(ylab) == X)
-      #    {
-      #      labs <- ylab[idx]
-      #    }else
-      #    {
-      #      stop('ylab length not equal to number of parameters')
-      #    }
-      #  }
-      #}
-
 
       thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
       thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
@@ -164,98 +155,109 @@ function(object)
 
       medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
 
-    #}else
-    #{
-    #  stop('quantiles must be a numerical vector of length 2')
-    #}
-  #}
+    }else
+    {
+      stop("'thick' and 'thin' must be single numbers")
+    }
+  }
 
-  #if (NCOL(data) == 1)
-  #{
-  #  if (length(quantiles)==2 & typeof(quantiles) == 'double')
-  #  {
-  #    chains <- as.data.frame(data)
-  #    len <- NCOL(data)
-  #    idx <- len:1
-#
- #     if (missing(ylab))
-  #    {
-   #     labs <- colnames(data)[idx]
-    #  }
-     # if (!missing(ylab))
-     # {
-      #   if (is.null(ylab))
-      #  {
-      #    labs <- rep('', len)
-      #  }
-      #  if (!is.null(ylab))
-      #  {
-      #    if (length(ylab) == len)
-      #    {
-      #      labs <- ylab[idx]
-      #    }else
-      #    {
-      #      stop('ylab length not equal to number of parameters')
-      #    }
-      #  }
-      #}
+  if (NCOL(data) == 1)
+  {
+    if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
+    {
+      chains <- as.data.frame(data)
+      len <- 1
+      idx <- 1
+
+      thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
+      thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
+
+      thick_q <- apply(chains, 2, quantile, probs= thick_ci)[,idx]
+      thin_q <- apply(chains, 2, quantile, probs= thin_ci)[,idx]
+
+      medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
 
 
-      #thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
-      #thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
-
-      #thick_q <- apply(chains, 2, quantile, probs= thick_ci)[,idx]
-      #thin_q <- apply(chains, 2, quantile, probs= thin_ci)[,idx]
-
-      #medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
-
-
-      #}else
-      #{
-      #stop('quantiles must be a numerical vector of length 2')
-      #}
-      #}
-#}
+    }else
+    {
+      stop("'thick' and 'thin' must be single numbers")
+    }
+  }
 
 
 
 
-# base --------------------------------------------------------------------
+# Plotting parameters -----------------------------------------------------
 
-#plotting parameters
 
-#largest size
-med_sz = 3 #size of median circles
-thick_sz = 5 #thick CI thickness
-thin_sz = 2 #thin CI thickness
-
-#smallest size
+#smallest size - JUST FOR REFERENCE
 #med_sz = 1 #size of median circles
 #thick_sz = 2 #thick CI thickness
 #thin_sz = 1 #thin CI thickness
 
+#standard size
+#med_sz = 1.5 #size of median circles
+#thick_sz = 5 #thick CI thickness
+#thin_sz = 2 #thin CI thickness
 
-ax_th = 3 #x-axis and tick thickness
-x_tick_text_sz = 1.2 #x-axis tick label size
-y_tick_text_sz = 1.2 #y-axis tick label size
-x_axis_text_sz = 1.3 #axis label size
+
+#ax_sz = 3 #x-axis and tick thickness
+#x_tick_text_sz = 1.2 #x-axis tick label size
+#y_tick_text_sz = 1.2 #y-axis tick label size
+#x_axis_text_sz = 1.3 #axis label size
+
+if (missing(xlab))
+{xlab = 'Parameter Estimate'}
+if (missing(main))
+{main = ''}
+if (missing(labels))
+{labels = names(medians)}
 
 
+if (!missing(labels))
+{
+  if (is.null(ylab))
+  {
+    labels <- rep('', len)
+  }
+  if (!is.null(ylab))
+  {
+    if (length(ylab) == len)
+    {
+      labs <- labels[idx]
+    }else
+    {
+      stop('labels length not equal to number of parameters')
+    }
+  }
+}
+
+
+#xlab = 'Parameter Estimate' #should be changed to: if (missing(xlab)){xlab <- 'Parameter Estimate'}
+#main = '' #should be changed to : if (missing(ylab)){main <- ''}
+#labels = names(medians) #y-axis labels - should be changed to : if (missing(labels)){labels <- names(medians)}
+
+if (missing(tick_pos))
+  {tick_pos = NULL}
+if (missing(xlim))
+  {xlim = range(thin_q)*1.2}
+if (missing(ylim))
+  {ylim = c(0.5,(len)+0.5)}
+
+#tick_pos = NULL #where ticks should be placed - should be changed to: if (missing(tick_pos)){tick_pos <- NULL}
+#xlim = range(thin_q)*1.2 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.2}
+#ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
+#mar = c(5,4,4,2) #should be changed to: if (missing(mar)){mar <- c(5,4,4,2)}
+
+
+#not yet an option for user to modify
 gr_col = 'gray60' #color used for CI and medians
-zero_col = 'gray60' #color used for 0 line
+ref_line_col = 'gray60' #color used for 0 line
 horizontal = TRUE
 
 
-xlab = 'Parameter Estimate' #should be changed to: if (missing(xlab)){xlab <- 'Parameter Estimate'}
-ylab = NULL #should be changed to: if (missing(ylab)){ylab <- NULL}
-main = '' #should be changed to : if (missing(ylab)){ylab <- ''}
-labels = names(medians) #y-axis labels - should be changed to : if (missing(labels)){labels <- names(medians)}
 
-tick_pos = NULL #where ticks should be placed - should be changed to: if (missing(tick_pos)){tick_pos <- NULL}
-xlim = range(thin_q)*1.2 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.2}
-ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
-mar = c(5,4,4,2) #should be changed to: if (missing(mar)){mar <- c(5,4,4,2)}
-
+# plotting ----------------------------------------------------------------
 
 
 #Determine which params have CI that overlap 0
@@ -297,15 +299,8 @@ if (horizontal)
 
   m_char <- max(sapply(labels, nchar))
   #variable at LEFT position to account for differing label sizes - can be altered manually
-  par(mar=c(mar[1], (1 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]-1) + 0.1)
+  par(mar=c(mar[1], (1 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]-1))
 
-
-temp1 <- cbind(thin_q[,black_cl], thin_q[,gray_cl], thin_q[,white_cl])
-temp2 <- cbind(blk_bnd, gry_bnd, wht_bnd)
-matplot(temp1, temp2,
-        type = 'n', lty = 1, lwd = thick_sz, col = 'black')#,
-        #xlim = xlim)#, xaxt = 'n', yaxt = 'n', ann = TRUE,
-        #bty = 'n')
 
   #plot blank plot
   plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
@@ -314,36 +309,26 @@ matplot(temp1, temp2,
        #lab #number of ticks to plot on each axis
        cex.lab = x_axis_text_sz) #cex.axis is tick labels, lab is axis label
 
-#par('usr')
 
-  #bottom x-axis line
-  #abline(h = 0.1, lwd = ax_th)
-  #top x-axis line
-  #abline(h = len + 0.9, lwd =ax_th)
   #bottom axis params
-  axis(3, lwd.tick = ax_th, labels = FALSE,
-       at = tick_pos, lwd = ax_th)
+  axis(3, lwd.tick = ax_sz, labels = FALSE,
+       at = tick_pos, lwd = ax_sz)
   axis(3, lwd.tick = 0, labels = FALSE,
-       at = (par('usr')*0.93), lwd = ax_th)
+       at = (par('usr')*0.93), lwd = ax_sz)
   #bottom axis params
-  axis(1, lwd.tick = ax_th, labels = TRUE,
-       at = tick_pos, lwd = ax_th,
+  axis(1, lwd.tick = ax_sz, labels = TRUE,
+       at = tick_pos, lwd = ax_sz,
        cex.axis = x_tick_text_sz) #bottom axis
   axis(1, lwd.tick = 0, labels = FALSE,
-       at = (par('usr')*0.93), lwd = ax_th)
+       at = (par('usr')*0.93), lwd = ax_sz)
   #left axis params (labels)
   axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
        labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
        line = -1, cex.axis = y_tick_text_sz)
 
 
-
-
-  #lheight par for making space!
-
-
-  #zero line
-  abline(v=0, lty = 2, lwd = 3, col = zero_col)
+  #ref line
+  abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
 
   #Black CI
   if (!is.null(black_cl))
@@ -384,14 +369,13 @@ matplot(temp1, temp2,
 
 
 
-par(mar=c(5,4,4,2) + 0.1) #only needed if the ylab option is enabled
+par(mar=c(5,4,4,2) + 0.1)
 
-#end of function
 }
 
 
-#scale cex - limits between max and min
-#make all arguments same as base graphics
+#for only 1 data point
+
 #clean up into function
 #rename function(s) - perhaps name poplot, other can be dstplot
 
