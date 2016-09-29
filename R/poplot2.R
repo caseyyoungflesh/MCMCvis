@@ -82,12 +82,9 @@
 #'
 #' @export
 
-
-
-
-require(potools)
 data(MCMC_data)
-
+poplot2(MCMC_data,
+        params = 'beta[5]')
 
 
 poplot2 <- function(object,
@@ -99,13 +96,14 @@ poplot2 <- function(object,
                     xlab,
                     main,
                     labels,
+                    labels_sz = 1.2,#y-axis tick label size
                     med_sz = 1.5, #median dot size
                     thick_sz = 5, #thick (50%) CI thickness
                     thin_sz = 2, #thin (95%) CI thickness
                     ax_sz = 3, #x-axis and tick thickness
                     x_axis_text_sz = 1.3, #x-axis label size
                     x_tick_text_sz = 1.2, #x-axis tick label size
-                    y_tick_text_sz = 1.2, #y-axis tick label size
+                    main_text_sz = 1, #size of title
                     tick_pos,
                     mar = c(5.1, 4.1, 4.1, 2.1))
 {
@@ -172,8 +170,8 @@ poplot2 <- function(object,
       thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
       thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
 
-      thick_q <- apply(chains, 2, quantile, probs= thick_ci)[,idx]
-      thin_q <- apply(chains, 2, quantile, probs= thin_ci)[,idx]
+      thick_q <- as.matrix(apply(chains, 2, quantile, probs= thick_ci)[,idx])
+      thin_q <- as.matrix(apply(chains, 2, quantile, probs= thin_ci)[,idx])
 
       medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
 
@@ -203,35 +201,36 @@ poplot2 <- function(object,
 
 #ax_sz = 3 #x-axis and tick thickness
 #x_tick_text_sz = 1.2 #x-axis tick label size
-#y_tick_text_sz = 1.2 #y-axis tick label size
+#labels_sz = 1.2 #y-axis tick label size
 #x_axis_text_sz = 1.3 #axis label size
 
 if (missing(xlab))
 {xlab = 'Parameter Estimate'}
 if (missing(main))
 {main = ''}
+
 if (missing(labels))
-{labels = names(medians)}
-
-
-if (!missing(labels))
 {
-  if (is.null(ylab))
+  labels = names(medians)
+}else{
+  if (!missing(labels))
   {
-    labels <- rep('', len)
-  }
-  if (!is.null(ylab))
-  {
-    if (length(ylab) == len)
+    if (is.null(ylab))
     {
-      labs <- labels[idx]
-    }else
+      labels <- rep('', len)
+    }
+    if (!is.null(ylab))
     {
-      stop('labels length not equal to number of parameters')
+      if (length(ylab) == len)
+      {
+        labs <- labels[idx]
+      }else
+      {
+        stop('labels length not equal to number of parameters')
+      }
     }
   }
 }
-
 
 #xlab = 'Parameter Estimate' #should be changed to: if (missing(xlab)){xlab <- 'Parameter Estimate'}
 #main = '' #should be changed to : if (missing(ylab)){main <- ''}
@@ -260,20 +259,21 @@ horizontal = TRUE
 # plotting ----------------------------------------------------------------
 
 
-#Determine which params have CI that overlap 0
+#Determine which params have CI that overlap 0 (or ref line more technically)
 black_cl <- c() #95% CI (default) does not overlap 0
 gray_cl <- c() #50% CI (default) does not overlap 0
 white_cl <- c() #Both 50% and 95% CI (default) overlap 0
+
 for (i in 1:len)
 {
   #i <- 1
-  if ((thin_q[1,i] > 0 & thin_q[2,i] > 0) |
-      (thin_q[1,i] < 0 & thin_q[2,i] < 0))
+  if ((thin_q[1,i] > ref_line & thin_q[2,i] > ref_line) |
+      (thin_q[1,i] < ref_line & thin_q[2,i] < ref_line))
   {
     black_cl <- c(black_cl, i)
   } else {
-  if ((thick_q[1,i] > 0 & thick_q[2,i] > 0) |
-      (thick_q[1,i] < 0 & thick_q[2,i] < 0))
+  if ((thick_q[1,i] > ref_line & thick_q[2,i] > ref_line) |
+      (thick_q[1,i] < ref_line & thick_q[2,i] < ref_line))
   {
     gray_cl <- c(gray_cl, i)
   }else {
@@ -281,7 +281,6 @@ for (i in 1:len)
   }
   }
 }
-
 
 
 
@@ -299,17 +298,17 @@ if (horizontal)
 
   m_char <- max(sapply(labels, nchar))
   #variable at LEFT position to account for differing label sizes - can be altered manually
-  par(mar=c(mar[1], (1 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]-1))
+  par(mar=c(mar[1], (1 + (m_char/2)) + (mar[2] - 4.1), mar[3], mar[4]-1))
 
 
   #plot blank plot
   plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
        ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-       xlab = xlab, main = main,
+       xlab = xlab, cex.lab = x_axis_text_sz) #cex.lab is axis label
        #lab #number of ticks to plot on each axis
-       cex.lab = x_axis_text_sz) #cex.axis is tick labels, lab is axis label
 
-
+  #title
+  title(main, cex.main = main_text_sz)
   #bottom axis params
   axis(3, lwd.tick = ax_sz, labels = FALSE,
        at = tick_pos, lwd = ax_sz)
@@ -324,7 +323,7 @@ if (horizontal)
   #left axis params (labels)
   axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
        labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
-       line = -1, cex.axis = y_tick_text_sz)
+       line = -1, cex.axis = labels_sz)
 
 
   #ref line
@@ -333,21 +332,23 @@ if (horizontal)
   #Black CI
   if (!is.null(black_cl))
   {
-    #Thick
-    matlines(thick_q[,black_cl], blk_bnd,
-             type = 'l', lty = 1, lwd = thick_sz, col = 'black')
-    #Thin
-    matlines(thin_q[,black_cl], blk_bnd,
-             type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+      #Thick
+      matlines(thick_q[,black_cl], blk_bnd,
+              type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+      #Thin
+      matlines(thin_q[,black_cl], blk_bnd,
+               type = 'l', lty = 1, lwd = thin_sz, col = 'black')
   }
 
   #Gray CI
   if (!is.null(gray_cl))
   {
-    matlines(thick_q[,gray_cl], gry_bnd,
-             type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #gray
-    matlines(thin_q[,gray_cl], gry_bnd,
-             type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #gray
+      #Thick
+      matlines(thick_q[,gray_cl], gry_bnd,
+               type = 'l', lty = 1, lwd = thick_sz, col = 'gray')
+      #Thin
+      matlines(thin_q[,gray_cl], gry_bnd,
+               type = 'l', lty = 1, lwd = thin_sz, col = 'gray')
   }
 
   #White CI
@@ -374,11 +375,10 @@ par(mar=c(5,4,4,2) + 0.1)
 }
 
 
-#for only 1 data point
-
-#clean up into function
 #rename function(s) - perhaps name poplot, other can be dstplot
+#modify help file
+#add density plots to potrace
 
+#Future
 #add vertical argument
-#add to potrace
 #look at adding stan object compatibility
