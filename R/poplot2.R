@@ -82,17 +82,17 @@
 #'
 #' @export
 
-data(MCMC_data)
+
 
 
 require(potools)
+data(MCMC_data)
 
 
-object <- SD_out
 object <- MCMC_data
 params <- c('gamma[1]','gamma[2]','gamma[3]','gamma[4]',
             'gamma[5]','gamma[6]','gamma[7]', 'gamma[8]')
-params <- c('alpha')
+params <- c('beta')
 thin = 95
 thick = 50
 rank = FALSE
@@ -252,7 +252,7 @@ main = '' #should be changed to : if (missing(ylab)){ylab <- ''}
 labels = names(medians) #y-axis labels - should be changed to : if (missing(labels)){labels <- names(medians)}
 
 tick_pos = NULL #where ticks should be placed - should be changed to: if (missing(tick_pos)){tick_pos <- NULL}
-xlim = range(thin_q)*1.1 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.1}
+xlim = range(thin_q)*1.2 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.2}
 ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
 mar = c(5,4,4,2) #should be changed to: if (missing(mar)){mar <- c(5,4,4,2)}
 
@@ -300,6 +300,12 @@ if (horizontal)
   par(mar=c(mar[1], (1 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]-1) + 0.1)
 
 
+temp1 <- cbind(thin_q[,black_cl], thin_q[,gray_cl], thin_q[,white_cl])
+temp2 <- cbind(blk_bnd, gry_bnd, wht_bnd)
+matplot(temp1, temp2,
+        type = 'n', lty = 1, lwd = thick_sz, col = 'black')#,
+        #xlim = xlim)#, xaxt = 'n', yaxt = 'n', ann = TRUE,
+        #bty = 'n')
 
   #plot blank plot
   plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
@@ -308,7 +314,7 @@ if (horizontal)
        #lab #number of ticks to plot on each axis
        cex.lab = x_axis_text_sz) #cex.axis is tick labels, lab is axis label
 
-
+#par('usr')
 
   #bottom x-axis line
   #abline(h = 0.1, lwd = ax_th)
@@ -318,17 +324,19 @@ if (horizontal)
   axis(3, lwd.tick = ax_th, labels = FALSE,
        at = tick_pos, lwd = ax_th)
   axis(3, lwd.tick = 0, labels = FALSE,
-       at = range(thin_q), lwd = ax_th)
+       at = (par('usr')*0.93), lwd = ax_th)
   #bottom axis params
   axis(1, lwd.tick = ax_th, labels = TRUE,
        at = tick_pos, lwd = ax_th,
        cex.axis = x_tick_text_sz) #bottom axis
   axis(1, lwd.tick = 0, labels = FALSE,
-       at = range(thin_q), lwd = ax_th)
+       at = (par('usr')*0.93), lwd = ax_th)
   #left axis params (labels)
   axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
        labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
-       line = -1.5, cex.axis = y_tick_text_sz)
+       line = -1, cex.axis = y_tick_text_sz)
+
+
 
 
   #lheight par for making space!
