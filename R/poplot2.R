@@ -88,11 +88,11 @@ data(MCMC_data)
 require(potools)
 
 
-
+object <- SD_out
 object <- MCMC_data
 params <- c('gamma[1]','gamma[2]','gamma[3]','gamma[4]',
             'gamma[5]','gamma[6]','gamma[7]', 'gamma[8]')
-params <- c('gamma[1]', 'gamma[2]')
+params <- c('alpha')
 thin = 95
 thick = 50
 rank = FALSE
@@ -224,13 +224,15 @@ function(object)
 
 #plotting parameters
 
-#len = 8 is baseline (med_sz = 2.4, thick_sz = 5, thin_sz = 2)
-sc <- len/8
-sc <- 7 - 8
-
-med_sz = 2.4 #size of median circles
+#largest size
+med_sz = 3 #size of median circles
 thick_sz = 5 #thick CI thickness
 thin_sz = 2 #thin CI thickness
+
+#smallest size
+#med_sz = 1 #size of median circles
+#thick_sz = 2 #thick CI thickness
+#thin_sz = 1 #thin CI thickness
 
 
 ax_th = 3 #x-axis and tick thickness
@@ -250,7 +252,7 @@ main = '' #should be changed to : if (missing(ylab)){ylab <- ''}
 labels = names(medians) #y-axis labels - should be changed to : if (missing(labels)){labels <- names(medians)}
 
 tick_pos = NULL #where ticks should be placed - should be changed to: if (missing(tick_pos)){tick_pos <- NULL}
-xlim = range(thin_q)*1.1 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.25}
+xlim = range(thin_q)*1.1 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.1}
 ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
 mar = c(5,4,4,2) #should be changed to: if (missing(mar)){mar <- c(5,4,4,2)}
 
@@ -295,7 +297,7 @@ if (horizontal)
 
   m_char <- max(sapply(labels, nchar))
   #variable at LEFT position to account for differing label sizes - can be altered manually
-  par(mar=c(mar[1], (1.5 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]) + 0.1)
+  par(mar=c(mar[1], (1 + (m_char/2)) + (4 - mar[2]), mar[3], mar[4]-1) + 0.1)
 
 
 
@@ -315,12 +317,16 @@ if (horizontal)
   #bottom axis params
   axis(3, lwd.tick = ax_th, labels = FALSE,
        at = tick_pos, lwd = ax_th)
+  axis(3, lwd.tick = 0, labels = FALSE,
+       at = range(thin_q), lwd = ax_th)
   #bottom axis params
   axis(1, lwd.tick = ax_th, labels = TRUE,
        at = tick_pos, lwd = ax_th,
        cex.axis = x_tick_text_sz) #bottom axis
+  axis(1, lwd.tick = 0, labels = FALSE,
+       at = range(thin_q), lwd = ax_th)
   #left axis params (labels)
-  axis(2, at = ((1:len)+0.02), tick = FALSE,
+  axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
        labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
        line = -1.5, cex.axis = y_tick_text_sz)
 
@@ -370,21 +376,17 @@ if (horizontal)
 
 
 
-#par(mar=c(5,4,4,2) + 0.1) #only needed if the ylab option is enabled
+par(mar=c(5,4,4,2) + 0.1) #only needed if the ylab option is enabled
 
 #end of function
 }
 
 
+#scale cex - limits between max and min
 #make all arguments same as base graphics
-#feature to add space between lines
 #clean up into function
-#look at integrating other 'plot' features (look at caterplot)
 #rename function(s) - perhaps name poplot, other can be dstplot
+
 #add vertical argument
-
 #add to potrace
-
-#change names of functions
-
 #look at adding stan object compatibility
