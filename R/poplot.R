@@ -11,13 +11,13 @@
 #' Default \code{all} plots posteriors for all parameters. See VALUE below.
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
-#' @param g_line Numerical vector indicating where vertical reference lines should be created.
+#' @param ref_line Numerical vector indicating where vertical reference lines should be created.
 #'
-#' Default is \code{g_line = 0}.
+#' Default is \code{ref_line = 0}.
 #'
 #' Argument \code{NULL} will plot no guidelines.
 #'
-#' @param g_line_width Width of vertical reference lines.
+#' @param ref_line_width Width of vertical reference lines.
 #'
 #' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot.
 #'
@@ -84,8 +84,8 @@
 
 poplot <- function(object,
                    params= 'all',
-                   g_line = 0,
-                   g_line_width = 1,
+                   ref_line = 0,
+                   ref_line_width = 1,
                    quantiles = c(0.025, 0.975),
                    rank = FALSE,
                    xlim,
@@ -208,7 +208,7 @@ poplot <- function(object,
   MN_col <- 'black' #color of centrality tick
   CI_col <- CI_t_color #color of CI tick
   GCOL <- rgb(0,0,0,alpha = .5)
-  VTHICK <- g_line_width
+  VTHICK <- ref_line_width
 
   if(missing(main))
   {
@@ -256,11 +256,11 @@ poplot <- function(object,
                                             width = WID, colmax = COLORS[i], colmin = 'white')
                  }
 
-                 if(!is.null(g_line))
+                 if(!is.null(ref_line))
                  {
-                   for (k in 1: length(g_line))
+                   for (k in 1: length(ref_line))
                    {
-                     panel.abline(v=g_line[k], lty = "dotted", col = GCOL, lwd = VTHICK)
+                     panel.abline(v=ref_line[k], lty = 2, col = GCOL, lwd = VTHICK)
                    }
                  }
 
@@ -287,11 +287,11 @@ poplot <- function(object,
                                                width= WID, colmax= COLORS[i], colmin= 'white')
                     }
 
-                    if(!is.null(g_line))
+                    if(!is.null(ref_line))
                     {
-                      for (k in 1: length(g_line))
+                      for (k in 1: length(ref_line))
                       {
-                        panel.abline(v=g_line[k], lty = "dotted", col = GCOL, lwd = VTHICK)
+                        panel.abline(v=ref_line[k], lty = 2, col = GCOL, lwd = VTHICK)
                       }
                     }
 
