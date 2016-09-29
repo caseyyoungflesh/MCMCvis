@@ -27,8 +27,8 @@
 #'
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param xlab Character string labeling x-axis.
-#' @param ylab Character string (or vector of character strings if plotting > 1 parameter) labeling
-#' y-axis.
+#' @param labels Character string (or vector of character strings if plotting > 1 parameter) labeling
+#' parameter estimates along y-axis.
 #'
 #' Specifying labels in the argument will use these to label axis.
 #'
@@ -68,7 +68,7 @@
 #' data(MCMC_data)
 #'
 #' #Plot MCMC output
-#' poplot(MCMC_data, ylab=NULL)
+#' poplot(MCMC_data, labels=NULL)
 #'
 #' #Just 'beta' parameters
 #' poplot(MCMC_data, params= 'beta')
@@ -89,8 +89,8 @@ poplot <- function(object,
                    quantiles = c(0.025, 0.975),
                    rank = FALSE,
                    xlim,
-                   xlab = 'Parameter probability values',
-                   ylab,
+                   xlab,
+                   labels,
                    main,
                    colors,
                    dbar_height = 0.25,
@@ -130,24 +130,24 @@ poplot <- function(object,
         idx <- X:1
       }
 
-      if (missing(ylab))
+      if (missing(labels))
       {
         labs <- colnames(data)[idx]
       }
-      if (!missing(ylab))
+      if (!missing(labels))
       {
-        if (is.null(ylab))
+        if (is.null(labels))
         {
           labs <- rep('', X)
         }
-        if (!is.null(ylab))
+        if (!is.null(labels))
         {
-          if (length(ylab) == X)
+          if (length(labels) == X)
           {
-            labs <- ylab[idx]
+            labs <- labels[idx]
           }else
           {
-            stop('ylab length not equal to number of parameters')
+            stop('labels length not equal to number of parameters')
           }
         }
       }
@@ -168,24 +168,24 @@ poplot <- function(object,
       X <- NCOL(data)
       idx <- X:1
 
-      if (missing(ylab))
+      if (missing(labels))
       {
         labs <- colnames(data)[idx]
       }
-      if (!missing(ylab))
+      if (!missing(labels))
       {
-        if (is.null(ylab))
+        if (is.null(labels))
         {
           labs <- rep('', X)
         }
-        if (!is.null(ylab))
+        if (!is.null(labels))
         {
-          if (length(ylab) == X)
+          if (length(labels) == X)
           {
-            labs <- ylab[idx]
+            labs <- labels[idx]
           }else
           {
-            stop('ylab length not equal to number of parameters')
+            stop('labels length not equal to number of parameters')
           }
         }
       }
@@ -209,6 +209,8 @@ poplot <- function(object,
   CI_col <- CI_t_color #color of CI tick
   GCOL <- rgb(0,0,0,alpha = .5)
   VTHICK <- ref_line_width
+  if (missing(xlab))
+  {xlab = 'Parameter Estimate'}
 
   if(missing(main))
   {
@@ -235,6 +237,7 @@ poplot <- function(object,
         stop('length(colors) does not equal number of parameters to be plotted.')
     }
   }
+
 
 
   # create plot object ------------------------------------------------------
