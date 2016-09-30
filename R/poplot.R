@@ -38,26 +38,35 @@
 #'
 #' Option \code{NULL} will return plot with no labels on y-axis.
 #'
-#' @params labels_sz Number specifying size of text for parameter labels on y-axis.
-#' @params med_sz Number specifying size of points represents posterior medians.
-#' @params thick_sz Number specifying thickness of 50% CI line (thicker line).
-#' @params thin_sz Number specifying thickness of 95% CI line (thinner line).
-#' @params ax_sz Number specifying thickness of x-axis and ticks.
-#' @params x_axis_text_sz Number specifying size of text for x-axis label.
-#' @params x_tick_text_sz Number specifying size of text for tick labels on x-axis.
-#' @params main_text_sz Number specifying size of text for main title.
-#' @params tick_pos Numeric vector specifying where ticks on x-axis should be placed.
-#' @params mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
+#' @param labels_sz Number specifying size of text for parameter labels on y-axis.
+#'
+#' @param med_sz Number specifying size of points represents posterior medians.
+#'
+#' @param thick_sz Number specifying thickness of 50 percent CI line (thicker line).
+#'
+#' @param thin_sz Number specifying thickness of 95 percent CI line (thinner line).
+#'
+#' @param ax_sz Number specifying thickness of x-axis and ticks.
+#'
+#' @param x_axis_text_sz Number specifying size of text for x-axis label.
+#'
+#' @param x_tick_text_sz Number specifying size of text for tick labels on x-axis.
+#'
+#' @param main_text_sz Number specifying size of text for main title.
+#'
+#' @param tick_pos Numeric vector specifying where ticks on x-axis should be placed.
+#'
+#' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
 #' Changes to the margin should be made within the function rather than using the \code{par} call.
 #'
 #' Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.
 #'
 #' @section Details:
 #' Points represent posterior medians. Parameters
-#' which 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters which 50% credible
-#' intervals do not overlap 0 and 95% credible intervals do overlap 0 are indicated by 'closed' grey circles.
-#' Parameters which 95% credible intervals do not overlap 0 are indicated by 'closed' black circles. Thick
-#' lines represent 50% credible intervals while thin lines represent 95% credible intervals.
+#' which 50 percent credible intervals overlap 0 are indicated by 'open' circles. Parameters which 50 percent credible
+#' intervals do not overlap 0 and 95 percent credible intervals do overlap 0 are indicated by 'closed' grey circles.
+#' Parameters which 95 percent credible intervals do not overlap 0 are indicated by 'closed' black circles. Thick
+#' lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
 #'
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
@@ -79,7 +88,7 @@
 #' L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E.
 #' Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A.
 #' Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world’s coral reefs. Nature
-#' 535:416–419.
+#' 535:416-419.
 #'
 #'
 #' @examples

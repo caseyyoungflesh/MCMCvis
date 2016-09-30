@@ -2,13 +2,12 @@
 % Please edit documentation in R/poplot.R
 \name{poplot}
 \alias{poplot}
-\title{Plot posterior distributions from MCMC output}
+\title{Plot posterior distributions from MCMC output - VERSION 2}
 \usage{
-poplot(object, params = "all", g_line = 0, g_line_width = 1,
-  quantiles = c(0.025, 0.975), rank = FALSE, centrality = "mean", xlim,
-  xlab = "Parameter probability values", ylab, main, colors,
-  dbar_height = 0.25, dbar_t_height = 0.35, dbar_t_width = 3,
-  CI_t_color = "grey75")
+poplot(object, params = "all", ref_line = 0, rank = FALSE, xlim, ylim,
+  xlab, main, labels, labels_sz = 1.2, med_sz = 1.5, thick_sz = 5,
+  thin_sz = 2, ax_sz = 3, x_axis_text_sz = 1.3, x_tick_text_sz = 1.2,
+  main_text_sz = 1, tick_pos, mar = c(5.1, 4.1, 4.1, 2.1))
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -20,60 +19,68 @@ Default \code{all} plots posteriors for all parameters. See VALUE below.
 
 Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
-\item{g_line}{Numerical vector indicating where vertical reference lines should be created.
+\item{ref_line}{Numerical vector indicating where vertical reference line should be created.
 
-Default is \code{g_line = 0}.
+Default is \code{ref_line = 0}.
 
-Argument \code{NULL} will plot no guidelines.}
-
-\item{g_line_width}{Width of vertical reference lines.}
-
-\item{quantiles}{Numerical vecor of length 2, indicating which quantiles to plot.
-
-Default plots 95\% credible intervals.}
+Argument \code{NULL} will plot no reference line.}
 
 \item{rank}{If \code{TRUE} posteriors will ranked in decreasing order (based on
 specified measure of centrality) from top down.}
 
-\item{centrality}{Indicates which measure of centrality to plot.
-
-Valid options are \code{mean} and \code{median}.}
-
 \item{xlim}{Numerical vector of length 2, indicating range of x-axis.}
 
-\item{xlab}{Character string labeling x-axis.}
+\item{ylim}{Numerical vector of length 2, indicating range of y-axis}
 
-\item{ylab}{Character string (or vector of character strings if plotting > 1 parameter) labeling
-y-axis.
-
-Specifying labels in the argument will use these to label axis.
-
-Default option will use parameter names from \code{object}.
+\item{xlab}{Character string labeling x-axis.
 
 Option \code{NULL} will return plot with no labels on y-axis.}
 
 \item{main}{Character string indicating title of plot.}
 
-\item{colors}{Vector of colors, indicating which color should should be used for each parameter. Default is 'black' for
-all parameters.}
+\item{labels}{Character string (or vector of character strings if plotting > 1 parameter) labeling
+parameter estimates along y-axis.
 
-\item{dbar_height}{Height of density bar in plot.}
+Specifying labels in the argument will use these to label parameter estimates on y-axis.
 
-\item{dbar_t_height}{Height of ticks on density bar in plot.}
+Default option will use parameter names from \code{object}.
 
-\item{dbar_t_width}{Width of ticks on density bar in plot.}
+Option \code{NULL} will return plot with no labels on y-axis.}
 
-\item{CI_t_color}{Color of credible interval ticks.}
-}
-\value{
-Function returns density strip plot, similar to caterpillar plot, for all specified parameters. Plotted output
-can be sorted by mean estimate.
+\item{labels_sz}{Number specifying size of text for parameter labels on y-axis.}
+
+\item{med_sz}{Number specifying size of points represents posterior medians.}
+
+\item{thick_sz}{Number specifying thickness of 50 percent CI line (thicker line).}
+
+\item{thin_sz}{Number specifying thickness of 95 percent CI line (thinner line).}
+
+\item{ax_sz}{Number specifying thickness of x-axis and ticks.}
+
+\item{x_axis_text_sz}{Number specifying size of text for x-axis label.}
+
+\item{x_tick_text_sz}{Number specifying size of text for tick labels on x-axis.}
+
+\item{main_text_sz}{Number specifying size of text for main title.}
+
+\item{tick_pos}{Numeric vector specifying where ticks on x-axis should be placed.}
+
+\item{mar}{Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
+Changes to the margin should be made within the function rather than using the \code{par} call.
+
+Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.}
 }
 \description{
 Plot the posterior distributions from MCMC output for specific parameters of interest. All posterior
-parameter estimates are plotted on the same plot using density strips, similar to a caterpillar plot.
+parameter estimates are plotted as a caterpillar plot.
 }
 \section{Details}{
+
+Points represent posterior medians. Parameters
+which 50 percent credible intervals overlap 0 are indicated by 'open' circles. Parameters which 50 percent credible
+intervals do not overlap 0 and 95 percent credible intervals do overlap 0 are indicated by 'closed' grey circles.
+Parameters which 95 percent credible intervals do not overlap 0 are indicated by 'closed' black circles. Thick
+lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
 
 \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
@@ -86,18 +93,19 @@ representing iterations in the chain).
 When specifying \code{rank = TRUE} and specifying labels for \code{ylab}, labels will be applied to parameters before
 they are ranked.
 
-Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
-for Zipkin et al. 2014, figure 3.
+Thanks to Cinner et al. 2016, whose Fig. 1 inspired this plot.
 }
 
 \section{References}{
 
-Jackson, C. H. 2008. Displaying Uncertainty With Shading. The American Statistician 62:340-347.
 
-Zipkin, E. F., T. S. Sillett, E. H. C. Grant, R. B. Chandler,
-and J. A. Royle. 2014. Inferences about population dynamics
-from count data using multistate models: a comparison to
-capture-recapture approaches. Ecology and Evolution 4:417-426.
+Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. Maina, E. Maire, J.
+N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D’Agata, A. Hoey, D. A. Feary, L. Crowder, I.
+D. Williams, M. Kulbicki, L. Vigliola, L. Wantiez, G. Edgar, R. D. Stuart-Smith, S. A. Sandin, A.
+L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E.
+Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A.
+Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world’s coral reefs. Nature
+535:416-419.
 }
 \examples{
 #Load data
