@@ -110,11 +110,14 @@ potrace <- function(object,
 
   for (j in 1: length(g_filt))
   {
+    #chains
     tmlt <- do.call('cbind', temp[,g_filt[j]])
     matplot(it, tmlt, lty= 1, type='l', main = paste0(names[g_filt[j]]),
             col= rgb(red= gg_cols[1,], green= gg_cols[2,],
                      blue= gg_cols[3,], alpha = 0.6),
             xlab= 'Iteration', ylab= 'Value')
+    #density plot
+
   }
 
   if(pdf == TRUE)
