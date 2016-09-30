@@ -1,7 +1,7 @@
-#' Plot posterior distributions from MCMC output
+#' Plot posterior distributions from MCMC output - VERSION 2
 #'
 #' Plot the posterior distributions from MCMC output for specific parameters of interest. All posterior
-#' parameter estimates are plotted on the same plot using density strips, similar to a caterpillar plot.
+#' parameter estimates are plotted as a caterpillar plot.
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
@@ -11,64 +11,83 @@
 #' Default \code{all} plots posteriors for all parameters. See VALUE below.
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
-#' @param ref_line Numerical vector indicating where vertical reference lines should be created.
+#'
+#' @param ref_line Numerical vector indicating where vertical reference line should be created.
 #'
 #' Default is \code{ref_line = 0}.
 #'
-#' Argument \code{NULL} will plot no guidelines.
+#' Argument \code{NULL} will plot no reference line.
 #'
-#' @param ref_line_width Width of vertical reference lines.
 #'
-#' @param quantiles Numerical vecor of length 2, indicating which quantiles to plot.
-#'
-#' Default plots 95\% credible intervals.
 #' @param rank If \code{TRUE} posteriors will ranked in decreasing order (based on
-#' median posterior estimate) from top down.
+#' specified measure of centrality) from top down.
 #'
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
+#' @param ylim Numerical vector of length 2, indicating range of y-axis
 #' @param xlab Character string labeling x-axis.
+#'
+#' Option \code{NULL} will return plot with no labels on y-axis.
+#' @param main Character string indicating title of plot.
+#'
 #' @param labels Character string (or vector of character strings if plotting > 1 parameter) labeling
 #' parameter estimates along y-axis.
 #'
-#' Specifying labels in the argument will use these to label axis.
+#' Specifying labels in the argument will use these to label parameter estimates on y-axis.
 #'
 #' Default option will use parameter names from \code{object}.
 #'
 #' Option \code{NULL} will return plot with no labels on y-axis.
-#' @param main Character string indicating title of plot.
-#' @param colors Vector of colors, indicating which color should should be used for each parameter. Default is 'black' for
-#' all parameters.
-#' @param dbar_height Height of density bar in plot.
-#' @param dbar_t_height Height of ticks on density bar in plot.
-#' @param dbar_t_width Width of ticks on density bar in plot.
-#' @param CI_t_color Color of credible interval ticks.
+#'
+#' @params labels_sz Number specifying size of text for parameter labels on y-axis.
+#' @params med_sz Number specifying size of points represents posterior medians.
+#' @params thick_sz Number specifying thickness of 50% CI line (thicker line).
+#' @params thin_sz Number specifying thickness of 95% CI line (thinner line).
+#' @params ax_sz Number specifying thickness of x-axis and ticks.
+#' @params x_axis_text_sz Number specifying size of text for x-axis label.
+#' @params x_tick_text_sz Number specifying size of text for tick labels on x-axis.
+#' @params main_text_sz Number specifying size of text for main title.
+#' @params tick_pos Numeric vector specifying where ticks on x-axis should be placed.
+#' @params mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
+#' Changes to the margin should be made within the function rather than using the \code{par} call.
+#'
+#' Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.
 #'
 #' @section Details:
+#' Points represent posterior medians. Parameters
+#' which 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters which 50% credible
+#' intervals do not overlap 0 and 95% credible intervals do overlap 0 are indicated by 'closed' grey circles.
+#' Parameters which 95% credible intervals do not overlap 0 are indicated by 'closed' black circles. Thick
+#' lines represent 50% credible intervals while thin lines represent 95% credible intervals.
+#'
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
 #' representing iterations in the chain).
 #'
 #' @section Notes:
-#' Plot code uses \code{denstrip} package, as highlighted in Jackson (2008) - generalized from code
-#' for Zipkin et al. 2014, figure 3.
 #'
-#' @return Function returns density strip plot, similar to caterpillar plot, for all specified parameters. Plotted output
-#' can be sorted by median estimate.
+#' When specifying \code{rank = TRUE} and specifying labels for \code{ylab}, labels will be applied to parameters before
+#' they are ranked.
+#'
+#' Thanks to Cinner et al. 2016, whose Fig. 1 inspired this plot.
+#'
 #'
 #' @section References:
-#' Jackson, C. H. 2008. Displaying Uncertainty With Shading. The American Statistician 62:340-347.
 #'
-#' Zipkin, E. F., T. S. Sillett, E. H. C. Grant, R. B. Chandler,
-#' and J. A. Royle. 2014. Inferences about population dynamics
-#' from count data using multistate models: a comparison to
-#' capture-recapture approaches. Ecology and Evolution 4:417-426.
+#' Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. Maina, E. Maire, J.
+#' N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D’Agata, A. Hoey, D. A. Feary, L. Crowder, I.
+#' D. Williams, M. Kulbicki, L. Vigliola, L. Wantiez, G. Edgar, R. D. Stuart-Smith, S. A. Sandin, A.
+#' L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E.
+#' Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A.
+#' Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world’s coral reefs. Nature
+#' 535:416–419.
+#'
 #'
 #' @examples
 #' #Load data
 #' data(MCMC_data)
 #'
 #' #Plot MCMC output
-#' poplot(MCMC_data, labels=NULL)
+#' poplot(MCMC_data, ylab=NULL)
 #'
 #' #Just 'beta' parameters
 #' poplot(MCMC_data, params= 'beta')
@@ -76,30 +95,33 @@
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
 #' poplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
-#' #Rank parameters by posterior median
+#' #Rank parameters by posterior mean
 #' poplot(MCMC_data, params= 'beta', rank=TRUE)
 #'
 #' @export
-#' @import lattice
+
 
 poplot <- function(object,
-                   params= 'all',
-                   ref_line = 0,
-                   ref_line_width = 1,
-                   quantiles = c(0.025, 0.975),
-                   rank = FALSE,
-                   xlim,
-                   xlab,
-                   labels,
-                   main,
-                   colors,
-                   dbar_height = 0.25,
-                   dbar_t_height = 0.35,
-                   dbar_t_width = 3,
-                   CI_t_color = 'grey75')
+                    params = 'all',
+                    ref_line = 0,
+                    rank = FALSE,
+                    xlim,
+                    ylim,
+                    xlab,
+                    main,
+                    labels,
+                    labels_sz = 1.2,#y-axis tick label size
+                    med_sz = 1.5, #median dot size
+                    thick_sz = 5, #thick (50%) CI thickness
+                    thin_sz = 2, #thin (95%) CI thickness
+                    ax_sz = 3, #x-axis and tick thickness
+                    x_axis_text_sz = 1.3, #x-axis label size
+                    x_tick_text_sz = 1.2, #x-axis tick label size
+                    main_text_sz = 1, #size of title
+                    tick_pos,
+                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
 
-  # Input data --------------------------------------------------------------
 
   data <- pochains(object, params= params)
 
@@ -110,228 +132,266 @@ poplot <- function(object,
     stop('Invalid object type. Input must be mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
+  #not yet an option for user to modify
+  thin = 95 #CI for thin line
+  thick = 50 #CI for thick line
+
+
 
   # Process data ------------------------------------------------------------
 
+
   if (NCOL(data) > 1)
   {
-    if (length(quantiles) == 2 & typeof(quantiles) == 'double')
+    if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
     {
       chains <- as.data.frame(data)
-      X <- NCOL(data)
+      len <- NCOL(data)
 
       if (rank == TRUE)
       {
-          tsrt <- apply(chains, 2, median)
+          tsrt <- apply(chains, 2, median) #used to rank positions of parameter estimates
           idx <- order(tsrt, decreasing = TRUE)
       }
       if (rank == FALSE)
       {
-        idx <- X:1
+        idx <- 1:len
       }
 
-      if (missing(labels))
-      {
-        labs <- colnames(data)[idx]
-      }
-      if (!missing(labels))
-      {
-        if (is.null(labels))
-        {
-          labs <- rep('', X)
-        }
-        if (!is.null(labels))
-        {
-          if (length(labels) == X)
-          {
-            labs <- labels[idx]
-          }else
-          {
-            stop('labels length not equal to number of parameters')
-          }
-        }
-      }
 
-      mp <- suppressMessages(reshape2::melt(chains[,idx], value.name='value')) #melt
-      qdata <- apply(chains, 2, quantile, probs=quantiles)
+      thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
+      thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
+
+      thick_q <- apply(chains, 2, quantile, probs= thick_ci)[,idx]
+      thin_q <- apply(chains, 2, quantile, probs= thin_ci)[,idx]
+
+      medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
+
     }else
     {
-      stop('quantiles must be a numerical vector of length 2')
+      stop("'thick' and 'thin' must be single numbers")
     }
   }
 
   if (NCOL(data) == 1)
   {
-    if (length(quantiles)==2 & typeof(quantiles) == 'double')
+    if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
     {
       chains <- as.data.frame(data)
-      X <- NCOL(data)
-      idx <- X:1
+      len <- 1
+      idx <- 1
 
-      if (missing(labels))
-      {
-        labs <- colnames(data)[idx]
-      }
-      if (!missing(labels))
-      {
-        if (is.null(labels))
-        {
-          labs <- rep('', X)
-        }
-        if (!is.null(labels))
-        {
-          if (length(labels) == X)
-          {
-            labs <- labels[idx]
-          }else
-          {
-            stop('labels length not equal to number of parameters')
-          }
-        }
-      }
+      thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
+      thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
 
-      n_mp <- suppressMessages(reshape2::melt(chains[,idx], value.name='value')) #melt
-      mp <- data.frame(variable = rep(paste0(params), nrow(n_mp)), value = n_mp)
-      qdata <- apply(chains, 2, quantile, probs=quantiles)
+      thick_q <- as.matrix(apply(chains, 2, quantile, probs= thick_ci)[,idx])
+      thin_q <- as.matrix(apply(chains, 2, quantile, probs= thin_ci)[,idx])
+
+      medians <- apply(chains, 2, quantile, probs = 0.5)[idx]
+
+
     }else
     {
-      stop('quantiles must be a numerical vector of length 2')
-    }
-  }
-
-  # Plotting parameters -----------------------------------------------------
-
-  WID <- dbar_height #height of bar
-  H <- (dbar_t_height/2) #height of median and CI ticks
-  W <- dbar_t_width #thickness of median tick
-  W2 <- dbar_t_width #thickness of CI tick
-  MN_col <- 'black' #color of centrality tick
-  CI_col <- CI_t_color #color of CI tick
-  GCOL <- rgb(0,0,0,alpha = .5)
-  VTHICK <- ref_line_width
-  if (missing(xlab))
-  {xlab = 'Parameter Estimate'}
-
-  if(missing(main))
-  {
-    Tmain <- ''
-  }else
-  {
-    Tmain <- main
-  }
-
-  if (missing(colors))
-  {
-    COLORS <- rep('black', X)
-  }else
-  {
-    if (is.null(colors))
-    {
-      COLORS <- rep('black', X)
-    }else
-    {
-      if(length(colors) == X)
-      {
-        COLORS <- colors[idx]
-      }else
-        stop('length(colors) does not equal number of parameters to be plotted.')
+      stop("'thick' and 'thin' must be single numbers")
     }
   }
 
 
 
-  # create plot object ------------------------------------------------------
 
-    if (missing(xlim))
+# Plotting parameters -----------------------------------------------------
+
+
+#smallest size - JUST FOR REFERENCE
+#med_sz = 1 #size of median circles
+#thick_sz = 2 #thick CI thickness
+#thin_sz = 1 #thin CI thickness
+
+#standard size
+#med_sz = 1.5 #size of median circles
+#thick_sz = 5 #thick CI thickness
+#thin_sz = 2 #thin CI thickness
+
+
+#ax_sz = 3 #x-axis and tick thickness
+#x_tick_text_sz = 1.2 #x-axis tick label size
+#labels_sz = 1.2 #y-axis tick label size
+#x_axis_text_sz = 1.3 #axis label size
+
+if (missing(xlab))
+{xlab = 'Parameter Estimate'}
+if (missing(main))
+{main = ''}
+
+if (missing(labels))
+{
+  labels = names(medians)
+}else{
+  if (!missing(labels))
+  {
+    if (is.null(ylab))
     {
-
-      rpp <- lattice::bwplot(variable ~ value, data = mp,
-               xlab = list(label = xlab,cex = 1.3),
-               main = Tmain,
-               panel = function(x, y)
-               {
-                 xlist <- split(mp$value, factor(mp$variable))
-                 xlist <- split(x, factor(y))
-
-                 for (i in seq(along = xlist))
-                 {
-                   denstrip::panel.denstrip(x = xlist[[i]], at = i,
-                                            width = WID, colmax = COLORS[i], colmin = 'white')
-                 }
-
-                 if(!is.null(ref_line))
-                 {
-                   for (k in 1: length(ref_line))
-                   {
-                     panel.abline(v=ref_line[k], lty = 2, col = GCOL, lwd = VTHICK)
-                   }
-                 }
-
-               }, par.settings = list(axis.line = list(col = NA)),
-               scales=list(col = 1,cex = 1, x = list(col = 1),
-                           y = list(draw = T,labels = labs)))
-    }else
+      labels <- rep('', len)
+    }
+    if (!is.null(ylab))
     {
-      if (length(xlim)==2 & typeof(xlim) == 'double')
+      if (length(ylab) == len)
       {
-        rpp <- lattice::bwplot(variable~value,data=mp,
-                  xlab=list(label= xlab, cex=1.3),
-                  main = Tmain,
-                  xlim= xlim,
-                  panel = function(x, y)
-                  {
-                    xlist <- split(mp$value, factor(mp$variable))
-                    xlist <- split(x, factor(y))
-
-                    for (i in seq(along=xlist))
-                    {
-                      #panel.grid(h=c(0), col='grey')
-                      denstrip::panel.denstrip(x=xlist[[i]], at=i,
-                                               width= WID, colmax= COLORS[i], colmin= 'white')
-                    }
-
-                    if(!is.null(ref_line))
-                    {
-                      for (k in 1: length(ref_line))
-                      {
-                        panel.abline(v=ref_line[k], lty = 2, col = GCOL, lwd = VTHICK)
-                      }
-                    }
-
-                  }, par.settings = list(axis.line = list(col=NA)),
-                  scales=list(col=1,cex=1,x=list(col=1),
-                              y=list(draw=T,labels=labs)))
+        labs <- labels[idx]
       }else
       {
-        stop('"xlim" must be a numerical vector of length 2')
+        stop('labels length not equal to number of parameters')
       }
     }
-
-
-  print(rpp)
-
-  # Top and bottom lines ----------------------------------------------------
-
-  lattice::trellis.focus(highlight=FALSE)
-
-  x_limits <- rpp$x.limits
-  lattice::panel.lines(c(x_limits[1],x_limits[2]),c(0.4,0.4), col="black")
-  lattice::panel.lines(c(x_limits[1],x_limits[2]),c(X+.6,X+.6), col="black")
-
-  # Hashes - centrality and CI -----------------------------------------------------------
-
-
-    for (i in 1:X)
-    {
-      j <- idx[i]
-      #TMP<- X-j+1
-      TMP <- i
-
-      lattice::panel.lines(c(median(chains[,i])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
-      lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
-      lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
-    }
-
-
-  lattice::trellis.unfocus()
+  }
 }
+
+#xlab = 'Parameter Estimate' #should be changed to: if (missing(xlab)){xlab <- 'Parameter Estimate'}
+#main = '' #should be changed to : if (missing(ylab)){main <- ''}
+#labels = names(medians) #y-axis labels - should be changed to : if (missing(labels)){labels <- names(medians)}
+
+if (missing(tick_pos))
+  {tick_pos = NULL}
+if (missing(xlim))
+  {xlim = range(thin_q)*1.2}
+if (missing(ylim))
+  {ylim = c(0.5,(len)+0.5)}
+
+#tick_pos = NULL #where ticks should be placed - should be changed to: if (missing(tick_pos)){tick_pos <- NULL}
+#xlim = range(thin_q)*1.2 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.2}
+#ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
+#mar = c(5,4,4,2) #should be changed to: if (missing(mar)){mar <- c(5,4,4,2)}
+
+
+#not yet an option for user to modify
+gr_col = 'gray60' #color used for CI and medians
+ref_line_col = 'gray60' #color used for 0 line
+horizontal = TRUE
+
+
+
+# plotting ----------------------------------------------------------------
+
+
+#Determine which params have CI that overlap 0 (or ref line more technically)
+black_cl <- c() #95% CI (default) does not overlap 0
+gray_cl <- c() #50% CI (default) does not overlap 0
+white_cl <- c() #Both 50% and 95% CI (default) overlap 0
+
+for (i in 1:len)
+{
+  #i <- 1
+  if ((thin_q[1,i] > ref_line & thin_q[2,i] > ref_line) |
+      (thin_q[1,i] < ref_line & thin_q[2,i] < ref_line))
+  {
+    black_cl <- c(black_cl, i)
+  } else {
+  if ((thick_q[1,i] > ref_line & thick_q[2,i] > ref_line) |
+      (thick_q[1,i] < ref_line & thick_q[2,i] < ref_line))
+  {
+    gray_cl <- c(gray_cl, i)
+  }else {
+    white_cl <- c(white_cl, i)
+  }
+  }
+}
+
+
+
+#positions bound together to plot CI
+blk_bnd <- rbind(black_cl, black_cl)
+gry_bnd <- rbind(gray_cl, gray_cl)
+wht_bnd <- rbind(white_cl, white_cl)
+
+
+
+
+#plot for horizontal
+if (horizontal)
+{
+
+  m_char <- max(sapply(labels, nchar))
+  #variable at LEFT position to account for differing label sizes - can be altered manually
+  par(mar=c(mar[1], (1 + (m_char/2)) + (mar[2] - 4.1), mar[3], mar[4]-1))
+
+
+  #plot blank plot
+  plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
+       ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
+       xlab = xlab, cex.lab = x_axis_text_sz) #cex.lab is axis label
+       #lab #number of ticks to plot on each axis
+
+  #title
+  title(main, cex.main = main_text_sz)
+  #bottom axis params
+  axis(3, lwd.tick = ax_sz, labels = FALSE,
+       at = tick_pos, lwd = ax_sz)
+  axis(3, lwd.tick = 0, labels = FALSE,
+       at = (par('usr')*0.93), lwd = ax_sz)
+  #bottom axis params
+  axis(1, lwd.tick = ax_sz, labels = TRUE,
+       at = tick_pos, lwd = ax_sz,
+       cex.axis = x_tick_text_sz) #bottom axis
+  axis(1, lwd.tick = 0, labels = FALSE,
+       at = (par('usr')*0.93), lwd = ax_sz)
+  #left axis params (labels)
+  axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
+       labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
+       line = -1, cex.axis = labels_sz)
+
+
+  #ref line
+  abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
+
+  #Black CI
+  if (!is.null(black_cl))
+  {
+      #Thick
+      matlines(thick_q[,black_cl], blk_bnd,
+              type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+      #Thin
+      matlines(thin_q[,black_cl], blk_bnd,
+               type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+  }
+
+  #Gray CI
+  if (!is.null(gray_cl))
+  {
+      #Thick
+      matlines(thick_q[,gray_cl], gry_bnd,
+               type = 'l', lty = 1, lwd = thick_sz, col = 'gray')
+      #Thin
+      matlines(thin_q[,gray_cl], gry_bnd,
+               type = 'l', lty = 1, lwd = thin_sz, col = 'gray')
+  }
+
+  #White CI
+  if (!is.null(white_cl))
+  {
+    matlines(thick_q[,white_cl], wht_bnd,
+             type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+    matlines(thin_q[,white_cl], wht_bnd,
+             type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+  }
+
+
+  #Medians
+  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
+  points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
+  points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
+  points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+}
+
+
+
+par(mar=c(5,4,4,2) + 0.1)
+
+}
+
+
+#rename function(s) - perhaps name poplot, other can be dstplot
+#add density plots to potrace
+
+#Future
+#add vertical argument
+#look at adding stan object compatibility
