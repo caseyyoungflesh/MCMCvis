@@ -116,7 +116,6 @@
 #'
 #' @export
 
-
 poplot <- function(object,
                     params = 'all',
                     ref_line = 0,
@@ -325,52 +324,54 @@ if (horizontal)
   #ref line
   abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
 
-  #Black CI
-  if (!is.null(black_cl))
-  {
-      #Thick
-      matlines(thick_q[,black_cl], blk_bnd,
-              type = 'l', lty = 1, lwd = thick_sz, col = 'black')
-      #Thin
-      matlines(thin_q[,black_cl], blk_bnd,
-               type = 'l', lty = 1, lwd = thin_sz, col = 'black')
-  }
-
-  #Gray CI
-  if (!is.null(gray_cl))
-  {
-      #Thick
-      matlines(thick_q[,gray_cl], gry_bnd,
-               type = 'l', lty = 1, lwd = thick_sz, col = 'gray')
-      #Thin
-      matlines(thin_q[,gray_cl], gry_bnd,
-               type = 'l', lty = 1, lwd = thin_sz, col = 'gray')
-  }
-
-  #White CI
-  if (!is.null(white_cl))
-  {
-    matlines(thick_q[,white_cl], wht_bnd,
-             type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
-    matlines(thin_q[,white_cl], wht_bnd,
-             type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
-  }
-
-
   if (ref_vis == TRUE)
   {
+    #Black CI
+    if (!is.null(black_cl))
+    {
+        #Thick
+        matlines(thick_q[,black_cl], blk_bnd,
+                type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+        #Thin
+        matlines(thin_q[,black_cl], blk_bnd,
+                 type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+    }
+
+    #Gray CI
+    if (!is.null(gray_cl))
+    {
+        #Thick
+        matlines(thick_q[,gray_cl], gry_bnd,
+                 type = 'l', lty = 1, lwd = thick_sz, col = 'gray')
+        #Thin
+        matlines(thin_q[,gray_cl], gry_bnd,
+                 type = 'l', lty = 1, lwd = thin_sz, col = 'gray')
+    }
+
+    #White CI
+    if (!is.null(white_cl))
+    {
+      matlines(thick_q[,white_cl], wht_bnd,
+               type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+      matlines(thin_q[,white_cl], wht_bnd,
+               type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+    }
+
     #Medians
     points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
     points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
     points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
     points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
-  }else{
-    points(medians[c(black_cl, gray_cl, white_cl)], c(black_cl, gray_cl, white_cl), pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
-    points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
-    points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+  } else{
+    matlines(thick_q[,1:len], rbind(1:len, 1:len),
+             type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+    matlines(thin_q[,1:len], rbind(1:len, 1:len),
+             type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+    #medians
+    points(medians[1:len], 1:len, pch = 16,
+           col = 'black', cex = med_sz)
   }
-
-    }
+}
 
 par(mar=c(5,4,4,2) + 0.1)
 
