@@ -1,8 +1,8 @@
 #' Plot MCMC chains to check for convergence
 #'
 #' Plot MCMC chains for specific parameters of interest. Option to print trace plots
-#' to pdf output, which greater increases review efficiency with large numbers of
-#' parameters.
+#' to pdf output.
+#'
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.
@@ -12,10 +12,12 @@
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param wd Working directory for pdf output. Default is current directory.
 #' @section Details:
+#'
+#' Plots created similar to that of \code{traceplot} from the \code{coda} package.
+#'
 #' \code{object} argument can be an \code{mcmc.list} object or an \code{R2jags} model object (output from the \code{R2jags}
 #' package).
 #'
-#' @return Function returns trace plots for specified parameters. Output can be printed to pdf if specified.
 #'
 #' @examples
 #' #Load data
@@ -30,9 +32,15 @@
 #' @export
 
 
+potrace(MCMC_data,
+        pdf = TRUE,
+        filename = 'TEST')
+
+
 potrace <- function(object,
                     params = 'all',
                     pdf = FALSE,
+                    filename,
                     wd = getwd())
 {
   if(coda::is.mcmc.list(object) == TRUE)
@@ -93,7 +101,13 @@ potrace <- function(object,
   if(pdf == TRUE)
   {
     setwd(wd)
-    pdf(file= 'potrace.pdf')
+    if(missing(filename))
+    {
+      file_out <- 'potrace.pdf'
+    }else{
+      file_out <- paste0(filename,'.pdf')
+    }
+    pdf(file= file_out)
   }
 
   layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
@@ -112,16 +126,18 @@ potrace <- function(object,
   {
     #chains
     tmlt <- do.call('cbind', temp[,g_filt[j]])
-    matplot(it, tmlt, lty= 1, type='l', main = paste0(names[g_filt[j]]),
+    matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
             col= rgb(red= gg_cols[1,], green= gg_cols[2,],
                      blue= gg_cols[3,], alpha = 0.6),
             xlab= 'Iteration', ylab= 'Value')
     #density plot
-
+    plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
+         lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
   }
 
   if(pdf == TRUE)
   {
     invisible(dev.off())
+    system(paste0('open ', paste0('"', file_out, '"')))
   }
 }
