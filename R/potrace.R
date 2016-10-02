@@ -1,4 +1,4 @@
-#' Trace and density plots of MCMC chains
+#' Trace and density plots from MCMC output
 #'
 #' Trace plots and density plots of MCMC chains for specific parameters of interest. Option to
 #' print plots to pdf.

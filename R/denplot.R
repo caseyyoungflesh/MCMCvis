@@ -1,6 +1,6 @@
-#' Plot posterior distributions from MCMC output
+#' Density strip plots of posterior distributions from MCMC output
 #'
-#' Plot the posterior distributions from MCMC output for specific parameters of interest using density
+#' Visualize posterior distributions from MCMC output for specific parameters of interest using density
 #' strips. Medians and credible intervals are indicated by ticks on density strips.
 #'
 #'

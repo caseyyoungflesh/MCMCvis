@@ -1,7 +1,8 @@
-#' Plot posterior distributions from MCMC output - VERSION 2
+#' Caterpillar plots of posterior distributions from MCMC output
 #'
-#' Plot the posterior distributions from MCMC output for specific parameters of interest. All posterior
-#' parameter estimates are plotted as a caterpillar plot.
+#' Visualize posterior distributions from MCMC output for specific parameters of interest using
+#' caterpillar plots. Color of median dot represents relationship of parameter to reference line
+#' (default is 0; see DETAILS below).
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
@@ -54,6 +55,10 @@
 #'
 #' @param main_text_sz Number specifying size of text for main title.
 #'
+#' @param ref_vis Logical specifying whether the style of median dots plotted should be changed
+#' based on whether the 50% and 95% credible intervals overlap the reference line. See DETAILS
+#' for more information.
+#'
 #' @param tick_pos Numeric vector specifying where ticks on x-axis should be placed.
 #'
 #' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
@@ -67,6 +72,8 @@
 #' intervals do not overlap 0 and 95 percent credible intervals do overlap 0 are indicated by 'closed' grey circles.
 #' Parameters which 95 percent credible intervals do not overlap 0 are indicated by 'closed' black circles. Thick
 #' lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
+#' \code{ref_vis = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black
+#' circles.
 #'
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
@@ -119,14 +126,15 @@ poplot <- function(object,
                     xlab,
                     main,
                     labels,
-                    labels_sz = 1.2,#y-axis tick label size
-                    med_sz = 1.5, #median dot size
-                    thick_sz = 5, #thick (50%) CI thickness
-                    thin_sz = 2, #thin (95%) CI thickness
-                    ax_sz = 3, #x-axis and tick thickness
-                    x_axis_text_sz = 1.3, #x-axis label size
-                    x_tick_text_sz = 1.2, #x-axis tick label size
-                    main_text_sz = 1, #size of title
+                    labels_sz = 1.2,
+                    med_sz = 1.5,
+                    thick_sz = 5,
+                    thin_sz = 2,
+                    ax_sz = 3,
+                    x_axis_text_sz = 1.3,
+                    x_tick_text_sz = 1.2,
+                    main_text_sz = 1,
+                    ref_vis = TRUE,
                     tick_pos,
                     mar = c(5.1, 4.1, 4.1, 2.1))
 {
@@ -145,10 +153,7 @@ poplot <- function(object,
   thin = 95 #CI for thin line
   thick = 50 #CI for thick line
 
-
-
   # Process data ------------------------------------------------------------
-
 
   if (NCOL(data) > 1)
   {
@@ -205,27 +210,12 @@ poplot <- function(object,
     }
   }
 
-
-
-
 # Plotting parameters -----------------------------------------------------
-
 
 #smallest size - JUST FOR REFERENCE
 #med_sz = 1 #size of median circles
 #thick_sz = 2 #thick CI thickness
 #thin_sz = 1 #thin CI thickness
-
-#standard size
-#med_sz = 1.5 #size of median circles
-#thick_sz = 5 #thick CI thickness
-#thin_sz = 2 #thin CI thickness
-
-
-#ax_sz = 3 #x-axis and tick thickness
-#x_tick_text_sz = 1.2 #x-axis tick label size
-#labels_sz = 1.2 #y-axis tick label size
-#x_axis_text_sz = 1.3 #axis label size
 
 if (missing(xlab))
 {xlab = 'Parameter Estimate'}
@@ -255,10 +245,6 @@ if (missing(labels))
   }
 }
 
-#xlab = 'Parameter Estimate' #should be changed to: if (missing(xlab)){xlab <- 'Parameter Estimate'}
-#main = '' #should be changed to : if (missing(ylab)){main <- ''}
-#labels = names(medians) #y-axis labels - should be changed to : if (missing(labels)){labels <- names(medians)}
-
 if (missing(tick_pos))
   {tick_pos = NULL}
 if (missing(xlim))
@@ -266,21 +252,13 @@ if (missing(xlim))
 if (missing(ylim))
   {ylim = c(0.5,(len)+0.5)}
 
-#tick_pos = NULL #where ticks should be placed - should be changed to: if (missing(tick_pos)){tick_pos <- NULL}
-#xlim = range(thin_q)*1.2 #should be changed to: if (missing(xlim)){xlim <- range(thin_q)*1.2}
-#ylim = c(0.5,(len) + 0.5) #should be changed to: if (missing(ylim)){ylim <- c(0.5,(len)+0.5)}
-#mar = c(5,4,4,2) #should be changed to: if (missing(mar)){mar <- c(5,4,4,2)}
-
 
 #not yet an option for user to modify
 gr_col = 'gray60' #color used for CI and medians
 ref_line_col = 'gray60' #color used for 0 line
 horizontal = TRUE
 
-
-
 # plotting ----------------------------------------------------------------
-
 
 #Determine which params have CI that overlap 0 (or ref line more technically)
 black_cl <- c() #95% CI (default) does not overlap 0
@@ -305,15 +283,10 @@ for (i in 1:len)
   }
 }
 
-
-
 #positions bound together to plot CI
 blk_bnd <- rbind(black_cl, black_cl)
 gry_bnd <- rbind(gray_cl, gray_cl)
 wht_bnd <- rbind(white_cl, white_cl)
-
-
-
 
 #plot for horizontal
 if (horizontal)
@@ -384,23 +357,21 @@ if (horizontal)
   }
 
 
-  #Medians
-  points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
-  points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
-  points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
-  points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
-}
+  if (ref_vis == TRUE)
+  {
+    #Medians
+    points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
+    points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
+    points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
+    points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+  }else{
+    points(medians[c(black_cl, gray_cl, white_cl)], c(black_cl, gray_cl, white_cl), pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
+    points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
+    points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+  }
 
-
+    }
 
 par(mar=c(5,4,4,2) + 0.1)
 
 }
-
-
-#rename function(s) - perhaps name poplot, other can be dstplot
-#add density plots to potrace
-
-#Future
-#add vertical argument
-#look at adding stan object compatibility
