@@ -13,7 +13,7 @@ posummary(object, params = "all", Rhat = TRUE)
 returned in summary output. Partial names may be used to return all parameters containing
 that set of characters.
 
-Default \code{all} returns all parameters in summary output.}
+Default \code{'all'} returns all parameters in summary output.}
 
 \item{Rhat}{If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
 and if \code{FALSE}, Rhat output is masked.}

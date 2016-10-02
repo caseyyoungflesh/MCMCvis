@@ -2,7 +2,7 @@
 % Please edit documentation in R/denplot.R
 \name{denplot}
 \alias{denplot}
-\title{Plot posterior distributions from MCMC output}
+\title{Density strip plots of posterior distributions from MCMC output}
 \usage{
 denplot(object, params = "all", ref_line = 0, ref_line_width = 1,
   quantiles = c(0.025, 0.975), rank = FALSE, xlim, xlab, main, labels,
@@ -15,7 +15,7 @@ denplot(object, params = "all", ref_line = 0, ref_line_width = 1,
 \item{params}{Character string (or vector of character strings) denoting parameters to be
 plotted. Partial names may be used to plot all parameters containing that set of characters.
 
-Default \code{all} plots posteriors for all parameters. See VALUE below.
+Default \code{'all'} plots posteriors for all parameters. See VALUE below.
 
 Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
@@ -61,7 +61,7 @@ all parameters.}
 \item{CI_t_color}{Color of credible interval ticks.}
 }
 \description{
-Plot the posterior distributions from MCMC output for specific parameters of interest using density
+Visualize posterior distributions from MCMC output for specific parameters of interest using density
 strips. Medians and credible intervals are indicated by ticks on density strips.
 }
 \section{Details}{

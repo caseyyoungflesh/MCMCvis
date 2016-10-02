@@ -2,9 +2,9 @@
 % Please edit documentation in R/potrace.R
 \name{potrace}
 \alias{potrace}
-\title{Plot MCMC chains to check for convergence}
+\title{Trace and density plots from MCMC output}
 \usage{
-potrace(object, params = "all", pdf = FALSE, wd = getwd())
+potrace(object, params = "all", pdf = FALSE, filename, wd = getwd())
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -12,21 +12,21 @@ potrace(object, params = "all", pdf = FALSE, wd = getwd())
 \item{params}{Character string (or vector of character strings) denoting parameters of interest.
 Partial names may be used to return all parameters containing that set of characters.
 
-Default \code{all} returns chains for all parameters.}
+Default \code{'all'} returns chains for all parameters.}
 
 \item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
 
 \item{wd}{Working directory for pdf output. Default is current directory.}
-}
-\value{
-Function returns trace plots for specified parameters. Output can be printed to pdf if specified.
+
+\item{fielname}{Name of pdf file to be printed.}
 }
 \description{
-Plot MCMC chains for specific parameters of interest. Option to print trace plots
-to pdf output, which greater increases review efficiency with large numbers of
-parameters.
+Trace plots and density plots of MCMC chains for specific parameters of interest. Option to
+print plots to pdf.
 }
 \section{Details}{
+
+Plots created similar to that of \code{traceplot} from \code{coda} package.
 
 \code{object} argument can be an \code{mcmc.list} object or an \code{R2jags} model object (output from the \code{R2jags}
 package).
@@ -39,7 +39,7 @@ data(MCMC_data)
 potrace(MCMC_data, params='beta')
 
 #Print traceplot output to pdf
-potrace(MCMC_data, pdf= TRUE)
+potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
 
 }
 

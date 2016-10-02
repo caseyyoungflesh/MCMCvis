@@ -2,12 +2,12 @@
 % Please edit documentation in R/poplot.R
 \name{poplot}
 \alias{poplot}
-\title{Plot posterior distributions from MCMC output - VERSION 2}
+\title{Caterpillar plots of posterior distributions from MCMC output}
 \usage{
 poplot(object, params = "all", ref_line = 0, rank = FALSE, xlim, ylim,
   xlab, main, labels, labels_sz = 1.2, med_sz = 1.5, thick_sz = 5,
   thin_sz = 2, ax_sz = 3, x_axis_text_sz = 1.3, x_tick_text_sz = 1.2,
-  main_text_sz = 1, tick_pos, mar = c(5.1, 4.1, 4.1, 2.1))
+  main_text_sz = 1, ref_vis = TRUE, tick_pos, mar = c(5.1, 4.1, 4.1, 2.1))
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -15,7 +15,7 @@ poplot(object, params = "all", ref_line = 0, rank = FALSE, xlim, ylim,
 \item{params}{Character string (or vector of character strings) denoting parameters to be
 plotted. Partial names may be used to plot all parameters containing that set of characters.
 
-Default \code{all} plots posteriors for all parameters. See VALUE below.
+Default \code{'all'} plots posteriors for all parameters. See VALUE below.
 
 Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.}
 
@@ -63,6 +63,10 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 
 \item{main_text_sz}{Number specifying size of text for main title.}
 
+\item{ref_vis}{Logical specifying whether the style of median dots plotted should be changed
+based on whether the 50% and 95% credible intervals overlap the reference line. See DETAILS
+for more information.}
+
 \item{tick_pos}{Numeric vector specifying where ticks on x-axis should be placed.}
 
 \item{mar}{Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
@@ -71,8 +75,9 @@ Changes to the margin should be made within the function rather than using the \
 Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.}
 }
 \description{
-Plot the posterior distributions from MCMC output for specific parameters of interest. All posterior
-parameter estimates are plotted as a caterpillar plot.
+Visualize posterior distributions from MCMC output for specific parameters of interest using
+caterpillar plots. Color of median dot represents relationship of parameter to reference line
+(default is 0; see DETAILS below).
 }
 \section{Details}{
 
@@ -81,6 +86,8 @@ which 50 percent credible intervals overlap 0 are indicated by 'open' circles. P
 intervals do not overlap 0 and 95 percent credible intervals do overlap 0 are indicated by 'closed' grey circles.
 Parameters which 95 percent credible intervals do not overlap 0 are indicated by 'closed' black circles. Thick
 lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
+\code{ref_vis = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black
+circles.
 
 \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows

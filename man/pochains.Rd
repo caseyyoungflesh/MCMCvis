@@ -12,7 +12,7 @@ pochains(object, params = "all")
 \item{params}{Character string (or vector of character strings) denoting parameters of interest.
 Partial names may be used to return all parameters containing that set of characters.
 
-Default \code{all} returns chains for all parameters.}
+Default \code{'all'} returns chains for all parameters.}
 }
 \value{
 Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
