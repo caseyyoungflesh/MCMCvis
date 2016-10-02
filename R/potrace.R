@@ -108,6 +108,8 @@ potrace <- function(object,
     }
   }
 
+  .pardefault <- par(no.readonly = T)
+
   layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
   par(mar=c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
   par(mgp=c(2.5,1,0)) #axis text distance
@@ -138,4 +140,5 @@ potrace <- function(object,
     invisible(dev.off())
     system(paste0('open ', paste0('"', file_out, '"')))
   }
+  par(.pardefault)
 }
