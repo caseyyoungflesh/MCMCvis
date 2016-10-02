@@ -15,9 +15,10 @@ vignette: >
 The package currently contains four functions:
 
 - `posummary` - summarize MCMC output for particular parameters of interest
-- `potrace` - plot MCMC chains for particular parameters of interest to check for convergence
+- `potrace` - create trace plotsMCMC chains for particular parameters of interest
 - `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
-- `poplot` - plot posterior distributions from MCMC output for particular parameters of interest
+- `poplot` - create caterpillar plots from MCMC output for particular parameters of interest
+- `denplot` - create density strip plot from MCMC output for particular parameters of interest
 
 While several packages currently exist to evaluate MCMC output, they do not support simple subsetting of model parameters and/or do not provide an option to properly visualize MCMC output, particularly with large numbers of parameters. `potools` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. 
 
@@ -59,11 +60,10 @@ posummary(MCMC_data, params = 'beta[1]')
 
 ## potrace
 
-`potrace` is used to plot trace plots to check for MCMC chain convergence. Particular parameters can also be specified, as with `posummary`.
+`potrace` is used to create trace and density plots for MCMC output. Particular parameters can also be specified, as with `posummary`.
 
 ```{r, fig.width=5, fig.height=6}
-potrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]', 
-                              'beta[4]', 'beta[5]', 'beta[6]'))
+potrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]'))
 ```
 
 &nbsp;
@@ -72,7 +72,7 @@ potrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]',
 Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. pdf document will be output to the current working directory by default, but another directory can be specified.
 
 ```{r, eval=FALSE}
-potrace(MCMC_data, pdf = TRUE, wd = 'DIRECTORY HERE')
+potrace(MCMC_data, pdf = TRUE, filename = 'MYpdf', wd = 'DIRECTORY HERE')
 ```
 
 &nbsp;
@@ -94,10 +94,33 @@ apply(ex, 2, mean)
 
 ## poplot
 
-`poplot` is used to plot density strips for MCMC output. Black ticks are used to specify posterior mean or median (depending on input for `centrality` argument), while grey ticks specify credible intervals (95% CI by default).
+`poplot` is used to create caterpillar plots from MCMC ouput. Points represent posterior medians. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters which 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. Parameters which 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
+
+As with the other functions in the package, particular parameters of interest can be specified.
 
 ```{r, fig.width=5, fig.height=6}
-poplot(MCMC_data, ylab = NULL)
+poplot(MCMC_data, params = 'beta')
+```
+
+
+`ref_vis = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles.
+
+```{r, fig.width=5, fig.height=6}
+poplot(MCMC_data, params = 'beta', ref_vis = FALSE)
+```
+
+&nbsp;
+
+**For more information see `?poplot`**
+
+&nbsp;
+
+## denplot
+
+`denplot` is used to plot density strips from MCMC output. Black ticks are used to specify posterior mean or median (depending on input for `centrality` argument), while grey ticks specify credible intervals (95% CI by default).
+
+```{r, fig.width=5, fig.height=6}
+denplot(MCMC_data, labels = NULL)
 ```
 
 &nbsp;
@@ -107,7 +130,7 @@ poplot(MCMC_data, ylab = NULL)
 Specific parameters can be specified.
 
 ```{r, fig.width=5, fig.height=6}
-poplot(MCMC_data, params = 'beta')
+denplot(MCMC_data, params = 'beta')
 ```
 
 &nbsp;
@@ -116,9 +139,8 @@ poplot(MCMC_data, params = 'beta')
 Parameters can be ranked by posterior mean (or median) estimates using the `rank` argument.
 
 ```{r, fig.width=5, fig.height=6}
-poplot(MCMC_data, params = 'beta', rank = TRUE)
+denplot(MCMC_data, params = 'beta', rank = TRUE)
 ```
-
 
 &nbsp;
 
@@ -131,34 +153,33 @@ hues <- seq(15, 375, length = n + 1)
 ggcolors <- hcl(h = hues, l = 65, c = 100)[1:n]
 
 #plot
-poplot(MCMC_data, params = 'beta', colors = ggcolors)
+denplot(MCMC_data, params = 'beta', colors = ggcolors)
 ```
 
 
 &nbsp;
 
-A vertical guideline at 0 is plotted by default, but can be removed with `g_line = NULL`. Multiple guidelines can be plotted by concatenating argument input.
+A vertical guideline at 0 is plotted by default, but can be removed with `ref_line = NULL`. Multiple guidelines can be plotted by concatenating argument input.
 
 Graphical parameters for x-axis limitation, axis labels, title, guidline thickness, density bar height, density bar tick height and width, and credible interval tick color can also be specified.
 
 ```{r, fig.width=5, fig.height=6}
-poplot(MCMC_data, params = c('alpha[4]', 'beta[4]', 'gamma[7]'), 
-       g_line = c(-20, 0, 20, 40),
-       g_line_width = 3,
+denplot(MCMC_data, params = c('alpha[4]', 'beta[4]', 'gamma[7]'), 
+       ref_line = c(-20, 0, 20, 40),
+       ref_line_width = 3,
        xlim = c(-50, 25),
        xlab = 'Posterior estimates',
-       ylab= c('An alpha parameter', 'A beta parameter', 'A gamma parameter'), 
        main = 'potools plot',
+       labels = c('An alpha parameter', 'A beta parameter', 'A gamma parameter'), 
        dbar_height = 0.6,
        dbar_t_height = 0.7,
        dbar_t_width = 5,
        CI_t_color = 'grey99')
 ```
 
-
 &nbsp;
 
-**For more information see `?poplot`**
+**For more information see `?denplot`**
 
 &nbsp;
 
