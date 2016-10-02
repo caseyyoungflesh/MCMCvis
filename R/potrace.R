@@ -12,12 +12,10 @@
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param wd Working directory for pdf output. Default is current directory.
 #' @section Details:
-#'
-#' Plots created similar to that of \code{traceplot} from the \code{coda} package.
+#' Plots created similar to that of \code{traceplot} from \code{coda} package.
 #'
 #' \code{object} argument can be an \code{mcmc.list} object or an \code{R2jags} model object (output from the \code{R2jags}
 #' package).
-#'
 #'
 #' @examples
 #' #Load data
@@ -30,11 +28,6 @@
 #' potrace(MCMC_data, pdf= TRUE)
 #'
 #' @export
-
-
-potrace(MCMC_data,
-        pdf = TRUE,
-        filename = 'TEST')
 
 
 potrace <- function(object,
@@ -105,7 +98,7 @@ potrace <- function(object,
     {
       file_out <- 'potrace.pdf'
     }else{
-      file_out <- paste0(filename,'.pdf')
+      file_out <- paste0(filename, '.pdf')
     }
     pdf(file= file_out)
   }
