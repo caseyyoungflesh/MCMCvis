@@ -10,6 +10,7 @@
 #' Default \code{'all'} returns chains for all parameters.
 #'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
+#' @param fielname Name of pdf file to be printed.
 #' @param wd Working directory for pdf output. Default is current directory.
 #' @section Details:
 #' Plots created similar to that of \code{traceplot} from \code{coda} package.
@@ -25,10 +26,9 @@
 #' potrace(MCMC_data, params='beta')
 #'
 #' #Print traceplot output to pdf
-#' potrace(MCMC_data, pdf= TRUE)
+#' potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
 #'
 #' @export
-
 
 potrace <- function(object,
                     params = 'all',
@@ -98,9 +98,14 @@ potrace <- function(object,
     {
       file_out <- 'potrace.pdf'
     }else{
-      file_out <- paste0(filename, '.pdf')
-    }
+      if(grepl('pdf', filename))
+      {
+        file_out <- paste0(filename)
+      }else{
+        file_out <- paste0(filename, '.pdf')
+      }
     pdf(file= file_out)
+    }
   }
 
   layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
