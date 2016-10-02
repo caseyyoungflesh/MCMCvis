@@ -8,7 +8,7 @@
 #' @param params Character string (or vector of character strings) denoting parameters to be
 #' plotted. Partial names may be used to plot all parameters containing that set of characters.
 #'
-#' Default \code{all} plots posteriors for all parameters. See VALUE below.
+#' Default \code{'all'} plots posteriors for all parameters. See VALUE below.
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
 #'

@@ -6,7 +6,7 @@
 #' @param params Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.
 #'
-#' Default \code{all} returns chains for all parameters.
+#' Default \code{'all'} returns chains for all parameters.
 
 #' @section Details:
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}

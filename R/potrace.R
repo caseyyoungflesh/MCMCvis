@@ -1,13 +1,13 @@
-#' Plot MCMC chains to check for convergence
+#' Trace and density plots of MCMC chains
 #'
-#' Plot MCMC chains for specific parameters of interest. Option to print trace plots
-#' to pdf output.
+#' Trace plots and density plots of MCMC chains for specific parameters of interest. Option to
+#' print plots to pdf.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.
 #'
-#' Default \code{all} returns chains for all parameters.
+#' Default \code{'all'} returns chains for all parameters.
 #'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param wd Working directory for pdf output. Default is current directory.
