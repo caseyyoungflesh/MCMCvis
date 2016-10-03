@@ -14,6 +14,8 @@
 #' @param wd Working directory for pdf output. Default is current directory.
 #' @param type Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
 #' outputs only trace plots, and \code{'density'} outputs only density plots.
+#' @param ind Logical - if \code{ind = TRUE}, different lines will be plotted for each chain. If
+#' \code{ind= FALSE}, one line will be plotted for all chains.
 #' @section Details:
 #' Plots created similar to that of \code{traceplot} from \code{coda} package.
 #'
@@ -37,7 +39,8 @@ potrace <- function(object,
                     pdf = FALSE,
                     filename,
                     wd = getwd(),
-                    type = 'both')
+                    type = 'both',
+                    ind = FALSE)
 {
 
   if(typeof(object) == 'S4')
@@ -133,15 +136,37 @@ potrace <- function(object,
   {
     for (j in 1: length(g_filt))
     {
-      #chains
+      #trace
       tmlt <- do.call('cbind', temp[,g_filt[j]])
       matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
               col= rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = 0.6),
               xlab= 'Iteration', ylab= 'Value')
-      #density plot
-      plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
-           lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
+      if (ind == TRUE & n_chains > 1)
+      {
+        dens <- apply(tmlt, 2, density)
+        max_den <- c()
+        for (k in 1:NCOL(tmlt))
+        {
+          max_den <- c(max_den, max(dens[[k]]$y))
+        }
+        ylim <- c(0, max(max_den))
+
+        plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
+             lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]),
+             col = rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
+
+        for (l in 2:NCOL(tmlt))
+        {
+          lines(dens[[l]],
+                col = rgb(red= gg_cols[1,l], green= gg_cols[2,l],
+                          blue= gg_cols[3,l]))
+        }
+      }else{
+        #density plot
+        plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
+             lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
+      }
     }
   }
 
@@ -162,10 +187,34 @@ potrace <- function(object,
   {
     for (j in 1: length(g_filt))
     {
-      #density plot
+      #trace
       tmlt <- do.call('cbind', temp[,g_filt[j]])
-      plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
-           lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
+
+      if (ind == TRUE & n_chains > 1)
+      {
+        dens <- apply(tmlt, 2, density)
+        max_den <- c()
+        for (k in 1:NCOL(tmlt))
+        {
+          max_den <- c(max_den, max(dens[[k]]$y))
+        }
+        ylim <- c(0, max(max_den))
+
+        plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
+             lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]),
+             col = rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
+
+        for (l in 2:NCOL(tmlt))
+        {
+          lines(dens[[l]],
+                col = rgb(red= gg_cols[1,l], green= gg_cols[2,l],
+                          blue= gg_cols[3,l]))
+        }
+      }else{
+        #density plot
+        plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
+             lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
+      }
     }
   }
 
