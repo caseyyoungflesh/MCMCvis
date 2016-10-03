@@ -4,7 +4,10 @@ export(pochains)
 export(poplot)
 export(posummary)
 export(potrace)
+
+importFrom("coda", "is.mcmc.list", "as.mcmc.list", "mcmc")
+importFrom("rstan", "As.mcmc.list")
 importFrom("grDevices", "col2rgb", "dev.off", "hcl", "rgb")
-importFrom("graphics", "abline", "axis", "layout", "matlines",
-             "matplot", "par", "plot", "points", "strwidth", "title")
-importFrom("stats", "density", "median", "quantile")
+importFrom("graphics", "abline", "axis", "layout", "lines", "matlines",
+             "matplot", "plot", "points", "strwidth", "title")
+importFrom("stats", "density", "median", "na.omit", "quantile")

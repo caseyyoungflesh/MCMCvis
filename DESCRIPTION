@@ -6,7 +6,7 @@ Author: Casey Youngflesh
 Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
 Description: The potools package assists with manipulating and summarizing MCMC output (including
     parameter estimate extraction, chain extraction, and visualizing posterior distributions). MCMC output
-    may be derived from Bayesian model ouput fit wit JAGS or other MCMC samplers.
+    may be derived from Bayesian model ouput fit with Stan, JAGS, or other MCMC samplers.
 License: GPL-3
 URL: http://github.com/caseyyoungflesh/potools
 BugReports: http://github.com/caseyyoungflesh/potools/issues
