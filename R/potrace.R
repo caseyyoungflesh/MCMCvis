@@ -12,11 +12,13 @@
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param filename Name of pdf file to be printed.
 #' @param wd Working directory for pdf output. Default is current directory.
+#' @param type Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
+#' outputs only trace plots, and \code{'density'} outputs only density plots.
 #' @section Details:
 #' Plots created similar to that of \code{traceplot} from \code{coda} package.
 #'
-#' \code{object} argument can be an \code{mcmc.list} object or an \code{R2jags} model object (output from the \code{R2jags}
-#' package).
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
+#' (\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package).
 #'
 #' @examples
 #' #Load data
@@ -34,8 +36,14 @@ potrace <- function(object,
                     params = 'all',
                     pdf = FALSE,
                     filename,
-                    wd = getwd())
+                    wd = getwd(),
+                    type = 'both')
 {
+
+  if(typeof(object) == 'S4')
+  {
+    temp <- rstan::As.mcmc.list(object)
+  }
   if(coda::is.mcmc.list(object) == TRUE)
   {
     temp <- object
@@ -54,9 +62,9 @@ potrace <- function(object,
     }
     temp <- as.mcmc.list(mclis)
   }
-  if(coda::is.mcmc.list(object) == FALSE & typeof(object) != 'list')
+  if(coda::is.mcmc.list(object) == FALSE & typeof(object) != 'list' & typeof(object) != 'S4')
   {
-    stop('Invalid input type. Object must be of type mcmc.list or R2jags output.')
+    stop('Invalid input type. Object must be of type stanfit, mcmc.list, or R2jags.')
   }
 
   names <- colnames(temp[[1]])
@@ -121,19 +129,51 @@ potrace <- function(object,
   colors <- gg_color_hue(n_chains)
   gg_cols <- col2rgb(colors)/255
 
-
-  for (j in 1: length(g_filt))
+  if (type == 'both')
   {
-    #chains
-    tmlt <- do.call('cbind', temp[,g_filt[j]])
-    matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
-            col= rgb(red= gg_cols[1,], green= gg_cols[2,],
-                     blue= gg_cols[3,], alpha = 0.6),
-            xlab= 'Iteration', ylab= 'Value')
-    #density plot
-    plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
-         lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
+    for (j in 1: length(g_filt))
+    {
+      #chains
+      tmlt <- do.call('cbind', temp[,g_filt[j]])
+      matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
+              col= rgb(red= gg_cols[1,], green= gg_cols[2,],
+                       blue= gg_cols[3,], alpha = 0.6),
+              xlab= 'Iteration', ylab= 'Value')
+      #density plot
+      plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
+           lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
+    }
   }
+
+  if (type == 'trace')
+  {
+    for (j in 1: length(g_filt))
+    {
+      #chains
+      tmlt <- do.call('cbind', temp[,g_filt[j]])
+      matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
+              col= rgb(red= gg_cols[1,], green= gg_cols[2,],
+                       blue= gg_cols[3,], alpha = 0.6),
+              xlab= 'Iteration', ylab= 'Value')
+    }
+  }
+
+  if (type == 'density')
+  {
+    for (j in 1: length(g_filt))
+    {
+      #density plot
+      tmlt <- do.call('cbind', temp[,g_filt[j]])
+      plot(density(rbind(tmlt)), xlab = 'Parameter estimate',
+           lty = 1, lwd = 1, main = paste0('Density - ', names[g_filt[j]]))
+    }
+  }
+
+  if (type != 'both' & type != 'density' & type != 'trace')
+  {
+    stop('Invalid argument for "type". Valid inputs are "both", "trace", and "density".')
+  }
+
 
   if(pdf == TRUE)
   {
