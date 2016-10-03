@@ -12,9 +12,9 @@
 #' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
 #' parameter are combined to one posterior chain.
 #'
-#' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
-#' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
-#' representing iterations in the chain).
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
+#' (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
+#' chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
 #'
 #'
 #' @examples
@@ -35,6 +35,15 @@
 pochains <- function(object,
                      params = 'all')
 {
+
+    if(typeof(object) == 'S4')
+    {
+      temp_in <- rstan::As.mcmc.list(object)
+      names <- colnames(temp_in[[1]])
+
+      temp <- do.call('rbind', temp_in)
+    }
+
     if(coda::is.mcmc.list(object) == TRUE)
     {
       temp_in <- object
@@ -54,6 +63,16 @@ pochains <- function(object,
       temp <- object$BUGSoutput$sims.matrix
       names <- colnames(temp)
     }
+
+
+  if(coda::is.mcmc.list(object) != TRUE &
+     typeof(object) != 'double' &
+     typeof(object) != 'list' &
+     typeof(object) != 'S4')
+  {
+    stop('Invalid object type. Input must be stanfit object (rstan), mcmc.list object (coda),
+         rjags object (R2jags), or matrix with MCMC chains.')
+  }
 
   if (length(params) == 1)
   {
