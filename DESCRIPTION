@@ -3,7 +3,7 @@ Type: Package
 Title: Tools to manipulate and summarize MCMC output
 Version: 0.6.0
 Author: Casey Youngflesh
-Maintainer: Casey Youngflesh <casey.youngflesh@stonybrook.edu>
+Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
 Description: The potools package assists with manipulating and summarizing MCMC output (including
     parameter estimate extraction, chain extraction, and visualizing posterior distributions). MCMC output
     may be derived from Bayesian model ouput fit wit JAGS or other MCMC samplers.
