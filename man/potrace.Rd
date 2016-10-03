@@ -4,16 +4,23 @@
 \alias{potrace}
 \title{Trace and density plots from MCMC output}
 \usage{
-potrace(object, params = "all", pdf = FALSE, filename, wd = getwd(),
-  type = "both")
+potrace(object, par = "all", excl = NULL, iter_st = 1, pdf = FALSE,
+  filename, wd = getwd(), type = "both", ind = FALSE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
 
-\item{params}{Character string (or vector of character strings) denoting parameters of interest.
+\item{par}{Character string (or vector of character strings) denoting parameters of interest.
 Partial names may be used to return all parameters containing that set of characters.
 
 Default \code{'all'} returns chains for all parameters.}
+
+\item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
+Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+conjunction with \code{par} argument to select parameters of interest.}
+
+\item{iter_st}{Starting point in chain for trace and density plots. Default is 1, meaning
+the entire chain is plotted.}
 
 \item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
 
@@ -23,6 +30,9 @@ Default \code{'all'} returns chains for all parameters.}
 
 \item{type}{Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
 outputs only trace plots, and \code{'density'} outputs only density plots.}
+
+\item{ind}{Logical - if \code{ind = TRUE}, different lines will be plotted for each chain. If
+\code{ind= FALSE}, one line will be plotted for all chains.}
 }
 \description{
 Trace plots and density plots of MCMC chains for specific parameters of interest. Option to
@@ -40,7 +50,7 @@ Plots created similar to that of \code{traceplot} from \code{coda} package.
 data(MCMC_data)
 
 #Traceplot for all 'beta' parameters
-potrace(MCMC_data, params='beta')
+potrace(MCMC_data, par='beta')
 
 #Print traceplot output to pdf
 potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')

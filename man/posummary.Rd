@@ -4,16 +4,20 @@
 \alias{posummary}
 \title{Summary function for MCMC output}
 \usage{
-posummary(object, params = "all", Rhat = TRUE)
+posummary(object, par = "all", excl = NULL, Rhat = TRUE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
 
-\item{params}{Character string (or vector of character strings) denoting parameters to be
+\item{par}{Character string (or vector of character strings) denoting parameters to be
 returned in summary output. Partial names may be used to return all parameters containing
 that set of characters.
 
 Default \code{'all'} returns all parameters in summary output.}
+
+\item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
+Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+conjunction with \code{par} argument to select parameters of interest.}
 
 \item{Rhat}{If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
 and if \code{FALSE}, Rhat output is masked.}
@@ -46,10 +50,10 @@ data(MCMC_data)
 posummary(MCMC_data)
 
 #Just 'beta' parameters
-posummary(MCMC_data, params= 'beta')
+posummary(MCMC_data, par= 'beta')
 
 #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-posummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+posummary(MCMC_data, par= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 
 }
 

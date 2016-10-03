@@ -4,15 +4,19 @@
 \alias{pochains}
 \title{Extract posterior chains from MCMC output}
 \usage{
-pochains(object, params = "all")
+pochains(object, par = "all", excl = NULL)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
 
-\item{params}{Character string (or vector of character strings) denoting parameters of interest.
+\item{par}{Character string (or vector of character strings) denoting parameters of interest.
 Partial names may be used to return all parameters containing that set of characters.
 
 Default \code{'all'} returns chains for all parameters.}
+
+\item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
+Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+conjunction with \code{par} argument to select parameters of interest.}
 }
 \description{
 Extract posterior chains from MCMC output for specific parameters of interest.
@@ -35,7 +39,7 @@ ex <- pochains(MCMC_data)
 apply(ex, 2, mean)
 
 #Extract MCMC chains for just 'beta' parameters
-ex2 <- pochains(MCMC_data, params='beta')
+ex2 <- pochains(MCMC_data, par='beta')
 apply(ex2, 2, mean)
 
 }
