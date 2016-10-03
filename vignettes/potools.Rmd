@@ -15,7 +15,7 @@ vignette: >
 The package currently contains four functions:
 
 - `posummary` - summarize MCMC output for particular parameters of interest
-- `potrace` - create trace plotsMCMC chains for particular parameters of interest
+- `potrace` - create trace plots of MCMC chains for particular parameters of interest
 - `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `poplot` - create caterpillar plots from MCMC output for particular parameters of interest
 
@@ -71,7 +71,7 @@ potrace(MCMC_data,
 &nbsp;
 
 
-Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. pdf document will be output to the current working directory by default, but another directory can be specified.
+Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. Pdf document will be output to the current working directory by default, but another directory can be specified.
 
 ```{r, eval=FALSE}
 potrace(MCMC_data, 
@@ -100,7 +100,7 @@ apply(ex, 2, mean)
 
 ## poplot
 
-`poplot` is used to create caterpillar plots from MCMC ouput. Points represent posterior medians. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters which 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. Parameters which 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
+`poplot` is used to create caterpillar plots from MCMC ouput. Points represent posterior medians. For parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. For parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. For parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
 
 As with the other functions in the package, particular parameters of interest can be specified.
 
@@ -141,8 +141,10 @@ poplot(MCMC_data,
        xlim = c(-60, 25),
        xlab = 'My x-axis label',
        main = 'potools plot',
-       labels = c('First param', 'Second param', 'Third param', 'Fourth param', 'Fifth param',
-                  'Sixth param', 'Seventh param', 'Eighth param', 'Nineth param', 'Tenth param'), 
+       labels = c('First param', 'Second param', 'Third param', 
+                  'Fourth param', 'Fifth param', 'Sixth param', 
+                  'Seventh param', 'Eighth param', 'Nineth param', 
+                  'Tenth param'), 
        labels_sz = 1.5,
        med_sz = 2,
        thick_sz = 7,
