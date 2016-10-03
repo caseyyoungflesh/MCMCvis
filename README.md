@@ -1,7 +1,7 @@
 potools
 ====
 
-`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model ouput fit with JAGS or other MCMC samplers.
+`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model ouput fit with Stan, JAGS, or other MCMC samplers.
 
 The package currently contains four functions:
 
