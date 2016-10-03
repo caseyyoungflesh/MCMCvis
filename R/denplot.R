@@ -46,6 +46,7 @@
 #' @param dbar_t_height Height of ticks on density bar in plot.
 #' @param dbar_t_width Width of ticks on density bar in plot.
 #' @param CI_t_color Color of credible interval ticks.
+#' @param ax_sz Width of x-axis and ticks.
 #'
 #' @section Details:
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
@@ -84,6 +85,14 @@
 #' @export
 #' @import lattice
 
+#add ax_sz help
+#ax_sz for ticks as well - look up lattice tick size
+
+data(MCMC_data)
+denplot(MCMC_data)
+poplot(MCMC_data)
+
+
 denplot <- function(object,
                    params= 'all',
                    ref_line = 0,
@@ -98,6 +107,7 @@ denplot <- function(object,
                    dbar_height = 0.25,
                    dbar_t_height = 0.35,
                    dbar_t_width = 3,
+                   ax_sz = 2,
                    CI_t_color = 'grey75')
 {
 
@@ -211,6 +221,7 @@ denplot <- function(object,
   CI_col <- CI_t_color #color of CI tick
   GCOL <- rgb(0,0,0,alpha = .5)
   VTHICK <- ref_line_width
+
   if (missing(xlab))
   {xlab = 'Parameter Estimate'}
 
@@ -269,9 +280,10 @@ denplot <- function(object,
                    }
                  }
 
-               }, par.settings = list(axis.line = list(col = NA)),
+               }, par.settings = list(axis.line = list(col = NA),
+                                      layout.heights = list(xlab.axis.padding = 0.5)),
                scales=list(col = 1,cex = 1, x = list(col = 1),
-                           y = list(draw = T,labels = labs)))
+                           y = list(draw = T,labels = labs), lwd=ax_sz))
     }else
     {
       if (length(xlim)==2 & typeof(xlim) == 'double')
@@ -302,7 +314,7 @@ denplot <- function(object,
 
                   }, par.settings = list(axis.line = list(col=NA)),
                   scales=list(col=1,cex=1,x=list(col=1),
-                              y=list(draw=T,labels=labs)))
+                              y=list(draw=T,labels=labs), lwd=ax_sz))
       }else
       {
         stop('"xlim" must be a numerical vector of length 2')
@@ -317,8 +329,11 @@ denplot <- function(object,
   lattice::trellis.focus(highlight=FALSE)
 
   x_limits <- rpp$x.limits
-  lattice::panel.lines(c(x_limits[1],x_limits[2]),c(0.4,0.4), col="black")
-  lattice::panel.lines(c(x_limits[1],x_limits[2]),c(X+.6,X+.6), col="black")
+  lattice::panel.lines(c(x_limits[1],x_limits[2]),c(0.4,0.4), col="black", lwd = ax_sz+1)
+  lattice::panel.lines(c(x_limits[1],x_limits[2]),c(X+0.6,X+0.6), col="black", lwd = ax_sz+1)
+
+
+
 
   # Hashes - centrality and CI -----------------------------------------------------------
 
@@ -326,12 +341,12 @@ denplot <- function(object,
     for (i in 1:X)
     {
       j <- idx[i]
-      #TMP<- X-j+1
+      #TMP <- X-j+1
       TMP <- i
 
-      lattice::panel.lines(c(median(chains[,i])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
-      lattice::panel.lines(c(rep(qdata[1,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
-      lattice::panel.lines(c(rep(qdata[2,i],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
+      lattice::panel.lines(c(median(chains[,j])), c(TMP-H, TMP+H), lwd= W, col= MN_col)
+      lattice::panel.lines(c(rep(qdata[1,j],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
+      lattice::panel.lines(c(rep(qdata[2,j],2)), c(TMP-H, TMP+H), col= CI_col, lwd= W2)
     }
 
 
