@@ -5,4 +5,4 @@
 #'
 #' @format \code{mcmc.list} object with 3 chains for each parameter, 1000 iterations for each chain
 #'
-"MCMC_data.Rda"
+"MCMC_data"
