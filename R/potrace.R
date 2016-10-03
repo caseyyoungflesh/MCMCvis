@@ -13,6 +13,9 @@
 #' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
 #' conjunction with \code{par} argument to select parameters of interest.
 #'
+#' @param iter_st Starting point in chain for trace and density plots. Default is 1, meaning
+#' the entire chain is plotted.
+#'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param filename Name of pdf file to be printed.
 #' @param wd Working directory for pdf output. Default is current directory.
@@ -41,6 +44,7 @@
 potrace <- function(object,
                     par = 'all',
                     excl = NULL,
+                    iter_st = 1,
                     pdf = FALSE,
                     filename,
                     wd = getwd(),
@@ -77,7 +81,7 @@ potrace <- function(object,
 
   names <- colnames(temp[[1]])
   n_chains <- length(temp)
-  it <- 1:nrow(temp[[1]])
+  it <- iter_st:nrow(temp[[1]])
 
   if(!is.null(excl))
   {
@@ -214,7 +218,7 @@ potrace <- function(object,
     for (j in 1: length(g_filt))
     {
       #trace
-      tmlt <- do.call('cbind', temp[,g_filt[j]])
+      tmlt <- do.call('cbind', temp[it,g_filt[j]])
       matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
               col= rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = 0.6),
@@ -252,7 +256,7 @@ potrace <- function(object,
     for (j in 1: length(g_filt))
     {
       #chains
-      tmlt <- do.call('cbind', temp[,g_filt[j]])
+      tmlt <- do.call('cbind', temp[it,g_filt[j]])
       matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
               col= rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = 0.6),
@@ -265,7 +269,7 @@ potrace <- function(object,
     for (j in 1: length(g_filt))
     {
       #trace
-      tmlt <- do.call('cbind', temp[,g_filt[j]])
+      tmlt <- do.call('cbind', temp[it,g_filt[j]])
 
       if (ind == TRUE & n_chains > 1)
       {
