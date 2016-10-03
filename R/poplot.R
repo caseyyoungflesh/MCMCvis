@@ -13,9 +13,9 @@
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
 #'
-#' @param ref_line Numerical vector indicating where vertical reference line should be created.
+#' @param ref Numerical vector indicating where vertical reference line should be created.
 #'
-#' Default is \code{ref_line = 0}.
+#' Default is \code{ref = 0}.
 #'
 #' Argument \code{NULL} will plot no reference line.
 #'
@@ -118,7 +118,7 @@
 
 poplot <- function(object,
                    par = 'all',
-                   ref_line = 0,
+                   ref = 0,
                    ref_ovl = TRUE,
                    rank = FALSE,
                    xlim,
@@ -247,7 +247,7 @@ poplot <- function(object,
 
   #not yet an option for user to modify
   gr_col = 'gray60' #color used for CI and medians
-  ref_line_col = 'gray60' #color used for 0 line
+  ref_col = 'gray60' #color used for 0 line
   horizontal = TRUE
 
   # plotting ----------------------------------------------------------------
@@ -257,9 +257,9 @@ poplot <- function(object,
   gray_cl <- c() #50% CI (default) does not overlap 0
   white_cl <- c() #Both 50% and 95% CI (default) overlap 0
 
-  if(!is.null(ref_line))
+  if(!is.null(ref))
   {
-    marker <- ref_line
+    marker <- ref
   }else {
     marker <- 0
   }
@@ -324,9 +324,9 @@ poplot <- function(object,
 
 
     #ref line
-    if(!is.null(ref_line))
+    if(!is.null(ref))
     {
-      abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
+      abline(v=ref, lty = 2, lwd = 3, col = ref_col)
     }
 
 
