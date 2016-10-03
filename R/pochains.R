@@ -7,7 +7,11 @@
 #' Partial names may be used to return all parameters containing that set of characters.
 #'
 #' Default \code{'all'} returns chains for all parameters.
-
+#'
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
+#' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+#' conjunction with \code{par} argument to select parameters of interest.
+#'
 #' @section Details:
 #' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
 #' parameter are combined to one posterior chain.
