@@ -9,3 +9,5 @@ bash.exe.stackdump
 inst/doc
 Add_to_NAMESPACE.txt
 Future_to_dos.txt
+8schools.stan
+stan_test.R
