@@ -74,9 +74,9 @@
 #' represent 95 percent credible intervals. \code{ref_vis = FALSE} can be used to disable this feature. All median dots
 #' will be represented as 'closed' black circles.
 #'
-#' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
-#' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
-#' representing iterations in the chain).
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
+#' (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
+#' chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
 #'
 #' @section Notes:
 #'
@@ -141,13 +141,6 @@ poplot <- function(object,
 
 
   data <- pochains(object, params= params)
-
-  if(coda::is.mcmc.list(object) != TRUE &
-     typeof(object) != 'double' &
-     typeof(object) != 'list')
-  {
-    stop('Invalid object type. Input must be mcmc.list object, rjags object, or matrix with MCMC chains.')
-  }
 
   #not yet an option for user to modify
   thin = 95 #CI for thin line
