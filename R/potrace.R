@@ -37,7 +37,7 @@
 #' potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
 #'
 #' @export
-object <- fit
+
 potrace <- function(object,
                     par = c('eta', 'mu'),
                     excl = c('theta', 'mu'),
@@ -75,6 +75,10 @@ potrace <- function(object,
     stop('Invalid input type. Object must be of type stanfit, mcmc.list, or R2jags.')
   }
 
+  names <- colnames(temp[[1]])
+  n_chains <- length(temp)
+  it <- 1:nrow(temp[[1]])
+
   if(!is.null(excl))
   {
     to.rm1 <- c()
@@ -91,12 +95,6 @@ potrace <- function(object,
     }
   }
 
-
-
-
-  names <- colnames(temp[[1]])
-  n_chains <- length(temp)
-  it <- 1:nrow(temp[[1]])
 
   if (length(par) == 1)
   {
