@@ -12,11 +12,8 @@ URL: http://github.com/caseyyoungflesh/potools
 BugReports: http://github.com/caseyyoungflesh/potools/issues
 LazyData: TRUE
 Imports:
-    denstrip,
-    reshape2
 Depends:
     R (>= 3.2.3),
-    lattice,
     coda
 RoxygenNote: 5.0.1
 Suggests: knitr,
