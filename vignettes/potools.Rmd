@@ -39,11 +39,11 @@ posummary(MCMC_data)
 
 &nbsp;
 
-Specific parameters can be specified to subset summary information. Partial names may be used to specify any parameter containing that name. For instance, for all `beta` parameters.
+Specific parameters can be specified to subset summary information. Partial names may be used to specify any parameter containing that name. For instance, for all `alpha` parameters.
 
 ```{r}
 posummary(MCMC_data, 
-          par = 'beta')
+          par = 'alpha')
 ```
 
 &nbsp;
@@ -52,10 +52,19 @@ Individual parameters can also be specified.
 
 ```{r}
 posummary(MCMC_data, 
-          par = 'beta[1]')
+          par = 'alpha[1]')
 ```
 
 &nbsp;
+
+The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `par` argument. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `par = 'alpha', excl = 'alpha[1]'` can be used. These arguments can be used in any of the functions in the package.
+
+```{r}
+posummary(MCMC_data, 
+          par = 'alpha',
+          excl = 'alpha[1]')
+```
+
 
 &nbsp;
 
