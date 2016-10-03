@@ -116,6 +116,7 @@
 #' @export
 #'
 
+
 poplot <- function(object,
                    params = 'all',
                    ref_line = 0,
@@ -168,7 +169,7 @@ poplot <- function(object,
       }
       if (rank == FALSE)
       {
-        idx <- 1:len
+        idx <- len:1
       }
 
 
