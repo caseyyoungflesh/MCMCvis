@@ -4,7 +4,8 @@
 \alias{potrace}
 \title{Trace and density plots from MCMC output}
 \usage{
-potrace(object, params = "all", pdf = FALSE, filename, wd = getwd())
+potrace(object, params = "all", pdf = FALSE, filename, wd = getwd(),
+  type = "both")
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -19,6 +20,9 @@ Default \code{'all'} returns chains for all parameters.}
 \item{filename}{Name of pdf file to be printed.}
 
 \item{wd}{Working directory for pdf output. Default is current directory.}
+
+\item{type}{Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
+outputs only trace plots, and \code{'density'} outputs only density plots.}
 }
 \description{
 Trace plots and density plots of MCMC chains for specific parameters of interest. Option to
@@ -28,8 +32,8 @@ print plots to pdf.
 
 Plots created similar to that of \code{traceplot} from \code{coda} package.
 
-\code{object} argument can be an \code{mcmc.list} object or an \code{R2jags} model object (output from the \code{R2jags}
-package).
+\code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
+(\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package).
 }
 \examples{
 #Load data

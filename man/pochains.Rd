@@ -22,9 +22,9 @@ Extract posterior chains from MCMC output for specific parameters of interest.
 Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
 parameter are combined to one posterior chain.
 
-\code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
-package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
-representing iterations in the chain).
+\code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
+(\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
+chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
 }
 \examples{
 #Load data
