@@ -14,7 +14,8 @@ LazyData: TRUE
 Imports:
 Depends:
     R (>= 3.2.3),
-    coda
+    coda,
+    rstan
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
