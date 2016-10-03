@@ -342,10 +342,10 @@ if (horizontal)
     {
         #Thick
         matlines(thick_q[,gray_cl], gry_bnd,
-                 type = 'l', lty = 1, lwd = thick_sz, col = 'gray')
+                 type = 'l', lty = 1, lwd = thick_sz, col = gr_col)
         #Thin
         matlines(thin_q[,gray_cl], gry_bnd,
-                 type = 'l', lty = 1, lwd = thin_sz, col = 'gray')
+                 type = 'l', lty = 1, lwd = thin_sz, col = gr_col)
     }
 
     #White CI
