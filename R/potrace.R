@@ -10,7 +10,7 @@
 #' Default \code{'all'} returns chains for all parameters.
 #'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
-#' @param fielname Name of pdf file to be printed.
+#' @param filename Name of pdf file to be printed.
 #' @param wd Working directory for pdf output. Default is current directory.
 #' @section Details:
 #' Plots created similar to that of \code{traceplot} from \code{coda} package.

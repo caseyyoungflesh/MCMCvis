@@ -9,12 +9,13 @@
 #' Default \code{'all'} returns chains for all parameters.
 
 #' @section Details:
+#' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
+#' parameter are combined to one posterior chain.
+#'
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
 #' representing iterations in the chain).
 #'
-#' @return Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
-#' parameter are combined to one posterior chain.
 #'
 #' @examples
 #' #Load data

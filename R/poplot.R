@@ -90,11 +90,11 @@
 #' @section References:
 #'
 #' Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. Maina, E. Maire, J.
-#' N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D’Agata, A. Hoey, D. A. Feary, L. Crowder, I.
+#' N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D'Agata, A. Hoey, D. A. Feary, L. Crowder, I.
 #' D. Williams, M. Kulbicki, L. Vigliola, L. Wantiez, G. Edgar, R. D. Stuart-Smith, S. A. Sandin, A.
 #' L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E.
 #' Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A.
-#' Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world’s coral reefs. Nature
+#' Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world's coral reefs. Nature
 #' 535:416-419.
 #'
 #'
@@ -115,9 +115,7 @@
 #' poplot(MCMC_data, params= 'beta', rank=TRUE)
 #'
 #' @export
-
-object <- MCMC_data
-params = 'beta'
+#'
 
 poplot <- function(object,
                    params = 'all',
@@ -138,7 +136,7 @@ poplot <- function(object,
                    main_text_sz = 1.2,
                    ref_vis = TRUE,
                    tick_pos,
-                   mai = c(5.1, 4.1, 4.1, 2.1))
+                   mar = c(5.1, 4.1, 4.1, 2.1))
 {
 
 
@@ -317,15 +315,15 @@ poplot <- function(object,
     #title
     title(main, cex.main = main_text_sz)
     #bottom axis params
-    axis(3, lwd.tick = ax_sz, labels = FALSE,
+    axis(3, lwd.ticks = ax_sz, labels = FALSE,
          at = tick_pos, lwd = ax_sz)
-    axis(3, lwd.tick = 0, labels = FALSE,
+    axis(3, lwd.ticks = 0, labels = FALSE,
          at = (par('usr')*0.93), lwd = ax_sz)
     #bottom axis params
-    axis(1, lwd.tick = ax_sz, labels = TRUE,
+    axis(1, lwd.ticks = ax_sz, labels = TRUE,
          at = tick_pos, lwd = ax_sz,
          cex.axis = x_tick_text_sz) #bottom axis
-    axis(1, lwd.tick = 0, labels = FALSE,
+    axis(1, lwd.ticks = 0, labels = FALSE,
          at = (par('usr')*0.93), lwd = ax_sz)
     #left axis params (labels)
     axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,

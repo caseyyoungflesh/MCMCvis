@@ -139,7 +139,7 @@ Graphical parameters for x and y-axis limitation, axis labels, row labels, title
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, 
        params = 'beta', 
-       xlim = c(-80, 25),
+       xlim = c(-60, 25),
        xlab = 'My x-axis label',
        main = 'potools plot',
        labels = c('First param', 'Second param', 'Third param', 'Fourth param', 'Fifth param',
@@ -154,14 +154,6 @@ poplot(MCMC_data,
 
 **For more information see `?poplot`**
 
-
-
-
-
-
-&nbsp;
-
-**For more information see `?denplot`**
 
 &nbsp;
 
