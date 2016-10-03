@@ -120,25 +120,25 @@ object <- MCMC_data
 params = 'beta'
 
 poplot <- function(object,
-                    params = 'all',
-                    ref_line = 0,
-                    rank = FALSE,
-                    xlim,
-                    ylim,
-                    xlab,
-                    main,
-                    labels,
-                    labels_sz = 1.2,
-                    med_sz = 1.5,
-                    thick_sz = 5,
-                    thin_sz = 2,
-                    ax_sz = 3,
-                    x_axis_text_sz = 1.3,
-                    x_tick_text_sz = 1.2,
-                    main_text_sz = 1.2,
-                    ref_vis = TRUE,
-                    tick_pos,
-                    mai = c(5.1, 4.1, 4.1, 2.1))
+                   params = 'all',
+                   ref_line = 0,
+                   rank = FALSE,
+                   xlim,
+                   ylim,
+                   xlab,
+                   main,
+                   labels,
+                   labels_sz = 1.2,
+                   med_sz = 1.5,
+                   thick_sz = 5,
+                   thin_sz = 2,
+                   ax_sz = 3,
+                   x_axis_text_sz = 1.3,
+                   x_tick_text_sz = 1.2,
+                   main_text_sz = 1.2,
+                   ref_vis = TRUE,
+                   tick_pos,
+                   mai = c(5.1, 4.1, 4.1, 2.1))
 {
 
 
@@ -166,8 +166,8 @@ poplot <- function(object,
 
       if (rank == TRUE)
       {
-          tsrt <- apply(chains, 2, median) #used to rank positions of parameter estimates
-          idx <- order(tsrt, decreasing = TRUE)
+        tsrt <- apply(chains, 2, median) #used to rank positions of parameter estimates
+        idx <- order(tsrt, decreasing = TRUE)
       }
       if (rank == FALSE)
       {
@@ -212,183 +212,183 @@ poplot <- function(object,
     }
   }
 
-# Plotting parameters -----------------------------------------------------
+  # Plotting parameters -----------------------------------------------------
 
-#smallest size - JUST FOR REFERENCE
-#med_sz = 1 #size of median circles
-#thick_sz = 2 #thick CI thickness
-#thin_sz = 1 #thin CI thickness
+  #smallest size - JUST FOR REFERENCE
+  #med_sz = 1 #size of median circles
+  #thick_sz = 2 #thick CI thickness
+  #thin_sz = 1 #thin CI thickness
 
-if (missing(xlab))
-{xlab = 'Parameter Estimate'}
-if (missing(main))
-{main = ''}
+  if (missing(xlab))
+  {xlab = 'Parameter Estimate'}
+  if (missing(main))
+  {main = ''}
 
-if (missing(labels))
-{
-  labels = names(medians)
-}else{
-  if (!missing(labels))
+  if (missing(labels))
   {
-    if (is.null(labels))
+    labels = names(medians)
+  }else{
+    if (!missing(labels))
     {
-      labels <- rep('', len)
-    }
-    if (!is.null(labels))
-    {
-      if (length(labels) == len)
+      if (is.null(labels))
       {
-        labs <- labels[idx]
-      }else
+        labels <- rep('', len)
+      }
+      if (!is.null(labels))
       {
-        stop('labels length not equal to number of parameters')
+        if (length(labels) == len)
+        {
+          labs <- labels[idx]
+        }else
+        {
+          stop('labels length not equal to number of parameters')
+        }
       }
     }
   }
-}
 
-if (missing(tick_pos))
+  if (missing(tick_pos))
   {tick_pos = NULL}
-if (missing(xlim))
+  if (missing(xlim))
   {xlim = range(thin_q)*1.2}
-if (missing(ylim))
+  if (missing(ylim))
   {ylim = c(0.5,(len)+0.5)}
 
 
-#not yet an option for user to modify
-gr_col = 'gray60' #color used for CI and medians
-ref_line_col = 'gray60' #color used for 0 line
-horizontal = TRUE
+  #not yet an option for user to modify
+  gr_col = 'gray60' #color used for CI and medians
+  ref_line_col = 'gray60' #color used for 0 line
+  horizontal = TRUE
 
-# plotting ----------------------------------------------------------------
+  # plotting ----------------------------------------------------------------
 
-#Determine which params have CI that overlap 0 (or ref line more technically)
-black_cl <- c() #95% CI (default) does not overlap 0
-gray_cl <- c() #50% CI (default) does not overlap 0
-white_cl <- c() #Both 50% and 95% CI (default) overlap 0
+  #Determine which params have CI that overlap 0 (or ref line more technically)
+  black_cl <- c() #95% CI (default) does not overlap 0
+  gray_cl <- c() #50% CI (default) does not overlap 0
+  white_cl <- c() #Both 50% and 95% CI (default) overlap 0
 
-if(!is.null(ref_line))
-{
-  marker <- ref_line
-}else {
-  marker <- 0
-}
-
-
-for (i in 1:len)
-{
-  #i <- 1
-  if ((thin_q[1,i] > marker & thin_q[2,i] > marker) |
-      (thin_q[1,i] < marker & thin_q[2,i] < marker))
-  {
-    black_cl <- c(black_cl, i)
-  } else {
-  if ((thick_q[1,i] > marker & thick_q[2,i] > marker) |
-      (thick_q[1,i] < marker & thick_q[2,i] < marker))
-  {
-    gray_cl <- c(gray_cl, i)
-  }else {
-    white_cl <- c(white_cl, i)
-  }
-  }
-}
-
-#positions bound together to plot CI
-blk_bnd <- rbind(black_cl, black_cl)
-gry_bnd <- rbind(gray_cl, gray_cl)
-wht_bnd <- rbind(white_cl, white_cl)
-
-#plot for horizontal
-if (horizontal)
-{
-
-  #0.2 inches per line - mar measured in lines
-  m_char <- (max(sapply(labels, function(x){strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
-
-  par(mar=c(mar[1], (m_char + (mar[2] - 3)), mar[3], mar[4]-1))
-
-
-  #plot blank plot
-  plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
-       ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-       xlab = xlab, cex.lab = x_axis_text_sz) #cex.lab is axis label
-       #lab #number of ticks to plot on each axis
-
-  #title
-  title(main, cex.main = main_text_sz)
-  #bottom axis params
-  axis(3, lwd.tick = ax_sz, labels = FALSE,
-       at = tick_pos, lwd = ax_sz)
-  axis(3, lwd.tick = 0, labels = FALSE,
-       at = (par('usr')*0.93), lwd = ax_sz)
-  #bottom axis params
-  axis(1, lwd.tick = ax_sz, labels = TRUE,
-       at = tick_pos, lwd = ax_sz,
-       cex.axis = x_tick_text_sz) #bottom axis
-  axis(1, lwd.tick = 0, labels = FALSE,
-       at = (par('usr')*0.93), lwd = ax_sz)
-  #left axis params (labels)
-  axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
-       labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
-       line = -1, cex.axis = labels_sz)
-
-
-  #ref line
   if(!is.null(ref_line))
   {
-    abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
+    marker <- ref_line
+  }else {
+    marker <- 0
   }
 
 
-  if (ref_vis == TRUE)
+  for (i in 1:len)
   {
-    #Black CI
-    if (!is.null(black_cl))
+    #i <- 1
+    if ((thin_q[1,i] > marker & thin_q[2,i] > marker) |
+        (thin_q[1,i] < marker & thin_q[2,i] < marker))
     {
+      black_cl <- c(black_cl, i)
+    } else {
+      if ((thick_q[1,i] > marker & thick_q[2,i] > marker) |
+          (thick_q[1,i] < marker & thick_q[2,i] < marker))
+      {
+        gray_cl <- c(gray_cl, i)
+      }else {
+        white_cl <- c(white_cl, i)
+      }
+    }
+  }
+
+  #positions bound together to plot CI
+  blk_bnd <- rbind(black_cl, black_cl)
+  gry_bnd <- rbind(gray_cl, gray_cl)
+  wht_bnd <- rbind(white_cl, white_cl)
+
+  #plot for horizontal
+  if (horizontal)
+  {
+
+    #0.2 inches per line - mar measured in lines
+    m_char <- (max(sapply(labels, function(x){strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
+
+    par(mar=c(mar[1], (m_char + (mar[2] - 3)), mar[3], mar[4]-1))
+
+
+    #plot blank plot
+    plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
+         ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
+         xlab = xlab, cex.lab = x_axis_text_sz) #cex.lab is axis label
+    #lab #number of ticks to plot on each axis
+
+    #title
+    title(main, cex.main = main_text_sz)
+    #bottom axis params
+    axis(3, lwd.tick = ax_sz, labels = FALSE,
+         at = tick_pos, lwd = ax_sz)
+    axis(3, lwd.tick = 0, labels = FALSE,
+         at = (par('usr')*0.93), lwd = ax_sz)
+    #bottom axis params
+    axis(1, lwd.tick = ax_sz, labels = TRUE,
+         at = tick_pos, lwd = ax_sz,
+         cex.axis = x_tick_text_sz) #bottom axis
+    axis(1, lwd.tick = 0, labels = FALSE,
+         at = (par('usr')*0.93), lwd = ax_sz)
+    #left axis params (labels)
+    axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
+         labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
+         line = -1, cex.axis = labels_sz)
+
+
+    #ref line
+    if(!is.null(ref_line))
+    {
+      abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
+    }
+
+
+    if (ref_vis == TRUE)
+    {
+      #Black CI
+      if (!is.null(black_cl))
+      {
         #Thick
         matlines(thick_q[,black_cl], blk_bnd,
-                type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+                 type = 'l', lty = 1, lwd = thick_sz, col = 'black')
         #Thin
         matlines(thin_q[,black_cl], blk_bnd,
                  type = 'l', lty = 1, lwd = thin_sz, col = 'black')
-    }
+      }
 
-    #Gray CI
-    if (!is.null(gray_cl))
-    {
+      #Gray CI
+      if (!is.null(gray_cl))
+      {
         #Thick
         matlines(thick_q[,gray_cl], gry_bnd,
                  type = 'l', lty = 1, lwd = thick_sz, col = gr_col)
         #Thin
         matlines(thin_q[,gray_cl], gry_bnd,
                  type = 'l', lty = 1, lwd = thin_sz, col = gr_col)
-    }
+      }
 
-    #White CI
-    if (!is.null(white_cl))
-    {
-      matlines(thick_q[,white_cl], wht_bnd,
-               type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
-      matlines(thin_q[,white_cl], wht_bnd,
-               type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
-    }
+      #White CI
+      if (!is.null(white_cl))
+      {
+        matlines(thick_q[,white_cl], wht_bnd,
+                 type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+        matlines(thin_q[,white_cl], wht_bnd,
+                 type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+      }
 
-    #Medians
-    points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
-    points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
-    points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
-    points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
-  } else{
-    matlines(thick_q[,1:len], rbind(1:len, 1:len),
-             type = 'l', lty = 1, lwd = thick_sz, col = 'black')
-    matlines(thin_q[,1:len], rbind(1:len, 1:len),
-             type = 'l', lty = 1, lwd = thin_sz, col = 'black')
-    #medians
-    points(medians[1:len], 1:len, pch = 16,
-           col = 'black', cex = med_sz)
+      #Medians
+      points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
+      points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
+      points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
+      points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+    } else{
+      matlines(thick_q[,1:len], rbind(1:len, 1:len),
+               type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+      matlines(thin_q[,1:len], rbind(1:len, 1:len),
+               type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+      #medians
+      points(medians[1:len], 1:len, pch = 16,
+             col = 'black', cex = med_sz)
+    }
   }
-}
 
-par(mar=c(5,4,4,2) + 0.1)
+  par(mar=c(5,4,4,2) + 0.1)
 
 }
