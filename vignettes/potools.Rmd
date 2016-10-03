@@ -10,7 +10,7 @@ vignette: >
 
 ## Intro
 
-`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model ouput fit with Stan, JAGS, or other MCMC samplers.
+`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with Stan, JAGS, or other MCMC samplers.
 
 The package currently contains four functions:
 
@@ -79,7 +79,7 @@ potrace(MCMC_data,
 
 &nbsp;
 
-Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputes both trace and density plots. Individual chains for the density plot can be output using the `ind` argument.
+Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputs both trace and density plots. Individual chains for the density plot can be output using the `ind` argument.
 
 ```{r, fig.width=5, fig.height=6}
 potrace(MCMC_data, 
@@ -102,7 +102,7 @@ potrace(MCMC_data,
 
 &nbsp;
 
-Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. Pdf document will be output to the current working directory by default, but another directory can be specified.
+Trace plots can also be output to PDF format. This is recommended for large numbers of parameters, as output to PDF makes for quicker browsing compared to browsing within the R GUI. PDF document will be output to the current working directory by default, but another directory can be specified.
 
 ```{r, eval=FALSE}
 potrace(MCMC_data, 
@@ -131,7 +131,7 @@ apply(ex, 2, mean)
 
 ## poplot
 
-`poplot` is used to create caterpillar plots from MCMC ouput. Points represent posterior medians. For parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. For parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. For parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
+`poplot` is used to create caterpillar plots from MCMC output. Points represent posterior medians. For parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. For parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. For parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
 
 As with the other functions in the package, particular parameters of interest can be specified.
 
@@ -142,7 +142,7 @@ poplot(MCMC_data,
 
 &nbsp;
 
-`ref_ovl = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be removed with the `ref` argument. `ref = NULL` removes the reference line altogether.
+`ref_ovl = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, 
