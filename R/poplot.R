@@ -267,16 +267,24 @@ black_cl <- c() #95% CI (default) does not overlap 0
 gray_cl <- c() #50% CI (default) does not overlap 0
 white_cl <- c() #Both 50% and 95% CI (default) overlap 0
 
+if(!is.null(ref_line))
+{
+  marker <- ref_line
+}else {
+  marker <- 0
+}
+
+
 for (i in 1:len)
 {
   #i <- 1
-  if ((thin_q[1,i] > ref_line & thin_q[2,i] > ref_line) |
-      (thin_q[1,i] < ref_line & thin_q[2,i] < ref_line))
+  if ((thin_q[1,i] > marker & thin_q[2,i] > marker) |
+      (thin_q[1,i] < marker & thin_q[2,i] < marker))
   {
     black_cl <- c(black_cl, i)
   } else {
-  if ((thick_q[1,i] > ref_line & thick_q[2,i] > ref_line) |
-      (thick_q[1,i] < ref_line & thick_q[2,i] < ref_line))
+  if ((thick_q[1,i] > marker & thick_q[2,i] > marker) |
+      (thick_q[1,i] < marker & thick_q[2,i] < marker))
   {
     gray_cl <- c(gray_cl, i)
   }else {
@@ -326,7 +334,11 @@ if (horizontal)
 
 
   #ref line
-  abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
+  if(!is.null(ref_line))
+  {
+    abline(v=ref_line, lty = 2, lwd = 3, col = ref_line_col)
+  }
+
 
   if (ref_vis == TRUE)
   {
