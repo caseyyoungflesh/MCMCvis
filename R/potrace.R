@@ -70,9 +70,9 @@ potrace <- function(object,
     ord <- dimnames(x$sims.array)[[3]]
     for (i in 1:x$n.chains) {
       tmp1 <- x$sims.array[, i, ord]
-      mclis[[i]] <- mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+      mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
     }
-    temp <- as.mcmc.list(mclis)
+    temp <- coda::as.mcmc.list(mclis)
   }
   if(coda::is.mcmc.list(object) == FALSE & typeof(object) != 'list' & typeof(object) != 'S4')
   {

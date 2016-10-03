@@ -60,9 +60,9 @@ posummary <- function(object,
     for (i in 1:x$n.chains)
     {
       tmp1 <- x$sims.array[, i, ord]
-      mclis[[i]] <- mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+      mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
     }
-    object2 <- as.mcmc.list(mclis)
+    object2 <- coda::as.mcmc.list(mclis)
   } else {
     if(typeof(object) == 'S4')
     {
