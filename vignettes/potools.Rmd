@@ -91,6 +91,17 @@ potrace(MCMC_data,
 
 &nbsp;
 
+`iter_st` denotes at which iteration in the chain the trace and density plots should start with. The default is 1, meaning that the entire chain is plotted. `iter_st = 1800` means that both the trace plots and density plots will begin at iteration 1800 of the posterior chains. Remember, this is the final posterior chain, not including the specified burn-in (specified when the model was run).
+
+```{r, fig.width=5, fig.height=6}
+potrace(MCMC_data, 
+        par = c('beta[1]', 'beta[2]', 'beta[3]'),
+        iter_st = 1800,
+        ind = TRUE)
+```
+
+&nbsp;
+
 Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. Pdf document will be output to the current working directory by default, but another directory can be specified.
 
 ```{r, eval=FALSE}
