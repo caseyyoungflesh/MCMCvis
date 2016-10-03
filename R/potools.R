@@ -3,18 +3,18 @@
 #' The potools package assists with manipulating and summarizing MCMC output
 #' (including parameter estimate extraction, chain extraction, and
 #' visualizing posterior distributions). MCMC output may be derived from
-#' Bayesian model ouput fit wit JAGS or other MCMC samplers.
+#' Bayesian model ouput fit with Stan, JAGS, or other MCMC samplers.
 #'
 #' @section Details:
 #' The following functions are currently available:
 #'
 #'      -\code{posummary} (summarize MCMC output for particular parameters of interest)
 #'
-#'      -\code{potrace} (plots chains for particular parameters of interest to check for convergence)
+#'      -\code{potrace} (create trace plotsMCMC chains for particular parameters of interest)
 #'
-#'      -\code{pochains} (extract posterior chains from MCMC output for particular parameters of interest)
+#'      -\code{pochains} (easily extract posterior chains from MCMC output for particular parameters of interest)
 #'
-#'      -\code{poplot} (plot posterior distributions from MCMC output for paticular parameters of interest)
+#'      -\code{poplot} (create caterpillar plots from MCMC output for particular parameters of interest)
 #'
 #' Example data for a \code{mcmc.list} object can be loaded using \code{data(MCMC_data)}.
 #'
@@ -26,7 +26,7 @@
 #' The vignette can be run using \code{vignette('potools')} if vignette is built.
 #'
 #' @section Author(s):
-#' Casey Youngflesh <casey.youngflesh@stonybrook.edu>
+#' Casey Youngflesh <caseyyoungflesh@gmail.com>
 #'
 #' @docType package
 #' @name potools

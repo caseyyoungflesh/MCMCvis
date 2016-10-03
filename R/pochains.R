@@ -3,7 +3,7 @@
 #' Extract posterior chains from MCMC output for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters of interest.
+#' @param par Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.
 #'
 #' Default \code{'all'} returns chains for all parameters.
@@ -26,14 +26,14 @@
 #' apply(ex, 2, mean)
 #'
 #' #Extract MCMC chains for just 'beta' parameters
-#' ex2 <- pochains(MCMC_data, params='beta')
+#' ex2 <- pochains(MCMC_data, par='beta')
 #' apply(ex2, 2, mean)
 #'
 #' @export
 
 
 pochains <- function(object,
-                     params = 'all')
+                     par = 'all')
 {
 
     if(typeof(object) == 'S4')
@@ -74,30 +74,30 @@ pochains <- function(object,
          rjags object (R2jags), or matrix with MCMC chains.')
   }
 
-  if (length(params) == 1)
+  if (length(par) == 1)
   {
-    if (params == 'all')
+    if (par == 'all')
     {
       OUT <- temp
     }else
     {
-      get.cols <- grep(paste(params), names, fixed=TRUE)
+      get.cols <- grep(paste(par), names, fixed=TRUE)
       if (length(get.cols) < 1)
       {
-        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
       }
       OUT <- temp[,get.cols]
     }
   }else
   {
     grouped <- c()
-    for (i in 1:length(params))
+    for (i in 1:length(par))
     {
       #i <- 1
-      get.cols <- grep(paste(params[i]), names, fixed=TRUE)
+      get.cols <- grep(paste(par[i]), names, fixed=TRUE)
       if (length(get.cols) < 1)
       {
-        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', par[i], '"', ' not found in MCMC ouput.'))
       }
       grouped <- c(grouped, get.cols)
     }

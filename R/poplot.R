@@ -6,7 +6,7 @@
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters to be
+#' @param par Character string (or vector of character strings) denoting parameters to be
 #' plotted. Partial names may be used to plot all parameters containing that set of characters.
 #'
 #' Default \code{'all'} plots posteriors for all parameters. See VALUE below.
@@ -105,20 +105,20 @@
 #' poplot(MCMC_data, labels=NULL)
 #'
 #' #Just 'beta' parameters
-#' poplot(MCMC_data, params= 'beta')
+#' poplot(MCMC_data, par= 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' poplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' poplot(MCMC_data, par= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' #Rank parameters by posterior mean
-#' poplot(MCMC_data, params= 'beta', rank=TRUE)
+#' poplot(MCMC_data, par= 'beta', rank=TRUE)
 #'
 #' @export
 #'
 
 
 poplot <- function(object,
-                   params = 'all',
+                   par = 'all',
                    ref_line = 0,
                    rank = FALSE,
                    xlim,
@@ -140,7 +140,7 @@ poplot <- function(object,
 {
 
 
-  data <- pochains(object, params= params)
+  data <- pochains(object, par= par)
 
   #not yet an option for user to modify
   thin = 95 #CI for thin line

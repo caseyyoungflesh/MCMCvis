@@ -4,7 +4,7 @@
 #' print plots to pdf.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters of interest.
+#' @param par Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.
 #'
 #' Default \code{'all'} returns chains for all parameters.
@@ -25,7 +25,7 @@
 #' data(MCMC_data)
 #'
 #' #Traceplot for all 'beta' parameters
-#' potrace(MCMC_data, params='beta')
+#' potrace(MCMC_data, par='beta')
 #'
 #' #Print traceplot output to pdf
 #' potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
@@ -33,7 +33,7 @@
 #' @export
 
 potrace <- function(object,
-                    params = 'all',
+                    par = 'all',
                     pdf = FALSE,
                     filename,
                     wd = getwd(),
@@ -71,21 +71,21 @@ potrace <- function(object,
   n_chains <- length(temp)
   it <- 1:nrow(temp[[1]])
 
-  if (length(params) == 1)
+  if (length(par) == 1)
   {
-    if (params == 'all')
+    if (par == 'all')
     {
       g_filt <- 1:length(names)
     }else
     {
-      g_filt <- grep(paste(params), names, fixed=TRUE)
+      g_filt <- grep(paste(par), names, fixed=TRUE)
     }
   }else
   {
     grouped <- c()
-    for (i in 1:length(params))
+    for (i in 1:length(par))
     {
-      get.cols <- grep(paste(params[i]), names, fixed=TRUE)
+      get.cols <- grep(paste(par[i]), names, fixed=TRUE)
       grouped <- c(grouped, get.cols)
     }
 

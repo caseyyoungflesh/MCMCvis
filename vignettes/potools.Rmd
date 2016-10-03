@@ -43,7 +43,7 @@ Specific parameters can be specified to subset summary information. Partial name
 
 ```{r}
 posummary(MCMC_data, 
-          params = 'beta')
+          par = 'beta')
 ```
 
 &nbsp;
@@ -52,7 +52,7 @@ Individual parameters can also be specified.
 
 ```{r}
 posummary(MCMC_data, 
-          params = 'beta[1]')
+          par = 'beta[1]')
 ```
 
 &nbsp;
@@ -65,7 +65,7 @@ posummary(MCMC_data,
 
 ```{r, fig.width=5, fig.height=6}
 potrace(MCMC_data, 
-        params = c('beta[1]', 'beta[2]', 'beta[3]'))
+        par = c('beta[1]', 'beta[2]', 'beta[3]'))
 ```
 
 &nbsp;
@@ -89,7 +89,7 @@ potrace(MCMC_data,
 
 ```{r}
 ex <- pochains(MCMC_data, 
-               params = 'beta')
+               par = 'beta')
 
 #extract mean values for each parameter
 apply(ex, 2, mean)
@@ -106,7 +106,7 @@ As with the other functions in the package, particular parameters of interest ca
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, 
-       params = 'beta')
+       par = 'beta')
 ```
 
 &nbsp;
@@ -115,7 +115,7 @@ poplot(MCMC_data,
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, 
-       params = 'beta',
+       par = 'beta',
        ref_vis = FALSE, 
        ref_line = NULL)
 ```
@@ -126,7 +126,7 @@ Parameters can be ranked by posterior median estimates using the `rank` argument
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, 
-       params = 'beta', 
+       par = 'beta', 
        rank = TRUE)
 ```
 
@@ -137,7 +137,7 @@ Graphical parameters for x and y-axis limitation, axis labels, row labels, title
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, 
-       params = 'beta', 
+       par = 'beta', 
        xlim = c(-60, 25),
        xlab = 'My x-axis label',
        main = 'potools plot',

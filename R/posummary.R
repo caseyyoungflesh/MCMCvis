@@ -3,7 +3,7 @@
 #' Extract summary information from MCMC output for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters to be
+#' @param par Character string (or vector of character strings) denoting parameters to be
 #' returned in summary output. Partial names may be used to return all parameters containing
 #' that set of characters.
 #'
@@ -31,16 +31,16 @@
 #' posummary(MCMC_data)
 #'
 #' #Just 'beta' parameters
-#' posummary(MCMC_data, params= 'beta')
+#' posummary(MCMC_data, par= 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' posummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' posummary(MCMC_data, par= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' @export
 #' @import coda
 
 posummary <- function(object,
-                      params = 'all',
+                      par = 'all',
                       Rhat = TRUE)
 {
   if(typeof(object) == 'S4')
@@ -66,29 +66,29 @@ posummary <- function(object,
       mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
       colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
 
-      if (length(params) == 1)
+      if (length(par) == 1)
       {
-        if (params == 'all')
+        if (par == 'all')
         {
           OUT <- mcmc_summary
         }else
         {
-          get.rows <- grep(paste(params), names, fixed=TRUE)
+          get.rows <- grep(paste(par), names, fixed=TRUE)
           if (length(get.rows) < 1)
           {
-            stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+            stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
           }
           OUT <- mcmc_summary[get.rows,]
         }
       }else
       {
         grouped <- c()
-        for (i in 1:length(params))
+        for (i in 1:length(par))
         {
-          get.rows <- grep(paste(params[i]), names, fixed=TRUE)
+          get.rows <- grep(paste(par[i]), names, fixed=TRUE)
           if (length(get.rows) < 1)
           {
-            stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+            stop(paste0('"', par[i], '"', ' not found in MCMC ouput.'))
           }
           grouped <- c(grouped, get.rows)
         }
@@ -126,29 +126,29 @@ posummary <- function(object,
       mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
       colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
 
-      if (length(params) == 1)
+      if (length(par) == 1)
       {
-        if (params == 'all')
+        if (par == 'all')
         {
           OUT <- mcmc_summary
         }else
         {
-          get.rows <- grep(paste(params), names, fixed=TRUE)
+          get.rows <- grep(paste(par), names, fixed=TRUE)
           if (length(get.rows) < 1)
           {
-            stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+            stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
           }
           OUT <- mcmc_summary[get.rows,]
         }
       }else
       {
         grouped <- c()
-        for (i in 1:length(params))
+        for (i in 1:length(par))
         {
-          get.rows <- grep(paste(params[i]), names, fixed=TRUE)
+          get.rows <- grep(paste(par[i]), names, fixed=TRUE)
           if (length(get.rows) < 1)
           {
-            stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+            stop(paste0('"', par[i], '"', ' not found in MCMC ouput.'))
           }
           grouped <- c(grouped, get.rows)
         }
@@ -172,29 +172,29 @@ posummary <- function(object,
       temp <- object2$BUGSoutput$summary
       names <- rownames(temp)
 
-      if (length(params) == 1)
+      if (length(par) == 1)
       {
-        if (params == 'all')
+        if (par == 'all')
         {
           OUT <- temp[, c(1,3,5,7,8)]
         }else
         {
-          get.rows <- grep(paste(params), names, fixed=TRUE)
+          get.rows <- grep(paste(par), names, fixed=TRUE)
           if (length(get.rows) < 1)
           {
-            stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+            stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
           }
           OUT <- temp[get.rows, c(1,3,5,7,8)]
         }
       }else
       {
         grouped <- c()
-        for (i in 1:length(params))
+        for (i in 1:length(par))
         {
-          get.rows <- grep(paste(params[i]), names, fixed=TRUE)
+          get.rows <- grep(paste(par[i]), names, fixed=TRUE)
           if (length(get.rows) < 1)
           {
-            stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+            stop(paste0('"', par[i], '"', ' not found in MCMC ouput.'))
           }
           grouped <- c(grouped, get.rows)
         }
