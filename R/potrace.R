@@ -39,8 +39,8 @@
 #' @export
 
 potrace <- function(object,
-                    par = c('eta', 'mu'),
-                    excl = c('theta', 'mu'),
+                    par = 'all',
+                    excl = NULL,
                     pdf = FALSE,
                     filename,
                     wd = getwd(),

@@ -8,6 +8,11 @@
 #' that set of characters.
 #'
 #' Default \code{'all'} returns all parameters in summary output.
+#'
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
+#' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+#' conjunction with \code{par} argument to select parameters of interest.
+#'
 #' @param Rhat If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
 #' and if \code{FALSE}, Rhat output is masked.
 #' @section Details:
@@ -37,11 +42,9 @@
 #' posummary(MCMC_data, par= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' @export
-#' @import coda
-object <- fit
-object <- SD_out
+
 posummary <- function(object,
-                      par = c('all'),
+                      par = 'all',
                       excl = NULL,
                       Rhat = TRUE)
 {
@@ -60,7 +63,6 @@ posummary <- function(object,
       mclis[[i]] <- mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
     }
     object2 <- as.mcmc.list(mclis)
-
   } else {
     if(typeof(object) == 'S4')
     {
@@ -219,7 +221,6 @@ posummary <- function(object,
   {
       stop('Invalid object type. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
-
 
   if(Rhat == TRUE)
   {
