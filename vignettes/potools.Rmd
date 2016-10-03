@@ -122,13 +122,13 @@ poplot(MCMC_data,
 
 &nbsp;
 
-`ref_vis = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be removed with the `ref_line` argument. `ref_line = NULL` removes the reference line altogether.
+`ref_ovl = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be removed with the `ref` argument. `ref = NULL` removes the reference line altogether.
 
 ```{r, fig.width=5, fig.height=6}
 poplot(MCMC_data, 
        par = 'beta',
-       ref_vis = FALSE, 
-       ref_line = NULL)
+       ref_ovl = FALSE, 
+       ref = NULL)
 ```
 
 &nbsp;
