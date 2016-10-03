@@ -13,6 +13,10 @@
 #'
 #' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
 #'
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
+#' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+#' conjunction with \code{par} argument to select parameters of interest.
+#'
 #' @param ref Numerical vector indicating where vertical reference line should be created.
 #'
 #' Default is \code{ref = 0}.
@@ -118,6 +122,7 @@
 
 poplot <- function(object,
                    par = 'all',
+                   excl = NULL,
                    ref = 0,
                    ref_ovl = TRUE,
                    rank = FALSE,
@@ -139,7 +144,7 @@ poplot <- function(object,
 {
 
 
-  data <- pochains(object, par= par)
+  data <- pochains(object, par= par, excl = excl)
 
   #not yet an option for user to modify
   thin = 95 #CI for thin line
