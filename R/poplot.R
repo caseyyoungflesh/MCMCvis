@@ -116,6 +116,9 @@
 #'
 #' @export
 
+object <- MCMC_data
+params = 'beta'
+
 poplot <- function(object,
                     params = 'all',
                     ref_line = 0,
@@ -132,10 +135,10 @@ poplot <- function(object,
                     ax_sz = 3,
                     x_axis_text_sz = 1.3,
                     x_tick_text_sz = 1.2,
-                    main_text_sz = 1,
+                    main_text_sz = 1.2,
                     ref_vis = TRUE,
                     tick_pos,
-                    mar = c(5.1, 4.1, 4.1, 2.1))
+                    mai = c(5.1, 4.1, 4.1, 2.1))
 {
 
 
@@ -291,9 +294,10 @@ wht_bnd <- rbind(white_cl, white_cl)
 if (horizontal)
 {
 
-  m_char <- max(sapply(labels, nchar))
-  #variable at LEFT position to account for differing label sizes - can be altered manually
-  par(mar=c(mar[1], (1 + (m_char/2)) + (mar[2] - 4.1), mar[3], mar[4]-1))
+  #0.2 inches per line - mar measured in lines
+  m_char <- (max(sapply(labels, function(x){strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
+
+  par(mar=c(mar[1], (m_char + (mar[2] - 3)), mar[3], mar[4]-1))
 
 
   #plot blank plot
