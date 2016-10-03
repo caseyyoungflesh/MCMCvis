@@ -37,10 +37,10 @@
 #' potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
 #'
 #' @export
-
+object <- fit
 potrace <- function(object,
-                    par = 'all',
-                    excl = NULL,
+                    par = c('eta', 'mu'),
+                    excl = c('theta', 'mu'),
                     pdf = FALSE,
                     filename,
                     wd = getwd(),
@@ -151,7 +151,7 @@ potrace <- function(object,
         stop('No parameters selected.')
       }
 
-      matched <- suppressWarnings(which(grouped == to.rm2))
+      matched <- na.omit(match(to.rm2, grouped))
       if (length(matched) > 0)
       {
         cols <- grouped[-matched]
