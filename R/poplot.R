@@ -19,6 +19,9 @@
 #'
 #' Argument \code{NULL} will plot no reference line.
 #'
+#' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should
+#' be changed based on whether the 50% and 95% credible intervals overlap the reference line. See
+#' DETAILS for more information.
 #'
 #' @param rank If \code{TRUE} posteriors will ranked in decreasing order (based on
 #' specified measure of centrality) from top down.
@@ -55,10 +58,6 @@
 #'
 #' @param main_text_sz Number specifying size of text for main title.
 #'
-#' @param ref_vis Logical specifying whether the style of median dots plotted should be changed
-#' based on whether the 50% and 95% credible intervals overlap the reference line. See DETAILS
-#' for more information.
-#'
 #' @param tick_pos Numeric vector specifying where ticks on x-axis should be placed.
 #'
 #' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
@@ -71,7 +70,7 @@
 #' circles. For parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO
 #' overlap 0 are indicated by 'closed' grey circles. For parameters where 95 percent credible intervals DO NOT overlap
 #' 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines
-#' represent 95 percent credible intervals. \code{ref_vis = FALSE} can be used to disable this feature. All median dots
+#' represent 95 percent credible intervals. \code{ref_ovl = FALSE} can be used to disable this feature. All median dots
 #' will be represented as 'closed' black circles.
 #'
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
@@ -120,6 +119,7 @@
 poplot <- function(object,
                    par = 'all',
                    ref_line = 0,
+                   ref_ovl = TRUE,
                    rank = FALSE,
                    xlim,
                    ylim,
@@ -134,7 +134,6 @@ poplot <- function(object,
                    x_axis_text_sz = 1.3,
                    x_tick_text_sz = 1.2,
                    main_text_sz = 1.2,
-                   ref_vis = TRUE,
                    tick_pos,
                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
@@ -331,7 +330,7 @@ poplot <- function(object,
     }
 
 
-    if (ref_vis == TRUE)
+    if (ref_ovl == TRUE)
     {
       #Black CI
       if (!is.null(black_cl))
