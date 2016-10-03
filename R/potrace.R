@@ -24,8 +24,6 @@
 #' @param ind Logical - if \code{ind = TRUE}, different lines will be plotted for each chain. If
 #' \code{ind= FALSE}, one line will be plotted for all chains.
 #' @section Details:
-#' Plots created similar to that of \code{traceplot} from \code{coda} package.
-#'
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
 #' (\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package).
 #'
