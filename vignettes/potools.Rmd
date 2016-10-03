@@ -43,7 +43,8 @@ posummary(MCMC_data)
 Specific parameters can be specified to subset summary information. Partial names may be used to specify any parameter containing that name. For instance, for all `beta` parameters.
 
 ```{r}
-posummary(MCMC_data, params = 'beta')
+posummary(MCMC_data, 
+          params = 'beta')
 ```
 
 &nbsp;
@@ -51,7 +52,8 @@ posummary(MCMC_data, params = 'beta')
 Individual parameters can also be specified.
 
 ```{r}
-posummary(MCMC_data, params = 'beta[1]')
+posummary(MCMC_data, 
+          params = 'beta[1]')
 ```
 
 &nbsp;
@@ -63,7 +65,8 @@ posummary(MCMC_data, params = 'beta[1]')
 `potrace` is used to create trace and density plots for MCMC output. Particular parameters can also be specified, as with `posummary`.
 
 ```{r, fig.width=5, fig.height=6}
-potrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]'))
+potrace(MCMC_data, 
+        params = c('beta[1]', 'beta[2]', 'beta[3]'))
 ```
 
 &nbsp;
@@ -72,7 +75,10 @@ potrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]'))
 Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. pdf document will be output to the current working directory by default, but another directory can be specified.
 
 ```{r, eval=FALSE}
-potrace(MCMC_data, pdf = TRUE, filename = 'MYpdf', wd = 'DIRECTORY HERE')
+potrace(MCMC_data, 
+        pdf = TRUE, 
+        filename = 'MYpdf', 
+        wd = 'DIRECTORY HERE')
 ```
 
 &nbsp;
@@ -83,7 +89,8 @@ potrace(MCMC_data, pdf = TRUE, filename = 'MYpdf', wd = 'DIRECTORY HERE')
 `pochains` is used to extract MCMC chains from MCMC objects. Chains can then be manipulated directly. Particular parameters can be specified as with other functions.
 
 ```{r}
-ex <- pochains(MCMC_data, params = 'beta')
+ex <- pochains(MCMC_data, 
+               params = 'beta')
 
 #extract mean values for each parameter
 apply(ex, 2, mean)
@@ -99,83 +106,58 @@ apply(ex, 2, mean)
 As with the other functions in the package, particular parameters of interest can be specified.
 
 ```{r, fig.width=5, fig.height=6}
-poplot(MCMC_data, params = 'beta')
-```
-
-
-`ref_vis = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles.
-
-```{r, fig.width=5, fig.height=6}
-poplot(MCMC_data, params = 'beta', ref_vis = FALSE)
+poplot(MCMC_data, 
+       params = 'beta')
 ```
 
 &nbsp;
+
+`ref_vis = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be removed with the `ref_line` argument. `ref_line = NULL` removes the reference line altogether.
+
+```{r, fig.width=5, fig.height=6}
+poplot(MCMC_data, 
+       params = 'beta',
+       ref_vis = FALSE, 
+       ref_line = NULL)
+```
+
+&nbsp;
+
+Parameters can be ranked by posterior median estimates using the `rank` argument.
+
+```{r, fig.width=5, fig.height=6}
+poplot(MCMC_data, 
+       params = 'beta', 
+       rank = TRUE)
+```
+
+&nbsp;
+
+
+Graphical parameters for x and y-axis limitation, axis labels, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, and margins can be specified.
+
+```{r, fig.width=5, fig.height=6}
+poplot(MCMC_data, 
+       params = 'beta', 
+       xlim = c(-80, 25),
+       xlab = 'My x-axis label',
+       main = 'potools plot',
+       labels = c('First param', 'Second param', 'Third param', 'Fourth param', 'Fifth param',
+                  'Sixth param', 'Seventh param', 'Eighth param', 'Nineth param', 'Tenth param'), 
+       labels_sz = 1.5,
+       med_sz = 2,
+       thick_sz = 7,
+       thin_sz = 3,
+       ax_sz = 4,
+       main_text_sz = 2)
+```
 
 **For more information see `?poplot`**
 
-&nbsp;
-
-## denplot
-
-`denplot` is used to plot density strips from MCMC output. Black ticks are used to specify posterior mean or median (depending on input for `centrality` argument), while grey ticks specify credible intervals (95% CI by default).
-
-```{r, fig.width=5, fig.height=6}
-denplot(MCMC_data, labels = NULL)
-```
-
-&nbsp;
-
-&nbsp;
-
-Specific parameters can be specified.
-
-```{r, fig.width=5, fig.height=6}
-denplot(MCMC_data, params = 'beta')
-```
-
-&nbsp;
 
 
-Parameters can be ranked by posterior mean (or median) estimates using the `rank` argument.
-
-```{r, fig.width=5, fig.height=6}
-denplot(MCMC_data, params = 'beta', rank = TRUE)
-```
-
-&nbsp;
-
-Color can be added using the `colors` argument. If colors are specified, there must be an input for each parameter to be plotted (i.e., the vector length of colors must match the number of parameters to be plotted).
-
-```{r, fig.width=5, fig.height=6}
-#use ggplot colors
-n <- NCOL(pochains(MCMC_data, params = 'beta'))
-hues <- seq(15, 375, length = n + 1)
-ggcolors <- hcl(h = hues, l = 65, c = 100)[1:n]
-
-#plot
-denplot(MCMC_data, params = 'beta', colors = ggcolors)
-```
 
 
-&nbsp;
-
-A vertical guideline at 0 is plotted by default, but can be removed with `ref_line = NULL`. Multiple guidelines can be plotted by concatenating argument input.
-
-Graphical parameters for x-axis limitation, axis labels, title, guidline thickness, density bar height, density bar tick height and width, and credible interval tick color can also be specified.
-
-```{r, fig.width=5, fig.height=6}
-denplot(MCMC_data, params = c('alpha[4]', 'beta[4]', 'gamma[7]'), 
-       ref_line = c(-20, 0, 20, 40),
-       ref_line_width = 3,
-       xlim = c(-50, 25),
-       xlab = 'Posterior estimates',
-       main = 'potools plot',
-       labels = c('An alpha parameter', 'A beta parameter', 'A gamma parameter'), 
-       dbar_height = 0.6,
-       dbar_t_height = 0.7,
-       dbar_t_width = 5,
-       CI_t_color = 'grey99')
-```
 
 &nbsp;
 
