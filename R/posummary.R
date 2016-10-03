@@ -38,9 +38,10 @@
 #'
 #' @export
 #' @import coda
-
+object <- fit
 posummary <- function(object,
-                      par = 'all',
+                      par = c('eta','mu'),
+                      excl = 'theta',
                       Rhat = TRUE)
 {
   if(typeof(object) == 'S4')
@@ -66,11 +67,33 @@ posummary <- function(object,
       mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
       colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
 
+      if(!is.null(excl))
+      {
+        to.rm1 <- c()
+        for (i in 1:length(excl))
+        {
+          to.rm1 <- c(to.rm1, grep(excl[i], names, fixed = TRUE))
+        }
+        dups <- -which(duplicated(to.rm1))
+        if(length(dups) > 0)
+        {
+          to.rm2 <- to.rm1[-dups]
+        }else{
+          to.rm2 <- to.rm1
+        }
+      }
+
+
       if (length(par) == 1)
       {
         if (par == 'all')
         {
-          OUT <- mcmc_summary
+          if(is.null(excl))
+          {
+            OUT <- mcmc_summary
+          }else{
+            OUT <- mcmc_summary[-to.rm2,]
+          }
         }else
         {
           get.rows <- grep(paste(par), names, fixed=TRUE)
@@ -78,10 +101,29 @@ posummary <- function(object,
           {
             stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
           }
-          OUT <- mcmc_summary[get.rows,]
+
+          if(!is.null(excl))
+          {
+            if(identical(get.rows, to.rm2))
+            {
+              stop('No parameters selected.')
+            }
+
+            matched <- which(get.rows == to.rm2)
+            if (length(matched) > 0)
+            {
+              g_filt <- get.rows[-matched]
+            }else {
+              g_filt <- get.rows
+            }
+
+          }else{
+            g_filt <- get.rows
+          }
+
+          OUT <- mcmc_summary[g_filt,]
         }
-      }else
-      {
+      }else {
         grouped <- c()
         for (i in 1:length(par))
         {
@@ -93,18 +135,46 @@ posummary <- function(object,
           grouped <- c(grouped, get.rows)
         }
 
-        to.rm <- which(duplicated(grouped))
-        if(length(to.rm) >0)
+        if(!is.null(excl))
         {
-          g_filt <- grouped[-to.rm]
-        }else
-        {
-          g_filt <- grouped
-        }
+          if(identical(grouped, to.rm2))
+          {
+            stop('No parameters selected.')
+          }
 
-        OUT <- mcmc_summary[g_filt,]
+          matched <- suppressWarnings(which(grouped == to.rm2))
+          if (length(matched) > 0)
+          {
+            rows <- grouped[-matched]
+          } else{
+            rows <- grouped
+          }
+
+          to.rm <- which(duplicated(rows))
+          if(length(to.rm) > 0)
+          {
+            g_filt <- rows[-to.rm]
+          }else
+          {
+            g_filt <- rows
+          }
+
+          OUT <- mcmc_summary[g_filt,]
+
+        } else{
+
+          to.rm <- which(duplicated(grouped))
+          if(length(to.rm) > 0)
+          {
+            g_filt <- grouped[-to.rm]
+          }else
+          {
+            g_filt <- grouped
+          }
+
+          OUT <- mcmc_summary[g_filt,]
+        }
       }
-    }
 
 
 
@@ -125,6 +195,7 @@ posummary <- function(object,
 
       mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
       colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
+
 
       if (length(par) == 1)
       {
