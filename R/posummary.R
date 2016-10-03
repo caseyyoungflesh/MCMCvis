@@ -11,9 +11,9 @@
 #' @param Rhat If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
 #' and if \code{FALSE}, Rhat output is masked.
 #' @section Details:
-#' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
-#' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
-#' representing iterations in the chain).
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
+#' (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
+#' chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
 #'
 #' @section Notes:
 #'
@@ -39,14 +39,20 @@
 #' @export
 #' @import coda
 
-
 posummary <- function(object,
                       params = 'all',
                       Rhat = TRUE)
 {
-     if(coda::is.mcmc.list(object) == TRUE)
+  if(typeof(object) == 'S4')
+  {
+    object2 <- rstan::As.mcmc.list(object)
+  } else {
+    object2 <- object
+  }
+
+     if(coda::is.mcmc.list(object2) == TRUE)
     {
-      temp <- object
+      temp <- object2
       names <- colnames(temp[[1]])
 
       ch_bind <- do.call('rbind', temp)
@@ -102,9 +108,9 @@ posummary <- function(object,
 
 
 
-    if(typeof(object) == 'double')
+    if(typeof(object2) == 'double')
     {
-      temp <- object
+      temp <- object2
       names <- colnames(temp)
 
       bind_mn <- apply(temp, 2, mean)
@@ -161,9 +167,9 @@ posummary <- function(object,
 
     }
 
-    if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
+    if(typeof(object2) == 'list' & coda::is.mcmc.list(object2) == FALSE)
     {
-      temp <- object$BUGSoutput$summary
+      temp <- object2$BUGSoutput$summary
       names <- rownames(temp)
 
       if (length(params) == 1)
@@ -209,9 +215,10 @@ posummary <- function(object,
 
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
-     typeof(object) != 'list')
+     typeof(object) != 'list' &
+     typeof(object) != 'S4')
   {
-      stop('Invalid object type. Input must be mcmc.list object, rjags object, or matrix with MCMC chains.')
+      stop('Invalid object type. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
 
