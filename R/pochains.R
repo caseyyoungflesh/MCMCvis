@@ -30,10 +30,13 @@
 #' apply(ex2, 2, mean)
 #'
 #' @export
-
-
+posummary(fit)
+object <- fit
+excl <- 'eta'
+par = c('eta', 'theta')
 pochains <- function(object,
-                     par = 'all')
+                     par = 'all',
+                     excl = NULL)
 {
 
     if(typeof(object) == 'S4')
@@ -74,11 +77,32 @@ pochains <- function(object,
          rjags object (R2jags), or matrix with MCMC chains.')
   }
 
+  if(!is.null(excl))
+  {
+    to.rm1 <- c()
+    for (i in 1:length(excl))
+    {
+      to.rm1 <- c(to.rm1, grep(excl[i], names, fixed = TRUE))
+    }
+    dups <- -which(duplicated(to.rm1))
+    if(length(dups) > 0)
+    {
+      to.rm2 <- to.rm1[-dups]
+    }else{
+      to.rm2 <- to.rm1
+    }
+  }
+
   if (length(par) == 1)
   {
     if (par == 'all')
     {
-      OUT <- temp
+      if(is.null(excl))
+      {
+        OUT <- temp
+      }else{
+        OUT <- temp[,-to.rm2]
+      }
     }else
     {
       get.cols <- grep(paste(par), names, fixed=TRUE)
@@ -86,14 +110,34 @@ pochains <- function(object,
       {
         stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
       }
-      OUT <- temp[,get.cols]
+
+      if(!is.null(excl))
+      {
+        if(identical(get.cols, to.rm2))
+        {
+          stop('No parameters selected.')
+        }
+
+        matched <- which(get.cols == to.rm2)
+        if (length(matched) > 0)
+        {
+          cols <- get.cols[-matched]
+        }else {
+          cols <- get.cols
+        }
+
+      }else{
+        cols <- get.cols
+      }
+
+      OUT <- temp[,cols]
     }
+
   }else
   {
     grouped <- c()
     for (i in 1:length(par))
     {
-      #i <- 1
       get.cols <- grep(paste(par[i]), names, fixed=TRUE)
       if (length(get.cols) < 1)
       {
@@ -102,13 +146,39 @@ pochains <- function(object,
       grouped <- c(grouped, get.cols)
     }
 
-    to.rm <- which(duplicated(grouped))
-    if(length(to.rm) >0)
+    if(!is.null(excl))
     {
-      g_filt <- grouped[-to.rm]
-    }else
-    {
-      g_filt <- grouped
+      if(identical(grouped, to.rm2))
+      {
+        stop('No parameters selected.')
+      }
+
+      matched <- suppressWarnings(which(grouped == to.rm2))
+      if (length(matched) > 0)
+      {
+        cols <- grouped[-matched]
+      } else{
+        cols <- grouped
+      }
+
+      to.rm <- which(duplicated(cols))
+      if(length(to.rm) > 0)
+      {
+        g_filt <- cols[-to.rm]
+      }else
+      {
+        g_filt <- cols
+      }
+    } else{
+
+      to.rm <- which(duplicated(grouped))
+      if(length(to.rm) > 0)
+      {
+        g_filt <- grouped[-to.rm]
+      }else
+      {
+        g_filt <- grouped
+      }
     }
 
     OUT <- temp[,g_filt]
