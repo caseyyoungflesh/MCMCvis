@@ -70,12 +70,14 @@ potrace(MCMC_data,
 
 &nbsp;
 
-Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputes both trace and density plots.
+Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputes both trace and density plots. Individual chains for the density plot can be output using the `ind` argument.
 
 ```{r, fig.width=5, fig.height=6}
 potrace(MCMC_data, 
-        par = c('beta[1]', 'beta[2]', 'beta[3]'),
-        type = 'density')
+        par = c('beta[1]', 'beta[2]', 'beta[3]',
+                'beta[4]', 'beta[5]', 'beta[6]'),
+        type = 'density',
+        ind = TRUE)
 ```
 
 &nbsp;
