@@ -40,8 +40,6 @@ print plots to pdf.
 }
 \section{Details}{
 
-Plots created similar to that of \code{traceplot} from \code{coda} package.
-
 \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
 (\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package).
 }
