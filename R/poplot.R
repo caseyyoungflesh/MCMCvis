@@ -67,13 +67,12 @@
 #' Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.
 #'
 #' @section Details:
-#' Points represent posterior medians. Parameters
-#' which 50 percent credible intervals overlap 0 are indicated by 'open' circles. Parameters which 50 percent credible
-#' intervals do not overlap 0 and 95 percent credible intervals do overlap 0 are indicated by 'closed' grey circles.
-#' Parameters which 95 percent credible intervals do not overlap 0 are indicated by 'closed' black circles. Thick
-#' lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
-#' \code{ref_vis = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black
-#' circles.
+#' Points represent posterior medians. For parameters where 50% credible intervals overlap 0 are indicated by 'open'
+#' circles. For parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO
+#' overlap 0 are indicated by 'closed' grey circles. For parameters where 95 percent credible intervals DO NOT overlap
+#' 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines
+#' represent 95 percent credible intervals. \code{ref_vis = FALSE} can be used to disable this feature. All median dots
+#' will be represented as 'closed' black circles.
 #'
 #' \code{object} argument can be an \code{mcmc.list} object, an \code{R2jags} model object (output from the \code{R2jags}
 #' package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows
