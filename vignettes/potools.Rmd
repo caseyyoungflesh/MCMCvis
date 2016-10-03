@@ -10,7 +10,7 @@ vignette: >
 
 ## Intro
 
-`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS or other MCMC samplers.
+`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model ouput fit with Stan, JAGS, or other MCMC samplers.
 
 The package currently contains four functions:
 
@@ -27,7 +27,7 @@ While several packages currently exist to evaluate MCMC output, they do not supp
 
 ## posummary
 
-`posummary` is used to output summary information from MCMC output. This function accepts `mcmc.list` objects, `R2jags` model output, and matrices of MCMC output (one chain per column).
+`posummary` is used to output summary information from MCMC output. This function accepts `stanfit` objects, `mcmc.list` objects, `R2jags` model output, and matrices of MCMC output (one chain per column).
 
 ```{r, message=FALSE}
 library(potools)
