@@ -70,6 +70,15 @@ potrace(MCMC_data,
 
 &nbsp;
 
+Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputes both trace and density plots.
+
+```{r, fig.width=5, fig.height=6}
+potrace(MCMC_data, 
+        par = c('beta[1]', 'beta[2]', 'beta[3]'),
+        type = 'density')
+```
+
+&nbsp;
 
 Trace plots can also be output to pdf format. This is recommended for large numbers of parameters, as output to pdf makes for quicker browsing compared to browsing within the R GUI. Pdf document will be output to the current working directory by default, but another directory can be specified.
 
