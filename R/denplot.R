@@ -85,14 +85,6 @@
 #' @export
 #' @import lattice
 
-#add ax_sz help
-#ax_sz for ticks as well - look up lattice tick size
-
-data(MCMC_data)
-denplot(MCMC_data)
-poplot(MCMC_data)
-
-
 denplot <- function(object,
                    params= 'all',
                    ref_line = 0,
@@ -166,6 +158,7 @@ denplot <- function(object,
 
       mp <- suppressMessages(reshape2::melt(chains[,idx], value.name='value')) #melt
       qdata <- apply(chains, 2, quantile, probs=quantiles)
+      medians <- apply(chains, 2, quantile, probs=0.5)
     }else
     {
       stop('quantiles must be a numerical vector of length 2')
@@ -250,7 +243,6 @@ denplot <- function(object,
         stop('length(colors) does not equal number of parameters to be plotted.')
     }
   }
-
 
 
   # create plot object ------------------------------------------------------
