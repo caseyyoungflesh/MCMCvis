@@ -81,7 +81,7 @@
 #'
 #' @section Notes:
 #'
-#' When specifying \code{rank = TRUE} and specifying labels for \code{ylab}, labels will be applied to parameters before
+#' When specifying \code{rank = TRUE} and specifying labels for \code{labels}, labels will be applied to parameters before
 #' they are ranked.
 #'
 #' Thanks to Cinner et al. 2016, whose Fig. 1 inspired this plot.
@@ -103,7 +103,7 @@
 #' data(MCMC_data)
 #'
 #' #Plot MCMC output
-#' poplot(MCMC_data, ylab=NULL)
+#' poplot(MCMC_data, labels=NULL)
 #'
 #' #Just 'beta' parameters
 #' poplot(MCMC_data, params= 'beta')
@@ -227,13 +227,13 @@ if (missing(labels))
 }else{
   if (!missing(labels))
   {
-    if (is.null(ylab))
+    if (is.null(labels))
     {
       labels <- rep('', len)
     }
-    if (!is.null(ylab))
+    if (!is.null(labels))
     {
-      if (length(ylab) == len)
+      if (length(labels) == len)
       {
         labs <- labels[idx]
       }else
