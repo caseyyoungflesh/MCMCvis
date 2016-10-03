@@ -34,10 +34,7 @@
 #' apply(ex2, 2, mean)
 #'
 #' @export
-posummary(fit)
-object <- fit
-excl <- 'eta'
-par = c('eta', 'theta')
+
 pochains <- function(object,
                      par = 'all',
                      excl = NULL)
@@ -157,7 +154,7 @@ pochains <- function(object,
         stop('No parameters selected.')
       }
 
-      matched <- suppressWarnings(which(grouped == to.rm2))
+      matched <- na.omit(match(to.rm2, grouped))
       if (length(matched) > 0)
       {
         cols <- grouped[-matched]
