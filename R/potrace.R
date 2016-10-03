@@ -9,6 +9,10 @@
 #'
 #' Default \code{'all'} returns chains for all parameters.
 #'
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
+#' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+#' conjunction with \code{par} argument to select parameters of interest.
+#'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param filename Name of pdf file to be printed.
 #' @param wd Working directory for pdf output. Default is current directory.
@@ -36,6 +40,7 @@
 
 potrace <- function(object,
                     par = 'all',
+                    excl = NULL,
                     pdf = FALSE,
                     filename,
                     wd = getwd(),
@@ -70,6 +75,25 @@ potrace <- function(object,
     stop('Invalid input type. Object must be of type stanfit, mcmc.list, or R2jags.')
   }
 
+  if(!is.null(excl))
+  {
+    to.rm1 <- c()
+    for (i in 1:length(excl))
+    {
+      to.rm1 <- c(to.rm1, grep(excl[i], names, fixed = TRUE))
+    }
+    dups <- -which(duplicated(to.rm1))
+    if(length(dups) > 0)
+    {
+      to.rm2 <- to.rm1[-dups]
+    }else{
+      to.rm2 <- to.rm1
+    }
+  }
+
+
+
+
   names <- colnames(temp[[1]])
   n_chains <- length(temp)
   it <- 1:nrow(temp[[1]])
@@ -78,10 +102,38 @@ potrace <- function(object,
   {
     if (par == 'all')
     {
-      g_filt <- 1:length(names)
+      if(is.null(excl))
+      {
+        g_filt <- 1:length(names)
+      }else{
+        g_filt <- (1:length(names))[-to.rm2]
+      }
     }else
     {
-      g_filt <- grep(paste(par), names, fixed=TRUE)
+      get.cols <- grep(paste(par), names, fixed=TRUE)
+      if (length(get.cols) < 1)
+      {
+        stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
+      }
+
+      if(!is.null(excl))
+      {
+        if(identical(get.cols, to.rm2))
+        {
+          stop('No parameters selected.')
+        }
+
+        matched <- which(get.cols == to.rm2)
+        if (length(matched) > 0)
+        {
+          g_filt <- get.cols[-matched]
+        }else {
+          g_filt <- get.cols
+        }
+
+      }else{
+        g_filt <- get.cols
+      }
     }
   }else
   {
@@ -92,15 +144,42 @@ potrace <- function(object,
       grouped <- c(grouped, get.cols)
     }
 
-    to.rm <- which(duplicated(grouped))
-    if(length(to.rm) >0)
+    if(!is.null(excl))
     {
-      g_filt <- grouped[-to.rm]
-    }else
-    {
-      g_filt <- grouped
+      if(identical(grouped, to.rm2))
+      {
+        stop('No parameters selected.')
+      }
+
+      matched <- suppressWarnings(which(grouped == to.rm2))
+      if (length(matched) > 0)
+      {
+        cols <- grouped[-matched]
+      } else{
+        cols <- grouped
+      }
+
+      to.rm <- which(duplicated(cols))
+      if(length(to.rm) > 0)
+      {
+        g_filt <- cols[-to.rm]
+      }else
+      {
+        g_filt <- cols
+      }
+    } else{
+
+      to.rm <- which(duplicated(grouped))
+      if(length(to.rm) > 0)
+      {
+        g_filt <- grouped[-to.rm]
+      }else
+      {
+        g_filt <- grouped
+      }
     }
   }
+
 
   if(pdf == TRUE)
   {
