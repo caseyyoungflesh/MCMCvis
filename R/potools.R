@@ -10,7 +10,7 @@
 #'
 #'      -\code{posummary} (summarize MCMC output for particular parameters of interest)
 #'
-#'      -\code{potrace} (create trace plotsMCMC chains for particular parameters of interest)
+#'      -\code{potrace} (create trace and density plots from MCMC chains for particular parameters of interest)
 #'
 #'      -\code{pochains} (easily extract posterior chains from MCMC output for particular parameters of interest)
 #'

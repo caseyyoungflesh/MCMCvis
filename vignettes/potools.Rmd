@@ -15,7 +15,7 @@ vignette: >
 The package currently contains four functions:
 
 - `posummary` - summarize MCMC output for particular parameters of interest
-- `potrace` - create trace plots of MCMC chains for particular parameters of interest
+- `potrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `poplot` - create caterpillar plots from MCMC output for particular parameters of interest
 
@@ -70,7 +70,7 @@ posummary(MCMC_data,
 
 ## potrace
 
-`potrace` is used to create trace and density plots for MCMC output. Particular parameters can also be specified, as with `posummary`.
+`potrace` is used to create trace and density plots for MCMC output. This is useful for diagnostic purposes. Particular parameters can also be specified, as with `posummary`.
 
 ```{r, fig.width=5, fig.height=6}
 potrace(MCMC_data, 
