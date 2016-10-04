@@ -23,7 +23,7 @@
 #' easily obtained for any parameter of interest within each function. Each function is designed to operate independently
 #' of one another.
 #'
-#' The vignette can be run using \code{vignette('potools')} if vignette is built.
+#' The vignette can be run using \code{vignette('potools')} if vignette is built when installing package.
 #'
 #' @section Author(s):
 #' Casey Youngflesh <caseyyoungflesh@gmail.com>
