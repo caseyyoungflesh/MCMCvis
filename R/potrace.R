@@ -219,7 +219,7 @@ potrace <- function(object,
       tmlt <- do.call('cbind', temp[it,g_filt[j]])
       matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
               col= rgb(red= gg_cols[1,], green= gg_cols[2,],
-                       blue= gg_cols[3,], alpha = 0.6),
+                       blue= gg_cols[3,], alpha = 0.5),
               xlab= 'Iteration', ylab= 'Value')
       if (ind == TRUE & n_chains > 1)
       {
@@ -257,7 +257,7 @@ potrace <- function(object,
       tmlt <- do.call('cbind', temp[it,g_filt[j]])
       matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[g_filt[j]]),
               col= rgb(red= gg_cols[1,], green= gg_cols[2,],
-                       blue= gg_cols[3,], alpha = 0.6),
+                       blue= gg_cols[3,], alpha = 0.5),
               xlab= 'Iteration', ylab= 'Value')
     }
   }
