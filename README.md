@@ -1,16 +1,16 @@
-potools
+MCMCvis
 ====
 
-`potools` is an R package used to manipulate and summarize MCMC output. MCMC output may be derived from Bayesian model ouput fit with Stan, JAGS, or other MCMC samplers.
+`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with Stan, JAGS, or other MCMC samplers.
 
-The package currently contains four functions:
+The package contains four functions:
 
-- `posummary` - summarize MCMC output for particular parameters of interest
-- `potrace` - create trace plotsMCMC chains for particular parameters of interest
-- `pochains` - easily extract posterior chains from MCMC output for particular parameters of interest
-- `poplot` - create caterpillar plots from MCMC output for particular parameters of interest
+- `MCMCsummary` - summarize MCMC output for particular parameters of interest
+- `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
+- `MCMCchains` - easily extract posterior chains from MCMC output for particular parameters of interest
+- `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
 
-While several packages currently exist to evaluate MCMC output, they do not support simple subsetting of model parameters and/or do not provide an option to properly visualize MCMC output, particularly with large numbers of parameters. `potools` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. 
+`MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
 Installation
 ------------
@@ -18,7 +18,7 @@ Installation
 You can install the latest version with:
 ```{r}
 install.packages('devtools')
-devtools::install_github('caseyyoungflesh/potools', build_vignettes = TRUE)
+devtools::install_github('caseyyoungflesh/MCMCvis', build_vignettes = TRUE)
 ```
 
 Vignette
@@ -26,5 +26,5 @@ Vignette
 
 The vignette for this package can be run using:
 ```{r}
-vignette('potools')
+vignette('MCMCvis')
 ```

@@ -1,6 +1,7 @@
 #' Summary function for MCMC output
 #'
-#' Extract summary information from MCMC output for specific parameters of interest.
+#' Extract summary information from MCMC output (mean, median, quantiles, and Gelman-Rubin convergence statistic)
+#' for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be
@@ -37,17 +38,17 @@
 #' data(MCMC_data)
 #'
 #' #Summary information for MCMC output
-#' posummary(MCMC_data)
+#' MCMCsummary(MCMC_data)
 #'
 #' #Just 'beta' parameters
-#' posummary(MCMC_data, params= 'beta')
+#' MCMCsummary(MCMC_data, params= 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' posummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' MCMCsummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' @export
 
-posummary <- function(object,
+MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
                       digits = 2,

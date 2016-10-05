@@ -106,22 +106,22 @@
 #' data(MCMC_data)
 #'
 #' #Plot MCMC output
-#' poplot(MCMC_data, labels=NULL)
+#' MCMCplot(MCMC_data, labels=NULL)
 #'
 #' #Just 'beta' parameters
-#' poplot(MCMC_data, params= 'beta')
+#' MCMCplot(MCMC_data, params= 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' poplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' MCMCplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' #Rank parameters by posterior mean
-#' poplot(MCMC_data, params= 'beta', rank=TRUE)
+#' MCMCplot(MCMC_data, params= 'beta', rank=TRUE)
 #'
 #' @export
 #'
 
 
-poplot <- function(object,
+MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
                    ref = 0,
@@ -145,7 +145,7 @@ poplot <- function(object,
 {
 
 
-  data <- pochains(object, params= params, excl = excl)
+  data <- MCMCchains(object, params= params, excl = excl)
 
   #not yet an option for user to modify
   thin = 95 #CI for thin line

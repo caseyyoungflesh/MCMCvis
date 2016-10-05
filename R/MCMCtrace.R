@@ -33,14 +33,14 @@
 #' data(MCMC_data)
 #'
 #' #Traceplot for all 'beta' parameters
-#' potrace(MCMC_data, params='beta')
+#' MCMCtrace(MCMC_data, params='beta')
 #'
 #' #Print traceplot output to pdf
-#' potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
+#' MCMCtrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
 #'
 #' @export
 
-potrace <- function(object,
+MCMCtrace <- function(object,
                     params = 'all',
                     excl = NULL,
                     iter_st = 1,
@@ -187,7 +187,7 @@ potrace <- function(object,
     setwd(wd)
     if(missing(filename))
     {
-      file_out <- 'potrace.pdf'
+      file_out <- 'MCMCtrace.pdf'
     }else{
       if(grepl('.pdf', filename, fixed = TRUE))
       {

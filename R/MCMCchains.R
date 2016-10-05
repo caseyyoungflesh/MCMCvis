@@ -27,16 +27,16 @@
 #' data(MCMC_data)
 #'
 #' #Extract MCMC chains
-#' ex <- pochains(MCMC_data)
+#' ex <- MCMCchains(MCMC_data)
 #' apply(ex, 2, mean)
 #'
 #' #Extract MCMC chains for just 'beta' parameters
-#' ex2 <- pochains(MCMC_data, params='beta')
+#' ex2 <- MCMCchains(MCMC_data, params='beta')
 #' apply(ex2, 2, mean)
 #'
 #' @export
 
-pochains <- function(object,
+MCMCchains <- function(object,
                      params = 'all',
                      excl = NULL)
 {
