@@ -188,7 +188,7 @@ potrace <- function(object,
     {
       file_out <- 'potrace.pdf'
     }else{
-      if(grepl('pdf', filename))
+      if(grepl('.pdf', filename))
       {
         file_out <- paste0(filename)
       }else{
