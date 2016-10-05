@@ -25,7 +25,8 @@
 #' \code{ind= FALSE}, one line will be plotted for all chains.
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
-#' (\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package).
+#' (\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package). The function automatically
+#' detects the object type and proceeds accordingly.
 #'
 #' @examples
 #' #Load data

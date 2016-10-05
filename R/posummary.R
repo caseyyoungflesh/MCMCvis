@@ -22,6 +22,7 @@
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
 #' (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
 #' chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
+#' The function automatically detects the object type and proceeds accordingly.
 #'
 #' @section Notes:
 #'
