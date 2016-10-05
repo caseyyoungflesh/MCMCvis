@@ -13,6 +13,9 @@
 #' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
 #' conjunction with \code{par} argument to select parameters of interest.
 #'
+#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified value.
+#' Default is \code{digits = 2}.
+#'
 #' @param Rhat If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
 #' and if \code{FALSE}, Rhat output is masked.
 #' @section Details:
@@ -46,6 +49,7 @@
 posummary <- function(object,
                       par = 'all',
                       excl = NULL,
+                      digits = 2,
                       Rhat = TRUE)
 {
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
@@ -79,11 +83,11 @@ posummary <- function(object,
 
     ch_bind <- do.call('rbind', temp)
 
-    bind_mn <- apply(ch_bind, 2, mean)
-    bind_LCI <- apply(ch_bind, 2, quantile, probs= 0.025)
-    bind_med <- apply(ch_bind,2, median)
-    bind_UCI <- apply(ch_bind, 2, quantile, probs= 0.975)
-    r_hat <- coda::gelman.diag(temp)$psrf[,1]
+    bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
+    bind_LCI <- round(apply(ch_bind, 2, quantile, probs= 0.025), digits = digits)
+    bind_med <- round(apply(ch_bind,2, median), digits = digits)
+    bind_UCI <- round(apply(ch_bind, 2, quantile, probs= 0.975), digits = digits)
+    r_hat <- round(coda::gelman.diag(temp)$psrf[,1], digits = digits)
 
     mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
     colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
@@ -94,10 +98,10 @@ posummary <- function(object,
     temp <- object2
     names <- colnames(temp)
 
-    bind_mn <- apply(temp, 2, mean)
-    bind_LCI <- apply(temp, 2, quantile, probs= 0.025)
-    bind_med <- apply(temp,2, median)
-    bind_UCI <- apply(temp, 2, quantile, probs= 0.975)
+    bind_mn <- round(apply(temp, 2, mean), digits = digits)
+    bind_LCI <- round(apply(temp, 2, quantile, probs= 0.025), digits = digits)
+    bind_med <- round(apply(temp,2, median), digits = digits)
+    bind_UCI <- round(apply(temp, 2, quantile, probs= 0.975), digits = digits)
     if(Rhat == TRUE)
     {
       warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
