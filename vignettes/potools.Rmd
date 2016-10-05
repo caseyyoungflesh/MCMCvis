@@ -27,7 +27,7 @@ While several packages currently exist to evaluate MCMC output, they do not supp
 
 ## posummary
 
-`posummary` is used to output summary information from MCMC output. This function accepts `stanfit` objects, `mcmc.list` objects, `R2jags` model output, and matrices of MCMC output (one chain per column).
+`posummary` is used to output summary information from MCMC output. This function accepts `stanfit` objects, `mcmc.list` objects, `R2jags` model output, and matrices of MCMC output (one chain per column). There is no need to specify the type of object as the function detects this automatically. Two decimal places are reported by default. This can be changed using the `digits` argument.
 
 ```{r, message=FALSE}
 library(potools)
