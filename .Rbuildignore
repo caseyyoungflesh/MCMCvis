@@ -4,3 +4,4 @@
 ^README\.Rmd$
 ^\.RData$
 ^\.Rhistory$
+^\.travis\.yml$
