@@ -305,7 +305,6 @@ potrace <- function(object,
 
   if(pdf == TRUE)
   {
-    invisible(dev.off())
     system(paste0('open ', paste0('"', file_out, '"')))
   }
   par(.pardefault)
