@@ -1,6 +1,8 @@
 MCMCvis
 ====
 
+[![Travis-CI Build Status](https://travis-ci.org/NA/NA.svg?branch=master)](https://travis-ci.org/NA/NA)
+
 `MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with Stan, JAGS, or other MCMC samplers.
 
 The package contains four functions:
