@@ -4,14 +4,14 @@
 #' print plots to pdf.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param par Character string (or vector of character strings) denoting parameters of interest.
+#' @param params Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.
 #'
 #' Default \code{'all'} returns chains for all parameters.
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude.
 #' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
-#' conjunction with \code{par} argument to select parameters of interest.
+#' conjunction with \code{params} argument to select parameters of interest.
 #'
 #' @param iter_st Starting point in chain for trace and density plots. Default is 1, meaning
 #' the entire chain is plotted.
@@ -32,7 +32,7 @@
 #' data(MCMC_data)
 #'
 #' #Traceplot for all 'beta' parameters
-#' potrace(MCMC_data, par='beta')
+#' potrace(MCMC_data, params='beta')
 #'
 #' #Print traceplot output to pdf
 #' potrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
@@ -40,7 +40,7 @@
 #' @export
 
 potrace <- function(object,
-                    par = 'all',
+                    params = 'all',
                     excl = NULL,
                     iter_st = 1,
                     pdf = FALSE,
@@ -98,9 +98,9 @@ potrace <- function(object,
   }
 
 
-  if (length(par) == 1)
+  if (length(params) == 1)
   {
-    if (par == 'all')
+    if (params == 'all')
     {
       if(is.null(excl))
       {
@@ -110,10 +110,10 @@ potrace <- function(object,
       }
     }else
     {
-      get.cols <- grep(paste(par), names, fixed=TRUE)
+      get.cols <- grep(paste(params), names, fixed=TRUE)
       if (length(get.cols) < 1)
       {
-        stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
       }
 
       if(!is.null(excl))
@@ -138,9 +138,9 @@ potrace <- function(object,
   }else
   {
     grouped <- c()
-    for (i in 1:length(par))
+    for (i in 1:length(params))
     {
-      get.cols <- grep(paste(par[i]), names, fixed=TRUE)
+      get.cols <- grep(paste(params[i]), names, fixed=TRUE)
       grouped <- c(grouped, get.cols)
     }
 

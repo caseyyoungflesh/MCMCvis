@@ -3,7 +3,7 @@
 #' Extract summary information from MCMC output for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param par Character string (or vector of character strings) denoting parameters to be
+#' @param params Character string (or vector of character strings) denoting parameters to be
 #' returned in summary output. Partial names may be used to return all parameters containing
 #' that set of characters.
 #'
@@ -11,7 +11,7 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude.
 #' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
-#' conjunction with \code{par} argument to select parameters of interest.
+#' conjunction with \code{params} argument to select parameters of interest.
 #'
 #' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified value.
 #' Default is \code{digits = 2}.
@@ -39,15 +39,15 @@
 #' posummary(MCMC_data)
 #'
 #' #Just 'beta' parameters
-#' posummary(MCMC_data, par= 'beta')
+#' posummary(MCMC_data, params= 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' posummary(MCMC_data, par= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' posummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' @export
 
 posummary <- function(object,
-                      par = 'all',
+                      params = 'all',
                       excl = NULL,
                       digits = 2,
                       Rhat = TRUE)
@@ -128,9 +128,9 @@ posummary <- function(object,
     }
   }
 
-  if (length(par) == 1)
+  if (length(params) == 1)
   {
-    if (par == 'all')
+    if (params == 'all')
     {
       if(is.null(excl))
       {
@@ -140,10 +140,10 @@ posummary <- function(object,
       }
     }else
      {
-      get.rows <- grep(paste(par), names, fixed=TRUE)
+      get.rows <- grep(paste(params), names, fixed=TRUE)
       if (length(get.rows) < 1)
       {
-        stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
       }
 
       if(!is.null(excl))
@@ -169,12 +169,12 @@ posummary <- function(object,
     }
   }else {
     grouped <- c()
-    for (i in 1:length(par))
+    for (i in 1:length(params))
     {
-      get.rows <- grep(paste(par[i]), names, fixed=TRUE)
+      get.rows <- grep(paste(params[i]), names, fixed=TRUE)
       if (length(get.rows) < 1)
       {
-        stop(paste0('"', par[i], '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
       }
       grouped <- c(grouped, get.rows)
     }

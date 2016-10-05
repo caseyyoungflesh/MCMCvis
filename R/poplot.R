@@ -6,7 +6,7 @@
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param par Character string (or vector of character strings) denoting parameters to be
+#' @param params Character string (or vector of character strings) denoting parameters to be
 #' plotted. Partial names may be used to plot all parameters containing that set of characters.
 #'
 #' Default \code{'all'} plots posteriors for all parameters. See VALUE below.
@@ -15,7 +15,7 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude.
 #' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
-#' conjunction with \code{par} argument to select parameters of interest.
+#' conjunction with \code{params} argument to select parameters of interest.
 #'
 #' @param ref Numerical vector indicating where vertical reference line should be created.
 #'
@@ -108,20 +108,20 @@
 #' poplot(MCMC_data, labels=NULL)
 #'
 #' #Just 'beta' parameters
-#' poplot(MCMC_data, par= 'beta')
+#' poplot(MCMC_data, params= 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' poplot(MCMC_data, par= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' poplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' #Rank parameters by posterior mean
-#' poplot(MCMC_data, par= 'beta', rank=TRUE)
+#' poplot(MCMC_data, params= 'beta', rank=TRUE)
 #'
 #' @export
 #'
 
 
 poplot <- function(object,
-                   par = 'all',
+                   params = 'all',
                    excl = NULL,
                    ref = 0,
                    ref_ovl = TRUE,
@@ -144,7 +144,7 @@ poplot <- function(object,
 {
 
 
-  data <- pochains(object, par= par, excl = excl)
+  data <- pochains(object, params= params, excl = excl)
 
   #not yet an option for user to modify
   thin = 95 #CI for thin line

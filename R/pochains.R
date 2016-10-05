@@ -3,14 +3,14 @@
 #' Extract posterior chains from MCMC output for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param par Character string (or vector of character strings) denoting parameters of interest.
+#' @param params Character string (or vector of character strings) denoting parameters of interest.
 #' Partial names may be used to return all parameters containing that set of characters.
 #'
 #' Default \code{'all'} returns chains for all parameters.
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude.
 #' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
-#' conjunction with \code{par} argument to select parameters of interest.
+#' conjunction with \code{params} argument to select parameters of interest.
 #'
 #' @section Details:
 #' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
@@ -30,13 +30,13 @@
 #' apply(ex, 2, mean)
 #'
 #' #Extract MCMC chains for just 'beta' parameters
-#' ex2 <- pochains(MCMC_data, par='beta')
+#' ex2 <- pochains(MCMC_data, params='beta')
 #' apply(ex2, 2, mean)
 #'
 #' @export
 
 pochains <- function(object,
-                     par = 'all',
+                     params = 'all',
                      excl = NULL)
 {
 
@@ -94,9 +94,9 @@ pochains <- function(object,
     }
   }
 
-  if (length(par) == 1)
+  if (length(params) == 1)
   {
-    if (par == 'all')
+    if (params == 'all')
     {
       if(is.null(excl))
       {
@@ -106,10 +106,10 @@ pochains <- function(object,
       }
     }else
     {
-      get.cols <- grep(paste(par), names, fixed=TRUE)
+      get.cols <- grep(paste(params), names, fixed=TRUE)
       if (length(get.cols) < 1)
       {
-        stop(paste0('"', par, '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
       }
 
       if(!is.null(excl))
@@ -137,12 +137,12 @@ pochains <- function(object,
   }else
   {
     grouped <- c()
-    for (i in 1:length(par))
+    for (i in 1:length(params))
     {
-      get.cols <- grep(paste(par[i]), names, fixed=TRUE)
+      get.cols <- grep(paste(params[i]), names, fixed=TRUE)
       if (length(get.cols) < 1)
       {
-        stop(paste0('"', par[i], '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
       }
       grouped <- c(grouped, get.cols)
     }
