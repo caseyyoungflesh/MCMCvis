@@ -194,8 +194,8 @@ potrace <- function(object,
       }else{
         file_out <- paste0(filename, '.pdf')
       }
-    pdf(file= file_out)
     }
+    pdf(file= file_out)
   }
 
   .pardefault <- par(no.readonly = T)
@@ -305,6 +305,7 @@ potrace <- function(object,
 
   if(pdf == TRUE)
   {
+    invisible(dev.off())
     system(paste0('open ', paste0('"', file_out, '"')))
   }
   par(.pardefault)
