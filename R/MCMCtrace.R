@@ -61,6 +61,7 @@ MCMCtrace <- function(object,
   }
   if(coda::is.mcmc.list(object) == FALSE & typeof(object) == 'list')
   {
+    #modified coda::as.mcmc (removing ordering of param names)
     x <- object$BUGSoutput
     mclist <- vector("list", x$n.chains)
     mclis <- vector("list", x$n.chains)
@@ -303,11 +304,11 @@ MCMCtrace <- function(object,
     stop('Invalid argument for "type". Valid inputs are "both", "trace", and "density".')
   }
 
+  par(.pardefault)
 
   if(pdf == TRUE)
   {
     invisible(dev.off())
     system(paste0('open ', paste0('"', file_out, '"')))
   }
-  par(.pardefault)
 }
