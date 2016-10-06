@@ -56,7 +56,7 @@ MCMCsummary <- function(object,
 {
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
-    #modified from R2jags package
+    #modified coda::as.mcmc (removing ordering of param names)
     x <- object$BUGSoutput
     mclist <- vector("list", x$n.chains)
     mclis <- vector("list", x$n.chains)
