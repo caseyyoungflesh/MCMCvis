@@ -86,9 +86,9 @@ MCMCsummary <- function(object,
     ch_bind <- do.call('rbind', temp)
 
     bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
-    bind_LCI <- round(apply(ch_bind, 2, quantile, probs= 0.025), digits = digits)
-    bind_med <- round(apply(ch_bind,2, median), digits = digits)
-    bind_UCI <- round(apply(ch_bind, 2, quantile, probs= 0.975), digits = digits)
+    bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
+    bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
+    bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
     r_hat <- round(coda::gelman.diag(temp)$psrf[,1], digits = digits)
 
     mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
@@ -101,9 +101,9 @@ MCMCsummary <- function(object,
     names <- colnames(temp)
 
     bind_mn <- round(apply(temp, 2, mean), digits = digits)
-    bind_LCI <- round(apply(temp, 2, quantile, probs= 0.025), digits = digits)
-    bind_med <- round(apply(temp,2, median), digits = digits)
-    bind_UCI <- round(apply(temp, 2, quantile, probs= 0.975), digits = digits)
+    bind_LCI <- round(apply(temp, 2, stats::quantile, probs= 0.025), digits = digits)
+    bind_med <- round(apply(temp,2, stats::median), digits = digits)
+    bind_UCI <- round(apply(temp, 2, stats::quantile, probs= 0.975), digits = digits)
     if(Rhat == TRUE)
     {
       warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
@@ -188,7 +188,7 @@ MCMCsummary <- function(object,
         stop('No parameters selected.')
       }
 
-      matched <- na.omit(match(to.rm2, grouped))
+      matched <- stats::na.omit(match(to.rm2, grouped))
       if (length(matched) > 0)
       {
         rows <- grouped[-matched]

@@ -155,7 +155,7 @@ MCMCchains <- function(object,
         stop('No parameters selected.')
       }
 
-      matched <- na.omit(match(to.rm2, grouped))
+      matched <- stats::na.omit(match(to.rm2, grouped))
       if (length(matched) > 0)
       {
         cols <- grouped[-matched]
