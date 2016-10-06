@@ -1,7 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^cran_comments\.md$
-^README\.Rmd$
+^README\.md$
 ^\.RData$
 ^\.Rhistory$
 ^\.travis\.yml$
