@@ -1,7 +1,7 @@
 Package: MCMCvis
 Type: Package
 Title: Tools to Visualize, Manipulate, and Summarize MCMC Output
-Version: 0.6.2
+Version: 0.6.3
 Author: Casey Youngflesh
 Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
 Description: MCMCvis was designed to perform key functions for MCMC analysis
@@ -14,10 +14,13 @@ URL: http://github.com/caseyyoungflesh/MCMCvis
 BugReports: http://github.com/caseyyoungflesh/MCMCvis/issues
 LazyData: TRUE
 Imports:
-Depends:
-    R (>= 3.2.3),
     coda,
-    rstan
+    rstan,
+    grDevices,
+    graphics,
+    stats
+Depends:
+    R (>= 3.2.3)
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
