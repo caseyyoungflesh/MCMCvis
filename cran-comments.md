@@ -9,7 +9,7 @@ ATTN: This is the first submission of this package
 
 
 ## R CMD check results
-There were no ERRORs, WARNINGs, or NOTEs
+There were no ERRORs, WARNINGs, or NOTEs (besides the first submission NOTE)
 
 
 ## Downstream dependencies

@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^cran_comments\.md$
+^cran-comments\.md$
 ^README\.md$
 ^\.RData$
 ^\.Rhistory$
