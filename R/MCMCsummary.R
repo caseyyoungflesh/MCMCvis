@@ -89,7 +89,7 @@ MCMCsummary <- function(object,
     bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
     bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
     bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
-    r_hat <- round(coda::gelman.diag(temp)$psrf[,1], digits = digits)
+    r_hat <- round(coda::gelman.diag(temp, multivariate = FALSE)$psrf[,1], digits = digits)
 
     mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
     colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
