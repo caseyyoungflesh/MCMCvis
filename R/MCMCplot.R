@@ -1,8 +1,7 @@
 #' Caterpillar plots of posterior distributions from MCMC output
 #'
 #' Visualize posterior distributions from MCMC output for specific parameters of interest using
-#' caterpillar plots. Color of median dot represents relationship of parameter to reference line
-#' (default is 0; see DETAILS below).
+#' caterpillar plots. Color of median dot represents relationship of parameter to reference line.
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
@@ -11,7 +10,6 @@
 #'
 #' Default \code{'all'} plots posteriors for all parameters. See VALUE below.
 #'
-#' Valid entries are \code{jags_object}, \code{mcmc_list}, and \code{chains}. See DETAILS below.
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude.
 #' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
@@ -24,8 +22,8 @@
 #' Argument \code{NULL} will plot no reference line.
 #'
 #' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should
-#' be changed based on whether the 50% and 95% credible intervals overlap the reference line. See
-#' DETAILS for more information.
+#' be changed based on whether the 50 per. and 95 per. credible intervals overlap the reference line.
+#' See DETAILS for more information.
 #'
 #' @param rank If \code{TRUE} posteriors will ranked in decreasing order (based on
 #' specified measure of centrality) from top down.
