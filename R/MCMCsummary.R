@@ -11,10 +11,11 @@
 #' Default \code{'all'} returns all parameters in summary output.
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude.
-#' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+#' Partial names may be used to exclude all parameters containing that set of characters. Used in
 #' conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified value.
+#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified
+#' number of digits.
 #' Default is \code{digits = 2}.
 #'
 #' @param Rhat If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
@@ -27,7 +28,7 @@
 #'
 #' @section Notes:
 #'
-#' For \code{mcmc.list} objects, Gelman-Rubin convergence statistic  (Rhat) is calculated using the
+#' For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calculated using the
 #' \code{gelman.diag} function in the \code{coda} package.
 #'
 #' @return Function returns summary information (including parameter posterior mean, 2.5\% quantile, median, 97.5\%

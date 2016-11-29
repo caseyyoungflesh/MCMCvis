@@ -1,6 +1,6 @@
 #' Trace and density plots from MCMC output
 #'
-#' Trace plots and density plots of MCMC chains for specific parameters of interest. Option to
+#' Trace and density plots of MCMC chains for specific parameters of interest. Option to
 #' print plots to pdf.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
@@ -10,7 +10,7 @@
 #' Default \code{'all'} returns chains for all parameters.
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude.
-#' Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+#' Partial names may be used to exclude all parameters containing that set of characters. Used in
 #' conjunction with \code{params} argument to select parameters of interest.
 #'
 #' @param iter_st Starting point in chain for trace and density plots. Default is 1, meaning

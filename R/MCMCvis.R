@@ -18,7 +18,7 @@
 #'
 #' `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower
 #' for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within
-#' the calls, and produce presentable and 'publication-ready' output.
+#' the calls, and produce presentable, 'publication-ready' output.
 #'
 #' The vignette can be run using \code{vignette('MCMCvis')} if vignette is built when installing package.
 #'
