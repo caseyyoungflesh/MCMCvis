@@ -49,16 +49,6 @@
 #' @export
 
 
-
-#check to make sure all input object types work properly
-#check that when tracking params (like mu) cholesky error deosn't occur
-
-object <- mcmc_LAY
-params = 'beta'
-excl = NULL
-digits = 2
-Rhat = TRUE
-
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
