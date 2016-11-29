@@ -49,10 +49,15 @@
 #' @export
 
 
+
 #check to make sure all input object types work properly
 #check that when tracking params (like mu) cholesky error deosn't occur
 
-
+object <- mcmc_LAY
+params = 'beta'
+excl = NULL
+digits = 2
+Rhat = TRUE
 
 MCMCsummary <- function(object,
                       params = 'all',
@@ -74,6 +79,7 @@ MCMCsummary <- function(object,
     x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
     to.rm <- which(rownames(x) == 'deviance')
     mcmc_summary <- x[-to.rm,] #already have mcmc_summary
+    names <- rownames(mcmc_summary)
   } else {
     if(typeof(object) == 'S4')
     {
