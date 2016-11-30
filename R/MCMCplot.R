@@ -120,6 +120,16 @@
 #' @export
 #'
 
+data(MCMC_data)
+object <- MCMC_data
+params = 'all'
+excl = NULL
+ref = 0
+ref_ovl = TRUE
+rank = FALSE
+
+
+
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -214,40 +224,8 @@ MCMCplot <- function(object,
   #thick_sz = 2 #thick CI thickness
   #thin_sz = 1 #thin CI thickness
 
-  if (missing(xlab))
-  {xlab = 'Parameter Estimate'}
-  if (missing(main))
-  {main = ''}
-
-  if (missing(labels))
-  {
-    labs = names(medians)
-  }else{
-    if (!missing(labels))
-    {
-      if (is.null(labels))
-      {
-        labs <- rep('', len)
-      }
-      if (!is.null(labels))
-      {
-        if (length(labels) == len)
-        {
-          labs <- labels[idx]
-        }else
-        {
-          stop('Labels length not equal to number of parameters')
-        }
-      }
-    }
-  }
-
   if (missing(tick_pos))
   {tick_pos = NULL}
-  if (missing(xlim))
-  {xlim = range(thin_q)*1.2}
-  if (missing(ylim))
-  {ylim = c(0.5,(len)+0.5)}
 
 
   #not yet an option for user to modify
@@ -296,6 +274,37 @@ MCMCplot <- function(object,
   #plot for horizontal
   if (horizontal)
   {
+
+    if (missing(xlim))
+    {xlim = range(thin_q)*1.2}
+    if (missing(ylim))
+    {ylim = c(0.5,(len)+0.5)}
+    if (missing(xlab))
+    {xlab = 'Parameter Estimate'}
+    if (missing(main))
+    {main = ''}
+    if (missing(labels))
+    {
+      labs = names(medians)
+    }else{
+      if (!missing(labels))
+      {
+        if (is.null(labels))
+        {
+          labs <- rep('', len)
+        }
+        if (!is.null(labels))
+        {
+          if (length(labels) == len)
+          {
+            labs <- labels[idx]
+          }else
+          {
+            stop('Labels length not equal to number of parameters')
+          }
+        }
+      }
+    }
 
     #0.2 inches per line - mar measured in lines
     m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
@@ -383,6 +392,138 @@ MCMCplot <- function(object,
              col = 'black', cex = med_sz)
     }
   }
+
+  if (horizontal == FALSE)
+  {
+
+    #reverse of horizontal plot
+    if (missing(xlim))
+    {xlim = c(0.5,(len)+0.5)}
+    if (missing(ylim))
+    {ylim = range(thin_q)*1.2}
+    if (missing(ylab))
+    {ylab = 'Parameter Estimate'}
+    if (missing(main))
+    {main = ''}
+    if (missing(labels))
+    {
+      labs = names(medians)
+    }else{
+      if (!missing(labels))
+      {
+        if (is.null(labels))
+        {
+          labs <- rep('', len)
+        }
+        if (!is.null(labels))
+        {
+          if (length(labels) == len)
+          {
+            labs <- labels[idx]
+          }else
+          {
+            stop('Labels length not equal to number of parameters')
+          }
+        }
+      }
+    }
+
+
+
+
+
+  #UNSURE IF I NEED THIS BIT
+    #0.2 inches per line - mar measured in lines
+    m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
+
+    graphics::par(mar = c((m_char + (mar[1] - 3)), mar[2], mar[3] - 1, mar[4]))
+
+
+    #plot blank plot
+    graphics::plot((1:len), medians, xlim = xlim, ylim = ylim, type = "n",
+                   ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = ylab,
+                   xlab = NA, cex.lab = x_axis_text_sz) #cex.lab is axis label
+    #lab #number of ticks to plot on each axis
+
+
+    #title
+    graphics::title(main, cex.main = main_text_sz)
+    #right axis params
+    graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
+                   at = tick_pos, lwd = ax_sz)
+    graphics::axis(4, lwd.ticks = 0, labels = FALSE,
+                   at = (graphics::par('usr')*0.93), lwd = ax_sz)
+    #left axis params
+    graphics::axis(2, lwd.ticks = ax_sz, labels = TRUE,
+                   at = tick_pos, lwd = ax_sz,
+                   cex.axis = x_tick_text_sz) #bottom axis
+    graphics::axis(2, lwd.ticks = 0, labels = FALSE,
+                   at = (graphics::par('usr')*0.93), lwd = ax_sz)
+    #bottom axis params (labels)
+
+    graphics::par(las = 2)
+    #######FIX LABELS########
+    graphics::axis(1, at = ((1:len)+(0.007*len)), tick = FALSE,
+                   labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
+                   line = -1, cex.axis = labels_sz)
+
+
+    #ref line
+    if(!is.null(ref))
+    {
+      graphics::abline(h=ref, lty = 2, lwd = 3, col = ref_col)
+    }
+
+
+    if (ref_ovl == TRUE)
+    {
+      #Black CI
+      if (!is.null(black_cl))
+      {
+        #Thick
+        graphics::matlines(blk_bnd, thick_q[,black_cl],
+                           type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+        #Thin
+        graphics::matlines(blk_bnd, thin_q[,black_cl],
+                           type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+      }
+
+      #Gray CI
+      if (!is.null(gray_cl))
+      {
+        #Thick
+        graphics::matlines(gry_bnd, thick_q[,gray_cl],
+                           type = 'l', lty = 1, lwd = thick_sz, col = gr_col)
+        #Thin
+        graphics::matlines(gry_bnd, thin_q[,gray_cl],
+                           type = 'l', lty = 1, lwd = thin_sz, col = gr_col)
+      }
+
+      #White CI
+      if (!is.null(white_cl))
+      {
+        graphics::matlines(wht_bnd, thick_q[,white_cl],
+                           type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+        graphics::matlines(wht_bnd, thin_q[,white_cl],
+                           type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+      }
+
+      #Medians
+      graphics::points(1:len, medians, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
+      graphics::points(black_cl, medians[black_cl], pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
+      graphics::points(gray_cl, medians[gray_cl], pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
+      graphics::points(white_cl, medians[white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+    } else{
+      graphics::matlines(rbind(1:len, 1:len), thick_q[,1:len],
+                         type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+      graphics::matlines(rbind(1:len, 1:len), thin_q[,1:len],
+                         type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+      #medians
+      graphics::points(1:len, medians[1:len], pch = 16,
+                       col = 'black', cex = med_sz)
+    }
+  }
+
 
   graphics::par(mar=c(5,4,4,2) + 0.1)
 
