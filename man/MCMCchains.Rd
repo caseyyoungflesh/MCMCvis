@@ -15,7 +15,7 @@ Partial names may be used to return all parameters containing that set of charac
 Default \code{'all'} returns chains for all parameters.}
 
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
-Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+Partial names may be used to exclude all parameters containing that set of characters. Used in
 conjunction with \code{params} argument to select parameters of interest.}
 }
 \description{

@@ -17,10 +17,11 @@ that set of characters.
 Default \code{'all'} returns all parameters in summary output.}
 
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
-Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+Partial names may be used to exclude all parameters containing that set of characters. Used in
 conjunction with \code{params} argument to select parameters of interest.}
 
-\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified value.
+\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified
+number of digits.
 Default is \code{digits = 2}.}
 
 \item{Rhat}{If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
@@ -45,7 +46,7 @@ The function automatically detects the object type and proceeds accordingly.
 \section{Notes}{
 
 
-For \code{mcmc.list} objects, Gelman-Rubin convergence statistic  (Rhat) is calculated using the
+For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calculated using the
 \code{gelman.diag} function in the \code{coda} package.
 }
 \examples{

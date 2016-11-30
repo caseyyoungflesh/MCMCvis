@@ -4,7 +4,7 @@
 \alias{MCMCtrace}
 \title{Trace and density plots from MCMC output}
 \usage{
-MCMCtrace(object, params = "all", excl = NULL, iter_st = 1, pdf = FALSE,
+MCMCtrace(object, params = "all", excl = NULL, iter = 2000, pdf = FALSE,
   filename, wd = getwd(), type = "both", ind = FALSE)
 }
 \arguments{
@@ -16,11 +16,11 @@ Partial names may be used to return all parameters containing that set of charac
 Default \code{'all'} returns chains for all parameters.}
 
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
-Partical names may be used to exclude all parameters contaiing that set of characters. Used in
+Partial names may be used to exclude all parameters containing that set of characters. Used in
 conjunction with \code{params} argument to select parameters of interest.}
 
-\item{iter_st}{Starting point in chain for trace and density plots. Default is 1, meaning
-the entire chain is plotted.}
+\item{iter}{Number of iterations to plot for trace and density plots. The default value is 2000,
+meaning the last 2000 iterations of the chain will be plotted.}
 
 \item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
 
@@ -35,7 +35,7 @@ outputs only trace plots, and \code{'density'} outputs only density plots.}
 \code{ind= FALSE}, one line will be plotted for all chains.}
 }
 \description{
-Trace plots and density plots of MCMC chains for specific parameters of interest. Option to
+Trace and density plots of MCMC chains for specific parameters of interest. Option to
 print plots to pdf.
 }
 \section{Details}{
