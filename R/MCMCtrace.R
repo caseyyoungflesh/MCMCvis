@@ -51,6 +51,8 @@ MCMCtrace <- function(object,
                     ind = FALSE)
 {
 
+  .pardefault <- graphics::par(no.readonly = T)
+
   if(typeof(object) == 'S4')
   {
     temp <- rstan::As.mcmc.list(object)
@@ -200,7 +202,6 @@ MCMCtrace <- function(object,
     pdf(file= file_out)
   }
 
-  .pardefault <- graphics::par(no.readonly = T)
 
   graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
   graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
