@@ -30,6 +30,8 @@
 #' @param rank If \code{TRUE} posteriors will be ranked in decreasing order (based on
 #' specified measure of centrality) from top down.
 #'
+#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally. If \code{FALSE}
+#' posteriors will be plotted running vertically.
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param ylim Numerical vector of length 2, indicating range of y-axis
 #' @param xlab Character string labeling x-axis.
@@ -120,22 +122,13 @@
 #' @export
 #'
 
-data(MCMC_data)
-object <- MCMC_data
-params = 'all'
-excl = NULL
-ref = 0
-ref_ovl = TRUE
-rank = FALSE
-
-
-
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
                    ref = 0,
                    ref_ovl = TRUE,
                    rank = FALSE,
+                   horiz = TRUE,
                    xlim,
                    ylim,
                    xlab,
@@ -231,7 +224,6 @@ MCMCplot <- function(object,
   #not yet an option for user to modify
   gr_col = 'gray60' #color used for CI and medians
   ref_col = 'gray60' #color used for 0 line
-  horizontal = TRUE
 
   # plotting ----------------------------------------------------------------
 
@@ -272,7 +264,7 @@ MCMCplot <- function(object,
   wht_bnd <- rbind(white_cl, white_cl)
 
   #plot for horizontal
-  if (horizontal)
+  if (horiz == TRUE)
   {
 
     if (missing(xlim))
@@ -332,7 +324,7 @@ MCMCplot <- function(object,
     graphics::axis(1, lwd.ticks = 0, labels = FALSE,
          at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #left axis params (labels)
-    graphics::axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
+    graphics::axis(2, at = ((1:len)+(0.003*len)), tick = FALSE,
          labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
          line = -1, cex.axis = labels_sz)
 
@@ -393,7 +385,7 @@ MCMCplot <- function(object,
     }
   }
 
-  if (horizontal == FALSE)
+  if (horiz == FALSE)
   {
 
     #reverse of horizontal plot
@@ -430,13 +422,9 @@ MCMCplot <- function(object,
 
 
 
-
-
-  #UNSURE IF I NEED THIS BIT
     #0.2 inches per line - mar measured in lines
     m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
-
-    graphics::par(mar = c((m_char + (mar[1] - 3)), mar[2], mar[3] - 1, mar[4]))
+    graphics::par(mar = c((m_char + (mar[1] - 4)), mar[2]+1, mar[3] - 1, mar[4]))
 
 
     #plot blank plot
@@ -460,13 +448,9 @@ MCMCplot <- function(object,
     graphics::axis(2, lwd.ticks = 0, labels = FALSE,
                    at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #bottom axis params (labels)
-
-    graphics::par(las = 2)
-    #######FIX LABELS########
-    graphics::axis(1, at = ((1:len)+(0.007*len)), tick = FALSE,
-                   labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
+    graphics::axis(1, at = (1:len), tick = FALSE,
+                   labels = labs, las = 2, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
                    line = -1, cex.axis = labels_sz)
-
 
     #ref line
     if(!is.null(ref))
