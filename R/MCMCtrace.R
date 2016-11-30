@@ -310,11 +310,12 @@ MCMCtrace <- function(object,
     stop('Invalid argument for "type". Valid inputs are "both", "trace", and "density".')
   }
 
-  graphics::par(.pardefault)
-
   if(pdf == TRUE)
   {
     invisible(grDevices::dev.off())
     system(paste0('open ', paste0('"', file_out, '"')))
   }
+
+  graphics::par(.pardefault)
+
 }
