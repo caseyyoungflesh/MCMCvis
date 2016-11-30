@@ -120,7 +120,6 @@
 #' @export
 #'
 
-
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -222,13 +221,13 @@ MCMCplot <- function(object,
 
   if (missing(labels))
   {
-    labels = names(medians)
+    labs = names(medians)
   }else{
     if (!missing(labels))
     {
       if (is.null(labels))
       {
-        labels <- rep('', len)
+        labs <- rep('', len)
       }
       if (!is.null(labels))
       {
@@ -237,7 +236,7 @@ MCMCplot <- function(object,
           labs <- labels[idx]
         }else
         {
-          stop('labels length not equal to number of parameters')
+          stop('Labels length not equal to number of parameters')
         }
       }
     }
@@ -299,7 +298,7 @@ MCMCplot <- function(object,
   {
 
     #0.2 inches per line - mar measured in lines
-    m_char <- (max(sapply(labels, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
+    m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
 
     graphics::par(mar=c(mar[1], (m_char + (mar[2] - 3)), mar[3], mar[4]-1))
 
@@ -325,7 +324,7 @@ MCMCplot <- function(object,
          at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #left axis params (labels)
     graphics::axis(2, at = ((1:len)+(0.007*len)), tick = FALSE,
-         labels = labels, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
+         labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
          line = -1, cex.axis = labels_sz)
 
 
