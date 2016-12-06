@@ -5,8 +5,8 @@
 \title{Caterpillar plots of posterior distributions from MCMC output}
 \usage{
 MCMCplot(object, params = "all", excl = NULL, ref = 0, ref_ovl = TRUE,
-  rank = FALSE, xlim, ylim, xlab, main, labels, labels_sz = 1.2,
-  med_sz = 1.5, thick_sz = 5, thin_sz = 2, ax_sz = 3,
+  rank = FALSE, horiz = TRUE, xlim, ylim, xlab, ylab, main, labels,
+  labels_sz = 1.2, med_sz = 1.5, thick_sz = 5, thin_sz = 2, ax_sz = 3,
   x_axis_text_sz = 1.3, x_tick_text_sz = 1.2, main_text_sz = 1.2,
   tick_pos, mar = c(5.1, 4.1, 4.1, 2.1))
 }
@@ -35,6 +35,9 @@ See DETAILS for more information.}
 
 \item{rank}{If \code{TRUE} posteriors will be ranked in decreasing order (based on
 specified measure of centrality) from top down.}
+
+\item{horiz}{If \code{TRUE} posteriors will be plotted running horizontally. If \code{FALSE}
+posteriors will be plotted running vertically.}
 
 \item{xlim}{Numerical vector of length 2, indicating range of x-axis.}
 
