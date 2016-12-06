@@ -4,32 +4,24 @@
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters to be
-#' plotted. Partial names may be used to plot all parameters containing that set of characters.
+#' @param params Character string (or vector of character strings) denoting parameters to be plotted. Partial names may be used to plot all parameters containing that set of characters.
 #'
 #' Default \code{'all'} plots posteriors for all parameters. See VALUE below.
 #'
 #'
-#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
-#' Partial names may be used to exclude all parameters containing that set of characters. Used in
-#' conjunction with \code{params} argument to select parameters of interest.
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Partial names may be used to exclude all parameters containing that set of characters. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param ref Value indicating where vertical reference line should be created and what value to
-#' use a reference for caterpillar median coloration.
+#' @param ref Value indicating where vertical reference line should be created and what value to use a reference for caterpillar median coloration.
 #'
 #' Default is \code{ref = 0}.
 #'
 #' Argument \code{NULL} will plot no reference line.
 #'
-#' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should
-#' be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line.
-#' See DETAILS for more information.
+#' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line. See DETAILS for more information.
 #'
-#' @param rank If \code{TRUE} posteriors will be ranked in decreasing order (based on
-#' specified measure of centrality) from top down.
+#' @param rank If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
-#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally. If \code{FALSE}
-#' posteriors will be plotted running vertically.
+#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally. If \code{FALSE} posteriors will be plotted running vertically.
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param ylim Numerical vector of length 2, indicating range of y-axis
 #' @param xlab Character string labeling x-axis. Only applicable if \code{horiz = TRUE}.
@@ -40,8 +32,7 @@
 #' Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with no label on y-axis.
 #' @param main Character string indicating title of plot.
 #'
-#' @param labels Character string (or vector of character strings if plotting > 1 parameter) labeling
-#' parameter estimates along y-axis.
+#' @param labels Character string (or vector of character strings if plotting > 1 parameter) labeling parameter estimates along y-axis.
 #'
 #' Specifying labels in the argument will use these to label parameter estimates on y-axis.
 #'
@@ -67,41 +58,23 @@
 #'
 #' @param tick_pos Numeric vector specifying where ticks on x-axis should be placed.
 #'
-#' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT).
-#' Changes to the margin should be made within the function rather than using the \code{par} call.
+#' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 #'
 #' Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.
 #'
 #' @section Details:
-#' Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value)
-#' are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent
-#' credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' grey circles. Parameters where
-#' 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles.
-#' Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals.
-#' \code{ref_ovl = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black circles.
-#'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
-#' (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
-#' chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
-#' The function automatically detects the object type and proceeds accordingly.
+#' Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' grey circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black circles. \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
 #' @section Notes:
 #'
-#' When specifying \code{rank = TRUE} and specifying labels for \code{labels}, labels will be applied to parameters before
-#' they are ranked.
+#' When specifying \code{rank = TRUE} and specifying labels for \code{labels}, labels will be applied to parameters before they are ranked.
 #'
 #' Thanks to Cinner et al. 2016, whose Fig. 1 inspired this plot.
 #'
 #'
 #' @section References:
 #'
-#' Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. Maina, E. Maire, J.
-#' N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D'Agata, A. Hoey, D. A. Feary, L. Crowder, I.
-#' D. Williams, M. Kulbicki, L. Vigliola, L. Wantiez, G. Edgar, R. D. Stuart-Smith, S. A. Sandin, A.
-#' L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E.
-#' Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A.
-#' Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world's coral reefs. Nature
-#' 535:416-419.
+#' Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. Maina, E. Maire, J. N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D'Agata, A. Hoey, D. A. Feary, L. Crowder, I. D. Williams, M. Kulbicki, L. Vigliola, L. Wantiez, G. Edgar, R. D. Stuart-Smith, S. A. Sandin, A. L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E. Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A. Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world's coral reefs. Nature 535:416-419.
 #'
 #'
 #' @examples
