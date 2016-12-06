@@ -1,7 +1,7 @@
 Package: MCMCvis
 Type: Package
 Title: Tools to Visualize, Manipulate, and Summarize MCMC Output
-Version: 0.6.4
+Version: 0.7.0
 Author: Casey Youngflesh
 Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
 Description: Performs key functions for MCMC analysis using minimal code - visualizes,
