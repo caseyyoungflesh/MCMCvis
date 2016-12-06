@@ -1,8 +1,6 @@
 #' Caterpillar plots of posterior distributions from MCMC output
 #'
-#' Visualize posterior distributions from MCMC output for specific parameters of interest using
-#' caterpillar plots. Color of median dot represents the overlap of the posterior distrubtion
-#' with 0 (or other specified value).
+#' Visualize posterior distributions from MCMC output for specific parameters of interest using caterpillar plots. Color of median dot represents the overlap of the posterior distrubtion with 0 (or other specified value).
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
@@ -34,9 +32,12 @@
 #' posteriors will be plotted running vertically.
 #' @param xlim Numerical vector of length 2, indicating range of x-axis.
 #' @param ylim Numerical vector of length 2, indicating range of y-axis
-#' @param xlab Character string labeling x-axis.
+#' @param xlab Character string labeling x-axis. Only applicable if \code{horiz = TRUE}.
 #'
-#' Option \code{NULL} will return plot with no labels on y-axis.
+#' Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with no label on x-axis.
+#' @param ylab Character string labeling y-axis. Only applicable if \code{horiz = FALSE}.
+#'
+#' Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with no label on y-axis.
 #' @param main Character string indicating title of plot.
 #'
 #' @param labels Character string (or vector of character strings if plotting > 1 parameter) labeling
@@ -121,9 +122,6 @@
 #'
 #' @export
 #'
-
-#add ylab to documentation
-#add vertical plotting to vignette
 
 MCMCplot <- function(object,
                    params = 'all',
