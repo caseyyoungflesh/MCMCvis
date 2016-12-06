@@ -153,18 +153,29 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-Parameters can be ranked by posterior median estimates using the `rank` argument.
+Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
        params = 'beta', 
-       rank = TRUE)
+       rank = TRUE,
+       xlab = 'ESTIMATE')
 ```
 
 &nbsp;
 
+The orientation of the plot can also be change using the `horiz` argument. `ylab` is then used to specify an alternaive label on the 'estimate axis'.
 
-Graphical parameters for x and y-axis limitation, axis labels, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, and margins can be specified.
+```{r, fig.width=5, fig.height=6}
+MCMCplot(MCMC_data, 
+       params = 'beta', 
+       rank = TRUE,
+       horiz = FALSE,
+       ylab = 'ESTIMATE')
+```
+
+
+Graphical parameters for x and y-axis limitation, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, and margins can be specified.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
