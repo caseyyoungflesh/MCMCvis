@@ -80,16 +80,19 @@
 #' data(MCMC_data)
 #'
 #' #Plot MCMC output
-#' MCMCplot(MCMC_data, labels=NULL)
+#' MCMCplot(MCMC_data, labels = NULL)
 #'
 #' #Just 'beta' parameters
-#' MCMCplot(MCMC_data, params= 'beta')
+#' MCMCplot(MCMC_data, params = 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' MCMCplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' MCMCplot(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'))
 #'
 #' #Rank parameters by posterior mean
-#' MCMCplot(MCMC_data, params= 'beta', rank=TRUE)
+#' MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
+#'
+#' #Create vertical plot
+#' MCMCplot(MCMC_data, params = 'beta', horiz = FALSE)
 #'
 #' @export
 #'
