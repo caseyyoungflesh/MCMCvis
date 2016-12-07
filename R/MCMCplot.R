@@ -96,6 +96,24 @@
 #' @export
 #'
 
+object <- SD_out
+params = 'alpha'
+excl = NULL
+ref = 0
+ref_ovl = TRUE
+rank = FALSE
+horiz = TRUE
+labels_sz = 1.2
+med_sz = 1.5
+thick_sz = 5
+thin_sz = 2
+ax_sz = 3
+x_axis_text_sz = 1.3
+x_tick_text_sz = 1.2
+main_text_sz = 1.2
+mar = c(5.1, 4.1, 4.1, 2.1)
+
+
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -123,6 +141,16 @@ MCMCplot <- function(object,
 
 
   data <- MCMCchains(object, params= params, excl = excl)
+
+  # Plotting parameters -----------------------------------------------------
+
+  if (missing(tick_pos))
+  {tick_pos = NULL}
+
+  gr_col = 'gray60' #color used for CI and medians
+  ref_col = 'gray60' #color used for 0 line
+  thin = 95 #CI for thin line
+  thick = 50 #CI for thick line
 
   # Process data ------------------------------------------------------------
 
@@ -181,15 +209,6 @@ MCMCplot <- function(object,
     }
   }
 
-  # Plotting parameters -----------------------------------------------------
-
-  if (missing(tick_pos))
-  {tick_pos = NULL}
-
-  gr_col = 'gray60' #color used for CI and medians
-  ref_col = 'gray60' #color used for 0 line
-  thin = 95 #CI for thin line
-  thick = 50 #CI for thick line
 
   # plotting ----------------------------------------------------------------
 
@@ -282,14 +301,14 @@ MCMCplot <- function(object,
     #bottom axis params
     graphics::axis(3, lwd.ticks = ax_sz, labels = FALSE,
          at = tick_pos, lwd = ax_sz)
-    graphics::axis(3, lwd.ticks = 0, labels = FALSE,
-         at = (graphics::par('usr')*0.93), lwd = ax_sz)
+    #graphics::axis(3, lwd.ticks = 0, labels = FALSE,
+    #     at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #bottom axis params
     graphics::axis(1, lwd.ticks = ax_sz, labels = TRUE,
          at = tick_pos, lwd = ax_sz,
          cex.axis = x_tick_text_sz) #bottom axis
-    graphics::axis(1, lwd.ticks = 0, labels = FALSE,
-         at = (graphics::par('usr')*0.93), lwd = ax_sz)
+    #graphics::axis(1, lwd.ticks = 0, labels = FALSE,
+    #     at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #left axis params (labels)
     graphics::axis(2, at = ((1:len)+(0.0015*len)), tick = FALSE,
          labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
@@ -407,14 +426,14 @@ MCMCplot <- function(object,
     #right axis params
     graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
                    at = tick_pos, lwd = ax_sz)
-    graphics::axis(4, lwd.ticks = 0, labels = FALSE,
-                   at = (graphics::par('usr')*0.93), lwd = ax_sz)
+    #graphics::axis(4, lwd.ticks = 0, labels = FALSE,
+    #               at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #left axis params
     graphics::axis(2, lwd.ticks = ax_sz, labels = TRUE,
                    at = tick_pos, lwd = ax_sz,
                    cex.axis = x_tick_text_sz) #bottom axis
-    graphics::axis(2, lwd.ticks = 0, labels = FALSE,
-                   at = (graphics::par('usr')*0.93), lwd = ax_sz)
+    #graphics::axis(2, lwd.ticks = 0, labels = FALSE,
+    #               at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #bottom axis params (labels)
     graphics::axis(1, at = (1:len) + 0.013, tick = FALSE,
                    labels = labs, las = 2, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
