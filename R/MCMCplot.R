@@ -21,9 +21,9 @@
 #'
 #' @param rank If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
-#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally. If \code{FALSE} posteriors will be plotted running vertically.
-#' @param xlim Numerical vector of length 2, indicating range of x-axis.
-#' @param ylim Numerical vector of length 2, indicating range of y-axis
+#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally (parellel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
+#' @param xlim Numerical vector of length 2, indicating range of x-axis. Only applicable if \code{horiz = TRUE}.
+#' @param ylim Numerical vector of length 2, indicating range of y-axis. Only applicable if \code{horiz = FALSE}.
 #' @param xlab Character string labeling x-axis. Only applicable if \code{horiz = TRUE}.
 #'
 #' Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with no label on x-axis.
