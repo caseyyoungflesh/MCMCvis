@@ -238,6 +238,8 @@ MCMCplot <- function(object,
     ylim = c(0.5,(len)+0.5)
     if (missing(xlab))
     {xlab = 'Parameter Estimate'}
+    if (is.null(xlab))
+    {xlab = ''}
     if (missing(main))
     {main = ''}
     if (missing(labels))
@@ -354,12 +356,13 @@ MCMCplot <- function(object,
   if (horiz == FALSE)
   {
 
-    if (missing(xlim))
-    {xlim = c(0.5,(len)+0.5)}
     if (missing(ylim))
     {ylim = range(thin_q)*1.2}
+    xlim = c(0.5,(len)+0.5)
     if (missing(ylab))
     {ylab = 'Parameter Estimate'}
+    if (is.null(ylab))
+    {ylab = ''}
     if (missing(main))
     {main = ''}
     if (missing(labels))
