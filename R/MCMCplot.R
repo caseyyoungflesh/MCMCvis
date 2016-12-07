@@ -21,7 +21,7 @@
 #'
 #' @param rank If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
-#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally (parellel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
+#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
 #' @param xlim Numerical vector of length 2, indicating range of x-axis. Only applicable if \code{horiz = TRUE}.
 #' @param ylim Numerical vector of length 2, indicating range of y-axis. Only applicable if \code{horiz = FALSE}.
 #' @param xlab Character string labeling x-axis. Only applicable if \code{horiz = TRUE}.
@@ -32,15 +32,13 @@
 #' Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with no label on y-axis.
 #' @param main Character string indicating title of plot.
 #'
-#' @param labels Character string (or vector of character strings if plotting > 1 parameter) labeling parameter estimates along y-axis.
-#'
-#' Specifying labels in the argument will use these to label parameter estimates on y-axis.
+#' @param labels Character string (or vector of character strings if plotting > 1 parameter) labeling parameter estimates along y-axis (if \code{horiz = FALSE}) or x-axis (if \code{horiz = TRUE}).
 #'
 #' Default option will use parameter names from \code{object}.
 #'
-#' Option \code{NULL} will return plot with no labels on y-axis.
+#' Option \code{NULL} will return plot with no labels on axis.
 #'
-#' @param labels_sz Number specifying size of text for parameter labels on y-axis.
+#' @param labels_sz Number specifying size of text for parameter labels on axis.
 #'
 #' @param med_sz Number specifying size of points represents posterior medians.
 #'
@@ -48,15 +46,15 @@
 #'
 #' @param thin_sz Number specifying thickness of 95 percent CI line (thinner line).
 #'
-#' @param ax_sz Number specifying thickness of x-axis and ticks.
+#' @param ax_sz Number specifying thickness of axis and ticks.
 #'
-#' @param x_axis_text_sz Number specifying size of text for x-axis label.
+#' @param x_axis_text_sz Number specifying size of text for axis label.
 #'
-#' @param x_tick_text_sz Number specifying size of text for tick labels on x-axis.
+#' @param x_tick_text_sz Number specifying size of text for tick labels on axis.
 #'
 #' @param main_text_sz Number specifying size of text for main title.
 #'
-#' @param tick_pos Numeric vector specifying where ticks on x-axis should be placed.
+#' @param tick_pos Numeric vector specifying where ticks on axis should be placed.
 #'
 #' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 #'
@@ -95,24 +93,6 @@
 #'
 #' @export
 #'
-
-object <- SD_out
-params = 'alpha'
-excl = NULL
-ref = 0
-ref_ovl = TRUE
-rank = FALSE
-horiz = TRUE
-labels_sz = 1.2
-med_sz = 1.5
-thick_sz = 5
-thin_sz = 2
-ax_sz = 3
-x_axis_text_sz = 1.3
-x_tick_text_sz = 1.2
-main_text_sz = 1.2
-mar = c(5.1, 4.1, 4.1, 2.1)
-
 
 MCMCplot <- function(object,
                    params = 'all',
@@ -163,7 +143,7 @@ MCMCplot <- function(object,
 
       if (rank == TRUE)
       {
-        tsrt <- apply(chains, 2, stats::median) #used to rank positions of parameter estimates
+        tsrt <- apply(chains, 2, stats::median)
         idx <- order(tsrt, decreasing = TRUE)
       }
       if (rank == FALSE)
@@ -242,7 +222,7 @@ MCMCplot <- function(object,
     }
   }
 
-  #positions bound together to plot CI
+  #positions to plot CI
   blk_bnd <- rbind(black_cl, black_cl)
   gry_bnd <- rbind(gray_cl, gray_cl)
   wht_bnd <- rbind(white_cl, white_cl)
@@ -288,7 +268,6 @@ MCMCplot <- function(object,
 
     graphics::par(mar=c(mar[1], (m_char + (mar[2] - 3)), mar[3], mar[4]-1))
 
-
     #plot blank plot
     graphics::plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
          ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
@@ -309,13 +288,11 @@ MCMCplot <- function(object,
          labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
          line = -1, cex.axis = labels_sz)
 
-
     #ref line
     if(!is.null(ref))
     {
       graphics::abline(v=ref, lty = 2, lwd = 3, col = ref_col)
     }
-
 
     if (ref_ovl == TRUE)
     {
@@ -402,19 +379,14 @@ MCMCplot <- function(object,
       }
     }
 
-
-
     #0.2 inches per line - mar measured in lines
     m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
     graphics::par(mar = c((m_char + (mar[1] - 4)), mar[2]+1, mar[3] - 1, mar[4]))
 
-
     #plot blank plot
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = ylab,
-                   xlab = NA, cex.lab = x_axis_text_sz) #cex.lab is axis label
-    #lab #number of ticks to plot on each axis
-
+                   xlab = NA, cex.lab = x_axis_text_sz)
 
     #title
     graphics::title(main, cex.main = main_text_sz)
