@@ -124,10 +124,6 @@ MCMCplot <- function(object,
 
   data <- MCMCchains(object, params= params, excl = excl)
 
-  #not yet an option for user to modify
-  thin = 95 #CI for thin line
-  thick = 50 #CI for thick line
-
   # Process data ------------------------------------------------------------
 
   if (NCOL(data) > 1)
@@ -187,18 +183,13 @@ MCMCplot <- function(object,
 
   # Plotting parameters -----------------------------------------------------
 
-  #smallest size - JUST FOR REFERENCE
-  #med_sz = 1 #size of median circles
-  #thick_sz = 2 #thick CI thickness
-  #thin_sz = 1 #thin CI thickness
-
   if (missing(tick_pos))
   {tick_pos = NULL}
 
-
-  #not yet an option for user to modify
   gr_col = 'gray60' #color used for CI and medians
   ref_col = 'gray60' #color used for 0 line
+  thin = 95 #CI for thin line
+  thick = 50 #CI for thick line
 
   # plotting ----------------------------------------------------------------
 
@@ -238,14 +229,13 @@ MCMCplot <- function(object,
   gry_bnd <- rbind(gray_cl, gray_cl)
   wht_bnd <- rbind(white_cl, white_cl)
 
-  #plot for horizontal
+  #plot for horizontal - CI lines parallel to x-axis
   if (horiz == TRUE)
   {
 
     if (missing(xlim))
     {xlim = range(thin_q)*1.2}
-    if (missing(ylim))
-    {ylim = c(0.5,(len)+0.5)}
+    ylim = c(0.5,(len)+0.5)
     if (missing(xlab))
     {xlab = 'Parameter Estimate'}
     if (missing(main))
@@ -345,10 +335,10 @@ MCMCplot <- function(object,
       }
 
       #Medians
-      graphics::points(medians, 1:len, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
-      graphics::points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
-      graphics::points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
-      graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+      graphics::points(medians, 1:len, pch = 16, col = 'white', cex = med_sz)
+      graphics::points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz)
+      graphics::points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz)
+      graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2)
     } else{
       graphics::matlines(thick_q[,1:len], rbind(1:len, 1:len),
                type = 'l', lty = 1, lwd = thick_sz, col = 'black')
@@ -360,10 +350,10 @@ MCMCplot <- function(object,
     }
   }
 
+  #vertical plot - CI lines perpendicular to x-axis
   if (horiz == FALSE)
   {
 
-    #reverse of horizontal plot
     if (missing(xlim))
     {xlim = c(0.5,(len)+0.5)}
     if (missing(ylim))
@@ -468,10 +458,10 @@ MCMCplot <- function(object,
       }
 
       #Medians
-      graphics::points(1:len, medians, pch = 16, col = 'white', cex = med_sz) #plot points over other plot features
-      graphics::points(black_cl, medians[black_cl], pch = 16, col = 'black', cex = med_sz) #95% CI doesn't overlap 0
-      graphics::points(gray_cl, medians[gray_cl], pch = 16, col = gr_col, cex = med_sz) #50% CI doesn't overlap 0
-      graphics::points(white_cl, medians[white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2) #Both CI overlap 0
+      graphics::points(1:len, medians, pch = 16, col = 'white', cex = med_sz)
+      graphics::points(black_cl, medians[black_cl], pch = 16, col = 'black', cex = med_sz)
+      graphics::points(gray_cl, medians[gray_cl], pch = 16, col = gr_col, cex = med_sz)
+      graphics::points(white_cl, medians[white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
     } else{
       graphics::matlines(rbind(1:len, 1:len), thick_q[,1:len],
                          type = 'l', lty = 1, lwd = thick_sz, col = 'black')
