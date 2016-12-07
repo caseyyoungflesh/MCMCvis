@@ -487,12 +487,12 @@ MCMCplot <- function(object,
       graphics::points(gray_cl, medians[v_gray_cl], pch = 16, col = gr_col, cex = med_sz)
       graphics::points(white_cl, medians[v_white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
     } else{
-      graphics::matlines(rbind(1:len, 1:len), thick_q[,1:len],
+      graphics::matlines(rbind(1:len, 1:len), thick_q[,len:1],
                          type = 'l', lty = 1, lwd = thick_sz, col = 'black')
-      graphics::matlines(rbind(1:len, 1:len), thin_q[,1:len],
+      graphics::matlines(rbind(1:len, 1:len), thin_q[,len:1],
                          type = 'l', lty = 1, lwd = thin_sz, col = 'black')
       #medians
-      graphics::points(1:len, medians[1:len], pch = 16,
+      graphics::points(1:len, medians[len:1], pch = 16,
                        col = 'black', cex = med_sz)
     }
   }
