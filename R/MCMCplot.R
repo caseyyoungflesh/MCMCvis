@@ -224,7 +224,6 @@ MCMCplot <- function(object,
     marker <- 0
   }
 
-
   for (i in 1:len)
   {
     #i <- 1
@@ -415,7 +414,7 @@ MCMCplot <- function(object,
 
 
     #plot blank plot
-    graphics::plot((1:len), medians, xlim = xlim, ylim = ylim, type = "n",
+    graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = ylab,
                    xlab = NA, cex.lab = x_axis_text_sz) #cex.lab is axis label
     #lab #number of ticks to plot on each axis
@@ -435,7 +434,7 @@ MCMCplot <- function(object,
     #graphics::axis(2, lwd.ticks = 0, labels = FALSE,
     #               at = (graphics::par('usr')*0.93), lwd = ax_sz)
     #bottom axis params (labels)
-    graphics::axis(1, at = (1:len) + 0.013, tick = FALSE,
+    graphics::axis(1, at = (len:1) + 0.013, tick = FALSE,
                    labels = labs, las = 2, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
                    line = -1, cex.axis = labels_sz)
 
@@ -445,6 +444,9 @@ MCMCplot <- function(object,
       graphics::abline(h=ref, lty = 2, lwd = 3, col = ref_col)
     }
 
+    v_black_cl <- len+1 - black_cl
+    v_gray_cl <- len+1 - gray_cl
+    v_white_cl <- len+1 - white_cl
 
     if (ref_ovl == TRUE)
     {
@@ -452,10 +454,10 @@ MCMCplot <- function(object,
       if (!is.null(black_cl))
       {
         #Thick
-        graphics::matlines(blk_bnd, thick_q[,black_cl],
+        graphics::matlines(blk_bnd, thick_q[,v_black_cl],
                            type = 'l', lty = 1, lwd = thick_sz, col = 'black')
         #Thin
-        graphics::matlines(blk_bnd, thin_q[,black_cl],
+        graphics::matlines(blk_bnd, thin_q[,v_black_cl],
                            type = 'l', lty = 1, lwd = thin_sz, col = 'black')
       }
 
@@ -463,27 +465,27 @@ MCMCplot <- function(object,
       if (!is.null(gray_cl))
       {
         #Thick
-        graphics::matlines(gry_bnd, thick_q[,gray_cl],
+        graphics::matlines(gry_bnd, thick_q[,v_gray_cl],
                            type = 'l', lty = 1, lwd = thick_sz, col = gr_col)
         #Thin
-        graphics::matlines(gry_bnd, thin_q[,gray_cl],
+        graphics::matlines(gry_bnd, thin_q[,v_gray_cl],
                            type = 'l', lty = 1, lwd = thin_sz, col = gr_col)
       }
 
       #White CI
       if (!is.null(white_cl))
       {
-        graphics::matlines(wht_bnd, thick_q[,white_cl],
+        graphics::matlines(wht_bnd, thick_q[,v_white_cl],
                            type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
-        graphics::matlines(wht_bnd, thin_q[,white_cl],
+        graphics::matlines(wht_bnd, thin_q[,v_white_cl],
                            type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
       }
 
       #Medians
-      graphics::points(1:len, medians, pch = 16, col = 'white', cex = med_sz)
-      graphics::points(black_cl, medians[black_cl], pch = 16, col = 'black', cex = med_sz)
-      graphics::points(gray_cl, medians[gray_cl], pch = 16, col = gr_col, cex = med_sz)
-      graphics::points(white_cl, medians[white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
+      graphics::points(len:1, medians, pch = 16, col = 'white', cex = med_sz)
+      graphics::points(v_black_cl, medians[v_black_cl], pch = 16, col = 'black', cex = med_sz)
+      graphics::points(v_gray_cl, medians[v_gray_cl], pch = 16, col = gr_col, cex = med_sz)
+      graphics::points(v_white_cl, medians[v_white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
     } else{
       graphics::matlines(rbind(1:len, 1:len), thick_q[,1:len],
                          type = 'l', lty = 1, lwd = thick_sz, col = 'black')
