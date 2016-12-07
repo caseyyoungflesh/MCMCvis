@@ -483,9 +483,9 @@ MCMCplot <- function(object,
 
       #Medians
       graphics::points(len:1, medians, pch = 16, col = 'white', cex = med_sz)
-      graphics::points(v_black_cl, medians[v_black_cl], pch = 16, col = 'black', cex = med_sz)
-      graphics::points(v_gray_cl, medians[v_gray_cl], pch = 16, col = gr_col, cex = med_sz)
-      graphics::points(v_white_cl, medians[v_white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
+      graphics::points(black_cl, medians[v_black_cl], pch = 16, col = 'black', cex = med_sz)
+      graphics::points(gray_cl, medians[v_gray_cl], pch = 16, col = gr_col, cex = med_sz)
+      graphics::points(white_cl, medians[v_white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
     } else{
       graphics::matlines(rbind(1:len, 1:len), thick_q[,1:len],
                          type = 'l', lty = 1, lwd = thick_sz, col = 'black')
