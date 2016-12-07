@@ -29,11 +29,11 @@ Argument \code{NULL} will plot no reference line.}
 
 \item{rank}{If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.}
 
-\item{horiz}{If \code{TRUE} posteriors will be plotted running horizontally. If \code{FALSE} posteriors will be plotted running vertically.}
+\item{horiz}{If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).}
 
-\item{xlim}{Numerical vector of length 2, indicating range of x-axis.}
+\item{xlim}{Numerical vector of length 2, indicating range of x-axis. Only applicable if \code{horiz = TRUE}.}
 
-\item{ylim}{Numerical vector of length 2, indicating range of y-axis}
+\item{ylim}{Numerical vector of length 2, indicating range of y-axis. Only applicable if \code{horiz = FALSE}.}
 
 \item{xlab}{Character string labeling x-axis. Only applicable if \code{horiz = TRUE}.
 
@@ -45,15 +45,13 @@ Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with 
 
 \item{main}{Character string indicating title of plot.}
 
-\item{labels}{Character string (or vector of character strings if plotting > 1 parameter) labeling parameter estimates along y-axis.
-
-Specifying labels in the argument will use these to label parameter estimates on y-axis.
+\item{labels}{Character string (or vector of character strings if plotting > 1 parameter) labeling parameter estimates along y-axis (if \code{horiz = FALSE}) or x-axis (if \code{horiz = TRUE}).
 
 Default option will use parameter names from \code{object}.
 
-Option \code{NULL} will return plot with no labels on y-axis.}
+Option \code{NULL} will return plot with no labels on axis.}
 
-\item{labels_sz}{Number specifying size of text for parameter labels on y-axis.}
+\item{labels_sz}{Number specifying size of text for parameter labels on axis.}
 
 \item{med_sz}{Number specifying size of points represents posterior medians.}
 
@@ -61,15 +59,15 @@ Option \code{NULL} will return plot with no labels on y-axis.}
 
 \item{thin_sz}{Number specifying thickness of 95 percent CI line (thinner line).}
 
-\item{ax_sz}{Number specifying thickness of x-axis and ticks.}
+\item{ax_sz}{Number specifying thickness of axis and ticks.}
 
-\item{x_axis_text_sz}{Number specifying size of text for x-axis label.}
+\item{x_axis_text_sz}{Number specifying size of text for axis label.}
 
-\item{x_tick_text_sz}{Number specifying size of text for tick labels on x-axis.}
+\item{x_tick_text_sz}{Number specifying size of text for tick labels on axis.}
 
 \item{main_text_sz}{Number specifying size of text for main title.}
 
-\item{tick_pos}{Numeric vector specifying where ticks on x-axis should be placed.}
+\item{tick_pos}{Numeric vector specifying where ticks on axis should be placed.}
 
 \item{mar}{Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 
@@ -101,16 +99,19 @@ Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. 
 data(MCMC_data)
 
 #Plot MCMC output
-MCMCplot(MCMC_data, labels=NULL)
+MCMCplot(MCMC_data, labels = NULL)
 
 #Just 'beta' parameters
-MCMCplot(MCMC_data, params= 'beta')
+MCMCplot(MCMC_data, params = 'beta')
 
 #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-MCMCplot(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+MCMCplot(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'))
 
 #Rank parameters by posterior mean
-MCMCplot(MCMC_data, params= 'beta', rank=TRUE)
+MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
+
+#Create vertical plot
+MCMCplot(MCMC_data, params = 'beta', horiz = FALSE)
 
 }
 
