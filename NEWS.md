@@ -15,4 +15,4 @@ NEWS
 
 0.6.3:
 
-Initial release
+- Initial release
