@@ -4,9 +4,7 @@ Title: Tools to Visualize, Manipulate, and Summarize MCMC Output
 Version: 0.7.1
 Author: Casey Youngflesh
 Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
-Description: Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. 
-Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. 
-MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
+Description: Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
 License: GPL-3
 URL: http://github.com/caseyyoungflesh/MCMCvis
 BugReports: http://github.com/caseyyoungflesh/MCMCvis/issues
