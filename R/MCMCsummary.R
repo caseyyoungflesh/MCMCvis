@@ -68,8 +68,8 @@ MCMCsummary <- function(object,
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
     x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
-    to.rm <- which(rownames(x) == 'deviance')
-    mcmc_summary <- x[-to.rm,] #already have mcmc_summary
+    #to.rm <- which(rownames(x) == 'deviance')
+    mcmc_summary <- x[,] #already have mcmc_summary
     names <- rownames(mcmc_summary)
   } else {
     if(typeof(object) == 'S4')
