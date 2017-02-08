@@ -3,7 +3,8 @@ NEWS
 
 0.7.1:
 
--Fix bug in `MCMCplot` which incorrectly shaded parameter estimates when plotted vertically
+- Fix bug in `MCMCplot` which incorrectly shaded parameter estimates when plotted vertically
+- `MCMCsummary` now displays estimates for deviance
 
 
 0.7.0:
