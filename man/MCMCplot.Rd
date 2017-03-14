@@ -94,6 +94,7 @@ Thanks to Cinner et al. 2016, whose Fig. 1 inspired this plot.
 
 Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. Maina, E. Maire, J. N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D'Agata, A. Hoey, D. A. Feary, L. Crowder, I. D. Williams, M. Kulbicki, L. Vigliola, L. Wantiez, G. Edgar, R. D. Stuart-Smith, S. A. Sandin, A. L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E. Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A. Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world's coral reefs. Nature 535:416-419.
 }
+
 \examples{
 #Load data
 data(MCMC_data)
@@ -114,4 +115,3 @@ MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
 MCMCplot(MCMC_data, params = 'beta', horiz = FALSE)
 
 }
-

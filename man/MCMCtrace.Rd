@@ -44,6 +44,7 @@ print plots to pdf.
 (\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package). The function automatically
 detects the object type and proceeds accordingly.
 }
+
 \examples{
 #Load data
 data(MCMC_data)
@@ -55,4 +56,3 @@ MCMCtrace(MCMC_data, params='beta')
 MCMCtrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
 
 }
-

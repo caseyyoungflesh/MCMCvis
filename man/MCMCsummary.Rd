@@ -49,6 +49,7 @@ The function automatically detects the object type and proceeds accordingly.
 For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calculated using the
 \code{gelman.diag} function in the \code{coda} package.
 }
+
 \examples{
 #Load data
 data(MCMC_data)
@@ -63,4 +64,3 @@ MCMCsummary(MCMC_data, params= 'beta')
 MCMCsummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
 
 }
-

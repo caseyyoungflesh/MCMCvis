@@ -13,4 +13,3 @@ Sample MCMC output containing 30 parameters - \code{alpha[1]}, ... , \code{alpha
 \code{beta[1]}, ... , \code{beta[10]}, \code{gamma[1]}, ... , \code{gamma[10]}.
 }
 \keyword{datasets}
-

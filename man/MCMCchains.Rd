@@ -31,6 +31,7 @@ parameter are combined to one posterior chain.
 chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
 The function automatically detects the object type and proceeds accordingly.
 }
+
 \examples{
 #Load data
 data(MCMC_data)
@@ -44,4 +45,3 @@ ex2 <- MCMCchains(MCMC_data, params='beta')
 apply(ex2, 2, mean)
 
 }
-
