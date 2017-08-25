@@ -65,6 +65,144 @@ MCMCsummary <- function(object,
   }
 
 
+  #Feed in grouped to PROCESSING BLOCK
+
+
+  grouped <- c()
+  for (i in 1:length(params))
+  {
+    get.rows <- grep(paste(params[i]), var_names, fixed = TRUE)
+    grouped <- c(grouped, get.rows)
+  }
+
+  nlist <- coda::mcmc.list(out[[1]][,grouped],
+                           out[[2]][,grouped],
+                           out[[3]][,grouped])
+
+
+
+
+
+
+  if(!is.null(excl))
+  {
+    to.rm1 <- c()
+    for (i in 1:length(excl))
+    {
+      to.rm1 <- c(to.rm1, grep(excl[i], names, fixed = TRUE))
+    }
+    dups <- -which(duplicated(to.rm1))
+    if(length(dups) > 0)
+    {
+      to.rm2 <- to.rm1[-dups]
+    }else{
+      to.rm2 <- to.rm1
+    }
+  }
+
+
+
+
+
+  if (length(params) == 1)
+  {
+    if (params == 'all')
+    {
+      if(is.null(excl))
+      {
+        OUT <- mcmc_summary
+      }else{
+        OUT <- mcmc_summary[-to.rm2,]
+      }
+    }else
+    {
+      get.rows <- grep(paste(params), names, fixed=TRUE)
+      if (length(get.rows) < 1)
+      {
+        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+      }
+
+      if(!is.null(excl))
+      {
+        if(identical(get.rows, to.rm2))
+        {
+          stop('No parameters selected.')
+        }
+
+        matched <- which(get.rows == to.rm2)
+        if (length(matched) > 0)
+        {
+          g_filt <- get.rows[-matched]
+        }else {
+          g_filt <- get.rows
+        }
+
+      }else{
+        g_filt <- get.rows
+      }
+
+      OUT <- mcmc_summary[g_filt,]
+    }
+  }else {
+    grouped <- c()
+    for (i in 1:length(params))
+    {
+      get.rows <- grep(paste(params[i]), names, fixed=TRUE)
+      if (length(get.rows) < 1)
+      {
+        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+      }
+      grouped <- c(grouped, get.rows)
+    }
+
+    if(!is.null(excl))
+    {
+      if(identical(grouped, to.rm2))
+      {
+        stop('No parameters selected.')
+      }
+
+      matched <- stats::na.omit(match(to.rm2, grouped))
+      if (length(matched) > 0)
+      {
+        rows <- grouped[-matched]
+      } else{
+        rows <- grouped
+      }
+
+      to.rm <- which(duplicated(rows))
+      if(length(to.rm) > 0)
+      {
+        g_filt <- rows[-to.rm]
+      }else
+      {
+        g_filt <- rows
+      }
+      OUT <- mcmc_summary[g_filt,]
+    } else{
+
+      to.rm <- which(duplicated(grouped))
+      if(length(to.rm) > 0)
+      {
+        g_filt <- grouped[-to.rm]
+      }else
+      {
+        g_filt <- grouped
+      }
+
+      OUT <- mcmc_summary[g_filt,]
+    }
+  }
+
+
+
+
+
+
+
+
+
+#PROCESSING BLOCK
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
     x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
@@ -116,6 +254,20 @@ MCMCsummary <- function(object,
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if(!is.null(excl))
   {
     to.rm1 <- c()
@@ -131,6 +283,10 @@ MCMCsummary <- function(object,
       to.rm2 <- to.rm1
     }
   }
+
+
+
+
 
   if (length(params) == 1)
   {
@@ -221,6 +377,13 @@ MCMCsummary <- function(object,
       OUT <- mcmc_summary[g_filt,]
     }
   }
+
+
+
+
+
+
+
 
   if(Rhat == TRUE)
   {
