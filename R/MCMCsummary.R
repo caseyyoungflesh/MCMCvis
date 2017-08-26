@@ -67,6 +67,23 @@ MCMCsummary <- function(object,
 
 
 
+
+  ###names and temp
+  object <- out
+  params = c('beta', 'mu')
+  excl <- c('mu[1]', 'mu[3]')
+
+  object <- MCMC_data
+  params = c('alpha', 'beta')
+  excl <- c('beta[1]', 'beta[3]')
+
+
+
+
+
+
+
+
   #NAME SORTING BLOCK
   #R2jags object
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
@@ -96,16 +113,6 @@ MCMCsummary <- function(object,
       names <- colnames(temp)
     }
   }
-
-  ###names and temp
-  object <- out
-  params = c('beta', 'mu')
-  excl <- c('mu[1]', 'mu[3]')
-
-  #object <- MCMC_data
-  #params = c('alpha', 'beta')
-  #excl <- c('beta[1]', 'beta[3]')
-
 
 
   #INDEX BLOCK
@@ -214,9 +221,7 @@ MCMCsummary <- function(object,
 
 
   #Add to beginning of each PROCESSING BLOCK
-  nlist <- coda::mcmc.list(out[[1]][,grouped],
-                           out[[2]][,grouped],
-                           out[[3]][,grouped])
+
 
 
 #PROCESSING BLOCK
@@ -224,9 +229,7 @@ MCMCsummary <- function(object,
   {
     x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
     #to.rm <- which(rownames(x) == 'deviance')
-    mcmc_summary <- x[,] #already have mcmc_summary
-
-    OUT <- mcmc_summary[f_ind,]
+    mcmc_summary <- x[f_ind,]
 
 #IF RHAT = FALSE REMOVE RHAT COL HERE
 
@@ -238,15 +241,22 @@ MCMCsummary <- function(object,
 
     if(coda::is.mcmc.list(object2) == TRUE)
     {
-      #filter for f_ind on temp
+      dsort <- do.call(coda::mcmc.list, temp[,f_ind])
 
-      ch_bind <- do.call('rbind', temp)
+      ch_bind <- do.call('rbind', dsort)
 
       bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
       bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
       bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
       bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
-      r_hat <- round(coda::gelman.diag(temp, multivariate = FALSE)$psrf[,1], digits = digits)
+
+      #IF RHAT = FALSE REMOVE RHAT COLUMN HERE
+
+
+
+
+
+      r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
 
       mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
       colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
@@ -254,17 +264,17 @@ MCMCsummary <- function(object,
 
     if(typeof(object2) == 'double')
     {
-      #filter for f_ind on temp
+      dsort <- temp[,f_ind]
 
-      bind_mn <- round(apply(temp, 2, mean), digits = digits)
-      bind_LCI <- round(apply(temp, 2, stats::quantile, probs= 0.025), digits = digits)
-      bind_med <- round(apply(temp,2, stats::median), digits = digits)
-      bind_UCI <- round(apply(temp, 2, stats::quantile, probs= 0.975), digits = digits)
+      bind_mn <- round(apply(dsort, 2, mean), digits = digits)
+      bind_LCI <- round(apply(dsort, 2, stats::quantile, probs= 0.025), digits = digits)
+      bind_med <- round(apply(dsort,2, stats::median), digits = digits)
+      bind_UCI <- round(apply(dsort, 2, stats::quantile, probs= 0.975), digits = digits)
       if(Rhat == TRUE)
       {
         warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
       }
-      r_hat <- rep(NA, NCOL(temp))
+      r_hat <- rep(NA, NCOL(dsort))
 
       mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
       colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
