@@ -226,26 +226,19 @@ MCMCsummary <- function(object,
     #to.rm <- which(rownames(x) == 'deviance')
     mcmc_summary <- x[,] #already have mcmc_summary
 
-    mcmc_summary[f_ind,]
-
+    OUT <- mcmc_summary[f_ind,]
 
 #IF RHAT = FALSE REMOVE RHAT COL HERE
 
 
 
-  } else {
 
-    if(typeof(object) == 'S4')
-    {
-      object2 <- rstan::As.mcmc.list(object)
-    } else {
-      object2 <- object
-    }
+
+  } else {
 
     if(coda::is.mcmc.list(object2) == TRUE)
     {
-      temp <- object2
-      names <- colnames(temp[[1]])
+      #filter for f_ind on temp
 
       ch_bind <- do.call('rbind', temp)
 
@@ -261,8 +254,7 @@ MCMCsummary <- function(object,
 
     if(typeof(object2) == 'double')
     {
-      temp <- object2
-      names <- colnames(temp)
+      #filter for f_ind on temp
 
       bind_mn <- round(apply(temp, 2, mean), digits = digits)
       bind_LCI <- round(apply(temp, 2, stats::quantile, probs= 0.025), digits = digits)
