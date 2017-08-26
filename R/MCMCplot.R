@@ -101,6 +101,7 @@
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
+                   ISB = TRUE,
                    ref = 0,
                    ref_ovl = TRUE,
                    rank = FALSE,
@@ -124,7 +125,7 @@ MCMCplot <- function(object,
 {
 
 
-  data <- MCMCchains(object, params= params, excl = excl)
+  data <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
 
   # Plotting parameters -----------------------------------------------------
 
