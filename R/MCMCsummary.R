@@ -99,6 +99,9 @@ MCMCsummary <- function(object,
 
   ###names and temp
 
+  excl <- 'beta[1]'
+
+
 
   if(!is.null(excl))
   {
@@ -128,7 +131,7 @@ MCMCsummary <- function(object,
       {
         f_names <- names
       }else{
-        OUT <- mcmc_summary[-to.rm2,]
+        f_names <- names[-to.rm2]
       }
     }else
     {
