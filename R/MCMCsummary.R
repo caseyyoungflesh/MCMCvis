@@ -49,13 +49,27 @@
 #'
 #' @export
 
+###names and temp
+object <- out
+params = c('beta', 'mu')
+excl <- c('mu[1]', 'mu[3]')
+
+object <- MCMC_data
+params = c('alpha', 'beta')
+excl <- c('beta[1]', 'beta[3]')
+
+
+MCMCsummary(object, digits = 2,
+            params = 'beta', excl = 'beta[1]', ISB = FALSE,
+            Rhat = FALSE)
+
 
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
                       digits = 2,
                       Rhat = TRUE,
-                      srt_exact = TRUE) #srt_exact matches exact string (excluding []), use FALSE to match all components that have any part of the input
+                      ISB = TRUE) #ISB = TRUE ignores [], otherwise matches exact string. ISB = FALSE does not ignore [], and behaves like grep
 {
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
@@ -65,23 +79,11 @@ MCMCsummary <- function(object,
     stop('Invalid object type. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
-
-  ###names and temp
-  object <- out
-  params = c('beta', 'mu')
-  excl <- c('mu[1]', 'mu[3]')
-
-  object <- MCMC_data
-  params = c('alpha', 'beta')
-  excl <- c('beta[1]', 'beta[3]')
-
-
-
   #NAME SORTING BLOCK
   #R2jags object
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
-    if(srt_exact == TRUE)
+    if(ISB == TRUE)
     {
       names <- vapply(strsplit(rownames(object$BUGSoutput$summary),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
@@ -100,7 +102,7 @@ MCMCsummary <- function(object,
     if(coda::is.mcmc.list(object2) == TRUE)
     {
       temp <- object2
-      if(srt_exact == TRUE)
+      if(ISB == TRUE)
       {
         names <- vapply(strsplit(colnames(temp[[1]]),
                                  split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
@@ -112,7 +114,7 @@ MCMCsummary <- function(object,
     if(typeof(object2) == 'double')
     {
       temp <- object2
-      if(srt_exact == TRUE)
+      if(ISB == TRUE)
       {
         names <- vapply(strsplit(colnames(temp),
                                  split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
@@ -129,12 +131,19 @@ MCMCsummary <- function(object,
     rm_ind <- c()
     for (i in 1:length(excl))
     {
-      if(srt_exact == TRUE)
+      if(ISB == TRUE)
       {
-        rm_ind <- c(rm_ind, which(names %in% excl[i]))
+        n_excl <- vapply(strsplit(excl,
+                                 split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+        rm_ind <- c(rm_ind, which(names %in% n_excl[i]))
       }else{
-        rm_ind <- c(rm_ind, grep(excl[i], names, fixed = TRUE))
+        n_excl <- excl
+        rm_ind <- c(rm_ind, grep(n_excl[i], names, fixed = TRUE))
       }
+    }
+    if(length(rm_ind) < 1)
+    {
+      stop(paste0('"', excl, '"', ' not found in MCMC ouput.'))
     }
     dups <- which(duplicated(rm_ind))
     if(length(dups) > 0)
@@ -158,7 +167,7 @@ MCMCsummary <- function(object,
       }
     }else
     {
-      if(srt_exact == TRUE)
+      if(ISB == TRUE)
       {
         get_ind <- which(names %in% params)
       }else{
@@ -190,7 +199,7 @@ MCMCsummary <- function(object,
     grouped <- c()
     for (i in 1:length(params))
     {
-      if(srt_exact == TRUE)
+      if(ISB == TRUE)
       {
         get_ind <- which(names %in% params[i])
       }else{
