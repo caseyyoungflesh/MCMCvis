@@ -44,7 +44,6 @@ MCMCchains <- function(object,
     #NAME SORTING BLOCK
     if(typeof(object) == 'S4')
     {
-
       temp_in <- rstan::As.mcmc.list(object)
       if(ISB == TRUE)
       {
@@ -53,11 +52,6 @@ MCMCchains <- function(object,
       }else{
         names <- colnames(temp_in[[1]])
       }
-
-      #temp <- do.call('rbind', temp_in)           #SHOULD BE DONE LATER (after sort)
-
-
-
     }
 
     if(coda::is.mcmc.list(object) == TRUE)
@@ -70,11 +64,6 @@ MCMCchains <- function(object,
       }else{
         names <- colnames(temp_in[[1]])
       }
-
-      #temp <- do.call('rbind', temp_in)
-
-
-
     }
 
     if(typeof(object) == 'double')
@@ -225,8 +214,29 @@ MCMCchains <- function(object,
         f_ind <- grouped
       }
     }
+  }
 
-    OUT <- temp[,f_ind]
+
+  if(coda::is.mcmc.list(object) == TRUE)
+  {
+    if(length(f_ind) > 1)
+    {
+      dsort <- do.call(coda::mcmc.list, temp_in[,f_ind])
+      OUT <- do.call('rbind', dsort)
+    }else{
+      dsort <- do.call(coda::mcmc.list, temp[,c(f_ind, f_ind)])
+      OUT <- do.call('rbind', dsort)[,1]
+    }
+  }
+
+  if(typeof(object) == 'double')
+  {
+    OUT <- temp_in[,f_ind]
+  }
+
+  if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
+  {
+    OUT <- temp_in[,f_ind]
   }
 
   return(OUT)
