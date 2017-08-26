@@ -67,9 +67,9 @@ MCMCsummary(object, digits = 2,
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
+                      ISB = TRUE,
                       digits = 2,
-                      Rhat = TRUE,
-                      ISB = TRUE) #ISB = TRUE ignores [], otherwise matches exact string. ISB = FALSE does not ignore [], and behaves like grep
+                      Rhat = TRUE) #ISB = TRUE ignores [], otherwise matches exact string. ISB = FALSE does not ignore [], and behaves like grep
 {
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
@@ -191,7 +191,7 @@ MCMCsummary <- function(object,
         }else {
           f_ind <- get_ind
         }
-      }else{
+      }else {
         f_ind <- get_ind
       }
     }
