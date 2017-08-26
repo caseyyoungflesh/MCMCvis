@@ -99,7 +99,8 @@ MCMCsummary <- function(object,
 
   ###names and temp
 
-  excl <- 'beta[1]'
+  params = 'beta'
+  excl <- c('beta[1]', 'beta[3]')
 
 
 
@@ -109,6 +110,7 @@ MCMCsummary <- function(object,
     for (i in 1:length(excl))
     {
       to.rm1 <- c(to.rm1, grep(excl[i], names, fixed = TRUE))
+      #to.rm1 <- c(to.rm1, names[grep(excl[i], names, fixed = TRUE)])
     }
     dups <- -which(duplicated(to.rm1))
     if(length(dups) > 0)
@@ -129,38 +131,48 @@ MCMCsummary <- function(object,
     {
       if(is.null(excl))
       {
-        f_names <- names
+        #f_names <- names                 #NAMES
+        f_names <- 1:length(names)        #INDICES
       }else{
-        f_names <- names[-to.rm2]
+        #f_names <- names[-to.rm2]
+        f_names <- (1:length(names))[-to.rm2]
       }
     }else
     {
-      get.rows <- grep(paste(params), names, fixed=TRUE)
-      if (length(get.rows) < 1)
+      t_names <- grep(paste(params), names, fixed = TRUE)
+      #t_names <- names[grep(paste(params), names, fixed = TRUE)]
+      if (length(t_names) < 1)
       {
         stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
       }
 
       if(!is.null(excl))
       {
-        if(identical(get.rows, to.rm2))
+        if(identical(t_names, to.rm2))
         {
           stop('No parameters selected.')
         }
 
-        matched <- which(get.rows == to.rm2)
+
+
+        matched <- which(t_names %in% to.rm2)
         if (length(matched) > 0)
         {
-          g_filt <- get.rows[-matched]
+          g_filt <- t_names[-matched]
         }else {
-          g_filt <- get.rows
+          g_filt <- t_names
         }
 
       }else{
-        g_filt <- get.rows
+        g_filt <- t_names
       }
 
-      OUT <- mcmc_summary[g_filt,]
+      #g_fult -- which rows are good
+
+
+
+
+
     }
   }else {
     grouped <- c()
