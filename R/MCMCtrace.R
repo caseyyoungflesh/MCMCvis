@@ -122,7 +122,7 @@ MCMCtrace <- function(object,
     {
       stop(paste0('"', excl, '"', ' not found in MCMC ouput.'))
     }
-    dups <- -which(duplicated(rm_ind))
+    dups <- which(duplicated(rm_ind))
     if(length(dups) > 0)
     {
       rm_ind2 <- rm_ind[-dups]
