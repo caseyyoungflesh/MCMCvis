@@ -165,8 +165,7 @@ MCMCsummary <- function(object,
       }else{
         f_ind <- (1:length(names))[-rm_ind2]
       }
-    }else
-    {
+    }else {
       if(ISB == TRUE)
       {
         get_ind <- which(names %in% params)
@@ -260,8 +259,14 @@ MCMCsummary <- function(object,
 
     if(coda::is.mcmc.list(object2) == TRUE)
     {
-      dsort <- do.call(coda::mcmc.list, temp[,f_ind])
-      ch_bind <- do.call('rbind', dsort)
+      if(length(f_ind) > 1)
+      {
+        dsort <- do.call(coda::mcmc.list, temp[,f_ind])
+        ch_bind <- do.call('rbind', dsort)
+      }else{
+        dsort <- do.call(coda::mcmc.list, temp[,c(f_ind, f_ind)])
+        ch_bind <- do.call('rbind', dsort)
+      }
 
       bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
       bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
@@ -271,17 +276,29 @@ MCMCsummary <- function(object,
       if(Rhat == TRUE)
       {
         r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
+        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(t_mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
       }else{
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
-        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
+        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
+        colnames(t_mcmc_summary) <- c('mean','2.5%','50%','97.5%')
+      }
+
+      if(length(f_ind) > 1)
+      {
+        mcmc_summary <- t_mcmc_summary
+      }else{
+        mcmc_summary <- t_mcmc_summary[1,]
       }
     }
 
     if(typeof(object2) == 'double')
     {
-      dsort <- temp[,f_ind]
+      if(length(f_ind) > 1)
+      {
+        dsort <- temp[,f_ind]
+      }else{
+        dsort <- temp[,c(f_ind, f_ind)]
+      }
 
       bind_mn <- round(apply(dsort, 2, mean), digits = digits)
       bind_LCI <- round(apply(dsort, 2, stats::quantile, probs= 0.025), digits = digits)
@@ -292,11 +309,17 @@ MCMCsummary <- function(object,
       {
         warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
         r_hat <- rep(NA, NCOL(dsort))
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
+        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
         colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
       }else{
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
+        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
         colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
+      }
+      if(length(f_ind) > 1)
+      {
+        mcmc_summary <- t_mcmc_summary
+      }else{
+        mcmc_summary <- t_mcmc_summary[1,]
       }
     }
   }
