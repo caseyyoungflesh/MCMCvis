@@ -98,12 +98,17 @@ MCMCsummary <- function(object,
   }
 
   ###names and temp
+  object <- out
+  params = c('beta', 'mu')
+  excl <- c('mu[1]', 'mu[3]')
 
-  params = c('beta', 'alpha')
-  excl <- c('beta[1]', 'beta[3]')
+  #object <- MCMC_data
+  #params = c('alpha', 'beta')
+  #excl <- c('beta[1]', 'beta[3]')
 
 
 
+  #INDEX BLOCK
   if(!is.null(excl))
   {
     rm_ind <- c()
@@ -121,8 +126,6 @@ MCMCsummary <- function(object,
     }
   }
 
-
-  ##names, temp, rm_ind2
 
 
   if (length(params) == 1)
@@ -207,30 +210,7 @@ MCMCsummary <- function(object,
   }
 
   #f_ind -- indices of names which will be used
-
-
-
-
-  grouped <- c()
-  for (i in 1:length(params))
-  {
-    get.rows <- grep(paste(params[i]), var_names, fixed = TRUE)
-    grouped <- c(grouped, get.rows)
-  }
-
-
-  #Feed in 'grouped' to PROCESSING BLOCK
-
-
-require(MCMCvis)
-MCMC_data
-
-params = 'beta'
-
-
-
-
-
+  ##names, temp, rm_ind2
 
 
   #Add to beginning of each PROCESSING BLOCK
@@ -239,34 +219,17 @@ params = 'beta'
                            out[[3]][,grouped])
 
 
-
-excl = 'beta[1]'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #PROCESSING BLOCK
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
     x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
     #to.rm <- which(rownames(x) == 'deviance')
     mcmc_summary <- x[,] #already have mcmc_summary
-    names <- rownames(mcmc_summary)
 
-    #filter for appropriate parameters afterwards
+    mcmc_summary[f_ind,]
 
 
+#IF RHAT = FALSE REMOVE RHAT COL HERE
 
 
 
