@@ -276,18 +276,11 @@ MCMCsummary <- function(object,
       if(Rhat == TRUE)
       {
         r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
-        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(t_mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
       }else{
-        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
-        colnames(t_mcmc_summary) <- c('mean','2.5%','50%','97.5%')
-      }
-
-      if(length(f_ind) > 1)
-      {
-        mcmc_summary <- t_mcmc_summary
-      }else{
-        mcmc_summary <- t_mcmc_summary[1,]
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)[1,]
+        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
       }
     }
 
@@ -309,17 +302,11 @@ MCMCsummary <- function(object,
       {
         warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
         r_hat <- rep(NA, NCOL(dsort))
-        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
         colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
       }else{
-        t_mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)[1,]
         colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
-      }
-      if(length(f_ind) > 1)
-      {
-        mcmc_summary <- t_mcmc_summary
-      }else{
-        mcmc_summary <- t_mcmc_summary[1,]
       }
     }
   }
