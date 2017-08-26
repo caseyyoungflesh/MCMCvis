@@ -81,7 +81,7 @@ MCMCsummary <- function(object,
 
   #NAME SORTING BLOCK
   #R2jags object
-  if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
+  if(class(object) == 'rjags')
   {
     if(ISB == TRUE)
     {
@@ -121,6 +121,11 @@ MCMCsummary <- function(object,
       }else{
         names <- colnames(temp)
       }
+    }
+    #jags.samples object (mcarray)
+    if(class(object2[[1]]) == 'mcarray')
+    {
+      stop('Invalid object type. jags.samples objects not currently supported. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
     }
   }
 
@@ -249,10 +254,10 @@ MCMCsummary <- function(object,
   {
     if(Rhat == TRUE)
     {
-      x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
+      x <- round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7, 8)], digits = digits)
       mcmc_summary <- x[f_ind,]
     }else{
-      x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7)], digits = digits)
+      x <- round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits)
       mcmc_summary <- x[f_ind,]
     }
   } else {
@@ -269,6 +274,7 @@ MCMCsummary <- function(object,
       }
 
       bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
+      bind_sd <- round(apply(ch_bind, 2, sd), digits = digits)
       bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
       bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
       bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
@@ -276,11 +282,11 @@ MCMCsummary <- function(object,
       if(Rhat == TRUE)
       {
         r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
+        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
       }else{
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)[1,]
-        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
+        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)[1,]
+        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%')
       }
     }
 
@@ -294,6 +300,7 @@ MCMCsummary <- function(object,
       }
 
       bind_mn <- round(apply(dsort, 2, mean), digits = digits)
+      bind_sd <- round(apply(ch_bind, 2, sd), digits = digits)
       bind_LCI <- round(apply(dsort, 2, stats::quantile, probs= 0.025), digits = digits)
       bind_med <- round(apply(dsort,2, stats::median), digits = digits)
       bind_UCI <- round(apply(dsort, 2, stats::quantile, probs= 0.975), digits = digits)
@@ -302,11 +309,11 @@ MCMCsummary <- function(object,
       {
         warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
         r_hat <- rep(NA, NCOL(dsort))
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
+        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
       }else{
-        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)[1,]
-        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
+        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)[1,]
+        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%')
       }
     }
   }
