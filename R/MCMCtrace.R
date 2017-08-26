@@ -62,7 +62,7 @@ MCMCtrace <- function(object,
   {
     temp <- object
   }
-  if(coda::is.mcmc.list(object) == FALSE & typeof(object) == 'list')
+  if(class(object) == 'rjags')
   {
     #modified coda::as.mcmc (removing ordering of param names)
     x <- object$BUGSoutput
@@ -81,6 +81,10 @@ MCMCtrace <- function(object,
   if(coda::is.mcmc.list(object) == FALSE & typeof(object) != 'list' & typeof(object) != 'S4')
   {
     stop('Invalid input type. Object must be of type stanfit, mcmc.list, or R2jags.')
+  }
+  if(coda::is.mcmc.list(object) == FALSE & typeof(object) == 'list' & class(object[[1]]) == 'mcarray')
+  {
+    stop('Invalid object type. jags.samples objects not currently supported. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
   #NAME SORTING BLOCK
