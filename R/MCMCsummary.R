@@ -66,8 +66,6 @@ MCMCsummary <- function(object,
 
 
 
-
-
   ###names and temp
   object <- out
   params = c('beta', 'mu')
@@ -79,18 +77,12 @@ MCMCsummary <- function(object,
 
 
 
-
-
-
-
-
   #NAME SORTING BLOCK
   #R2jags object
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
     names <- rownames(object$BUGSoutput$summary)
   }else {
-
     #Stan object
     if(typeof(object) == 'S4')
     {
@@ -98,14 +90,12 @@ MCMCsummary <- function(object,
     } else {
       object2 <- object
     }
-
     #MCMClist object
     if(coda::is.mcmc.list(object2) == TRUE)
     {
       temp <- object2
       names <- colnames(temp[[1]])
     }
-
     #matrix object
     if(typeof(object2) == 'double')
     {
@@ -114,15 +104,14 @@ MCMCsummary <- function(object,
     }
   }
 
-
   #INDEX BLOCK
+  #exclusions
   if(!is.null(excl))
   {
     rm_ind <- c()
     for (i in 1:length(excl))
     {
       rm_ind <- c(rm_ind, grep(excl[i], names, fixed = TRUE))
-      #to.rm1 <- c(to.rm1, names[grep(excl[i], names, fixed = TRUE)])
     }
     dups <- which(duplicated(rm_ind))
     if(length(dups) > 0)
@@ -133,24 +122,20 @@ MCMCsummary <- function(object,
     }
   }
 
-
-
+  #selections
   if (length(params) == 1)
   {
     if (params == 'all')
     {
       if(is.null(excl))
       {
-        #f_names <- names                 #NAMES
-        f_ind <- 1:length(names)        #INDICES
+        f_ind <- 1:length(names)
       }else{
-        #f_names <- names[-to.rm2]
         f_ind <- (1:length(names))[-rm_ind2]
       }
     }else
     {
       get_ind <- grep(paste(params), names, fixed = TRUE)
-      #t_names <- names[grep(paste(params), names, fixed = TRUE)]
       if (length(get_ind) < 1)
       {
         stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
@@ -216,33 +201,22 @@ MCMCsummary <- function(object,
     }
   }
 
-  #f_ind -- indices of names which will be used
-  ##names, temp, rm_ind2
-
-
-  #Add to beginning of each PROCESSING BLOCK
-
-
-
-#PROCESSING BLOCK
+  #PROCESSING BLOCK
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
-    x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
-    #to.rm <- which(rownames(x) == 'deviance')
-    mcmc_summary <- x[f_ind,]
-
-#IF RHAT = FALSE REMOVE RHAT COL HERE
-
-
-
-
-
+    if(Rhat == TRUE)
+    {
+      x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7, 8)], digits = digits)
+      mcmc_summary <- x[f_ind,]
+    }else{
+      x <- round(object$BUGSoutput$summary[,c(1, 3, 5, 7)], digits = digits)
+      mcmc_summary <- x[f_ind,]
+    }
   } else {
 
     if(coda::is.mcmc.list(object2) == TRUE)
     {
       dsort <- do.call(coda::mcmc.list, temp[,f_ind])
-
       ch_bind <- do.call('rbind', dsort)
 
       bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
@@ -250,16 +224,15 @@ MCMCsummary <- function(object,
       bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
       bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
 
-      #IF RHAT = FALSE REMOVE RHAT COLUMN HERE
-
-
-
-
-
-      r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
-
-      mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
-      colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
+      if(Rhat == TRUE)
+      {
+        r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
+      }else{
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
+        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
+      }
     }
 
     if(typeof(object2) == 'double')
@@ -270,153 +243,18 @@ MCMCsummary <- function(object,
       bind_LCI <- round(apply(dsort, 2, stats::quantile, probs= 0.025), digits = digits)
       bind_med <- round(apply(dsort,2, stats::median), digits = digits)
       bind_UCI <- round(apply(dsort, 2, stats::quantile, probs= 0.975), digits = digits)
+
       if(Rhat == TRUE)
       {
         warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
-      }
-      r_hat <- rep(NA, NCOL(dsort))
-
-      mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
-      colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
-    }
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if(!is.null(excl))
-  {
-    to.rm1 <- c()
-    for (i in 1:length(excl))
-    {
-      to.rm1 <- c(to.rm1, grep(excl[i], names, fixed = TRUE))
-    }
-    dups <- -which(duplicated(to.rm1))
-    if(length(dups) > 0)
-    {
-      to.rm2 <- to.rm1[-dups]
-    }else{
-      to.rm2 <- to.rm1
-    }
-  }
-
-
-
-
-
-  if (length(params) == 1)
-  {
-    if (params == 'all')
-    {
-      if(is.null(excl))
-      {
-        OUT <- mcmc_summary
+        r_hat <- rep(NA, NCOL(dsort))
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%', 'Rhat')
       }else{
-        OUT <- mcmc_summary[-to.rm2,]
+        mcmc_summary <- cbind(bind_mn, bind_LCI, bind_med, bind_UCI)
+        colnames(mcmc_summary) <- c('mean','2.5%','50%','97.5%')
       }
-    }else
-     {
-      get.rows <- grep(paste(params), names, fixed=TRUE)
-      if (length(get.rows) < 1)
-      {
-        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
-      }
-
-      if(!is.null(excl))
-      {
-        if(identical(get.rows, to.rm2))
-        {
-          stop('No parameters selected.')
-        }
-
-        matched <- which(get.rows == to.rm2)
-        if (length(matched) > 0)
-        {
-          g_filt <- get.rows[-matched]
-        }else {
-          g_filt <- get.rows
-        }
-
-      }else{
-        g_filt <- get.rows
-       }
-
-      OUT <- mcmc_summary[g_filt,]
-    }
-  }else {
-    grouped <- c()
-    for (i in 1:length(params))
-    {
-      get.rows <- grep(paste(params[i]), names, fixed=TRUE)
-      if (length(get.rows) < 1)
-      {
-        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
-      }
-      grouped <- c(grouped, get.rows)
-    }
-
-    if(!is.null(excl))
-    {
-      if(identical(grouped, to.rm2))
-      {
-        stop('No parameters selected.')
-      }
-
-      matched <- stats::na.omit(match(to.rm2, grouped))
-      if (length(matched) > 0)
-      {
-        rows <- grouped[-matched]
-      } else{
-        rows <- grouped
-      }
-
-      to.rm <- which(duplicated(rows))
-      if(length(to.rm) > 0)
-      {
-        g_filt <- rows[-to.rm]
-      }else
-      {
-        g_filt <- rows
-      }
-      OUT <- mcmc_summary[g_filt,]
-    } else{
-
-      to.rm <- which(duplicated(grouped))
-      if(length(to.rm) > 0)
-      {
-        g_filt <- grouped[-to.rm]
-      }else
-      {
-        g_filt <- grouped
-      }
-
-      OUT <- mcmc_summary[g_filt,]
     }
   }
-
-
-
-
-
-
-
-
-  if(Rhat == TRUE)
-  {
-    return(OUT)
-  }else
-  {
-    return(OUT[,-5])
-  }
+  return(mcmc_summary)
 }
