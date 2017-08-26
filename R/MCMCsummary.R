@@ -65,23 +65,39 @@ MCMCsummary <- function(object,
   }
 
 
-  #Feed in grouped to PROCESSING BLOCK
 
 
-  grouped <- c()
-  for (i in 1:length(params))
+  #NAME SORTING BLOCK
+  #R2jags object
+  if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
-    get.rows <- grep(paste(params[i]), var_names, fixed = TRUE)
-    grouped <- c(grouped, get.rows)
+    names <- rownames(object$BUGSoutput$summary)
+  }else {
+
+    #Stan object
+    if(typeof(object) == 'S4')
+    {
+      object2 <- rstan::As.mcmc.list(object)
+    } else {
+      object2 <- object
+    }
+
+    #MCMClist object
+    if(coda::is.mcmc.list(object2) == TRUE)
+    {
+      temp <- object2
+      names <- colnames(temp[[1]])
+    }
+
+    #matrix object
+    if(typeof(object2) == 'double')
+    {
+      temp <- object2
+      names <- colnames(temp)
+    }
   }
 
-  nlist <- coda::mcmc.list(out[[1]][,grouped],
-                           out[[2]][,grouped],
-                           out[[3]][,grouped])
-
-
-
-
+  ###names and temp
 
 
   if(!is.null(excl))
@@ -101,7 +117,7 @@ MCMCsummary <- function(object,
   }
 
 
-
+  ##names, temp, to.rm2
 
 
   if (length(params) == 1)
@@ -110,7 +126,7 @@ MCMCsummary <- function(object,
     {
       if(is.null(excl))
       {
-        OUT <- mcmc_summary
+        f_names <- names
       }else{
         OUT <- mcmc_summary[-to.rm2,]
       }
@@ -199,6 +215,48 @@ MCMCsummary <- function(object,
 
 
 
+  grouped <- c()
+  for (i in 1:length(params))
+  {
+    get.rows <- grep(paste(params[i]), var_names, fixed = TRUE)
+    grouped <- c(grouped, get.rows)
+  }
+
+
+  #Feed in 'grouped' to PROCESSING BLOCK
+
+
+require(MCMCvis)
+MCMC_data
+
+params = 'beta'
+
+
+
+
+
+
+
+  #Add to beginning of each PROCESSING BLOCK
+  nlist <- coda::mcmc.list(out[[1]][,grouped],
+                           out[[2]][,grouped],
+                           out[[3]][,grouped])
+
+
+
+excl = 'beta[1]'
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -209,7 +267,15 @@ MCMCsummary <- function(object,
     #to.rm <- which(rownames(x) == 'deviance')
     mcmc_summary <- x[,] #already have mcmc_summary
     names <- rownames(mcmc_summary)
+
+    #filter for appropriate parameters afterwards
+
+
+
+
+
   } else {
+
     if(typeof(object) == 'S4')
     {
       object2 <- rstan::As.mcmc.list(object)
