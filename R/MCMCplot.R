@@ -403,7 +403,7 @@ MCMCplot <- function(object,
     #left axis params
     graphics::axis(2, lwd.ticks = ax_sz, labels = TRUE,
                    at = tick_pos, lwd = ax_sz,
-                   cex.axis = x_tick_text_sz) #bottom axis
+                   cex.axis = x_tick_text_sz, las = 1)
     #bottom axis params (labels)
     graphics::axis(1, at = (len:1) + 0.013, tick = FALSE,
                    labels = labs, las = 2, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
