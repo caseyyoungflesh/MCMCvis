@@ -13,8 +13,8 @@
 #' Partial names may be used to exclude all parameters containing that set of characters. Used in
 #' conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param iter Number of iterations to plot for trace and density plots. The default value is 2000,
-#'  meaning the last 2000 iterations of the chain will be plotted.
+#' @param iter Number of iterations to plot for trace and density plots. The default value is 5000,
+#'  meaning the last 5000 iterations of the chain will be plotted.
 #'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param filename Name of pdf file to be printed.
@@ -43,7 +43,7 @@
 MCMCtrace <- function(object,
                     params = 'all',
                     excl = NULL,
-                    iter = 2000,
+                    iter = 5000,
                     pdf = FALSE,
                     filename,
                     wd = getwd(),
@@ -70,7 +70,8 @@ MCMCtrace <- function(object,
     strt <- x$n.burnin + 1
     end <- x$n.iter
     ord <- dimnames(x$sims.array)[[3]]
-    for (i in 1:x$n.chains) {
+    for (i in 1:x$n.chains)
+    {
       tmp1 <- x$sims.array[, i, ord]
       mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
     }
