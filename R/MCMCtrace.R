@@ -88,8 +88,10 @@ MCMCtrace <- function(object,
   {
     names <- vapply(strsplit(colnames(temp[[1]]),
                              split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+    a_names <- colnames(temp[[1]])
   }else{
     names <- colnames(temp[[1]])
+    a_names <- names
   }
   n_chains <- length(temp)
   if (nrow(temp[[1]]) > iter)
@@ -257,7 +259,7 @@ MCMCtrace <- function(object,
     {
       #trace
       tmlt <- do.call('cbind', temp[it, f_ind[j]])
-      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[f_ind[j]]),
+      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', a_names[f_ind[j]]),
               col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = 0.5),
               xlab= 'Iteration', ylab= 'Value')
@@ -272,7 +274,7 @@ MCMCtrace <- function(object,
         ylim <- c(0, max(max_den))
 
         graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
-             lty = 1, lwd = 1, main = paste0('Density - ', names[f_ind[j]]),
+             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]),
              col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
 
         for (l in 2:NCOL(tmlt))
@@ -284,7 +286,7 @@ MCMCtrace <- function(object,
       }else{
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
-             lty = 1, lwd = 1, main = paste0('Density - ', names[f_ind[j]]))
+             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]))
       }
     }
   }
@@ -295,7 +297,7 @@ MCMCtrace <- function(object,
     {
       #chains
       tmlt <- do.call('cbind', temp[it,f_ind[j]])
-      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', names[f_ind[j]]),
+      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', a_names[f_ind[j]]),
               col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = 0.5),
               xlab= 'Iteration', ylab= 'Value')
@@ -320,7 +322,7 @@ MCMCtrace <- function(object,
         ylim <- c(0, max(max_den))
 
         graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
-             lty = 1, lwd = 1, main = paste0('Density - ', names[f_ind[j]]),
+             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]),
              col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
 
         for (l in 2:NCOL(tmlt))
@@ -332,7 +334,7 @@ MCMCtrace <- function(object,
       }else{
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
-             lty = 1, lwd = 1, main = paste0('Density - ', names[f_ind[j]]))
+             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]))
       }
     }
   }
@@ -349,5 +351,4 @@ MCMCtrace <- function(object,
   }else{
     graphics::par(.pardefault)
   }
-
 }
