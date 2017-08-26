@@ -78,7 +78,7 @@ MCMCchains <- function(object,
       }
     }
 
-    if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
+    if(class(object) == 'rjags')
     {
       temp_in <- object$BUGSoutput$sims.matrix
       if(ISB == TRUE)
@@ -90,6 +90,10 @@ MCMCchains <- function(object,
       }
     }
 
+  if(class(object[[1]]) == 'mcarray')
+  {
+    stop('Invalid object type. jags.samples objects not currently supported. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
+  }
 
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
