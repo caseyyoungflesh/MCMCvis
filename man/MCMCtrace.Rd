@@ -4,35 +4,33 @@
 \alias{MCMCtrace}
 \title{Trace and density plots from MCMC output}
 \usage{
-MCMCtrace(object, params = "all", excl = NULL, iter = 2000, pdf = FALSE,
-  filename, wd = getwd(), type = "both", ind = FALSE)
+MCMCtrace(object, params = "all", excl = NULL, ISB = TRUE, iter = 5000,
+  pdf = TRUE, filename, wd = getwd(), type = "both", ind = FALSE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
 
 \item{params}{Character string (or vector of character strings) denoting parameters of interest.
-Partial names may be used to return all parameters containing that set of characters.
 
 Default \code{'all'} returns chains for all parameters.}
 
-\item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
-Partial names may be used to exclude all parameters containing that set of characters. Used in
-conjunction with \code{params} argument to select parameters of interest.}
+\item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
 
-\item{iter}{Number of iterations to plot for trace and density plots. The default value is 2000,
-meaning the last 2000 iterations of the chain will be plotted.}
+\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.}
+
+\item{iter}{Number of iterations to plot for trace and density plots. The default value is 5000, meaning the last 5000 iterations of the chain will be plotted.}
 
 \item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
 
-\item{filename}{Name of pdf file to be printed.}
+\item{filename}{Name of pdf file to be printed. Default is 'MCMCtrace'.}
 
 \item{wd}{Working directory for pdf output. Default is current directory.}
 
 \item{type}{Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
 outputs only trace plots, and \code{'density'} outputs only density plots.}
 
-\item{ind}{Logical - if \code{ind = TRUE}, different lines will be plotted for each chain. If
-\code{ind= FALSE}, one line will be plotted for all chains.}
+\item{ind}{Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If
+\code{ind= FALSE}, one density line will be plotted for all chains.}
 }
 \description{
 Trace and density plots of MCMC chains for specific parameters of interest. Option to
@@ -49,10 +47,10 @@ detects the object type and proceeds accordingly.
 #Load data
 data(MCMC_data)
 
-#Traceplot for all 'beta' parameters
+#Traceplots for all 'beta' parameters
 MCMCtrace(MCMC_data, params='beta')
 
-#Print traceplot output to pdf
-MCMCtrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
+#Traceplots (individual density lines for each chain) for just 'beta[1]'
+MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
 
 }

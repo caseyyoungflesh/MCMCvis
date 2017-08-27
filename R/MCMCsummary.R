@@ -253,7 +253,7 @@ MCMCsummary <- function(object,
       }
 
       bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
-      bind_sd <- round(apply(ch_bind, 2, sd), digits = digits)
+      bind_sd <- round(apply(ch_bind, 2, stats::sd), digits = digits)
       bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
       bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
       bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
@@ -279,7 +279,7 @@ MCMCsummary <- function(object,
       }
 
       bind_mn <- round(apply(dsort, 2, mean), digits = digits)
-      bind_sd <- round(apply(ch_bind, 2, sd), digits = digits)
+      bind_sd <- round(apply(ch_bind, 2, stats::sd), digits = digits)
       bind_LCI <- round(apply(dsort, 2, stats::quantile, probs= 0.025), digits = digits)
       bind_med <- round(apply(dsort,2, stats::median), digits = digits)
       bind_UCI <- round(apply(dsort, 2, stats::quantile, probs= 0.975), digits = digits)

@@ -34,8 +34,8 @@
 #' #Traceplots for all 'beta' parameters
 #' MCMCtrace(MCMC_data, params='beta')
 #'
-#' #Traceplots (individual density lines for each chain) for just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' MCMCtrace(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
+#' #Traceplots (individual density lines for each chain) for just 'beta[1]'
+#' MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
 #'
 #' @export
 

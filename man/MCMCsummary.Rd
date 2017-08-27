@@ -4,32 +4,28 @@
 \alias{MCMCsummary}
 \title{Summary function for MCMC output}
 \usage{
-MCMCsummary(object, params = "all", excl = NULL, digits = 2,
+MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE, digits = 2,
   Rhat = TRUE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
 
-\item{params}{Character string (or vector of character strings) denoting parameters to be
-returned in summary output. Partial names may be used to return all parameters containing
-that set of characters.
+\item{params}{Character string (or vector of character strings) denoting parameters to be returned in summary output.
 
 Default \code{'all'} returns all parameters in summary output.}
 
-\item{excl}{Character string (or vector of character strings) denoting parameters to exclude.
-Partial names may be used to exclude all parameters containing that set of characters. Used in
-conjunction with \code{params} argument to select parameters of interest.}
+\item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
 
-\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified
-number of digits.
+\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.}
+
+\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified number of digits.
+
 Default is \code{digits = 2}.}
 
-\item{Rhat}{If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
-and if \code{FALSE}, Rhat output is masked.}
+\item{Rhat}{Logical specifying whether to display the Gelman-Rubin convergence statistic (Rhat). If \code{TRUE}, Rhat values are calculated and displayed in summary. If \code{FALSE}, Rhat values are not calculated.}
 }
 \value{
-Function returns summary information (including parameter posterior mean, 2.5\% quantile, median, 97.5\%
- quantile, and Gelman-Rubin convergence statistic (Rhat)) for specified parameters.
+Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, and Gelman-Rubin convergence statistic (Rhat)) for specified parameters.
 }
 \description{
 Extract summary information from MCMC output (mean, median, quantiles, and Gelman-Rubin convergence statistic)
@@ -37,10 +33,7 @@ for specific parameters of interest.
 }
 \section{Details}{
 
-\code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
-(\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
-chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
-The function automatically detects the object type and proceeds accordingly.
+\code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 }
 
 \section{Notes}{
@@ -58,9 +51,9 @@ data(MCMC_data)
 MCMCsummary(MCMC_data)
 
 #Just 'beta' parameters
-MCMCsummary(MCMC_data, params= 'beta')
+MCMCsummary(MCMC_data, params = 'beta')
 
 #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-MCMCsummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+MCMCsummary(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
 
 }
