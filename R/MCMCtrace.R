@@ -245,6 +245,7 @@ MCMCtrace <- function(object,
 
 
   #PLOT BLOCK
+  A_VAL <- 0.5 #alpha value
   graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
   graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
   graphics::par(mgp = c(2.5,1,0)) #axis text distance
@@ -264,7 +265,7 @@ MCMCtrace <- function(object,
       tmlt <- do.call('cbind', temp[it, f_ind[j]])
       graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', a_names[f_ind[j]]),
               col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
-                       blue= gg_cols[3,], alpha = 0.5),
+                       blue= gg_cols[3,], alpha = A_VAL),
               xlab= 'Iteration', ylab= 'Value')
       if (ind == TRUE & n_chains > 1)
       {
@@ -302,7 +303,7 @@ MCMCtrace <- function(object,
       tmlt <- do.call('cbind', temp[it,f_ind[j]])
       graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', a_names[f_ind[j]]),
               col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
-                       blue= gg_cols[3,], alpha = 0.5),
+                       blue= gg_cols[3,], alpha = A_VAL),
               xlab= 'Iteration', ylab= 'Value')
     }
   }
