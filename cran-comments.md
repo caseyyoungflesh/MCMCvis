@@ -12,4 +12,4 @@ OK
 
 
 ## Downstream dependencies
-I have run R CMD check on downstream dependencies of MCMCvis. All packages that I could install passed.
+I have run R CMD check on downstream dependencies of MCMCvis. All packages passed.
