@@ -1,6 +1,17 @@
 NEWS
 ====
 
+0.8.0:
+
+- Specification of parameters of interest now works slightly differently. The argument `ISB` (Ignore Square Bracket) has now been added. By default `ISB = TRUE` - `params` and `excl` match exactly to parameter names by default (ignoring square brackets). When `ISB = FALSE`, square brackets will not be ignored, and will match on partial names (as when using `grep`). This applies to all functions.
+- `MCMCsummary` speed greatly increased. Parameters of interested are now sorted before calculations are made. Rhat values are no longer masked, but rather not calculated when `Rhat = FALSE`. These changes result in dramatic speed ups for large objects.
+- `MCMCsummary` standard deviation added to summary output for each parameter.
+- `MCMCtrace` default is now to write trace plots to pdf. Default number of iterations changed to 5000 from 2000.
+- `MCMCplot` y-axis labels now vertical when `horiz = FALSE` to improve readability.
+- `MCMCplot` bug that resulted in poor plot dimension choices in some circumstances now fixed.
+- Error message now added about functions not taking objects produced from `jags.samples` function in the `coda` package. `coda.samples` should be used instead.
+
+
 0.7.1:
 
 - Fix bug in `MCMCplot` which incorrectly shaded parameter estimates when plotted vertically
