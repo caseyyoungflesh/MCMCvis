@@ -122,8 +122,6 @@ MCMCplot <- function(object,
                    tick_pos,
                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
-
-
   data <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
 
   # Plotting parameters -----------------------------------------------------
@@ -135,7 +133,7 @@ MCMCplot <- function(object,
   ref_col = 'gray60' #color used for 0 line
   thin = 95 #CI for thin line
   thick = 50 #CI for thick line
-  PL_SC = 0.5 #how much whitespace flanks plotted estimates
+  PL_SC = 0.4 #how much whitespace flanks plotted estimates
 
   # Process data ------------------------------------------------------------
 
@@ -191,7 +189,6 @@ MCMCplot <- function(object,
       stop("'thick' and 'thin' must be single numbers")
     }
   }
-
 
   # plotting ----------------------------------------------------------------
 
