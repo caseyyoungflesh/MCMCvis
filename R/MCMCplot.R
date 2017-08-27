@@ -97,7 +97,6 @@
 #' @export
 #'
 
-
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -136,6 +135,7 @@ MCMCplot <- function(object,
   ref_col = 'gray60' #color used for 0 line
   thin = 95 #CI for thin line
   thick = 50 #CI for thick line
+  PL_SC = 0.5 #how much whitespace flanks plotted estimates
 
   # Process data ------------------------------------------------------------
 
@@ -186,8 +186,6 @@ MCMCplot <- function(object,
       thin_q <- as.matrix(apply(chains, 2, stats::quantile, probs= thin_ci)[,idx])
 
       medians <- apply(chains, 2, stats::quantile, probs = 0.5)[idx]
-
-
     }else
     {
       stop("'thick' and 'thin' must be single numbers")
@@ -233,7 +231,10 @@ MCMCplot <- function(object,
   {
 
     if (missing(xlim))
-    {xlim = range(thin_q)*1.2}
+    {
+      rn <- diff(range(thin_q))*PL_SC
+      xlim = c((min(thin_q) - rn), (max(thin_q) + rn))
+    }
     ylim = c(0.5,(len)+0.5)
     if (missing(xlab))
     {xlab = 'Parameter Estimate'}
@@ -355,7 +356,10 @@ MCMCplot <- function(object,
   {
 
     if (missing(ylim))
-    {ylim = range(thin_q)*1.2}
+    {
+      rn <- diff(range(thin_q))*PL_SC
+      ylim = c((min(thin_q) - rn), (max(thin_q) + rn))
+    }
     xlim = c(0.5,(len)+0.5)
     if (missing(ylab))
     {ylab = 'Parameter Estimate'}
@@ -473,8 +477,5 @@ MCMCplot <- function(object,
                        col = 'black', cex = med_sz)
     }
   }
-
-
   graphics::par(mar=c(5,4,4,2) + 0.1)
-
 }
