@@ -4,35 +4,29 @@
 #' for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters to be
-#' returned in summary output. Partial names may be used to return all parameters containing
-#' that set of characters.
+#' @param params Character string (or vector of character strings) denoting parameters to be returned in summary output.
 #'
 #' Default \code{'all'} returns all parameters in summary output.
 #'
-#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
-#' Partial names may be used to exclude all parameters containing that set of characters. Used in
-#' conjunction with \code{params} argument to select parameters of interest.
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified
-#' number of digits.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
+#'
+#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified number of digits.
+#'
 #' Default is \code{digits = 2}.
 #'
-#' @param Rhat If \code{TRUE}, summary information contains Gelman-Rubin convergence statistic (Rhat)
-#' and if \code{FALSE}, Rhat output is masked.
+#' @param Rhat Logical specifying whether to display the Gelman-Rubin convergence statistic (Rhat). If \code{TRUE}, Rhat values are calculated and displayed in summary. If \code{FALSE}, Rhat values are not calculated.
+#'
 #' @section Details:
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
-#' (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
-#' chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
-#' The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
 #' @section Notes:
 #'
 #' For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calculated using the
 #' \code{gelman.diag} function in the \code{coda} package.
 #'
-#' @return Function returns summary information (including parameter posterior mean, 2.5\% quantile, median, 97.5\%
-#'  quantile, and Gelman-Rubin convergence statistic (Rhat)) for specified parameters.
+#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, and Gelman-Rubin convergence statistic (Rhat)) for specified parameters.
 #'
 #' @examples
 #' #Load data
@@ -42,34 +36,19 @@
 #' MCMCsummary(MCMC_data)
 #'
 #' #Just 'beta' parameters
-#' MCMCsummary(MCMC_data, params= 'beta')
+#' MCMCsummary(MCMC_data, params = 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' MCMCsummary(MCMC_data, params= c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' MCMCsummary(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
 #'
 #' @export
-
-###names and temp
-object <- out
-params = c('beta', 'mu')
-excl <- c('mu[1]', 'mu[3]')
-
-object <- MCMC_data
-params = c('alpha', 'beta')
-excl <- c('beta[1]', 'beta[3]')
-
-
-MCMCsummary(object, digits = 2,
-            params = 'beta', excl = 'beta[1]', ISB = FALSE,
-            Rhat = FALSE)
-
 
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
                       ISB = TRUE,
                       digits = 2,
-                      Rhat = TRUE) #ISB = TRUE ignores [], otherwise matches exact string. ISB = FALSE does not ignore [], and behaves like grep
+                      Rhat = TRUE)
 {
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &

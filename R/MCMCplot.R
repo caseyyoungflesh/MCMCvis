@@ -4,12 +4,13 @@
 #'
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
-#' @param params Character string (or vector of character strings) denoting parameters to be plotted. Partial names may be used to plot all parameters containing that set of characters.
+#' @param params Character string (or vector of character strings) denoting parameters to be plotted.
 #'
 #' Default \code{'all'} plots posteriors for all parameters. See VALUE below.
 #'
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Partial names may be used to exclude all parameters containing that set of characters. Used in conjunction with \code{params} argument to select parameters of interest.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
 #'
 #' @param ref Value indicating where vertical reference line should be created and what value to use a reference for caterpillar median coloration.
 #'
@@ -19,9 +20,9 @@
 #'
 #' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line. See DETAILS for more information.
 #'
-#' @param rank If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
+#' @param rank Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
-#' @param horiz If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
+#' @param horiz Logical specifying orientation of plot. If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
 #' @param xlim Numerical vector of length 2, indicating range of x-axis. Only applicable if \code{horiz = TRUE}.
 #' @param ylim Numerical vector of length 2, indicating range of y-axis. Only applicable if \code{horiz = FALSE}.
 #' @param xlab Character string labeling x-axis. Only applicable if \code{horiz = TRUE}.
@@ -86,7 +87,7 @@
 #' MCMCplot(MCMC_data, params = 'beta')
 #'
 #' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' MCMCplot(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'))
+#' MCMCplot(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
 #'
 #' #Rank parameters by posterior mean
 #' MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
@@ -154,7 +155,6 @@ MCMCplot <- function(object,
         idx <- len:1
       }
 
-
       thick_ci <- c((100-((100-thick)/2)), ((100-thick)/2))*0.01
       thin_ci <- c((100-((100-thin)/2)), ((100-thin)/2))*0.01
 
@@ -162,7 +162,6 @@ MCMCplot <- function(object,
       thin_q <- apply(chains, 2, stats::quantile, probs= thin_ci)[,idx]
 
       medians <- apply(chains, 2, stats::quantile, probs = 0.5)[idx]
-
     }else
     {
       stop("'thick' and 'thin' must be single numbers")
@@ -226,7 +225,6 @@ MCMCplot <- function(object,
   #plot for horizontal - CI lines parallel to x-axis
   if (horiz == TRUE)
   {
-
     if (missing(xlim))
     {
       rn <- diff(range(thin_q))*PL_SC
@@ -292,7 +290,6 @@ MCMCplot <- function(object,
     gry_bnd <- rbind(gray_cl, gray_cl)
     wht_bnd <- rbind(white_cl, white_cl)
 
-
     #ref line
     if(!is.null(ref))
     {
@@ -351,7 +348,6 @@ MCMCplot <- function(object,
   #vertical plot - CI lines perpendicular to x-axis
   if (horiz == FALSE)
   {
-
     if (missing(ylim))
     {
       rn <- diff(range(thin_q))*PL_SC
@@ -415,7 +411,6 @@ MCMCplot <- function(object,
     {
       graphics::abline(h=ref, lty = 2, lwd = 3, col = ref_col)
     }
-
 
     #positions to plot CI
     v_black_cl <- rev(black_cl)

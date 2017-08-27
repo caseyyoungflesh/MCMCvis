@@ -4,22 +4,17 @@
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters of interest.
-#' Partial names may be used to return all parameters containing that set of characters.
 #'
 #' Default \code{'all'} returns chains for all parameters.
 #'
-#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
-#' Partial names may be used to exclude all parameters containing that set of characters. Used in
-#' conjunction with \code{params} argument to select parameters of interest.
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
+#'
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
 #'
 #' @section Details:
-#' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each
-#' parameter are combined to one posterior chain.
+#' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each parameter are combined to one posterior chain.
 #'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
-#' (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC
-#' chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain).
-#' The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
 #'
 #' @examples
@@ -31,8 +26,12 @@
 #' apply(ex, 2, mean)
 #'
 #' #Extract MCMC chains for just 'beta' parameters
-#' ex2 <- MCMCchains(MCMC_data, params='beta')
+#' ex2 <- MCMCchains(MCMC_data, params = 'beta')
 #' apply(ex2, 2, mean)
+#'
+#' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
+#' ex3 <- MCMCchains(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
+#' apply(ex3, 2, sd)
 #'
 #' @export
 

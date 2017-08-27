@@ -5,38 +5,37 @@
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters of interest.
-#' Partial names may be used to return all parameters containing that set of characters.
 #'
 #' Default \code{'all'} returns chains for all parameters.
 #'
-#' @param excl Character string (or vector of character strings) denoting parameters to exclude.
-#' Partial names may be used to exclude all parameters containing that set of characters. Used in
-#' conjunction with \code{params} argument to select parameters of interest.
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param iter Number of iterations to plot for trace and density plots. The default value is 5000,
-#'  meaning the last 5000 iterations of the chain will be plotted.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
+#'
+#' @param iter Number of iterations to plot for trace and density plots. The default value is 5000, meaning the last 5000 iterations of the chain will be plotted.
 #'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
-#' @param filename Name of pdf file to be printed.
+#' @param filename Name of pdf file to be printed. Default is 'MCMCtrace'.
 #' @param wd Working directory for pdf output. Default is current directory.
 #' @param type Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
 #' outputs only trace plots, and \code{'density'} outputs only density plots.
-#' @param ind Logical - if \code{ind = TRUE}, different lines will be plotted for each chain. If
-#' \code{ind= FALSE}, one line will be plotted for all chains.
+#' @param ind Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If
+#' \code{ind= FALSE}, one density line will be plotted for all chains.
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object
 #' (\code{coda} package), or an \code{R2jags} model object (\code{R2jags} package). The function automatically
 #' detects the object type and proceeds accordingly.
 #'
+#'
 #' @examples
 #' #Load data
 #' data(MCMC_data)
 #'
-#' #Traceplot for all 'beta' parameters
+#' #Traceplots for all 'beta' parameters
 #' MCMCtrace(MCMC_data, params='beta')
 #'
-#' #Print traceplot output to pdf
-#' MCMCtrace(MCMC_data, pdf= TRUE, filename = 'PDF_file.pdf')
+#' #Traceplots (individual density lines for each chain) for just 'beta[1]', 'gamma[4]', and 'alpha[3]'
+#' MCMCtrace(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
 #'
 #' @export
 
