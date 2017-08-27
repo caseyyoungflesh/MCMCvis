@@ -2,14 +2,14 @@ CRAN comments
 ====
 
 ## Test environments
-* local OS X install, R 3.3.2
-* Ubuntu 12.04.5 (on travis-ci), R 3.3.2
+* local OS X install, R 3.4.1
+* Ubuntu 12.04.5 (on travis-ci), R 3.4.1
 * win-builder (devel)
 
 
 ## R CMD check results
-There was one NOTE in the win-builder check. Potential mis-spelling of 'MCMC' and 'subsetting'. These are not mis-spellings - NOTE should be ignored.
+OK
 
 
 ## Downstream dependencies
-There are no downstream dependencies for 'MCMCvis'
+I have run R CMD check on downstream dependencies of MCMCvis. All packages that I could install passed.
