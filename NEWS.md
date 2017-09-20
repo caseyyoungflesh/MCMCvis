@@ -5,7 +5,10 @@ NEWS
 
 - Specification of parameters of interest now works slightly differently. The argument `ISB` (Ignore Square Bracket) has now been added. By default `ISB = TRUE` - `params` and `excl` match exactly to parameter names by default (ignoring square brackets). When `ISB = FALSE`, square brackets will not be ignored, and will match on partial names (as when using `grep`). This applies to all functions.
 - `MCMCsummary` speed greatly increased. Parameters of interested are now sorted before calculations are made. Rhat values are no longer masked, but rather not calculated when `Rhat = FALSE`. These changes result in dramatic speed ups for large objects.
+- `MCMCsummary` column displaying Rhat values retains when `Rhat = FALSE`. NA values now added instead of removing column.
+- `MCMCsummary` bug fixed that caused function to fail when only one chain was run
 - `MCMCsummary` standard deviation added to summary output for each parameter.
+- `MCMCsummary` number of effective samples added to summary output for each parameter. Can use argument `n.eff = FALSE` to avoid calculating and displaying this metric.
 - `MCMCtrace` default is now to write trace plots to pdf. Default number of iterations changed to 5000 from 2000.
 - `MCMCplot` y-axis labels now vertical when `horiz = FALSE` to improve readability.
 - `MCMCplot` bug that resulted in poor plot dimension choices in some circumstances now fixed.
