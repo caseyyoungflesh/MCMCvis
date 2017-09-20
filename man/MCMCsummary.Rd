@@ -5,7 +5,7 @@
 \title{Summary function for MCMC output}
 \usage{
 MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE, digits = 2,
-  Rhat = TRUE)
+  Rhat = TRUE, n.eff = TRUE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -22,10 +22,12 @@ Default \code{'all'} returns all parameters in summary output.}
 
 Default is \code{digits = 2}.}
 
-\item{Rhat}{Logical specifying whether to display the Gelman-Rubin convergence statistic (Rhat). If \code{TRUE}, Rhat values are calculated and displayed in summary. If \code{FALSE}, Rhat values are not calculated.}
+\item{Rhat}{Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). \code{Rhat = FALSE} will return NAs for this column in the summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large MCMC objects.}
+
+\item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. \code{n.eff = FALSE} will return NAs for this column in the summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large MCMC objects.}
 }
 \value{
-Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, and Gelman-Rubin convergence statistic (Rhat)) for specified parameters.
+Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), and number of effective samples) for specified parameter.
 }
 \description{
 Extract summary information from MCMC output (mean, median, quantiles, and Gelman-Rubin convergence statistic)
@@ -41,6 +43,8 @@ for specific parameters of interest.
 
 For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calculated using the
 \code{gelman.diag} function in the \code{coda} package.
+
+For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package.
 }
 
 \examples{
