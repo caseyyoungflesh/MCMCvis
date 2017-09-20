@@ -16,7 +16,9 @@
 #'
 #' Default is \code{digits = 2}.
 #'
-#' @param Rhat Logical specifying whether to display the Gelman-Rubin convergence statistic (Rhat). If \code{TRUE}, Rhat values are calculated and displayed in summary. If \code{FALSE}, Rhat values are not calculated.
+#' @param Rhat Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large MCMC objects.
+#'
+#' @param n.eff Logical specifying whether to calculate and display the number of effective samples for each parameter. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large MCMC objects.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
@@ -26,7 +28,9 @@
 #' For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calculated using the
 #' \code{gelman.diag} function in the \code{coda} package.
 #'
-#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, and Gelman-Rubin convergence statistic (Rhat)) for specified parameters.
+#' For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package.
+#'
+#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), and number of effective samples) for specified parameter.
 #'
 #' @examples
 #' #Load data
@@ -43,12 +47,14 @@
 #'
 #' @export
 
+
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
                       ISB = TRUE,
                       digits = 2,
-                      Rhat = TRUE)
+                      Rhat = TRUE,
+                      n.eff = TRUE)
 {
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
@@ -107,6 +113,7 @@ MCMCsummary <- function(object,
       stop('Invalid object type. jags.samples objects not currently supported. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
     }
   }
+
 
   #INDEX BLOCK
   #exclusions
@@ -228,18 +235,29 @@ MCMCsummary <- function(object,
     }
   }
 
+
   #PROCESSING BLOCK
   if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
   {
     if(Rhat == TRUE)
     {
-      x <- round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7, 8)], digits = digits)
-      mcmc_summary <- x[f_ind,]
+      rh <- round(object$BUGSoutput$summary[,8], digits = digits)
     }else{
-      x <- round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits)
-      mcmc_summary <- x[f_ind,]
+      rh <- rep(NA, NROW(object$BUGSoutput$summary))
     }
-  } else {
+
+    if(n.eff == TRUE)
+    {
+      nf <- round(object$BUGSoutput$summary[,9], digits = 0)
+    }else{
+      nf <- rep(NA, NROW(object$BUGSoutput$summary))
+    }
+
+    x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits), rh, nf)
+    colnames(x)[6:7] <- c('Rhat', 'n.eff')
+    mcmc_summary <- x[f_ind,]
+
+  }else{
 
     if(coda::is.mcmc.list(object2) == TRUE)
     {
@@ -261,12 +279,19 @@ MCMCsummary <- function(object,
       if(Rhat == TRUE)
       {
         r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
       }else{
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)[1,]
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%')
+        r_hat <- rep(NA, NCOL(dsort))
       }
+
+      if(n.eff == TRUE)
+      {
+        bind_neff <- round(coda::effectiveSize(dsort), digits = 0)
+      }else{
+        bind_neff <- rep(NA, NCOL(dsort))
+      }
+
+      mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat, bind_neff)
+      colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat', 'n.eff')
     }
 
     if(typeof(object2) == 'double')
@@ -279,21 +304,25 @@ MCMCsummary <- function(object,
       }
 
       bind_mn <- round(apply(dsort, 2, mean), digits = digits)
-      bind_sd <- round(apply(ch_bind, 2, stats::sd), digits = digits)
+      bind_sd <- round(apply(dsort, 2, stats::sd), digits = digits)
       bind_LCI <- round(apply(dsort, 2, stats::quantile, probs= 0.025), digits = digits)
       bind_med <- round(apply(dsort,2, stats::median), digits = digits)
       bind_UCI <- round(apply(dsort, 2, stats::quantile, probs= 0.975), digits = digits)
+      bind_neff <- rep(NA, NCOL(dsort))
 
       if(Rhat == TRUE)
       {
         warning('Rhat statistic cannot be calculated without individaul chains. NAs inserted.')
-        r_hat <- rep(NA, NCOL(dsort))
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
-      }else{
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)[1,]
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%')
       }
+
+      if(n.eff == TRUE)
+      {
+        warning('Number of effective samples cannot be calculated without individaul chains. NAs inserted.')
+      }
+
+      r_hat <- rep(NA, NCOL(dsort))
+      mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat, bind_neff)
+      colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat', 'n.eff')
     }
   }
   return(mcmc_summary)
