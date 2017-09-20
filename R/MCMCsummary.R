@@ -16,9 +16,9 @@
 #'
 #' Default is \code{digits = 2}.
 #'
-#' @param Rhat Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large MCMC objects.
+#' @param Rhat Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). \code{Rhat = FALSE} will return NAs for this column in the summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large MCMC objects.
 #'
-#' @param n.eff Logical specifying whether to calculate and display the number of effective samples for each parameter. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large MCMC objects.
+#' @param n.eff Logical specifying whether to calculate and display the number of effective samples for each parameter. \code{n.eff = FALSE} will return NAs for this column in the summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large MCMC objects.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
@@ -46,6 +46,7 @@
 #' MCMCsummary(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
 #'
 #' @export
+
 
 
 MCMCsummary <- function(object,
@@ -276,12 +277,20 @@ MCMCsummary <- function(object,
       bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
       bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
 
-      if(Rhat == TRUE)
-      {
-        r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
-      }else{
-        r_hat <- rep(NA, NCOL(dsort))
-      }
+
+        if(Rhat == TRUE)
+        {
+          if(length(dsort) > 1)
+          {
+            r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
+          }else{
+            warning('Rhat statistic cannot be calculated with one chain. NAs inserted.')
+            r_hat <- rep(NA, NCOL(dsort))
+          }
+        }else{
+          r_hat <- rep(NA, NCOL(dsort))
+        }
+
 
       if(n.eff == TRUE)
       {
