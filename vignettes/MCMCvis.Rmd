@@ -70,6 +70,17 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
+Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively. This can greatly increase the speed of the function with very large MCMC objects.
+
+```{r}
+MCMCsummary(MCMC_data, 
+          params = 'alpha',
+          Rhat = FALSE,
+          n.eff = FALSE)
+```
+
+&nbsp;
+
 ## MCMCtrace
 
 `MCMCtrace` is used to create trace and density plots for MCMC output. This is useful for diagnostic purposes. Particular parameters can also be specified, as with `MCMCsummary`.
