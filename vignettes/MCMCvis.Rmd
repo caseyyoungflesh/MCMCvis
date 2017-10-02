@@ -81,6 +81,19 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
+The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derives metrics of interest on posterior output.
+
+```{r}
+MCMCsummary(MCMC_data, 
+          params = 'alpha',
+          Rhat = TRUE,
+          n.eff = TRUE,
+          func = function(x) quantile(x, probs = c(0.01, 0.99)))
+```
+
+&nbsp;
+
+
 ## MCMCtrace
 
 `MCMCtrace` is used to create trace and density plots for MCMC output. This is useful for diagnostic purposes. Particular parameters can also be specified, as with `MCMCsummary`. Output is written to PDF by default to enable more efficient review of posteriors - this also reduces computation time. PDF output is particularly recommended for large numbers of parameters. `pdf = FALSE` can be used to prevent output to PDF.
