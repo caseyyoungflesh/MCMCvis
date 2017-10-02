@@ -1,6 +1,6 @@
 #' Summary function for MCMC output
 #'
-#' Extract summary information from MCMC output (mean, median, quantiles, Gelman-Rubin convergence statistic, and number of effective samples)
+#' Extract summary information from MCMC output (mean, median, quantiles, Gelman-Rubin convergence statistic, number of effective samples, and specified custom metrics)
 #' for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
@@ -20,6 +20,8 @@
 #'
 #' @param n.eff Logical specifying whether to calculate and display the number of effective samples for each parameter. Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.
 #'
+#' @param func Input is a function, to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).
+#'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
@@ -30,7 +32,7 @@
 #'
 #' For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package.
 #'
-#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), and number of effective samples) for specified parameters.
+#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
 #'
 #'
 #' @section References:
