@@ -5,7 +5,7 @@
 \title{Summary function for MCMC output}
 \usage{
 MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE, digits = 2,
-  Rhat = TRUE, n.eff = TRUE)
+  Rhat = TRUE, n.eff = FALSE, func = NULL)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -22,15 +22,17 @@ Default \code{'all'} returns all parameters in summary output.}
 
 Default is \code{digits = 2}.}
 
-\item{Rhat}{Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). \code{Rhat = FALSE} will return NAs for this column in the summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large MCMC objects.}
+\item{Rhat}{Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). Values near 1 suggest convergence (Brooks and Gelman 1998). \code{Rhat = FALSE} will prevent display of this column in summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.}
 
-\item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. \code{n.eff = FALSE} will return NAs for this column in the summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large MCMC objects.}
+\item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.}
+
+\item{func}{Input is a function, to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).}
 }
 \value{
-Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), and number of effective samples) for specified parameter.
+Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
 }
 \description{
-Extract summary information from MCMC output (mean, median, quantiles, and Gelman-Rubin convergence statistic)
+Extract summary information from MCMC output (mean, median, quantiles, Gelman-Rubin convergence statistic, number of effective samples, and specified custom metrics)
 for specific parameters of interest.
 }
 \section{Details}{
@@ -45,6 +47,14 @@ For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calcu
 \code{gelman.diag} function in the \code{coda} package.
 
 For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package.
+}
+
+\section{References}{
+
+
+Brooks, S. P., and A. Gelman. 1998. General methods for monitoring convergence of iterative simulations. Journal of Computational and Graphical Statistics 7:434.
+
+Kruschke, J. 2014. Doing Bayesian data analysis: A tutorial with R, JAGS, and Stan. Academic Press.
 }
 
 \examples{
