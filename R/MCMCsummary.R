@@ -249,34 +249,22 @@ MCMCsummary <- function(object,
     if(Rhat == TRUE)
     {
       rh <- round(object$BUGSoutput$summary[,8], digits = digits)
+      x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits), rh)
+      colnames(x)[6] <- c('Rhat')
+    }else{
+      x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits))
     }
 
     if(n.eff == TRUE)
     {
       nf <- round(object$BUGSoutput$summary[,9], digits = 0)
+      x2 <- cbind(x, nf)
+      colnames(x2)[ncol(x2)] <- c('n.eff')
+    }else{
+      x2 <- x
     }
 
-    if(Rhat == TRUE & n.eff == TRUE)
-    {
-      x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits), rh, nf)
-      colnames(x)[6:7] <- c('Rhat', 'n.eff')
-    }
-    if(Rhat == TRUE & n.eff == FALSE)
-    {
-      x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits), rh)
-      colnames(x)[6] <- c('Rhat')
-    }
-    if(Rhat == FALSE & n.eff == TRUE)
-    {
-      x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits), nf)
-      colnames(x)[6] <- c('n.eff')
-    }
-    if(Rhat == FALSE & n.eff == FALSE)
-    {
-      x <- round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits)
-    }
-
-    mcmc_summary <- x[f_ind,]
+    mcmc_summary <- x2[f_ind,]
 
   }else{
 
@@ -297,7 +285,6 @@ MCMCsummary <- function(object,
       bind_med <- round(apply(ch_bind,2, stats::median), digits = digits)
       bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
 
-
       if(Rhat == TRUE)
       {
         if(length(dsort) > 1)
@@ -307,33 +294,23 @@ MCMCsummary <- function(object,
           warning('Rhat statistic cannot be calculated with one chain. NAs inserted.')
           r_hat <- rep(NA, NCOL(dsort))
         }
+        x <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(x) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
+      }else{
+        x <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)
+        colnames(x) <- c('mean', 'sd', '2.5%','50%','97.5%')
       }
 
       if(n.eff == TRUE)
       {
         bind_neff <- round(coda::effectiveSize(dsort), digits = 0)
+        x2 <- cbind(x, bind_neff)
+        colnames(x2)[ncol(x2)] <- c('n.eff')
+      }else{
+        x2 <- x
       }
 
-      if(Rhat == TRUE & n.eff == TRUE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat, bind_neff)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat', 'n.eff')
-      }
-      if(Rhat == TRUE & n.eff == FALSE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
-      }
-      if(Rhat == FALSE & n.eff == TRUE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, bind_neff)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'n.eff')
-      }
-      if(Rhat == FALSE & n.eff == FALSE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%')
-      }
+      mcmc_summary <- x2
     }
 
     if(typeof(object2) == 'double')
@@ -355,34 +332,24 @@ MCMCsummary <- function(object,
       {
         warning('Rhat statistic cannot be calculated without individual chains. NAs inserted.')
         r_hat <- rep(NA, NCOL(dsort))
+        x <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
+        colnames(x) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
+      }else{
+        x <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)
+        colnames(x) <- c('mean', 'sd', '2.5%','50%','97.5%')
       }
 
       if(n.eff == TRUE)
       {
         warning('Number of effective samples cannot be calculated without individual chains. NAs inserted.')
         bind_neff <- rep(NA, NCOL(dsort))
+        x2 <- cbind(x, bind_neff)
+        colnames(x2)[ncol(x2)] <- c('n.eff')
+      }else{
+        x2 <- x
       }
 
-      if(Rhat == TRUE & n.eff == TRUE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat, bind_neff)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat', 'n.eff')
-      }
-      if(Rhat == TRUE & n.eff == FALSE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, r_hat)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'Rhat')
-      }
-      if(Rhat == FALSE & n.eff == TRUE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI, bind_neff)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%', 'n.eff')
-      }
-      if(Rhat == FALSE & n.eff == FALSE)
-      {
-        mcmc_summary <- cbind(bind_mn, bind_sd, bind_LCI, bind_med, bind_UCI)
-        colnames(mcmc_summary) <- c('mean', 'sd', '2.5%','50%','97.5%')
-      }
+      mcmc_summary <- x2
     }
   }
   return(mcmc_summary)
