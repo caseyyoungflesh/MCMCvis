@@ -61,7 +61,8 @@ MCMCsummary <- function(object,
                       ISB = TRUE,
                       digits = 2,
                       Rhat = TRUE,
-                      n.eff = FALSE)
+                      n.eff = FALSE,
+                      func = NULL)
 {
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
@@ -250,7 +251,7 @@ MCMCsummary <- function(object,
     {
       rh <- round(object$BUGSoutput$summary[,8], digits = digits)
       x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits), rh)
-      colnames(x)[6] <- c('Rhat')
+      colnames(x)[6] <- 'Rhat'
     }else{
       x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits))
     }
@@ -259,12 +260,36 @@ MCMCsummary <- function(object,
     {
       nf <- round(object$BUGSoutput$summary[,9], digits = 0)
       x2 <- cbind(x, nf)
-      colnames(x2)[ncol(x2)] <- c('n.eff')
+      colnames(x2)[ncol(x2)] <- 'n.eff'
     }else{
       x2 <- x
     }
 
-    mcmc_summary <- x2[f_ind,]
+    x2 <- x2[f_ind,]
+
+    if(!is.null(func))
+    {
+      ch_bind <- object$BUGSoutput$sims.matrix
+
+      tmp <- apply(ch_bind, 2, func)
+
+      if(!is.null(dim(tmp)) & NROW(tmp) > 1)
+      {
+        x3 <- x2
+        for (i in 1:NROW(tmp))
+        {
+          x3 <- cbind(x3, tmp[i,])
+          colnames(x3)[ncol(x3)] <- 'func'
+        }
+      }else{
+        x3 <- cbind(x2, tmp)
+        colnames(x3)[ncol(x3)] <- 'func'
+      }
+    }else{
+      x3 <- x2
+    }
+
+    mcmc_summary <- x3
 
   }else{
 
@@ -305,12 +330,32 @@ MCMCsummary <- function(object,
       {
         bind_neff <- round(coda::effectiveSize(dsort), digits = 0)
         x2 <- cbind(x, bind_neff)
-        colnames(x2)[ncol(x2)] <- c('n.eff')
+        colnames(x2)[ncol(x2)] <- 'n.eff'
       }else{
         x2 <- x
       }
 
-      mcmc_summary <- x2
+      if(!is.null(func))
+      {
+        tmp <- apply(ch_bind, 2, func)
+
+        if(!is.null(dim(tmp)) & NROW(tmp) > 1)
+        {
+          x3 <- x2
+          for (i in 1:NROW(tmp))
+          {
+            x3 <- cbind(x3, tmp[i,])
+            colnames(x3)[ncol(x3)] <- 'func'
+          }
+        }else{
+          x3 <- cbind(x2, tmp)
+          colnames(x3)[ncol(x3)] <- 'func'
+        }
+      }else{
+        x3 <- x2
+      }
+
+      mcmc_summary <- x3
     }
 
     if(typeof(object2) == 'double')
@@ -344,12 +389,32 @@ MCMCsummary <- function(object,
         warning('Number of effective samples cannot be calculated without individual chains. NAs inserted.')
         bind_neff <- rep(NA, NCOL(dsort))
         x2 <- cbind(x, bind_neff)
-        colnames(x2)[ncol(x2)] <- c('n.eff')
+        colnames(x2)[ncol(x2)] <- 'n.eff'
       }else{
         x2 <- x
       }
 
-      mcmc_summary <- x2
+      if(!is.null(func))
+      {
+        tmp <- apply(ch_bind, 2, func)
+
+        if(!is.null(dim(tmp)) & NROW(tmp) > 1)
+        {
+          x3 <- x2
+          for (i in 1:NROW(tmp))
+          {
+            x3 <- cbind(x3, tmp[i,])
+            colnames(x3)[ncol(x3)] <- 'func'
+          }
+        }else{
+          x3 <- cbind(x2, tmp)
+          colnames(x3)[ncol(x3)] <- 'func'
+        }
+      }else{
+        x3 <- x2
+      }
+
+      mcmc_summary <- x3
     }
   }
   return(mcmc_summary)
