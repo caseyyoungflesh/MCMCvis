@@ -1,6 +1,6 @@
 #' Summary function for MCMC output
 #'
-#' Extract summary information from MCMC output (mean, median, quantiles, and Gelman-Rubin convergence statistic)
+#' Extract summary information from MCMC output (mean, median, quantiles, Gelman-Rubin convergence statistic, and number of effective samples)
 #' for specific parameters of interest.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
@@ -16,9 +16,9 @@
 #'
 #' Default is \code{digits = 2}.
 #'
-#' @param Rhat Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). \code{Rhat = FALSE} will return NAs for this column in the summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large MCMC objects.
+#' @param Rhat Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). Values near 1 suggest convergence (Brooks and Gelman 1998). \code{Rhat = FALSE} will prevent display of this column in summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large MCMC objects.
 #'
-#' @param n.eff Logical specifying whether to calculate and display the number of effective samples for each parameter. \code{n.eff = FALSE} will return NAs for this column in the summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large MCMC objects.
+#' @param n.eff Logical specifying whether to calculate and display the number of effective samples for each parameter. Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large MCMC objects.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
@@ -30,7 +30,14 @@
 #'
 #' For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package.
 #'
-#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), and number of effective samples) for specified parameter.
+#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), and number of effective samples) for specified parameters.
+#'
+#'
+#' @section References:
+#'
+#' Brooks, S. P., and A. Gelman. 1998. General methods for monitoring convergence of iterative simulations. Journal of Computational and Graphical Statistics 7:434.
+#'
+#' Kruschke, J. 2014. Doing Bayesian data analysis: A tutorial with R, JAGS, and Stan. Academic Press.
 #'
 #' @examples
 #' #Load data
@@ -55,7 +62,7 @@ MCMCsummary <- function(object,
                       ISB = TRUE,
                       digits = 2,
                       Rhat = TRUE,
-                      n.eff = TRUE)
+                      n.eff = FALSE)
 {
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
