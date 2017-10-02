@@ -70,30 +70,31 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively. This can greatly increase the speed of the function with very large MCMC objects.
+Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively (default for `Rhat` and `n.eff` are `TRUE` and `FALSE`, respectively). Specifying `FALSE` can greatly increase function speed with very large `mcmc.list` objects. Values for Rhat near 1 suggest convergence (Brooks and Gelman 1998). Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates.
 
 ```{r}
 MCMCsummary(MCMC_data, 
           params = 'alpha',
-          Rhat = FALSE,
-          n.eff = FALSE)
+          Rhat = TRUE,
+          n.eff = TRUE)
 ```
 
 &nbsp;
 
 ## MCMCtrace
 
-`MCMCtrace` is used to create trace and density plots for MCMC output. This is useful for diagnostic purposes. Particular parameters can also be specified, as with `MCMCsummary`.
+`MCMCtrace` is used to create trace and density plots for MCMC output. This is useful for diagnostic purposes. Particular parameters can also be specified, as with `MCMCsummary`. Output is written to PDF by default to enable more efficient review of posteriors - this also reduces computation time. PDF output is particularly recommended for large numbers of parameters. `pdf = FALSE` can be used to prevent output to PDF.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
         params = c('beta[1]', 'beta[2]', 'beta[3]'),
-        ISB = FALSE)
+        ISB = FALSE,
+        pdf = FALSE)
 ```
 
 &nbsp;
 
-Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputs both trace and density plots. Individual chains for the density plot can be output using the `ind` argument. Output is written to PDF by default to enable mroe efficient review of posteriors - this also reduces computation time. PDF output is particularly recommended for large numbers of parameters.
+Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputs both trace and density plots. Individual chains for the density plot can be output using the `ind` argument.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
@@ -116,7 +117,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-`iter` denotes how many iterations shoudl be plotted for the chain the trace and density plots. The default is 5000, meaning that the last 5000 iterations of each chain are plotted. Remember, this is the final posterior chain, not including the specified burn-in (specified when the model was run). If less than 5000 iterations are run, the full number of iterations will be plotted.
+`iter` denotes how many iterations should be plotted for the chain the trace and density plots. The default is 5000, meaning that the last 5000 iterations of each chain are plotted. Remember, this is the final posterior chain, not including the specified burn-in (specified when the model was run). If less than 5000 iterations are run, the full number of iterations will be plotted.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
@@ -181,7 +182,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-The orientation of the plot can also be change using the `horiz` argument. `ylab` is then used to specify an alternaive label on the 'estimate axis'.
+The orientation of the plot can also be change using the `horiz` argument. `ylab` is then used to specify an alternative label on the 'estimate axis'.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
@@ -211,6 +212,15 @@ MCMCplot(MCMC_data,
        ax_sz = 4,
        main_text_sz = 2)
 ```
+
+
+## References
+
+Brooks, S. P., and A. Gelman. 1998. General methods for monitoring convergence of iterative simulations. Journal of Computational and Graphical Statistics 7:434.
+
+Kruschke, J. 2014. Doing Bayesian data analysis: A tutorial with R, JAGS, and Stan. Academic Press.
+
+&nbsp;
 
 **For more information see `?MCMCplot`**
 
