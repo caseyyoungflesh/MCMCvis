@@ -251,7 +251,7 @@ MCMCsummary <- function(object,
   {
     if(Rhat == TRUE)
     {
-      rh <- round(object$BUGSoutput$summary[,8], digits = digits)
+      rh <- round(object$BUGSoutput$summary[,8], digits = 2)
       x <- cbind(round(object$BUGSoutput$summary[,c(1, 2, 3, 5, 7)], digits = digits), rh)
       colnames(x)[6] <- 'Rhat'
     }else{
@@ -316,7 +316,7 @@ MCMCsummary <- function(object,
       {
         if(length(dsort) > 1)
         {
-          r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = digits)
+          r_hat <- round(coda::gelman.diag(dsort, multivariate = FALSE)$psrf[,1], digits = 2)
         }else{
           warning('Rhat statistic cannot be calculated with one chain. NAs inserted.')
           r_hat <- rep(NA, NCOL(dsort))
