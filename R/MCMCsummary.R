@@ -12,7 +12,7 @@
 #'
 #' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
 #'
-#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified number of digits.
+#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified number of digits (except for Rhat which is always rounded to 2 digits).
 #'
 #' Default is \code{digits = 2}.
 #'
@@ -20,7 +20,9 @@
 #'
 #' @param n.eff Logical specifying whether to calculate and display the number of effective samples for each parameter. Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.
 #'
-#' @param func Input is a function, to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).
+#' @param func Function to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).
+#'
+#' @param func_name Character string (or vector of character strings) specifying labels for output from \code{func} argument. If \code{func_name} is not specified, columns with \code{func} argument will be labeled 'func'.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
@@ -64,7 +66,8 @@ MCMCsummary <- function(object,
                       digits = 2,
                       Rhat = TRUE,
                       n.eff = FALSE,
-                      func = NULL)
+                      func = NULL,
+                      func_name = NULL)
 {
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
@@ -281,11 +284,29 @@ MCMCsummary <- function(object,
         for (i in 1:NROW(tmp))
         {
           x3 <- cbind(x3, tmp[i,])
-          colnames(x3)[ncol(x3)] <- 'func'
+          if (!is.null(func_name))
+          {
+            if (length(func_name) != NROW(tmp))
+            {
+              stop('length(func_name) must equal number of func outputs')
+            }
+            colnames(x3)[ncol(x2) + i] <- func_name[i]
+          }else{
+            colnames(x3)[ncol(x2) + i] <- 'func'
+          }
         }
       }else{
         x3 <- cbind(x2, tmp)
-        colnames(x3)[ncol(x3)] <- 'func'
+        if (!is.null(func_name))
+        {
+          if (length(func_name) > 1)
+          {
+            stop('length(func_name) must equal number of func outputs')
+          }
+          colnames(x3)[ncol(x3)] <- func_name
+        }else{
+          colnames(x3)[ncol(x3)] <- 'func'
+        }
       }
     }else{
       x3 <- x2
@@ -347,11 +368,29 @@ MCMCsummary <- function(object,
           for (i in 1:NROW(tmp))
           {
             x3 <- cbind(x3, tmp[i,])
-            colnames(x3)[ncol(x3)] <- 'func'
+            if (!is.null(func_name))
+            {
+              if (length(func_name) != NROW(tmp))
+              {
+                stop('length(func_name) must equal number of func outputs')
+              }
+              colnames(x3)[ncol(x2) + i] <- func_name[i]
+            }else{
+              colnames(x3)[ncol(x2) + i] <- 'func'
+            }
           }
         }else{
           x3 <- cbind(x2, tmp)
-          colnames(x3)[ncol(x3)] <- 'func'
+          if (!is.null(func_name))
+          {
+            if (length(func_name) > 1)
+            {
+              stop('length(func_name) must equal number of func outputs')
+            }
+            colnames(x3)[ncol(x3)] <- func_name
+          }else{
+            colnames(x3)[ncol(x3)] <- 'func'
+          }
         }
       }else{
         x3 <- x2
@@ -406,11 +445,29 @@ MCMCsummary <- function(object,
           for (i in 1:NROW(tmp))
           {
             x3 <- cbind(x3, tmp[i,])
-            colnames(x3)[ncol(x3)] <- 'func'
+            if (!is.null(func_name))
+            {
+              if (length(func_name) != NROW(tmp))
+              {
+                stop('length(func_name) must equal number of func outputs')
+              }
+              colnames(x3)[ncol(x2) + i] <- func_name[i]
+            }else{
+              colnames(x3)[ncol(x2) + i] <- 'func'
+            }
           }
         }else{
           x3 <- cbind(x2, tmp)
-          colnames(x3)[ncol(x3)] <- 'func'
+          if (!is.null(func_name))
+          {
+            if (length(func_name) > 1)
+            {
+              stop('length(func_name) must equal number of func outputs')
+            }
+            colnames(x3)[ncol(x3)] <- func_name
+          }else{
+            colnames(x3)[ncol(x3)] <- 'func'
+          }
         }
       }else{
         x3 <- x2
