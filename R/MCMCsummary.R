@@ -273,7 +273,7 @@ MCMCsummary <- function(object,
     {
       ch_bind <- object$BUGSoutput$sims.matrix
 
-      tmp <- apply(ch_bind, 2, func)
+      tmp <- round(apply(ch_bind, 2, func), digits = digits)
 
       if(!is.null(dim(tmp)) & NROW(tmp) > 1)
       {
@@ -339,7 +339,7 @@ MCMCsummary <- function(object,
 
       if(!is.null(func))
       {
-        tmp <- apply(ch_bind, 2, func)
+        tmp <- round(apply(ch_bind, 2, func), digits = digits)
 
         if(!is.null(dim(tmp)) & NROW(tmp) > 1)
         {
@@ -398,7 +398,7 @@ MCMCsummary <- function(object,
 
       if(!is.null(func))
       {
-        tmp <- apply(ch_bind, 2, func)
+        tmp <- round(apply(ch_bind, 2, func), digits = digits)
 
         if(!is.null(dim(tmp)) & NROW(tmp) > 1)
         {
