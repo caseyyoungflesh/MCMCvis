@@ -88,7 +88,8 @@ MCMCsummary(MCMC_data,
           params = 'alpha',
           Rhat = TRUE,
           n.eff = TRUE,
-          func = function(x) quantile(x, probs = c(0.01, 0.99)))
+          func = function(x) quantile(x, probs = c(0.01, 0.99)),
+          func_name = c('1%', '99%'))
 ```
 
 &nbsp;
