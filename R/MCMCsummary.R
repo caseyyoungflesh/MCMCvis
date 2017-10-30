@@ -59,22 +59,6 @@
 #' @export
 
 
-object <- out_rjags
-object <- out_R2jags
-params = 'alpha'
-excl = NULL
-ISB = TRUE
-digits = 2
-Rhat = TRUE
-n.eff = FALSE
-func = mean
-func_name = 'MEAN'
-
-#ln:295
-
-
-
-
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
@@ -286,11 +270,16 @@ MCMCsummary <- function(object,
       x2 <- x
     }
 
-    x2 <- x2[f_ind,]
+    x2 <- x2[f_ind, , drop = FALSE]
 
     if(!is.null(func))
     {
-      ch_bind <- object$BUGSoutput$sims.matrix[,f_ind]
+      if(length(f_ind) > 1)
+      {
+        ch_bind <- object$BUGSoutput$sims.matrix[,f_ind]
+      }else{
+        ch_bind <- as.matrix(object$BUGSoutput$sims.matrix[,f_ind], ncol = 1)
+      }
 
       tmp <- round(apply(ch_bind, 2, func), digits = digits)
 
@@ -339,8 +328,8 @@ MCMCsummary <- function(object,
         dsort <- do.call(coda::mcmc.list, temp[,f_ind])
         ch_bind <- do.call('rbind', dsort)
       }else{
-        dsort <- do.call(coda::mcmc.list, temp[,c(f_ind, f_ind)])
-        ch_bind <- do.call('rbind', dsort)
+        dsort <- do.call(coda::mcmc.list, temp[,f_ind])
+        ch_bind <- as.matrix(do.call(coda::mcmc.list, temp[,f_ind]), ncol = 1)
       }
 
       bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
@@ -412,12 +401,9 @@ MCMCsummary <- function(object,
         x3 <- x2
       }
 
-      if (length(f_ind) > 1)
-      {
-        mcmc_summary <- x3
-      }else{
-        mcmc_summary <- x3[1, , drop = FALSE]
-      }
+      #needed when length(f_ind) == 1
+      rownames(x3) <- colnames(temp[[1]])[f_ind]
+      mcmc_summary <- x3
     }
 
     if(typeof(object2) == 'double')
@@ -426,7 +412,7 @@ MCMCsummary <- function(object,
       {
         dsort <- temp[,f_ind]
       }else{
-        dsort <- temp[,c(f_ind, f_ind)]
+        dsort <- as.matrix(temp[,f_ind], ncol = 1)
       }
 
       bind_mn <- round(apply(dsort, 2, mean), digits = digits)
@@ -494,12 +480,9 @@ MCMCsummary <- function(object,
         x3 <- x2
       }
 
-      if (length(f_ind) > 1)
-      {
-        mcmc_summary <- x3
-      }else{
-        mcmc_summary <- x3[1, , drop = FALSE]
-      }
+      #needed when length(f_ind) == 1
+      rownames(x3) <- colnames(temp)[f_ind]
+      mcmc_summary <- x3
     }
   }
   return(mcmc_summary)
