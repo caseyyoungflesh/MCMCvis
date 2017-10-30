@@ -59,6 +59,22 @@
 #' @export
 
 
+object <- out_rjags
+object <- out_R2jags
+params = 'alpha'
+excl = NULL
+ISB = TRUE
+digits = 2
+Rhat = TRUE
+n.eff = FALSE
+func = mean
+func_name = 'MEAN'
+
+#ln:295
+
+
+
+
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
@@ -274,7 +290,7 @@ MCMCsummary <- function(object,
 
     if(!is.null(func))
     {
-      ch_bind <- object$BUGSoutput$sims.matrix
+      ch_bind <- object$BUGSoutput$sims.matrix[,f_ind]
 
       tmp <- round(apply(ch_bind, 2, func), digits = digits)
 
@@ -396,7 +412,12 @@ MCMCsummary <- function(object,
         x3 <- x2
       }
 
-      mcmc_summary <- x3
+      if (length(f_ind) > 1)
+      {
+        mcmc_summary <- x3
+      }else{
+        mcmc_summary <- x3[1, , drop = FALSE]
+      }
     }
 
     if(typeof(object2) == 'double')
@@ -437,7 +458,7 @@ MCMCsummary <- function(object,
 
       if(!is.null(func))
       {
-        tmp <- round(apply(ch_bind, 2, func), digits = digits)
+        tmp <- round(apply(dsort, 2, func), digits = digits)
 
         if(!is.null(dim(tmp)) & NROW(tmp) > 1)
         {
@@ -473,7 +494,12 @@ MCMCsummary <- function(object,
         x3 <- x2
       }
 
-      mcmc_summary <- x3
+      if (length(f_ind) > 1)
+      {
+        mcmc_summary <- x3
+      }else{
+        mcmc_summary <- x3[1, , drop = FALSE]
+      }
     }
   }
   return(mcmc_summary)
