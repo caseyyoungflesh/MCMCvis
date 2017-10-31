@@ -5,7 +5,7 @@
 \title{Summary function for MCMC output}
 \usage{
 MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE, digits = 2,
-  Rhat = TRUE, n.eff = FALSE, func = NULL)
+  Rhat = TRUE, n.eff = FALSE, func = NULL, func_name = NULL)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -18,7 +18,7 @@ Default \code{'all'} returns all parameters in summary output.}
 
 \item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.}
 
-\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified number of digits.
+\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified number of digits (except for Rhat which is always rounded to 2 digits).
 
 Default is \code{digits = 2}.}
 
@@ -26,7 +26,9 @@ Default is \code{digits = 2}.}
 
 \item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.}
 
-\item{func}{Input is a function, to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).}
+\item{func}{Function to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).}
+
+\item{func_name}{Character string (or vector of character strings) specifying labels for output from \code{func} argument. If \code{func_name} is not specified, columns with \code{func} argument will be labeled 'func'.}
 }
 \value{
 Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.

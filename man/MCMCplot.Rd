@@ -7,7 +7,7 @@
 MCMCplot(object, params = "all", excl = NULL, ISB = TRUE, ref = 0,
   ref_ovl = TRUE, rank = FALSE, horiz = TRUE, xlim, ylim, xlab, ylab,
   main, labels, labels_sz = 1.2, med_sz = 1.5, thick_sz = 5,
-  thin_sz = 2, ax_sz = 3, x_axis_text_sz = 1.3, x_tick_text_sz = 1.2,
+  thin_sz = 2, ax_sz = 3, axis_text_sz = 1.3, tick_text_sz = 1.2,
   main_text_sz = 1.2, tick_pos, mar = c(5.1, 4.1, 4.1, 2.1))
 }
 \arguments{
@@ -63,9 +63,9 @@ Option \code{NULL} will return plot with no labels on axis.}
 
 \item{ax_sz}{Number specifying thickness of axis and ticks.}
 
-\item{x_axis_text_sz}{Number specifying size of text for axis label.}
+\item{axis_text_sz}{Number specifying size of text for axis label.}
 
-\item{x_tick_text_sz}{Number specifying size of text for tick labels on axis.}
+\item{tick_text_sz}{Number specifying size of text for tick labels on axis.}
 
 \item{main_text_sz}{Number specifying size of text for main title.}
 
