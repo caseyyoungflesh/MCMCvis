@@ -76,11 +76,11 @@ Option \code{NULL} will return plot with no labels on axis.}
 Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.}
 }
 \description{
-Visualize posterior distributions from MCMC output for specific parameters of interest using caterpillar plots. Color of median dot represents the overlap of the posterior distrubtion with 0 (or other specified value).
+Visualize posterior distributions from MCMC output for specific parameters of interest using caterpillar plots. Color of median dot represents the overlap of the posterior distribution with 0 (or other specified value).
 }
 \section{Details}{
 
-Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' grey circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black circles.
+Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black circles.
 
 \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 }
