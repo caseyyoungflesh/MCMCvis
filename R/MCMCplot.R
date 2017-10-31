@@ -100,6 +100,27 @@
 #' @export
 #'
 
+
+object <- MCMC_data
+params = 'all'
+excl = NULL
+ISB = TRUE
+ref = 0
+ref_ovl = TRUE
+rank = FALSE
+horiz = TRUE
+labels_sz = 1.2
+med_sz = 1.5
+thick_sz = 5
+thin_sz = 2
+ax_sz = 3
+x_axis_text_sz = 1.3
+x_tick_text_sz = 1.2
+main_text_sz = 1.2
+mar = c(5.1, 4.1, 4.1, 2.1)
+
+
+
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -385,24 +406,42 @@ MCMCplot <- function(object,
       }
     }
 
+    #to determine margins for plot
     #0.2 inches per line - mar measured in lines
     m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
-    graphics::par(mar = c((m_char + (mar[1] - 4)), mar[2]+1, mar[3] - 1, mar[4]))
-
-    #plot blank plot
+    #blank plot
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
-                   ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = ylab,
+                   ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
                    xlab = NA, cex.lab = x_axis_text_sz)
+    #create invisible ticks to determine where to put y-axis label
+    tickp <- graphics::axis(2, lwd.ticks = ax_sz, labels = FALSE,
+                            at = tick_pos, lwd = ax_sz,
+                            cex.axis = x_tick_text_sz, las = 1, col = 'white',
+                            col.ticks = 'white')
+    #determine how long labels are
+    ml_tickp <- max(strwidth(tickp, cex = x_tick_text_sz, units = 'in'))
+    #5 lines/inch
+    ll <- 1.8 + 5 * ml_tickp
+    #set plot margins according to labels
+    graphics::par(mar = c((m_char + (mar[1] - 4)), mar[2]+1+ll-3, mar[3] - 2, mar[4]))
 
-    #title
-    graphics::title(main, cex.main = main_text_sz)
-    #right axis params
-    graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
-                   at = tick_pos, lwd = ax_sz)
-    #left axis params
+    #new blank plot
+    graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
+                   ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
+                   xlab = NA, cex.lab = x_axis_text_sz)
+    #ticks
     graphics::axis(2, lwd.ticks = ax_sz, labels = TRUE,
                    at = tick_pos, lwd = ax_sz,
                    cex.axis = x_tick_text_sz, las = 1)
+    #y-axis label
+    graphics::title(ylab = ylab, cex.lab = x_axis_text_sz, line = ll)
+
+    #title
+    graphics::title(main, cex.main = main_text_sz, line = 0)
+    #right axis params
+    graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
+                   at = tick_pos, lwd = ax_sz)
+
     #bottom axis params (labels)
     graphics::axis(1, at = (len:1) + 0.013, tick = FALSE,
                    labels = labs, las = 2, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
