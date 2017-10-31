@@ -49,9 +49,9 @@
 #'
 #' @param ax_sz Number specifying thickness of axis and ticks.
 #'
-#' @param x_axis_text_sz Number specifying size of text for axis label.
+#' @param axis_text_sz Number specifying size of text for axis label.
 #'
-#' @param x_tick_text_sz Number specifying size of text for tick labels on axis.
+#' @param tick_text_sz Number specifying size of text for tick labels on axis.
 #'
 #' @param main_text_sz Number specifying size of text for main title.
 #'
@@ -101,26 +101,6 @@
 #'
 
 
-object <- MCMC_data
-params = 'all'
-excl = NULL
-ISB = TRUE
-ref = 0
-ref_ovl = TRUE
-rank = FALSE
-horiz = TRUE
-labels_sz = 1.2
-med_sz = 1.5
-thick_sz = 5
-thin_sz = 2
-ax_sz = 3
-x_axis_text_sz = 1.3
-x_tick_text_sz = 1.2
-main_text_sz = 1.2
-mar = c(5.1, 4.1, 4.1, 2.1)
-
-
-
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -140,8 +120,8 @@ MCMCplot <- function(object,
                    thick_sz = 5,
                    thin_sz = 2,
                    ax_sz = 3,
-                   x_axis_text_sz = 1.3,
-                   x_tick_text_sz = 1.2,
+                   axis_text_sz = 1.3,
+                   tick_text_sz = 1.2,
                    main_text_sz = 1.2,
                    tick_pos,
                    mar = c(5.1, 4.1, 4.1, 2.1))
@@ -157,7 +137,7 @@ MCMCplot <- function(object,
   ref_col = 'gray60' #color used for 0 line
   thin = 95 #CI for thin line
   thick = 50 #CI for thick line
-  PL_SC = 0.4 #how much whitespace flanks plotted estimates
+  PL_SC = 0.3 #how much whitespace flanks plotted estimates
 
   # Process data ------------------------------------------------------------
 
@@ -291,7 +271,7 @@ MCMCplot <- function(object,
     #plot blank plot
     graphics::plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
          ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-         xlab = xlab, cex.lab = x_axis_text_sz) #cex.lab is axis label
+         xlab = xlab, cex.lab = axis_text_sz) #cex.lab is axis label
     #lab #number of ticks to plot on each axis
 
     #title
@@ -302,7 +282,7 @@ MCMCplot <- function(object,
     #bottom axis params
     graphics::axis(1, lwd.ticks = ax_sz, labels = TRUE,
          at = tick_pos, lwd = ax_sz,
-         cex.axis = x_tick_text_sz) #bottom axis
+         cex.axis = tick_text_sz) #bottom axis
     #left axis params (labels)
     graphics::axis(2, at = ((1:len)+(0.0015*len)), tick = FALSE,
          labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
@@ -413,33 +393,33 @@ MCMCplot <- function(object,
     grDevices::pdf(file = NULL)
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = x_axis_text_sz)
+                   xlab = NA, cex.lab = axis_text_sz)
     #create invisible ticks to determine where to put y-axis label
     tickp <- graphics::axis(2, lwd.ticks = ax_sz, labels = FALSE,
                             at = tick_pos, lwd = ax_sz,
-                            cex.axis = x_tick_text_sz, las = 1, col = 'white',
+                            cex.axis = tick_text_sz, las = 1, col = 'white',
                             col.ticks = 'white')
     invisible(grDevices::dev.off())
     #determine how long labels are
-    ml_tickp <- max(graphics::strwidth(tickp, cex = x_tick_text_sz, units = 'in'))
+    ml_tickp <- max(graphics::strwidth(tickp, cex = tick_text_sz, units = 'in'))
     #5 lines/inch
     ll <- 1.8 + 5 * ml_tickp
     #set plot margins according to labels
-    graphics::par(mar = c((m_char + (mar[1] - 4)), mar[2]+1+ll-3, mar[3] - 2, mar[4]))
+    graphics::par(mar = c((m_char + (mar[1] - 4)), mar[2]+1+ll-3, mar[3] - 1.5, mar[4]))
 
     #new blank plot
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = x_axis_text_sz)
+                   xlab = NA, cex.lab = axis_text_sz)
     #ticks
     graphics::axis(2, lwd.ticks = ax_sz, labels = TRUE,
                    at = tick_pos, lwd = ax_sz,
-                   cex.axis = x_tick_text_sz, las = 1)
+                   cex.axis = tick_text_sz, las = 1)
     #y-axis label
-    graphics::title(ylab = ylab, cex.lab = x_axis_text_sz, line = ll)
+    graphics::title(ylab = ylab, cex.lab = axis_text_sz, line = ll)
 
     #title
-    graphics::title(main, cex.main = main_text_sz, line = 0)
+    graphics::title(main, cex.main = main_text_sz, line = 0.5)
     #right axis params
     graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
                    at = tick_pos, lwd = ax_sz)
