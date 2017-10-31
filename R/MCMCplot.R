@@ -409,7 +409,8 @@ MCMCplot <- function(object,
     #to determine margins for plot
     #0.2 inches per line - mar measured in lines
     m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
-    #blank plot
+    #blank plot - do not display
+    grDevices::pdf(file = NULL)
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
                    xlab = NA, cex.lab = x_axis_text_sz)
@@ -418,8 +419,9 @@ MCMCplot <- function(object,
                             at = tick_pos, lwd = ax_sz,
                             cex.axis = x_tick_text_sz, las = 1, col = 'white',
                             col.ticks = 'white')
+    invisible(grDevices::dev.off())
     #determine how long labels are
-    ml_tickp <- max(strwidth(tickp, cex = x_tick_text_sz, units = 'in'))
+    ml_tickp <- max(graphics::strwidth(tickp, cex = x_tick_text_sz, units = 'in'))
     #5 lines/inch
     ll <- 1.8 + 5 * ml_tickp
     #set plot margins according to labels
