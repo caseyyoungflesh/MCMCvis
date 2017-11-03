@@ -11,6 +11,8 @@
 #'
 #' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
 #'
+#' @param mcmc.list Logical specifying whether to return an mcmc.list. If \code{TRUE}, an \code{mcmc.list} object is returned, rather than a matrix.
+#'
 #' @section Details:
 #' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each parameter are combined to one posterior chain.
 #'
@@ -35,73 +37,76 @@
 #'
 #' @export
 
+
 MCMCchains <- function(object,
                      params = 'all',
                      excl = NULL,
-                     ISB = TRUE)
+                     ISB = TRUE,
+                     mcmc.list = FALSE)
 {
-    #NAME SORTING BLOCK
-    if(typeof(object) == 'S4')
-    {
-      temp_in <- rstan::As.mcmc.list(object)
-      if(ISB == TRUE)
-      {
-        names <- vapply(strsplit(colnames(temp_in[[1]]),
-                                 split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-      }else{
-        names <- colnames(temp_in[[1]])
-      }
-    }
+  if(coda::is.mcmc.list(object) != TRUE &
+     typeof(object) != 'double' &
+     class(object) != 'rjags' &
+     typeof(object) != 'S4')
+  {
+    stop('Invalid object type. Input must be stanfit object (rstan), mcmc.list object (coda),
+         rjags object (R2jags), or matrix with MCMC chains.')
+  }
 
-    if(coda::is.mcmc.list(object) == TRUE)
+  #NAME SORTING BLOCK
+  if(typeof(object) == 'S4')
+  {
+    temp_in <- rstan::As.mcmc.list(object)
+    if(ISB == TRUE)
     {
-      temp_in <- object
-      if(ISB == TRUE)
-      {
-        names <- vapply(strsplit(colnames(temp_in[[1]]),
-                                 split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-      }else{
-        names <- colnames(temp_in[[1]])
-      }
+      names <- vapply(strsplit(colnames(temp_in[[1]]),
+                               split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+    }else{
+      names <- colnames(temp_in[[1]])
     }
+  }
 
-    if(typeof(object) == 'double')
+  if(coda::is.mcmc.list(object) == TRUE)
+  {
+    temp_in <- object
+    if(ISB == TRUE)
     {
-      temp_in <- object
-      if(ISB == TRUE)
-      {
-        names <- vapply(strsplit(colnames(temp_in),
-                                 split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-      }else{
-        names <- colnames(temp_in)
-      }
+      names <- vapply(strsplit(colnames(temp_in[[1]]),
+                               split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+    }else{
+      names <- colnames(temp_in[[1]])
     }
+  }
 
-    if(class(object) == 'rjags')
+  if(typeof(object) == 'double')
+  {
+    temp_in <- object
+    if(ISB == TRUE)
     {
-      temp_in <- object$BUGSoutput$sims.matrix
-      if(ISB == TRUE)
-      {
-        names <- vapply(strsplit(rownames(object$BUGSoutput$summary),
-                                 split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-      }else{
-        names <- rownames(object$BUGSoutput$summary)
-      }
+      names <- vapply(strsplit(colnames(temp_in),
+                               split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+    }else{
+      names <- colnames(temp_in)
     }
+  }
+
+  if(class(object) == 'rjags')
+  {
+    temp_in <- object$BUGSoutput$sims.matrix
+    if(ISB == TRUE)
+    {
+      names <- vapply(strsplit(rownames(object$BUGSoutput$summary),
+                               split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+    }else{
+      names <- rownames(object$BUGSoutput$summary)
+    }
+  }
 
   if(class(object[[1]]) == 'mcarray')
   {
     stop('Invalid object type. jags.samples objects not currently supported. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
   }
 
-  if(coda::is.mcmc.list(object) != TRUE &
-     typeof(object) != 'double' &
-     typeof(object) != 'list' &
-     typeof(object) != 'S4')
-  {
-    stop('Invalid object type. Input must be stanfit object (rstan), mcmc.list object (coda),
-         rjags object (R2jags), or matrix with MCMC chains.')
-  }
 
   #INDEX BLOCK
   #exclusions
@@ -119,6 +124,10 @@ MCMCchains <- function(object,
         n_excl <- excl
         rm_ind <- c(rm_ind, grep(n_excl[i], names, fixed = TRUE))
       }
+    }
+    if(length(rm_ind) < 1)
+    {
+      stop(paste0('"', excl, '"', ' not found in MCMC ouput.'))
     }
     dups <- which(duplicated(rm_ind))
     if(length(dups) > 0)
@@ -220,6 +229,7 @@ MCMCchains <- function(object,
   }
 
 
+  #PROCESSING BLOCK
   if(coda::is.mcmc.list(object) == TRUE)
   {
     if(length(f_ind) > 1)
@@ -227,21 +237,38 @@ MCMCchains <- function(object,
       dsort <- do.call(coda::mcmc.list, temp_in[,f_ind])
       OUT <- do.call('rbind', dsort)
     }else{
-      dsort <- do.call(coda::mcmc.list, temp_in[,c(f_ind, f_ind)])
-      OUT <- do.call('rbind', dsort)[,1]
+      dsort <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
+      OUT <- as.matrix(do.call(coda::mcmc.list, temp[,f_ind, drop = FALSE]), ncol = 1)
     }
   }
 
   if(typeof(object) == 'double')
   {
-    OUT <- temp_in[,f_ind]
+    OUT <- temp_in[,f_ind, drop = FALSE]
+    if(mcmc.list == TRUE)
+    {
+      stop('Cannot produce mcmc.list output with matrix input')
+    }
   }
 
-  if(typeof(object) == 'list' & coda::is.mcmc.list(object) == FALSE)
+  if(class(object) == 'rjags')
   {
-    OUT <- temp_in[,f_ind]
+    OUT <- temp_in[,f_ind, drop = FALSE]
+    if(mcmc.list == TRUE)
+    {
+      temp_in <- coda::as.mcmc(object)
+      dsort <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
+    }
   }
 
-  return(OUT)
+  if(mcmc.list == FALSE)
+  {
+    return(OUT)
+  }
+
+  if(mcmc.list == TRUE)
+  {
+    return(dsort)
+  }
 }
 
