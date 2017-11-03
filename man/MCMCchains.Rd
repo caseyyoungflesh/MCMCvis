@@ -4,7 +4,8 @@
 \alias{MCMCchains}
 \title{Extract posterior chains from MCMC output}
 \usage{
-MCMCchains(object, params = "all", excl = NULL, ISB = TRUE)
+MCMCchains(object, params = "all", excl = NULL, ISB = TRUE,
+  mcmc.list = FALSE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -16,6 +17,8 @@ Default \code{'all'} returns chains for all parameters.}
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
 
 \item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.}
+
+\item{mcmc.list}{Logical specifying whether to return an mcmc.list. If \code{TRUE}, an \code{mcmc.list} object is returned, rather than a matrix.}
 }
 \description{
 Extract posterior chains from MCMC output for specific parameters of interest.
