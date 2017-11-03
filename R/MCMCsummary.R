@@ -126,7 +126,7 @@ MCMCsummary <- function(object,
 
       if(n.eff == TRUE)
       {
-        bind_neff <- round(coda::effectiveSize(dsort), digits = 0)
+        bind_neff <- round(coda::effectiveSize(object2), digits = 0)
         x2 <- cbind(x, bind_neff)
         colnames(x2)[ncol(x2)] <- 'n.eff'
       }else{
