@@ -238,7 +238,7 @@ MCMCchains <- function(object,
       OUT <- do.call('rbind', dsort)
     }else{
       dsort <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
-      OUT <- as.matrix(do.call(coda::mcmc.list, temp[,f_ind, drop = FALSE]), ncol = 1)
+      OUT <- as.matrix(do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE]), ncol = 1)
     }
   }
 
