@@ -81,7 +81,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derives metrics of interest on posterior output.
+The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -126,7 +126,7 @@ PDF document will be output to the current working directory by default, but ano
 MCMCtrace(MCMC_data, 
         pdf = TRUE, 
         filename = 'MYpdf', 
-        wd = 'DIRECTORY HERE')
+        wd = 'DIRECTORY_HERE')
 ```
 
 &nbsp;
@@ -212,7 +212,7 @@ Graphical parameters for x and y-axis limitation, row labels, title, median dot 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
        params = 'beta', 
-       xlim = c(-60, 25),
+       xlim = c(-60, 40),
        xlab = 'My x-axis label',
        main = 'MCMCvis plot',
        labels = c('First param', 'Second param', 'Third param', 
