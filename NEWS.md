@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.8.2:
+- `MCMCsummary` greatly speed up calculation of Rhat values for objects with many parameters
+- `MCMCchains` now takes the argument `mcmc.list`. If specified, `mcmc.list` object returned rather than a matrix.
+
+
 0.8.1:
 - Fix bug in `MCMCsummary` that displayed the same result twice when selecting only a single output parameter of interest
 - Fix bug in `MCMCplot` that displayed the axis label too close to tick labels when `horiz = FALSE` and tick labels were very long
