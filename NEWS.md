@@ -2,7 +2,7 @@ NEWS
 ====
 
 0.8.2:
-- `MCMCsummary` greatly speed up calculation of Rhat values for objects with many parameters
+- `MCMCsummary` greatly speed up calculation of Rhat values for objects with large numbers of parameters
 - `MCMCchains` now takes the argument `mcmc.list`. If specified, `mcmc.list` object returned rather than a matrix.
 
 
