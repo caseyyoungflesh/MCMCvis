@@ -58,15 +58,6 @@
 #'
 #' @export
 
-object <- t_matrix
-params = 'alpha[1]'
-excl = NULL
-ISB = FALSE
-digits = 2
-Rhat = TRUE
-n.eff = TRUE
-func = mean
-func_name = 'CB'
 
 MCMCsummary <- function(object,
                       params = 'all',
@@ -107,10 +98,21 @@ MCMCsummary <- function(object,
 
       if(Rhat == TRUE)
       {
-        if(length(dsort) > 1)
+        if(length(object2) > 1)
         {
-          #IF > 750 params --> use a loop here
-          r_hat <- round(coda::gelman.diag(object2, multivariate = FALSE)$psrf[,1], digits = 2)
+          #If > 750 params use loop to calc Rhat
+          if(NCOL(object2[[1]]) > 750)
+          {
+            r_hat <- c(rep(NA, NCOL(object2[[1]])))
+            for (v in 1:length(r_hat))
+            {
+              r_hat[v] <- round(coda::gelman.diag(object2[,v])$psrf[,1], digits = 2)
+            }
+
+          }else{
+            r_hat <- round(coda::gelman.diag(object2, multivariate = FALSE)$psrf[,1], digits = 2)
+          }
+
         }else{
           warning('Rhat statistic cannot be calculated with one chain. NAs inserted.')
           r_hat <- rep(NA, NCOL(object2))
