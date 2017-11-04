@@ -160,6 +160,15 @@ apply(ex, 2, mean)
 
 &nbsp;
 
+Using the `mcmc.list` argument, `MCMCchains` can return an `mcmc.list` object, instead of a matrix, for the specified parameters.
+
+```{r}
+ex2 <- MCMCchains(MCMC_data, 
+                  params = 'beta', 
+                  mcmc.list = TRUE)
+```
+
+&nbsp;
 
 ## MCMCplot
 
