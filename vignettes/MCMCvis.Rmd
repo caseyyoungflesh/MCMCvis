@@ -12,12 +12,13 @@ vignette: >
 
 `MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
 
-The package contains four functions:
+The package contains five functions:
 
 - `MCMCsummary` - summarize MCMC output for particular parameters of interest
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `MCMCchains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
+- `MCMCpstr` - summarize MCMC output for particular parameters of interest while preserving parameter structure
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
@@ -236,6 +237,31 @@ MCMCplot(MCMC_data,
        main_text_sz = 2)
 ```
 
+&nbsp;
+
+## MCMCpstr
+
+`MCMCpstr` is used to output summary information from MCMCoutput while preserving the original structure of the specified parameters (i.e., scalar, vector, matrix, array). Function outputs a `list` with calculated values for each specified parameter, similar to output obtained when fitting models with the `jags.samples` function (as opposed to `coda.samples`) from the `rjags` package. Preserving the original strucutre can be helpful when plotting or summarizing parameters with multidimensional structure. Particular parameters of interest can be specified as with other functions with the `params` argument.
+
+The function calculates summary information only for the specified function. The function to be used is specified using the `func` argument.
+
+
+```{r, fig.width=5, fig.height=6}
+MCMCpstr(MCMC_data, 
+         func = mean)
+```
+
+&nbsp;
+
+
+Custom functions can be specified as well.
+
+```{r, fig.width=5, fig.height=6}
+MCMCpstr(MCMC_data, 
+         func = function(x) quantile(x, probs = 0.01))
+```
+
+&nbsp;
 
 ## References
 
