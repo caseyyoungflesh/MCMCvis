@@ -15,7 +15,7 @@
 #'
 #' Default is \code{digits = 2}.
 #'
-#' @param func Function to be performed on MCMC output.
+#' @param func Function to be performed on MCMC output. Output of specified function must be of length 1.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
@@ -24,13 +24,9 @@
 #' #Load data
 #' data(MCMC_data)
 #'
-#' MCMCps(MCMC_data)
+#' MCMCps(MCMC_data, func = function(x) quantile(x, probs = 0.01))
 #'
 #' @export
-
-MCMCps(MCMC_data, func = function(x) sd(x))
-MCMCps(t_matrix, func = function(x) sd(x))
-
 
 
 MCMCps <- function(object,
@@ -58,6 +54,18 @@ MCMCps <- function(object,
     }else{
       names <- colnames(temp_in[[1]])
     }
+    np <- NCOL(object2[[1]])
+
+    if(np > 1)
+    {
+      ch_bind <- do.call('rbind', object2)
+    }else{
+      ch_bind <- as.matrix(object2)
+    }
+
+    #how many elements will be in the list
+    un <- unique(names)
+    onames <- colnames(temp_in[[1]])
   }
 
   if(typeof(object2) == 'double')
@@ -70,20 +78,14 @@ MCMCps <- function(object,
     }else{
       names <- colnames(temp_in)
     }
+    np <- NCOL(object2)
+    ch_bind <- object2
+
+    #how many elements will be in the list
+    un <- unique(names)
+    onames <- colnames(temp_in)
   }
 
-  np <- NCOL(object2[[1]])
-
-  if(np > 1)
-  {
-    ch_bind <- do.call('rbind', object2)
-  }else{
-    ch_bind <- as.matrix(object2)
-  }
-
-  #how many elements will be in the list
-  un <- unique(names)
-  onames <- colnames(temp_in[[1]])
 
   #create empty list
   out_list <- vector('list', length(un))
@@ -96,6 +98,11 @@ MCMCps <- function(object,
 
     #determine how many ',' and therefore how many dimensions for parameter
     dimensions <- length(strsplit(onames[ind[1]], split = ',', fixed = TRUE)[[1]])
+
+    if (length(func(ch_bind[,ind[1]])) > 1)
+    {
+      stop("Output from 'func' argument must be of length 1.")
+    }
 
     #scalar or vector
     if(dimensions == 1)
