@@ -39,11 +39,64 @@
 #'
 #' @export
 
+object <- out_R2jags
+params = c('alpha', 'beta')
+excl = NULL
+ISB = TRUE
+iter = 5000
+pdf = TRUE
+wd = getwd()
+type = 'both'
+ind = FALSE
+
+#priors used in R2jags model
+priors <- cbind(rnorm(5000, 0, 31.6), rnorm(5000, 0, 31.6))
+
+#calc overlap - see paper that notes for mark recapture using uniform prior overlap < 0.3 indicate robust identifiability
+
+#If nothing is specified for priors, not prior is plotted and overlap is not calculated
+MCMCchains()
+
+lower <- min(c(a, b)) - 1
+upper <- max(c(a, b)) + 1
+
+# generate kernel densities
+d_prior <- density(prior, from = lower, to = upper)
+d_post <- density(post, from = lower, to = upper)
+d <- data.frame(x = d_prior$x, prior = d_prior$y, post = d_post$y)
+
+# calculate intersection densities
+d$int <- pmin(d$prior, d$post)
+
+#plot
+plot(d$x, d$prior, xlim = c(lower, upper), ylim = c(0, 0.5), type = 'l') #prior
+lines(d$x, d$post, col = 'red') #posterior
+lines(d$x, d$int, col = 'green') #intersection
+
+# integrate areas under curves
+library(sfsmisc)
+total <- integrate.xy(d$x, d$prior) + integrate.xy(d$x, d$posterior) #total area
+#area of just to intersecting bit
+intersection <- integrate.xy(d$x, d$int)
+
+# compute overlap coefficient
+(overlap <- 2 * intersection / total)
+
+
+#priors need to be in a matrix format (with each parameter in a different column)
+#the number of iterations for the prior must match that of the number of iterations plotted with MCMCtrace - default is 5000, though this can be changed using the `iter` argument
+#these matrices can be generate using rnorm, rgamma, runif, etc. in R. Distirbutions not supported by base R can be used by loaded the appropriate packages. It is important to note any discrepencies in the parameterization of the distribution between JAGS and R - the most obvious of this is the use of precision in JAGS and standard deviation in base R (`rnorm`).
+
+#list packages that can distirbutions of interest (cauchy, negative binomial, etc.)
+
+
+
 MCMCtrace <- function(object,
                     params = 'all',
                     excl = NULL,
                     ISB = TRUE,
                     iter = 5000,
+                    priors = NULL,
                     pdf = TRUE,
                     filename,
                     wd = getwd(),
@@ -224,6 +277,14 @@ MCMCtrace <- function(object,
       }
     }
   }
+
+
+
+
+
+
+
+
 
   #OUTPUT BLOCK
   if(pdf == TRUE)
