@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.9.0:
+- `MCMCpstr` function now added. Function returns summary output for a specified function while preserving structure of parameters (i.e., scalar, vector, matrix, array).
+- `MCMCtrace` now takes a `XXXX` argument. If specified, the prior for a specified parameter is plotted on the same plot as the posterior output. Percent overlap between posterior and prior is also calculated and displayed.
+
+
 0.8.2:
 - `MCMCsummary` greatly speed up calculation of Rhat values for objects with large numbers of parameters
 - `MCMCchains` now takes the argument `mcmc.list`. If specified, `mcmc.list` object returned rather than a matrix.
