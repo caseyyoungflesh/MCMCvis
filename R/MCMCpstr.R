@@ -1,6 +1,6 @@
 #' Summary function for MCMC output that preserves parameter structure
 #'
-#' Extract summary information from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (i.e., scalar, vector, matrix, array).
+#' Extract summary information from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (i.e., scalar, vector, matrix, array). Function outputs a \code{list} with calculated values for each specified parameter.
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be returned in summary output.

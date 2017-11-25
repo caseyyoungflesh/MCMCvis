@@ -25,7 +25,7 @@ Default is \code{digits = 2}.}
 \item{func}{Function to be performed on MCMC output. Output of specified function must be of length 1.}
 }
 \description{
-Extract summary information from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (i.e., scalar, vector, matrix, array).
+Extract summary information from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (i.e., scalar, vector, matrix, array). Function outputs a \code{list} with calculated values for each specified parameter.
 }
 \section{Details}{
 
