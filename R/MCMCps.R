@@ -24,9 +24,13 @@
 #' #Load data
 #' data(MCMC_data)
 #'
-#' XXXX
+#' MCMCps(MCMC_data)
 #'
 #' @export
+
+MCMCps(MCMC_data, func = function(x) sd(x))
+MCMCps(t_matrix, func = function(x) sd(x))
+
 
 
 MCMCps <- function(object,
@@ -87,11 +91,14 @@ MCMCps <- function(object,
   #iterate through each element
   for (i in 1:length(un))
   {
-    #i <- 3
+    #i <- 1
     ind <- which(un[i] == names)
 
-    #if there's a , then it's a matrix
-    if(length(grep(',', onames[ind[1]])) == 0)
+    #determine how many ',' and therefore how many dimensions for parameter
+    dimensions <- length(strsplit(onames[ind[1]], split = ',', fixed = TRUE)[[1]])
+
+    #scalar or vector
+    if(dimensions == 1)
     {
       #1 dimension
       temp_obj <- rep(NA, length(ind))
@@ -103,7 +110,9 @@ MCMCps <- function(object,
 
       #fill list
       out_list[[i]] <- temp_obj
-    }else{
+    }
+    if(dimensions == 2)
+    {
       #2 dimensions
       pnames <- vapply(strsplit(onames[ind],
                                 '[', fixed = TRUE), `[`, 2, FUN.VALUE=character(1))
@@ -134,6 +143,83 @@ MCMCps <- function(object,
       #fill list
       out_list[[i]] <- temp_obj
     }
+    if(dimensions == 3)
+    {
+      #3 dimensions
+      pnames <- vapply(strsplit(onames[ind],
+                                '[', fixed = TRUE), `[`, 2, FUN.VALUE=character(1))
+      pnames2 <- vapply(strsplit(pnames,
+                                 ']', fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+
+      #determine how large array should be
+      RI <- c()
+      CI <- c()
+      TI <- c()
+      for (j in 1:length(ind))
+      {
+        #j <- 1
+        tt <- strsplit(pnames2[j], ',')
+        ri <- as.numeric(tt[[1]][1])
+        ci <- as.numeric(tt[[1]][2])
+        ti <- as.numeric(tt[[1]][3])
+        RI <- c(RI, ri)
+        CI <- c(CI, ci)
+        TI <- c(TI, ti)
+      }
+
+      #create blank array
+      temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI)))
+
+      for (j in 1:length(ind))
+      {
+        temp_obj[RI[j], CI[j], TI[j]] <- round(func(ch_bind[,ind[j]]), digits = digits)
+      }
+
+      #fill list
+      out_list[[i]] <- temp_obj
+    }
+    if(dimensions == 4)
+    {
+      #4 dimensions
+      pnames <- vapply(strsplit(onames[ind],
+                                '[', fixed = TRUE), `[`, 2, FUN.VALUE=character(1))
+      pnames2 <- vapply(strsplit(pnames,
+                                 ']', fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+
+      #determine how large matrix should be
+      RI <- c()
+      CI <- c()
+      TI <- c()
+      FI <- c()
+      for (j in 1:length(ind))
+      {
+        #j <- 1
+        tt <- strsplit(pnames2[j], ',')
+        ri <- as.numeric(tt[[1]][1])
+        ci <- as.numeric(tt[[1]][2])
+        ti <- as.numeric(tt[[1]][3])
+        fi <- as.numeric(tt[[1]][4])
+        RI <- c(RI, ri)
+        CI <- c(CI, ci)
+        TI <- c(TI, ti)
+        FI <- c(FI, fi)
+      }
+
+      #create blank array
+      temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI), max(FI)))
+
+      for (j in 1:length(ind))
+      {
+        temp_obj[RI[j], CI[j], TI[j], FI[j]] <- round(func(ch_bind[,ind[j]]), digits = digits)
+      }
+
+      #fill list
+      out_list[[i]] <- temp_obj
+    }
+    if(dimensions > 4)
+    {
+      stop('This function does not currently support parameters with > 4 dimensions. If you have a need for this functionality, please put in a bug report on the package Github page.')
+    }
   }
 
   #name elements in list
@@ -141,5 +227,4 @@ MCMCps <- function(object,
 
   return(out_list)
 }
-
 
