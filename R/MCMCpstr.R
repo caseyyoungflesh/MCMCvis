@@ -1,6 +1,6 @@
-#' Summary function for MCMC output preserving parameter structure
+#' Summary function for MCMC output that preserves parameter structure
 #'
-#' Extract summary information from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (e.g., scalar, vector, matrix).
+#' Extract summary information from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (i.e., scalar, vector, matrix, array).
 #'
 #' @param object Object containing MCMC output. See DETAILS below.
 #' @param params Character string (or vector of character strings) denoting parameters to be returned in summary output.
@@ -24,12 +24,11 @@
 #' #Load data
 #' data(MCMC_data)
 #'
-#' MCMCps(MCMC_data, func = function(x) quantile(x, probs = 0.01))
+#' MCMCpstr(MCMC_data, func = function(x) quantile(x, probs = 0.01))
 #'
 #' @export
 
-
-MCMCps <- function(object,
+MCMCpstr <- function(object,
                    params = 'all',
                    excl = NULL,
                    ISB = TRUE,
