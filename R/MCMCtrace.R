@@ -90,7 +90,6 @@ intersection <- integrate.xy(d$x, d$int)
 #list packages that can distirbutions of interest (cauchy, negative binomial, etc.)
 
 
-
 MCMCtrace <- function(object,
                     params = 'all',
                     excl = NULL,
@@ -106,184 +105,13 @@ MCMCtrace <- function(object,
 
   .pardefault <- graphics::par(no.readonly = T)
 
-  if(typeof(object) == 'S4')
-  {
-    temp <- rstan::As.mcmc.list(object)
-  }
-  if(coda::is.mcmc.list(object) == TRUE)
-  {
-    temp <- object
-  }
-  if(class(object) == 'rjags')
-  {
-    #modified coda::as.mcmc (removing ordering of param names)
-    x <- object$BUGSoutput
-    mclist <- vector("list", x$n.chains)
-    mclis <- vector("list", x$n.chains)
-    strt <- x$n.burnin + 1
-    end <- x$n.iter
-    ord <- dimnames(x$sims.array)[[3]]
-    for (i in 1:x$n.chains)
-    {
-      tmp1 <- x$sims.array[, i, ord]
-      mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
-    }
-    temp <- coda::as.mcmc.list(mclis)
-  }
-  if(coda::is.mcmc.list(object) == FALSE & typeof(object) != 'list' & typeof(object) != 'S4')
+  #SORTING BLOCK
+  if(typeof(object) == 'double')
   {
     stop('Invalid input type. Object must be of type stanfit, mcmc.list, or R2jags.')
-  }
-  if(coda::is.mcmc.list(object) == FALSE & typeof(object) == 'list' & class(object[[1]]) == 'mcarray')
-  {
-    stop('Invalid object type. jags.samples objects not currently supported. Input must be stanfit object, mcmc.list object, rjags object, or matrix with MCMC chains.')
-  }
-
-  #NAME SORTING BLOCK
-  if(ISB == TRUE)
-  {
-    names <- vapply(strsplit(colnames(temp[[1]]),
-                             split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    a_names <- colnames(temp[[1]])
   }else{
-    names <- colnames(temp[[1]])
-    a_names <- names
+    object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
   }
-  n_chains <- length(temp)
-  if (nrow(temp[[1]]) > iter)
-  {
-    it <- (nrow(temp[[1]]) - iter) : nrow(temp[[1]])
-  }else {
-    it <- 1 : nrow(temp[[1]])
-  }
-
-  #INDEX BLOCK
-  #exclusions
-  if(!is.null(excl))
-  {
-    rm_ind <- c()
-    for (i in 1:length(excl))
-    {
-      if(ISB == TRUE)
-      {
-        n_excl <- vapply(strsplit(excl,
-                                  split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-        rm_ind <- c(rm_ind, which(names %in% n_excl[i]))
-      }else{
-        n_excl <- excl
-        rm_ind <- c(rm_ind, grep(n_excl[i], names, fixed = TRUE))
-      }
-    }
-    if(length(rm_ind) < 1)
-    {
-      stop(paste0('"', excl, '"', ' not found in MCMC ouput.'))
-    }
-    dups <- which(duplicated(rm_ind))
-    if(length(dups) > 0)
-    {
-      rm_ind2 <- rm_ind[-dups]
-    }else{
-      rm_ind2 <- rm_ind
-    }
-  }
-
-  #selections
-  if (length(params) == 1)
-  {
-    if (params == 'all')
-    {
-      if(is.null(excl))
-      {
-        f_ind <- 1:length(names)
-      }else{
-        f_ind <- (1:length(names))[-rm_ind2]
-      }
-    }else
-    {
-      if(ISB == TRUE)
-      {
-        get_ind <- which(names %in% params)
-      }else{
-        get_ind <- grep(paste(params), names, fixed = TRUE)
-      }
-
-      if (length(get_ind) < 1)
-      {
-        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
-      }
-      if(!is.null(excl))
-      {
-        if(identical(get_ind, rm_ind2))
-        {
-          stop('No parameters selected.')
-        }
-        matched <- stats::na.omit(match(rm_ind2, get_ind))
-        if (length(matched) > 0)
-        {
-          f_ind <- get_ind[-matched]
-        }else {
-          f_ind <- get_ind
-        }
-      }else {
-        f_ind <- get_ind
-      }
-    }
-  }else {
-    grouped <- c()
-    for (i in 1:length(params))
-    {
-      if(ISB == TRUE)
-      {
-        get_ind <- which(names %in% params[i])
-      }else{
-        get_ind <- grep(paste(params[i]), names, fixed=TRUE)
-      }
-
-      if (length(get_ind) < 1)
-      {
-        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
-      }
-      grouped <- c(grouped, get_ind)
-    }
-    if(!is.null(excl))
-    {
-      if(identical(grouped, rm_ind2))
-      {
-        stop('No parameters selected.')
-      }
-      matched <- stats::na.omit(match(rm_ind2, grouped))
-      if (length(matched) > 0)
-      {
-        t_ind <- grouped[-matched]
-      } else{
-        t_ind <- grouped
-      }
-      to.rm <- which(duplicated(t_ind))
-      if(length(to.rm) > 0)
-      {
-        f_ind <- t_ind[-to.rm]
-      }else
-      {
-        f_ind <- t_ind
-      }
-    } else{
-      to.rm <- which(duplicated(grouped))
-      if(length(to.rm) > 0)
-      {
-        f_ind <- grouped[-to.rm]
-      }else
-      {
-        f_ind <- grouped
-      }
-    }
-  }
-
-
-
-
-
-
-
 
 
   #OUTPUT BLOCK
@@ -315,16 +143,29 @@ MCMCtrace <- function(object,
     hues = seq(15, 375, length = n+1)
     grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
   }
+  n_chains <- length(object2)
   colors <- gg_color_hue(n_chains)
   gg_cols <- grDevices::col2rgb(colors)/255
 
+  #see how many iter is in output and if it is at least specified iter (5k by default)
+  if (nrow(object2[[1]]) > iter)
+  {
+    it <- (nrow(object2[[1]]) - iter+1) : nrow(object2[[1]])
+  }else {
+    it <- 1 : nrow(object2[[1]])
+  }
+
+
+  #number of parameters
+  np <- colnames(object2[[1]])
+
   if (type == 'both')
   {
-    for (j in 1: length(f_ind))
+    for (j in 1:length(np))
     {
       #trace
-      tmlt <- do.call('cbind', temp[it, f_ind[j]])
-      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', a_names[f_ind[j]]),
+      tmlt <- do.call('cbind', object2[it, np[j]]) #make into matrix with three chains in columns
+      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', np[j]),
               col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = A_VAL),
               xlab= 'Iteration', ylab= 'Value')
@@ -339,7 +180,7 @@ MCMCtrace <- function(object,
         ylim <- c(0, max(max_den))
 
         graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
-             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]),
+             lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
              col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
 
         for (l in 2:NCOL(tmlt))
@@ -351,18 +192,18 @@ MCMCtrace <- function(object,
       }else{
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
-             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]))
+             lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
       }
     }
   }
 
   if (type == 'trace')
   {
-    for (j in 1: length(f_ind))
+    for (j in 1: length(np))
     {
       #chains
-      tmlt <- do.call('cbind', temp[it,f_ind[j]])
-      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', a_names[f_ind[j]]),
+      tmlt <- do.call('cbind', object2[it, np[j]])
+      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', np[j]),
               col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = A_VAL),
               xlab= 'Iteration', ylab= 'Value')
@@ -371,10 +212,10 @@ MCMCtrace <- function(object,
 
   if (type == 'density')
   {
-    for (j in 1: length(f_ind))
+    for (j in 1: length(np))
     {
       #trace
-      tmlt <- do.call('cbind', temp[it,f_ind[j]])
+      tmlt <- do.call('cbind', object2[it, np[j]])
 
       if (ind == TRUE & n_chains > 1)
       {
@@ -387,7 +228,7 @@ MCMCtrace <- function(object,
         ylim <- c(0, max(max_den))
 
         graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
-             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]),
+             lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
              col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
 
         for (l in 2:NCOL(tmlt))
@@ -399,7 +240,7 @@ MCMCtrace <- function(object,
       }else{
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
-             lty = 1, lwd = 1, main = paste0('Density - ', a_names[f_ind[j]]))
+             lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
       }
     }
   }
