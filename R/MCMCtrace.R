@@ -44,13 +44,13 @@ params = c('alpha', 'beta')
 excl = NULL
 ISB = TRUE
 iter = 5000
-pdf = TRUE
+pdf = FALSE
 wd = getwd()
 type = 'both'
 ind = FALSE
 
 #priors used in R2jags model
-priors <- cbind(rnorm(5000, 0, 31.6), rnorm(5000, 0, 31.6))
+priors <- cbind(rnorm(15000, 0, 31.6), rnorm(15000, 0, 31.6))
 ab <- MCMCchains(object, params = c('alpha', 'beta'))
 
 #calc overlap - see paper that notes for mark recapture using uniform prior overlap < 0.3 indicate robust identifiability
@@ -65,35 +65,24 @@ t1 <- proc.time()
 overlapping::overlap(tt, nbins= 1000, plot = FALSE)
 proc.time() - t1
 
+
+#CASES:
+#1 prior, 2 parms
+  #more iters
+  #less iters
+  #equal iters
+#2 priors, 2 params
+#2 priors, 3 params
+#3 priors, 2 params
+#2 priors, 1 param
+#1 prior, 1 param
+
+PP <- cbind(rnorm(20000, 0, 31.6))
+MCMCtrace(object, params = 'alpha', priors = PP, pdf = FALSE, type = 'both')
+
+priors = (PP)
 #If nothing is specified for priors, no prior is plotted and overlap is not calculated
 
-
-lower <- min(ab[,1]) - 1
-upper <- max(ab[,1]) + 1
-
-# generate kernel densities
-d_prior <- density(priors[,1], from = lower, to = upper)
-d_post <- density(ab[,1], from = lower, to = upper)
-d <- data.frame(x = d_prior$x, prior = d_prior$y, post = d_post$y)
-
-# calculate intersection densities
-d$int <- pmin(d$prior, d$post)
-
-#plot
-plot(d$x, d$prior, xlim = c(lower, upper), ylim = c(0, 0.5), type = 'l') #prior
-lines(d$x, d$post, col = 'red') #posterior
-lines(d$x, d$int, col = 'green') #intersection
-
-# integrate areas under curves
-library(sfsmisc)
-total <- integrate.xy(d$x, d$prior) + integrate.xy(d$x, d$post) #total area
-#area of just to intersecting bit
-intersection <- integrate.xy(d$x, d$int)
-
-# compute overlap coefficient
-(overlap <- 2 * intersection / total)
-
-integrate.xy
 #priors need to be in a matrix format (with each parameter in a different column)
 #the number of iterations for the prior must match that of the number of iterations plotted with MCMCtrace - default is 5000, though this can be changed using the `iter` argument
 #these matrices can be generate using rnorm, rgamma, runif, etc. in R. Distirbutions not supported by base R can be used by loaded the appropriate packages. It is important to note any discrepencies in the parameterization of the distribution between JAGS and R - the most obvious of this is the use of precision in JAGS and standard deviation in base R (`rnorm`).
@@ -166,20 +155,34 @@ MCMCtrace <- function(object,
     it <- 1 : nrow(object2[[1]])
   }
 
-
   #number of parameters
   np <- colnames(object2[[1]])
+
+  if (!is.null(priors))
+  {
+    if (NCOL(priors) == 1 & length(np) > 1)
+    {
+      warning('Using a single prior for all parameters.')
+    }
+    if ((NCOL(priors) > 1 & NCOL(priors) != length(np)))
+    {
+      stop('Number of priors does not equal number of specified parameters.')
+    }
+  }
+
 
   if (type == 'both')
   {
     for (j in 1:length(np))
     {
+      #j <- 1
       #trace
       tmlt <- do.call('cbind', object2[it, np[j]]) #make into matrix with three chains in columns
       graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', np[j]),
               col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
                        blue= gg_cols[3,], alpha = A_VAL),
               xlab= 'Iteration', ylab= 'Value')
+
       #density
       if (ind == TRUE & n_chains > 1)
       {
@@ -193,18 +196,57 @@ MCMCtrace <- function(object,
 
         graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
              lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
-             col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
+             col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
 
         for (l in 2:NCOL(tmlt))
         {
           graphics::lines(dens[[l]],
-                col = grDevices::rgb(red= gg_cols[1,l], green= gg_cols[2,l],
-                          blue= gg_cols[3,l]))
+                col = grDevices::rgb(red = gg_cols[1,l], green = gg_cols[2,l],
+                          blue = gg_cols[3,l]))
         }
       }else{
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
              lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
+      }
+
+      if (!is.null(priors))
+      {
+        if (NCOL(priors) == 1 & length(np) > 1)
+        {
+          wp <- priors
+        }else{
+          wp <- priors[,j]
+        }
+        lwp <- length(wp)
+        if (lwp > length(it)*n_chains)
+        {
+          warning(paste0('Number of samples in prior is greater than number of total or specified iterations (for all chains) for specified parameter. Only last ', length(it)*n_chains, ' iterations will be used.'))
+
+          pit <- (lwp - (length(it)*n_chains)+1) : lwp
+          wp2 <- wp[pit]
+        }
+        if (lwp < length(it)*n_chains)
+        {
+          warning(paste0('Number of samples in prior is less than number of total or specified iterations (for all chains) for specified parameter. Resampling from prior to generate ', length(it)*n_chains, ' total iterations.'))
+
+          samps <- sample(wp, size = ((length(it)*n_chains)-lwp), replace = TRUE)
+          wp2 <- c(wp, samps)
+        }
+        if (lwp == length(it)*n_chains)
+        {
+          wp2 <- wp
+        }
+
+        #calculate percent ovelap
+        tmlt_1c <- matrix(tmlt, ncol = 1)
+        pp <- list(wp2, tmlt_1c)
+        ovrlap <- paste0(round((overlapping::overlap(pp)$OV[[1]])*100, digits = 1), '% overlap')
+
+        #plot prior and overlap text
+        dpr <- stats::density(wp2)
+        graphics::lines(dpr, col = 'red')
+        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
       }
     }
   }
@@ -253,6 +295,45 @@ MCMCtrace <- function(object,
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
              lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
+      }
+
+      if (!is.null(priors))
+      {
+        if (NCOL(priors) == 1 & length(np) > 1)
+        {
+          wp <- priors
+        }else{
+          wp <- priors[,j]
+        }
+        lwp <- length(wp)
+        if (lwp > length(it)*n_chains)
+        {
+          warning(paste0('Number of samples in prior is greater than number of total or specified iterations (for all chains) for specified parameter. Only last ', length(it)*n_chains, ' iterations will be used.'))
+
+          pit <- (lwp - (length(it)*n_chains)+1) : lwp
+          wp2 <- wp[pit]
+        }
+        if (lwp < length(it)*n_chains)
+        {
+          warning(paste0('Number of samples in prior is less than number of total or specified iterations (for all chains) for specified parameter. Resampling from prior to generate ', length(it)*n_chains, ' total iterations.'))
+
+          samps <- sample(wp, size = ((length(it)*n_chains)-lwp), replace = TRUE)
+          wp2 <- c(wp, samps)
+        }
+        if (lwp == length(it)*n_chains)
+        {
+          wp2 <- wp
+        }
+
+        #calculate percent ovelap
+        tmlt_1c <- matrix(tmlt, ncol = 1)
+        pp <- list(wp2, tmlt_1c)
+        ovrlap <- paste0(round((overlapping::overlap(pp)$OV[[1]])*100, digits = 1), '% overlap')
+
+        #plot prior and overlap text
+        dpr <- stats::density(wp2)
+        graphics::lines(dpr, col = 'red')
+        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
       }
     }
   }
