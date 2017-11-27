@@ -104,7 +104,8 @@ The function calculates summary information only for the specified function. The
 
 
 ```{r, fig.width=5, fig.height=6}
-MCMCpstr(MCMC_data, 
+MCMCpstr(MCMC_data,
+         params = 'alpha',
          func = mean)
 ```
 
@@ -175,14 +176,16 @@ Overlap between the priors and posteriors can also be calculated by specifying t
 The `priors` argument takes a matrix as input, with each column representing a prior for a different parameter and each row representing a random draw from that prior distribution. These draws can be generated using R functions such as rnorm, rgamma, runif, etc. If the `priors` argument contains only one prior and more than one parameter is specified for the `params` argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. It is important to note that some discrepencies between MCMC samplers and R may exist regarding the parameterization of distributions - one example of this is the use of precision in JAGS but standard deviation in R for the 'second parameter' of the normal distribution.
 
 ```{r, fig.width=5, fig.height=6}
-PR <- rnorm(15000, 0, 32)
+#same prior used for all parameters
+PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data,
-          params = 'beta[1]',
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
           priors = PR,
           pdf = FALSE)
 ```
 
+&nbsp;
 
 ## MCMCchains
 
@@ -198,7 +201,7 @@ apply(ex, 2, mean)
 
 &nbsp;
 
-Using the `mcmc.list` argument, `MCMCchains` can return an `mcmc.list` object, instead of a matrix, for the specified parameters.
+Using the `mcmc.list` argument, `MCMCchains` can return an `mcmc.list` object, instead of a matrix, for the specified parameters. This can be useful when saving posterior information for only a subset of parameters is desired.
 
 ```{r}
 ex2 <- MCMCchains(MCMC_data, 

@@ -21,7 +21,7 @@ Default \code{'all'} returns chains for all parameters.}
 
 \item{iter}{Number of iterations to plot for trace and density plots. The default value is 5000, meaning the last 5000 iterations of the chain will be plotted.}
 
-\item{priors}{Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. If \code{priors} contains only one prior and more than one parameter is specified for \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.}
+\item{priors}{Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. If \code{priors} contains only one prior and more than one parameter is specified for the \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.}
 
 \item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
 
@@ -58,7 +58,7 @@ MCMCtrace(MCMC_data, params = 'beta')
 MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
 
 #Plot prior distribution on top of posterior and calculate prior/posterior overlap
-PR <- rnorm(15000, 0, 32) #same prior for all 'beta' parameters
-MCMCtrace(MCMC_data, params = 'beta', priors = PR)
+PR <- rnorm(15000, 0, 32)
+MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, priors = PR)
 
 }
