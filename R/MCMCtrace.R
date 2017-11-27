@@ -39,55 +39,19 @@
 #'
 #' @export
 
-object <- out_R2jags
-params = c('alpha', 'beta')
-excl = NULL
-ISB = TRUE
-iter = 5000
-pdf = FALSE
-wd = getwd()
-type = 'both'
-ind = FALSE
 
-#priors used in R2jags model
-priors <- cbind(rnorm(15000, 0, 31.6), rnorm(15000, 0, 31.6))
-ab <- MCMCchains(object, params = c('alpha', 'beta'))
-
+#ADD TO NOTES
 #calc overlap - see paper that notes for mark recapture using uniform prior overlap < 0.3 indicate robust identifiability
-
-tt <- list(priors[,1], ab[,1])
-
-f1 <- rnorm(1000, 0, 1)
-f2 <- rnorm(1000, 0, 5)
-tt <- list(f1, f2)
-
-t1 <- proc.time()
-overlapping::overlap(tt, nbins= 1000, plot = FALSE)
-proc.time() - t1
-
-
-#CASES:
-#1 prior, 2 parms
-  #more iters
-  #less iters
-  #equal iters
-#2 priors, 2 params
-#2 priors, 3 params
-#3 priors, 2 params
-#2 priors, 1 param
-#1 prior, 1 param
-
-PP <- cbind(rnorm(20000, 0, 31.6))
-MCMCtrace(object, params = 'alpha', priors = PP, pdf = FALSE, type = 'both')
-
-priors = (PP)
-#If nothing is specified for priors, no prior is plotted and overlap is not calculated
-
 #priors need to be in a matrix format (with each parameter in a different column)
 #the number of iterations for the prior must match that of the number of iterations plotted with MCMCtrace - default is 5000, though this can be changed using the `iter` argument
 #these matrices can be generate using rnorm, rgamma, runif, etc. in R. Distirbutions not supported by base R can be used by loaded the appropriate packages. It is important to note any discrepencies in the parameterization of the distribution between JAGS and R - the most obvious of this is the use of precision in JAGS and standard deviation in base R (`rnorm`).
-
+#If nothing is specified for priors, no prior is plotted and overlap is not calculated
 #list packages that can distirbutions of interest (cauchy, negative binomial, etc.)
+
+#ADD PRIOR OVERLAP TO EXAMPLE
+
+PP <- cbind(rnorm(15000, 0, 10))
+MCMCtrace(object, params = c('all'), priors = PP, pdf = TRUE, type = 'density', ind = TRUE)
 
 
 MCMCtrace <- function(object,
@@ -158,18 +122,30 @@ MCMCtrace <- function(object,
   #number of parameters
   np <- colnames(object2[[1]])
 
+  #warnings and errors
   if (!is.null(priors))
   {
     if (NCOL(priors) == 1 & length(np) > 1)
     {
-      warning('Using a single prior for all parameters.')
+      warning('Only one prior specified for > 1 parameter. Using a single prior for all parameters.')
     }
     if ((NCOL(priors) > 1 & NCOL(priors) != length(np)))
     {
       stop('Number of priors does not equal number of specified parameters.')
     }
+    if (NROW(priors) > length(it)*n_chains)
+    {
+      warning(paste0('Number of samples in prior is greater than number of total or specified iterations (for all chains) for specified parameter. Only last ', length(it)*n_chains, ' iterations will be used.'))
+    }
+    if (NROW(priors) < length(it)*n_chains)
+    {
+      warning(paste0('Number of samples in prior is less than number of total or specified iterations (for all chains) for specified parameter. Resampling from prior to generate ', length(it)*n_chains, ' total iterations.'))
+    }
+    if (type == 'trace')
+    {
+      warning("Prior overlap cannot be plotting without density plots. Use type = 'both' or type = 'density'.")
+    }
   }
-
 
   if (type == 'both')
   {
@@ -210,6 +186,7 @@ MCMCtrace <- function(object,
              lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
       }
 
+      #if priors are specified
       if (!is.null(priors))
       {
         if (NCOL(priors) == 1 & length(np) > 1)
@@ -221,15 +198,13 @@ MCMCtrace <- function(object,
         lwp <- length(wp)
         if (lwp > length(it)*n_chains)
         {
-          warning(paste0('Number of samples in prior is greater than number of total or specified iterations (for all chains) for specified parameter. Only last ', length(it)*n_chains, ' iterations will be used.'))
-
+          #warnings in block above
           pit <- (lwp - (length(it)*n_chains)+1) : lwp
           wp2 <- wp[pit]
         }
         if (lwp < length(it)*n_chains)
         {
-          warning(paste0('Number of samples in prior is less than number of total or specified iterations (for all chains) for specified parameter. Resampling from prior to generate ', length(it)*n_chains, ' total iterations.'))
-
+          #warnings in block above
           samps <- sample(wp, size = ((length(it)*n_chains)-lwp), replace = TRUE)
           wp2 <- c(wp, samps)
         }
@@ -297,6 +272,7 @@ MCMCtrace <- function(object,
              lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
       }
 
+      #if priors are specified
       if (!is.null(priors))
       {
         if (NCOL(priors) == 1 & length(np) > 1)
@@ -308,15 +284,11 @@ MCMCtrace <- function(object,
         lwp <- length(wp)
         if (lwp > length(it)*n_chains)
         {
-          warning(paste0('Number of samples in prior is greater than number of total or specified iterations (for all chains) for specified parameter. Only last ', length(it)*n_chains, ' iterations will be used.'))
-
           pit <- (lwp - (length(it)*n_chains)+1) : lwp
           wp2 <- wp[pit]
         }
         if (lwp < length(it)*n_chains)
         {
-          warning(paste0('Number of samples in prior is less than number of total or specified iterations (for all chains) for specified parameter. Resampling from prior to generate ', length(it)*n_chains, ' total iterations.'))
-
           samps <- sample(wp, size = ((length(it)*n_chains)-lwp), replace = TRUE)
           wp2 <- c(wp, samps)
         }
