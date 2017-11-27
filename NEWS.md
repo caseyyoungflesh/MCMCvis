@@ -3,7 +3,8 @@ NEWS
 
 0.9.0:
 - `MCMCpstr` function now added. Function returns summary output for a specified function while preserving structure of parameters (i.e., scalar, vector, matrix, array).
-- `MCMCtrace` now takes a `XXXX` argument. If specified, the prior for a specified parameter is plotted on the same plot as the posterior output. Percent overlap between posterior and prior is also calculated and displayed.
+- `MCMCtrace` now takes a `priors` argument to visualize prior/posterior overlap. If specified, the prior (user specified as this information is not contained within the MCMC output) for a specified parameter is plotted on the same plot as the posterior output. Percent overlap between posterior and prior is also calculated and displayed.
+- Fix bug in `MCMCchains` that caused incorrect alphabetization of parameter names when output from R2jags was used.
 
 
 0.8.2:
@@ -38,7 +39,7 @@ NEWS
 0.7.1:
 
 - Fix bug in `MCMCplot` which incorrectly shaded parameter estimates when plotted vertically
-- `MCMCsummary` now displays estimates for deviance
+- `MCMCsummary` now displays estimates for deviance with MCMC output fits with R2jags
 
 
 0.7.0:
