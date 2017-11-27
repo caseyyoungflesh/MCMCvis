@@ -50,8 +50,8 @@
 
 #ADD PRIOR OVERLAP TO EXAMPLE
 
-PP <- cbind(rnorm(15000, 0, 10))
-MCMCtrace(object, params = c('all'), priors = PP, pdf = TRUE, type = 'density', ind = TRUE)
+#PP <- cbind(rnorm(15000, 0, 10))
+#MCMCtrace(object, params = c('all'), priors = PP, pdf = TRUE, type = 'density', ind = TRUE)
 
 
 MCMCtrace <- function(object,
