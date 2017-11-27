@@ -168,8 +168,20 @@ MCMCtrace(MCMC_data,
         pdf = FALSE)
 ```
 
-
 &nbsp;
+
+Overlap between the priors and posteriors can also be calculated by specifying the priors associated with each parameter using the `priors` argument. Ths is particularly useful when investigating how large the effect of the prior is on the posterior distribution - this can be informative when trying to determine how identifiable a particular parameter is in a model.
+
+The `priors` argument takes a matrix as input, with each column representing a prior for a different parameter and each row representing a random draw from that prior distribution. These draws can be generated using R functions such as rnorm, rgamma, runif, etc. If the `priors` argument contains only one prior and more than one parameter is specified for the `params` argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. It is important to note that some discrepencies between MCMC samplers and R may exist regarding the parameterization of distributions - one example of this is the use of precision in JAGS but standard deviation in R for the 'second parameter' of the normal distribution.
+
+```{r, fig.width=5, fig.height=6}
+PR <- rnorm(15000, 0, 32)
+MCMCtrace(MCMC_data,
+          params = 'beta[1]',
+          ISB = FALSE,
+          priors = PR,
+          pdf = FALSE)
+```
 
 
 ## MCMCchains
