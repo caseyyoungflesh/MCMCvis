@@ -40,7 +40,7 @@ vignette('MCMCvis')
 Examples
 --------
 
-####Summarize
+#### Summarize
 
 ```{r}
 data(MCMC_data)
@@ -58,7 +58,7 @@ MCMCsummary(MCMC_data, params = 'beta', n.eff = TRUE)
 #> beta[10]  16.69 4.36   8.24  16.66  25.40    1 18993
 ```
 
-####Evaluate
+#### Evaluate
 
 ```{r}
 PR <- rnorm(15000, 0, 32)
@@ -67,13 +67,13 @@ MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, priors = PR)
 ![](Evaluate_ex.png)
 
 
-####Manipulate
+#### Manipulate
 
 ```{r}
 just_betas_mcmc_obj <- MCMCchains(MCMC_data, params = 'beta', mcmc.list = TRUE)
 ```
 
-####Visualize
+#### Visualize
 
 ```{r}
 MCMCplot(MCMC_data, 
