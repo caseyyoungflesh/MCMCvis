@@ -37,7 +37,6 @@
 #'
 #' @export
 
-
 MCMCchains <- function(object,
                      params = 'all',
                      excl = NULL,
@@ -256,8 +255,20 @@ MCMCchains <- function(object,
     OUT <- temp_in[,f_ind, drop = FALSE]
     if(mcmc.list == TRUE)
     {
-      temp_in <- coda::as.mcmc(object)
-      dsort <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
+      #modified coda::as.mcmc (removing ordering of param names)
+      x <- object$BUGSoutput
+      mclist <- vector("list", x$n.chains)
+      mclis <- vector("list", x$n.chains)
+      strt <- x$n.burnin + 1
+      end <- x$n.iter
+      ord <- dimnames(x$sims.array)[[3]]
+      for (i in 1:x$n.chains)
+      {
+        tmp1 <- x$sims.array[, i, ord]
+        mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+      }
+      temp2 <- coda::as.mcmc.list(mclis)
+      dsort <- do.call(coda::mcmc.list, temp2[,f_ind, drop = FALSE])
     }
   }
 

@@ -2,5 +2,6 @@
 
 export(MCMCchains)
 export(MCMCplot)
+export(MCMCpstr)
 export(MCMCsummary)
 export(MCMCtrace)
