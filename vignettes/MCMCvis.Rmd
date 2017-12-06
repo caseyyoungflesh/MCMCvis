@@ -50,7 +50,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>.
+Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. `\\d` can be used to specify any digits in a particular place.
 
 ```{r}
 MCMCsummary(MCMC_data, 
