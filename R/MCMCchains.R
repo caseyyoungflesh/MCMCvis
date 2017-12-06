@@ -43,9 +43,22 @@ MCMCchains <- function(object,
                      ISB = TRUE,
                      mcmc.list = FALSE)
 {
-  if(length(class(object)))
+  if(length(class(object)) > 1)
   {
-    stop('MCMCvis does not support objects produced with the jags.parallel function from the R2jags package.')
+    #modified coda::as.mcmc (removing ordering of param names)
+    x <- object$BUGSoutput
+    mclist <- vector("list", x$n.chains)
+    mclis <- vector("list", x$n.chains)
+    strt <- x$n.burnin + 1
+    end <- x$n.iter
+    ord <- dimnames(x$sims.array)[[3]]
+    for (i in 1:x$n.chains)
+    {
+      tmp1 <- x$sims.array[, i, ord]
+      mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+    }
+    object <- coda::as.mcmc.list(mclis)
+    #end mod as.mcmc
   }
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
@@ -272,6 +285,7 @@ MCMCchains <- function(object,
         mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
       }
       temp2 <- coda::as.mcmc.list(mclis)
+      #end mod as.mcmc
       dsort <- do.call(coda::mcmc.list, temp2[,f_ind, drop = FALSE])
     }
   }

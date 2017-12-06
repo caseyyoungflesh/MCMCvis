@@ -1,6 +1,9 @@
 NEWS
 ====
 
+0.9.1
+- Fix bug that produced errors when using the `jags.parallel` function in the `R2jags` package.
+
 0.9.0:
 - `MCMCpstr` function now added. Function returns summary output for a specified function while preserving structure of parameters (i.e., scalar, vector, matrix, array).
 - `MCMCtrace` now takes a `priors` argument to visualize prior/posterior overlap. If specified, the prior (user specified as this information is not contained within the MCMC output) for a specified parameter is plotted on the same plot as the posterior output. Percent overlap between posterior and prior is also calculated and displayed.
