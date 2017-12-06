@@ -1,7 +1,7 @@
 MCMCvis
 ====
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.9.0](https://img.shields.io/badge/devel-0.9.0-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.9.1](https://img.shields.io/badge/devel-0.9.1-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) 
 
 `MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
 
@@ -62,7 +62,7 @@ MCMCsummary(MCMC_data, params = 'beta', n.eff = TRUE)
 
 ```{r}
 PR <- rnorm(15000, 0, 32)
-MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, priors = PR)
+MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, priors = PR)
 ```
 ![](Evaluate_ex.png)
 
