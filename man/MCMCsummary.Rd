@@ -16,7 +16,7 @@ Default \code{'all'} returns all parameters in summary output.}
 
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
 
-\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.}
+\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.}
 
 \item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified number of digits (except for Rhat which is always rounded to 2 digits).
 
@@ -69,7 +69,7 @@ MCMCsummary(MCMC_data)
 #Just 'beta' parameters
 MCMCsummary(MCMC_data, params = 'beta')
 
-#Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-MCMCsummary(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
+#Just 'beta[1]', 'gamma[4]', and 'alpha[3]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\\\'
+MCMCsummary(MCMC_data, params = c('beta\\\\[1\\\\]', 'gamma\\\\[4\\\\]', 'alpha\\\\[3\\\\]'), ISB = FALSE)
 
 }

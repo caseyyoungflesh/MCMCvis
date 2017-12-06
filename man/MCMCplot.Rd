@@ -19,7 +19,7 @@ Default \code{'all'} plots posteriors for all parameters. See VALUE below.}
 
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
 
-\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.}
+\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.}
 
 \item{ref}{Value indicating where vertical reference line should be created and what value to use a reference for caterpillar median coloration.
 
@@ -109,8 +109,8 @@ MCMCplot(MCMC_data, labels = NULL)
 #Just 'beta' parameters
 MCMCplot(MCMC_data, params = 'beta')
 
-#Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-MCMCplot(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
+#Just 'beta[1]', 'gamma[4]', and 'alpha[3]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\\\'
+MCMCplot(MCMC_data, params = c('beta\\\\[1\\\\]', 'gamma\\\\[4\\\\]', 'alpha\\\\[3\\\\]'), ISB = FALSE)
 
 #Rank parameters by posterior mean
 MCMCplot(MCMC_data, params = 'beta', rank = TRUE)

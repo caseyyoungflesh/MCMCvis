@@ -16,7 +16,7 @@ Default \code{'all'} returns chains for all parameters.}
 
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
 
-\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.}
+\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using regular expression format. This allows partial names to be used when specifying parameters of interest.}
 
 \item{mcmc.list}{Logical specifying whether to return an mcmc.list. If \code{TRUE}, an \code{mcmc.list} object is returned, rather than a matrix.}
 }
@@ -42,8 +42,8 @@ apply(ex, 2, mean)
 ex2 <- MCMCchains(MCMC_data, params = 'beta')
 apply(ex2, 2, mean)
 
-#Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-ex3 <- MCMCchains(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
+#Just 'beta[1]', 'gamma[4]', and 'alpha[3]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\\\'
+ex3 <- MCMCchains(MCMC_data, params = c('beta\\\\[1\\\\]', 'gamma\\\\[4\\\\]', 'alpha\\\\[3\\\\]'), ISB = FALSE)
 apply(ex3, 2, sd)
 
 }
