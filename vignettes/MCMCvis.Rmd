@@ -60,7 +60,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `params` argument. This is particularly useful when specifying `ISB = FALSE`. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `params = 'alpha', excl = 'alpha[1]', ISB = FALSE` can be used. Once again, since the `params` argument takes a regular expression, the square brackets must be escaped using `\\`. When `ISB = TRUE`, an exact match of the specified parameter is required (excluding the square brackets). When `ISB = FALSE`, partial names will be matched. Leaving the default (`ISB = TRUE`) is generally recommended for simplicity. These arguments can be used in any of the functions in the package.
+The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `params` argument. This is particularly useful when specifying `ISB = FALSE`. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `params = 'alpha', excl = 'alpha\\[1\\]', ISB = FALSE` can be used. Once again, since the `params` argument takes a regular expression, the square brackets must be escaped using `\\`. When `ISB = TRUE`, an exact match of the specified parameter is required (excluding the square brackets). When `ISB = FALSE`, partial names will be matched. Leaving the default (`ISB = TRUE`) is generally recommended for simplicity. These arguments can be used in any of the functions in the package.
 
 ```{r}
 MCMCsummary(MCMC_data, 
