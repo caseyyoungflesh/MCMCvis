@@ -10,7 +10,7 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
 #'
 #' @param iter Number of iterations to plot for trace and density plots. The default value is 5000, meaning the last 5000 iterations of the chain will be plotted.
 #'
@@ -36,12 +36,12 @@
 #' #Traceplots for all 'beta' parameters
 #' MCMCtrace(MCMC_data, params = 'beta')
 #'
-#' #Traceplots (individual density lines for each chain) for just 'beta[1]'
-#' MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
+#' #Traceplots (individual density lines for each chain) just for 'beta[1]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\'
+#' MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
 #'
-#' #Plot prior distribution on top of posterior and calculate prior/posterior overlap
+#' #Plot prior distribution on top of posterior and calculate prior/posterior overlap just for 'beta[1]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\'
 #' PR <- rnorm(15000, 0, 32)
-#' MCMCtrace(MCMC_data, params = 'beta[1]', ISB = FALSE, priors = PR)
+#' MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, priors = PR)
 #'
 #' @export
 

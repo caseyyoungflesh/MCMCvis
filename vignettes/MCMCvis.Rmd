@@ -50,22 +50,22 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should be ignored to only specify the `alpha[1]` parameter. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. 
+Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>.
 
 ```{r}
 MCMCsummary(MCMC_data, 
-          params = 'alpha[1]', 
+          params = 'alpha\\[1\\]', 
           ISB = FALSE)
 ```
 
 &nbsp;
 
-The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `params` argument. This is particularly useful when specifying `ISB = FALSE`. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `params = 'alpha', excl = 'alpha[1]', ISB = FALSE` can be used. When `ISB = TRUE`, an exact match of the specified parameter is required (excluding the square brackets). When `ISB = FALSE`, partial names will be matched. Leaving the default (`ISB = TRUE`) is generally recommended for simplicity. These arguments can be used in any of the functions in the package.
+The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `params` argument. This is particularly useful when specifying `ISB = FALSE`. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `params = 'alpha', excl = 'alpha[1]', ISB = FALSE` can be used. Once again, since the `params` argument takes a regular expression, the square brackets must be escaped using `\\`. When `ISB = TRUE`, an exact match of the specified parameter is required (excluding the square brackets). When `ISB = FALSE`, partial names will be matched. Leaving the default (`ISB = TRUE`) is generally recommended for simplicity. These arguments can be used in any of the functions in the package.
 
 ```{r}
 MCMCsummary(MCMC_data, 
           params = 'alpha',
-          excl = 'alpha[1]', 
+          excl = 'alpha\\[1\\]', 
           ISB = FALSE)
 ```
 
@@ -128,7 +128,7 @@ MCMCpstr(MCMC_data,
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
-        params = c('beta[1]', 'beta[2]', 'beta[3]'),
+        params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
         ISB = FALSE,
         pdf = FALSE)
 ```
@@ -162,7 +162,7 @@ MCMCtrace(MCMC_data,
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
-        params = c('beta[1]', 'beta[2]', 'beta[3]'),
+        params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
         ISB = FALSE,
         iter = 1800,
         ind = TRUE,
@@ -179,7 +179,7 @@ The `priors` argument takes a matrix as input, with each column representing a p
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data,
-          params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
           ISB = FALSE,
           priors = PR,
           pdf = FALSE)

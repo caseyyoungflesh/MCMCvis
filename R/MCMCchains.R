@@ -9,7 +9,7 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{FALSE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{TRUE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, allowing partial names to be used when specifying parameters of interest.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using regular expression format. This allows partial names to be used when specifying parameters of interest.
 #'
 #' @param mcmc.list Logical specifying whether to return an mcmc.list. If \code{TRUE}, an \code{mcmc.list} object is returned, rather than a matrix.
 #'
@@ -31,8 +31,8 @@
 #' ex2 <- MCMCchains(MCMC_data, params = 'beta')
 #' apply(ex2, 2, mean)
 #'
-#' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
-#' ex3 <- MCMCchains(MCMC_data, params = c('beta[1]', 'gamma[4]', 'alpha[3]'), ISB = FALSE)
+#' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\'
+#' ex3 <- MCMCchains(MCMC_data, params = c('beta\\[1\\]', 'gamma\\[4\\]', 'alpha\\[3\\]'), ISB = FALSE)
 #' apply(ex3, 2, sd)
 #'
 #' @export
@@ -138,7 +138,7 @@ MCMCchains <- function(object,
         rm_ind <- c(rm_ind, which(names %in% n_excl[i]))
       }else{
         n_excl <- excl
-        rm_ind <- c(rm_ind, grep(n_excl[i], names, fixed = TRUE))
+        rm_ind <- c(rm_ind, grep(n_excl[i], names, fixed = FALSE))
       }
     }
     if(length(rm_ind) < 1)
@@ -170,7 +170,7 @@ MCMCchains <- function(object,
       {
         get_ind <- which(names %in% params)
       }else{
-        get_ind <- grep(paste(params), names, fixed = TRUE)
+        get_ind <- grep(paste(params), names, fixed = FALSE)
       }
 
       if (length(get_ind) < 1)
@@ -202,7 +202,7 @@ MCMCchains <- function(object,
       {
         get_ind <- which(names %in% params[i])
       }else{
-        get_ind <- grep(paste(params[i]), names, fixed=TRUE)
+        get_ind <- grep(paste(params[i]), names, fixed=FALSE)
       }
 
       if (length(get_ind) < 1)
