@@ -43,6 +43,10 @@ MCMCchains <- function(object,
                      ISB = TRUE,
                      mcmc.list = FALSE)
 {
+  if(length(class(object)))
+  {
+    stop('MCMCvis does not support objects produced with the jags.parallel function from the R2jags package.')
+  }
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
      class(object) != 'rjags' &
