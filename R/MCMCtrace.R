@@ -36,10 +36,12 @@
 #' #Traceplots for all 'beta' parameters
 #' MCMCtrace(MCMC_data, params = 'beta')
 #'
-#' #Traceplots (individual density lines for each chain) just for 'beta[1]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\'
+#' #Traceplots (individual density lines for each chain) just for 'beta[1]'
+#' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
 #' MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, filename = 'PDF_file.pdf', ind = TRUE)
 #'
-#' #Plot prior distribution on top of posterior and calculate prior/posterior overlap just for 'beta[1]' - since 'params' takes regular expressions as arguments when ISB = FALSE, square brackets must be escaped with '\\'
+#' #Plot prior on top of posterior and calculate prior/posterior overlap just for 'beta[1]'
+#' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
 #' PR <- rnorm(15000, 0, 32)
 #' MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, priors = PR)
 #'
