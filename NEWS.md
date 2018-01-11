@@ -7,6 +7,7 @@ NEWS
 0.9.1
 - Fix bug that produced errors when using the `jags.parallel` function in the `R2jags` package.
 - All functions - when `ISB = FALSE`, `params` argument now takes the form of regular expressions
+- Examples for `MCMCtrace` no longer open up external programs (pdf viewer) per CRAN policy
 
 0.9.0:
 - `MCMCpstr` function now added. Function returns summary output for a specified function while preserving structure of parameters (i.e., scalar, vector, matrix, array).
