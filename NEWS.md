@@ -1,6 +1,9 @@
 NEWS
 ====
 
+0.9.2
+- `MCMCtrace` now takes matrix input (as with the other functions). One chain is assumed when matrix input is used.
+
 0.9.1
 - Fix bug that produced errors when using the `jags.parallel` function in the `R2jags` package.
 - All functions - when `ISB = FALSE`, `params` argument now takes the form of regular expressions
