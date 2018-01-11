@@ -47,6 +47,10 @@
 #'
 #' @export
 
+
+
+#when argument is data.frame or matrix, assume just one chain
+
 MCMCtrace <- function(object,
                     params = 'all',
                     excl = NULL,
@@ -65,7 +69,8 @@ MCMCtrace <- function(object,
   #SORTING BLOCK
   if(typeof(object) == 'double')
   {
-    stop('Invalid input type. Object must be of type stanfit, mcmc.list, or R2jags.')
+    warning('Input type matrix - assuming only one chain for each parameter.')
+    object2 <- object
   }else{
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
   }
@@ -100,20 +105,39 @@ MCMCtrace <- function(object,
     hues = seq(15, 375, length = n+1)
     grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
   }
-  n_chains <- length(object2)
-  colors <- gg_color_hue(n_chains)
-  gg_cols <- grDevices::col2rgb(colors)/255
 
-  #see how many iter is in output and if it is at least specified iter (5k by default)
-  if (nrow(object2[[1]]) > iter)
+  if(coda::is.mcmc.list(object2))
   {
-    it <- (nrow(object2[[1]]) - iter+1) : nrow(object2[[1]])
-  }else {
-    it <- 1 : nrow(object2[[1]])
-  }
+    n_chains <- length(object2)
+    colors <- gg_color_hue(n_chains)
+    gg_cols <- grDevices::col2rgb(colors)/255
 
-  #number of parameters
-  np <- colnames(object2[[1]])
+    #see how many iter is in output and if it is at least specified iter (5k by default)
+    if (nrow(object2[[1]]) > iter)
+    {
+      it <- (nrow(object2[[1]]) - iter+1) : nrow(object2[[1]])
+    }else {
+      it <- 1 : nrow(object2[[1]])
+    }
+
+    #parameter names
+    np <- colnames(object2[[1]])
+  }else{
+    n_chains <- 1
+    colors <- gg_color_hue(n_chains)
+    gg_cols <- grDevices::col2rgb(colors)/255
+
+    #see how many iter is in output and if it is at least specified iter (5k by default)
+    if (nrow(object2) > iter)
+    {
+      it <- (nrow(object2) - iter+1) : nrow(object2)
+    }else {
+      it <- 1 : nrow(object2)
+    }
+
+    #parameter names
+    np <- colnames(object2)
+  }
 
   #warnings and errors
   if (!is.null(priors))
