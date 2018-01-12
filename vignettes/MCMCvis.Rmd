@@ -288,7 +288,7 @@ Kruschke, J. 2014. Doing Bayesian data analysis: A tutorial with R, JAGS, and St
 
 &nbsp;
 
-**For more information see `?MCMCplot`**
+**For more information see `?MCMCvis`**
 
 
 &nbsp;

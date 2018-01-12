@@ -5,13 +5,15 @@
 #' @section Details:
 #' The following functions are currently available:
 #'
-#'      -\code{MCMCsummary} (summarize MCMC output for particular parameters of interest)
+#'      -\code{MCMCsummary} - summarize MCMC output for particular parameters of interest
 #'
-#'      -\code{MCMCtrace} (create trace and density plots of MCMC chains for particular parameters of interest)
+#'      -\code{MCMCpstr} - summarize MCMC output for particular parameters of interest while preserving original parameter structure
 #'
-#'      -\code{MCMCchains} (easily extract posterior chains from MCMC output for particular parameters of interest)
+#'      -\code{MCMCtrace} - create trace and density plots of MCMC chains for particular parameters of interest
 #'
-#'      -\code{MCMCplot} (create caterpillar plots from MCMC output for particular parameters of interest)
+#'      -\code{MCMCchains} - easily extract posterior chains from MCMC output for particular parameters of interest
+#'
+#'      -\code{MCMCplot} - create caterpillar plots from MCMC output for particular parameters of interest)
 #'
 #' Example data can be loaded using \code{data(MCMC_data)}.
 #'
