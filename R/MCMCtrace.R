@@ -66,7 +66,8 @@ MCMCtrace <- function(object,
   if(typeof(object) == 'double')
   {
     warning('Input type matrix - assuming only one chain for each parameter.')
-    object2 <- coda::as.mcmc.list(coda::as.mcmc(object))
+    object1 <- coda::as.mcmc.list(coda::as.mcmc(object))
+    object2 <- MCMCchains(object1, params, excl, ISB, mcmc.list = TRUE)
   }else{
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
   }
