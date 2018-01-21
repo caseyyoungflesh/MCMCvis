@@ -64,10 +64,11 @@ MCMCchains <- function(object,
   if(coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
      class(object) != 'rjags' &
-     typeof(object) != 'S4')
+     typeof(object) != 'S4' &
+     class(object) != 'jagsUI')
   {
     stop('Invalid object type. Input must be stanfit object (rstan), mcmc.list object (coda),
-         rjags object (R2jags), or matrix with MCMC chains.')
+         rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
 
   #NAME SORTING BLOCK
@@ -81,6 +82,11 @@ MCMCchains <- function(object,
     }else{
       names <- colnames(temp_in[[1]])
     }
+  }
+
+  if(class(object) == 'jagsUI')
+  {
+    object <- object$samples
   }
 
   if(coda::is.mcmc.list(object) == TRUE)
