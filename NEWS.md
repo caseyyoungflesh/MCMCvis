@@ -1,6 +1,10 @@
 NEWS
 ====
 
+0.9.3
+- Fix bug that prevented parameters from being sorted when using matrix input for `MCMCtrace`
+- Added support for objects produced with the jagsUI package
+
 0.9.2
 - `MCMCtrace` now takes matrix input (as with the other functions). One chain is assumed when matrix input is used.
 
