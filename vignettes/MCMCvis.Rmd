@@ -29,7 +29,7 @@ The package contains five functions:
 
 ## MCMCsummary
 
-`MCMCsummary` is used to output summary information from MCMC output. This function accepts `stanfit` objects (created with the `rstan` package), `mcmc.list` objects (create with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), and matrices of MCMC output (one chain per column). The function automatically detects the object type and proceeds accordingly. Two decimal places are reported by default. This can be changed using the `digits` argument.
+`MCMCsummary` is used to output summary information from MCMC output. This function accepts `stanfit` objects (created with the `rstan` package), `mcmc.list` objects (create with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column). The function automatically detects the object type and proceeds accordingly. Two decimal places are reported by default. This can be changed using the `digits` argument.
 
 ```{r, message=FALSE}
 library(MCMCvis)
