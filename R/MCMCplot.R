@@ -234,7 +234,15 @@ MCMCplot <- function(object,
       rn <- diff(range(thin_q))*PL_SC
       xlim = c((min(thin_q) - rn), (max(thin_q) + rn))
     }
-    ylim = c(0.5,(len)+0.5)
+    if (len > 20)
+    {
+      tt <- 1.5
+    } else{
+      alpha <- 0.667
+      beta <- 0.0412
+      tt <- alpha + beta*len
+    }
+    ylim = c(1-tt,(len)+tt)
     if (missing(xlab))
     {xlab = 'Parameter Estimate'}
     if (is.null(xlab))
@@ -272,7 +280,8 @@ MCMCplot <- function(object,
     #plot blank plot
     graphics::plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
          ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-         xlab = xlab, cex.lab = axis_text_sz) #cex.lab is axis label
+         xlab = xlab, cex.lab = axis_text_sz,
+         yaxs = 'i') #cex.lab is axis label
     #lab #number of ticks to plot on each axis
 
     #title
@@ -285,7 +294,7 @@ MCMCplot <- function(object,
          at = tick_pos, lwd = ax_sz,
          cex.axis = tick_text_sz) #bottom axis
     #left axis params (labels)
-    graphics::axis(2, at = ((1:len)+(0.0015*len)), tick = FALSE,
+    graphics::axis(2, at = ((1:len)), tick = FALSE,
          labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
          line = -1, cex.axis = labels_sz)
 
@@ -357,7 +366,15 @@ MCMCplot <- function(object,
       rn <- diff(range(thin_q))*PL_SC
       ylim = c((min(thin_q) - rn), (max(thin_q) + rn))
     }
-    xlim = c(0.5,(len)+0.5)
+    if (len > 20)
+    {
+      tt <- 1.5
+    } else{
+      alpha <- 0.667
+      beta <- 0.0412
+      tt <- alpha + beta*len
+    }
+    xlim = c(1-tt,(len)+tt)
     if (missing(ylab))
     {ylab = 'Parameter Estimate'}
     if (is.null(ylab))
@@ -394,7 +411,7 @@ MCMCplot <- function(object,
     grDevices::pdf(file = NULL)
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = axis_text_sz)
+                   xlab = NA, cex.lab = axis_text_sz, xaxs = 'i')
     #create invisible ticks to determine where to put y-axis label
     tickp <- graphics::axis(2, lwd.ticks = ax_sz, labels = FALSE,
                             at = tick_pos, lwd = ax_sz,
@@ -411,7 +428,7 @@ MCMCplot <- function(object,
     #new blank plot
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = axis_text_sz)
+                   xlab = NA, cex.lab = axis_text_sz, xaxs = 'i')
     #ticks
     graphics::axis(2, lwd.ticks = ax_sz, labels = TRUE,
                    at = tick_pos, lwd = ax_sz,
