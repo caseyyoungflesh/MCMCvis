@@ -4,6 +4,7 @@ tags:
 - MCMC
 - Bayesian
 - Visualization
+- PPO
 authors:
 - name: Casey Youngflesh
   orcid: 0000-0001-6343-3311
