@@ -1,0 +1,23 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0001-6343-3311",
+      "@type": "Person",
+      "email": "caseyyoungflesh@gmail.com",
+      "name": "Casey Youngflesh",
+      "affiliation": ""
+    }
+  ],
+  "identifier": "",
+  "codeRepository": "https://github.com/caseyyoungflesh/MCMCvis",
+  "datePublished": "2018-02-16",
+  "dateModified": "2018-02-16",
+  "dateCreated": "2018-02-16",
+  "description": "Tools to Visualize, Manipulate, and Summarize MCMC Output",
+  "keywords": "MCMC, Bayesian, Visualization, PPO",
+  "license": "GPL v3.0",
+  "title": "MCMCvis",
+  "version": "v0.9.4"
+}
