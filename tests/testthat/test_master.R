@@ -2,7 +2,6 @@ library(MCMCvis)
 
 context("test_master")
 
-## MCMCsummary
 test_that('MCMCsummary returns output for all supported object types',
           {
             #mcmc.list
@@ -22,8 +21,6 @@ test_that('MCMCsummary returns output for all supported object types',
           })
 
 
-## MCMCpstr
-#threed_data
 test_that('MCMCpstr displays dimensions correctly for all object types',
           {
             #mcmc.list
@@ -52,7 +49,6 @@ test_that('MCMCpstr displays dimensions correctly for all object types',
           })
 
 
-## MCMCchains
 test_that('MCMCchains converts all supported object types to mcmc.list',
           {
             #mcmc.list
@@ -69,5 +65,52 @@ test_that('MCMCchains converts all supported object types to mcmc.list',
             expect_error(MCMCchains(matrix_data, mcmc.list = TRUE))
             #jags.samples - expect warning
             expect_error(MCMCchains(jagssamps_data, mcmc.list = TRUE))
+          })
+
+
+test_that('MCMCsummary values agree with manual values derived from posterior chains',
+          {
+            #mcmc.list - mean
+            expect_equal(MCMCsummary(MCMC_data,
+                                      param = 'alpha\\[1\\]',
+                                      ISB = FALSE)[1],
+                         round(mean(MCMCchains(MCMC_data,
+                                    param = 'alpha\\[1\\]',
+                                    ISB = FALSE)), 2))
+            #mcmc.list - sd
+            expect_equal(MCMCsummary(MCMC_data,
+                                     param = 'alpha\\[1\\]',
+                                     ISB = FALSE)[2],
+                         round(sd(MCMCchains(MCMC_data,
+                                               param = 'alpha\\[1\\]',
+                                               ISB = FALSE)), 2))
+            #mcmc.list - 2.5%
+            expect_equal(MCMCsummary(MCMC_data,
+                                     param = 'alpha\\[1\\]',
+                                     ISB = FALSE)[3],
+                         round(quantile(MCMCchains(MCMC_data,
+                                               param = 'alpha\\[1\\]',
+                                               ISB = FALSE), probs = 0.025)[[1]], 2))
+            #mcmc.list - 50%
+            expect_equal(MCMCsummary(MCMC_data,
+                                     param = 'alpha\\[1\\]',
+                                     ISB = FALSE)[4],
+                         round(quantile(MCMCchains(MCMC_data,
+                                                   param = 'alpha\\[1\\]',
+                                                   ISB = FALSE), probs = 0.5)[[1]], 2))
+            #mcmc.list - 97.5%
+            expect_equal(MCMCsummary(MCMC_data,
+                                     param = 'alpha\\[1\\]',
+                                     ISB = FALSE)[5],
+                         round(quantile(MCMCchains(MCMC_data,
+                                                   param = 'alpha\\[1\\]',
+                                                   ISB = FALSE), probs = 0.975)[[1]], 2))
+            #mcmc.list - rhat
+            expect_equal(MCMCsummary(MCMC_data,
+                                     param = 'alpha\\[1\\]',
+                                     ISB = FALSE)[6],
+                         round(coda::gelman.diag(MCMCchains(MCMC_data,
+                                               param = 'alpha\\[1\\]',
+                                               ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 2))
           })
 
