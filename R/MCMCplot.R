@@ -90,9 +90,9 @@
 #' #Just 'beta' parameters
 #' MCMCplot(MCMC_data, params = 'beta')
 #'
-#' #Just 'beta[1]', 'gamma[4]', and 'alpha[3]'
+#' #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
 #' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
-#' MCMCplot(MCMC_data, params = c('beta\\[1\\]', 'gamma\\[4\\]', 'alpha\\[3\\]'), ISB = FALSE)
+#' MCMCplot(MCMC_data, params = c('beta\\[1\\]', 'beta\\[4\\]', 'alpha\\[3\\]'), ISB = FALSE)
 #'
 #' #Rank parameters by posterior mean
 #' MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
