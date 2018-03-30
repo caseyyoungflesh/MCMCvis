@@ -28,20 +28,27 @@ test_that('MCMCpstr displays dimensions correctly for all object types',
           {
             #mcmc.list
             expect_output(str(MCMCpstr(MCMC_data)), 'List of 3')
+            expect_equal(length(MCMCpstr(MCMC_data)$alpha), 10)
+            #mcmc.list - 3d
             expect_output(str(MCMCpstr(threed_data)), 'List of 1')
             expect_equal(dim(MCMCpstr(threed_data)$alpha), c(2,2,2))
             #R2jags
-            # expect_equal(NROW(MCMCsummary(R2jags_data)), 30)
-            # #jags.parallel
-            # expect_equal(NROW(MCMCsummary(jagsparallel_data)), 30)
-            # #jagsUI
-            # expect_equal(NROW(MCMCsummary(jagsUI_data)), 30)
-            # #stan.fit
-            # expect_equal(NROW(MCMCsummary(stan_data)), 11)
-            # #matrix
-            # expect_equal(NROW(MCMCsummary(matrix_data, Rhat = FALSE)), 30)
-            # #jags.samples - expect warning
-            # expect_error(MCMCsummary(jagssamps_data))
+            expect_output(str(MCMCpstr(R2jags_data)), 'List of 4')
+            expect_equal(length(MCMCpstr(R2jags_data)$alpha), 1)
+            #jags.parallel
+            expect_output(str(MCMCpstr(jagsparallel_data)), 'List of 4')
+            expect_equal(length(MCMCpstr(jagsparallel_data)$mu), 27)
+            #jagsUI
+            expect_output(str(MCMCpstr(jagsUI_data)), 'List of 4')
+            expect_equal(length(MCMCpstr(jagsUI_data)$mu), 27)
+            #stan.fit
+            expect_output(str(MCMCpstr(stan_data)), 'List of 2')
+            expect_equal(length(MCMCpstr(stan_data)$mu), 10)
+            #matrix
+            expect_output(str(MCMCpstr(matrix_data)), 'List of 3')
+            expect_equal(length(MCMCpstr(matrix_data)$alpha), 10)
+            #jags.samples - expect warning
+            expect_error(MCMCpstr(jagssamps_data))
           })
 
 
