@@ -16,6 +16,7 @@
 #' @param priors Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. Parameters are plotted alphabetically - priors should be sorted accordingly. If \code{priors} contains only one prior and more than one parameter is specified for the \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.
 #'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
+#' @param open_pdf Logical - if \code{open_pdf = TRUE} pdf will open in viewer after being generated.
 #' @param filename Name of pdf file to be printed. Default is 'MCMCtrace'.
 #' @param wd Working directory for pdf output. Default is current directory.
 #' @param type Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
@@ -53,6 +54,7 @@ MCMCtrace <- function(object,
                     iter = 5000,
                     priors = NULL,
                     pdf = TRUE,
+                    open_pdf = TRUE,
                     filename,
                     wd = getwd(),
                     type = 'both',
@@ -313,7 +315,10 @@ MCMCtrace <- function(object,
   if(pdf == TRUE)
   {
     invisible(grDevices::dev.off())
-    system(paste0('open ', paste0('"', file_out, '"')))
+    if(open_pdf == TRUE)
+    {
+      system(paste0('open ', paste0('"', file_out, '"')))
+    }
   }else{
     graphics::par(.pardefault)
   }
