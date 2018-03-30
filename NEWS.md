@@ -1,34 +1,51 @@
 NEWS
 ====
 
-0.9.4
-- Fix whitespace issue in `MCMCplot` when many parameters are plotted and large fig dimensions are used
-- Fix label alginment issue in `MCMCplot` when horiz = FALSE and large numbers of parameters are plotted
+0.10.0:
 
-0.9.3
+- Fix warning when feeding jags.parallel object to `MCMCsummary`
+- Fix bug that produced an error when using `stanfit` objects
+- Add automated tests to check package functions
+- `MCMCtrace` now takes `open_pdf` as an argument. When `open_pdf = FALSE`, the generated pdf will not be opened in a viewer automatically.
+- `MCMCtrace` now takes `gvals` as an argument. When simulated data are used to fit a model, the generating values used to simulate the data (true parameter values) will be plotted as vertical lines on the density plots.
+- `MCMCplot` `ref_ovl` argument now defaults to FALSE (one color is plotting for all parameter estimates)
+
+
+0.9.4:
+
+- Fix whitespace issue in `MCMCplot` when many parameters are plotted and large fig dimensions are used
+- Fix label alginment issue in `MCMCplot` when `horiz = FALSE` and large numbers of parameters are plotted
+
+0.9.3:
+
 - Fix bug that prevented parameters from being sorted when using matrix input for `MCMCtrace`
 - Add support for objects produced with the jagsUI package
 
-0.9.2
+0.9.2:
+
 - `MCMCtrace` now takes matrix input (as with the other functions). One chain is assumed when matrix input is used.
 
-0.9.1
+0.9.1:
+
 - Fix bug that produced errors when using the `jags.parallel` function in the `R2jags` package.
 - All functions - when `ISB = FALSE`, `params` argument now takes the form of regular expressions
 - Examples for `MCMCtrace` no longer open up external programs (pdf viewer) per CRAN policy
 
 0.9.0:
+
 - `MCMCpstr` function now added. Function returns summary output for a specified function while preserving structure of parameters (i.e., scalar, vector, matrix, array).
 - `MCMCtrace` now takes a `priors` argument to visualize prior/posterior overlap. If specified, the prior (user specified as this information is not contained within the MCMC output) for a specified parameter is plotted on the same plot as the posterior output. Percent overlap between posterior and prior is also calculated and displayed.
 - Fix bug in `MCMCchains` that caused incorrect alphabetization of parameter names when output from R2jags was used.
 
 
 0.8.2:
+
 - `MCMCsummary` greatly speed up calculation of Rhat values for objects with large numbers of parameters
 - `MCMCchains` now takes the argument `mcmc.list`. If specified, `mcmc.list` object returned rather than a matrix.
 
 
 0.8.1:
+
 - Fix bug in `MCMCsummary` that displayed the same result twice when selecting only a single output parameter of interest
 - Fix bug in `MCMCplot` that displayed the axis label too close to tick labels when `horiz = FALSE` and tick labels were very long
 - `MCMCsummary` Rhat values always round to 2 digits
