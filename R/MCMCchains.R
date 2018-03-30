@@ -38,6 +38,14 @@
 #'
 #' @export
 
+
+object <- rstan_object
+params = 'all'
+excl = NULL
+ISB = TRUE
+mcmc.list = FALSE
+
+
 MCMCchains <- function(object,
                      params = 'all',
                      excl = NULL,
@@ -125,10 +133,6 @@ MCMCchains <- function(object,
     }
   }
 
-  if(class(object[[1]]) == 'mcarray')
-  {
-    stop('Invalid object type. jags.samples objects not currently supported. Input must be stanfit object, mcmc.list object, rjags object, jagsUI object, or matrix with MCMC chains.')
-  }
 
 
   #INDEX BLOCK
@@ -253,7 +257,7 @@ MCMCchains <- function(object,
 
 
   #PROCESSING BLOCK
-  if(coda::is.mcmc.list(object) == TRUE)
+  if(coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
   {
     if(length(f_ind) > 1)
     {
