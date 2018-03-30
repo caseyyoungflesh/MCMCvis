@@ -59,7 +59,6 @@
 #'
 #' @export
 
-
 MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,

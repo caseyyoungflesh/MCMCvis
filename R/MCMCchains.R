@@ -38,14 +38,6 @@
 #'
 #' @export
 
-
-object <- rstan_object
-params = 'all'
-excl = NULL
-ISB = TRUE
-mcmc.list = FALSE
-
-
 MCMCchains <- function(object,
                      params = 'all',
                      excl = NULL,
@@ -75,8 +67,7 @@ MCMCchains <- function(object,
      typeof(object) != 'S4' &
      class(object) != 'jagsUI')
   {
-    stop('Invalid object type. Input must be stanfit object (rstan), mcmc.list object (coda),
-         rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+    stop('Invalid object type. Input must be stanfit object (rstan), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
 
   #NAME SORTING BLOCK
