@@ -20,6 +20,8 @@
 #'
 #' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line. See DETAILS for more information.
 #'
+#' @param col Character string specifying which color to render estimates on plot. When \code{ref_ovl = TRUE}, this argument has no effect and colors plotted will be based on the credible intervals and reference line.
+#'
 #' @param rank Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
 #' @param horiz Logical specifying orientation of plot. If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
@@ -62,7 +64,7 @@
 #' Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.
 #'
 #' @section Details:
-#' Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = FALSE} can be used to disable this feature. All median dots will be represented as 'closed' black circles.
+#' Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = TRUE} can be used to enable this feature.
 #'
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
@@ -107,7 +109,8 @@ MCMCplot <- function(object,
                    excl = NULL,
                    ISB = TRUE,
                    ref = 0,
-                   ref_ovl = TRUE,
+                   ref_ovl = FALSE,
+                   col = 'black',
                    rank = FALSE,
                    horiz = TRUE,
                    xlim,
@@ -349,12 +352,12 @@ MCMCplot <- function(object,
       graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2)
     } else{
       graphics::matlines(thick_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+               type = 'l', lty = 1, lwd = thick_sz, col = col)
       graphics::matlines(thin_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+               type = 'l', lty = 1, lwd = thin_sz, col = col)
       #medians
       graphics::points(medians[1:len], 1:len, pch = 16,
-             col = 'black', cex = med_sz)
+             col = col, cex = med_sz)
     }
   }
 
@@ -502,12 +505,12 @@ MCMCplot <- function(object,
       graphics::points(v_wht_bnd[1,], medians[v_white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
     } else{
       graphics::matlines(rbind(1:len, 1:len), thick_q[,len:1],
-                         type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+                         type = 'l', lty = 1, lwd = thick_sz, col = col)
       graphics::matlines(rbind(1:len, 1:len), thin_q[,len:1],
-                         type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+                         type = 'l', lty = 1, lwd = thin_sz, col = col)
       #medians
       graphics::points(1:len, medians[len:1], pch = 16,
-                       col = 'black', cex = med_sz)
+                       col = col, cex = med_sz)
     }
   }
   graphics::par(mar=c(5,4,4,2) + 0.1)
