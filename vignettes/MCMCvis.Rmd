@@ -23,17 +23,70 @@ The package contains five functions:
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
+All functions in the package accept `stanfit` objects (created with the `rstan` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column). The functions automatically detect the object type and proceed accordingly. Output objects can be inserted directly into the `MCMCvis` functions as an argument.
+
+#### JAGS model
+
+```{r, message= FALSE, warning = FALSE, results = FALSE}
+library(rjags)
+library(MCMCvis)
+
+#create JAGS model
+mf <- "
+model {
+for (i in 1:3)
+{
+  mu[i] ~ dnorm(0, 0.01);
+}
+}
+"
+
+jm <- jags.model(textConnection(mf),
+                 n.chains = 3)
+jags_out <- coda.samples(jm,
+                         variable.names = 'mu',
+                         n.iter = 100)
+```
+```{r}
+#plug object directly into package function
+MCMCsummary(jags_out)
+```
+
+#### Stan model
+
+```{r, message= FALSE, warning = FALSE, results = FALSE}
+library(rstan)
+
+#create Stan model
+sm <- "
+parameters {
+real mu[3]; 
+} 
+model {
+for (i in 1:3)
+{
+  mu[i] ~ normal(0, 10);
+}
+} 
+"
+
+stan_out <- stan(model_code = sm, iter = 50) 
+```
+```{r}
+#plug object directly into package function
+MCMCsummary(stan_out)
+```
+
 
 &nbsp;
 
-
 ## MCMCsummary
 
-`MCMCsummary` is used to output summary information from MCMC output. This function accepts `stanfit` objects (created with the `rstan` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column). The function automatically detects the object type and proceeds accordingly. Two decimal places are reported by default. This can be changed using the `digits` argument.
+`MCMCsummary` is used to output summary information from MCMC output. Two decimal places are reported by default. This can be changed using the `digits` argument. We'll use the build in `mcmc.list` object data for the examples below, but model output of any of the supported types will behave in the same way.
+
+
 
 ```{r, message=FALSE}
-library(MCMCvis)
-
 data(MCMC_data)
 
 MCMCsummary(MCMC_data)
@@ -72,7 +125,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively (default for `Rhat` and `n.eff` are `TRUE` and `FALSE`, respectively). Specifying `FALSE` can greatly increase function speed with very large `mcmc.list` objects. Values for Rhat near 1 suggest convergence (Brooks and Gelman 1998). Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates.
+Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively (default for `Rhat` and `n.eff` are `TRUE` and `FALSE`, respectively). Specifying `FALSE` can greatly increase function speed with very large `mcmc.list` objects. Values for Rhat near 1 suggest convergence (Brooks and Gelman 1998). Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates when using JAGS or BUGS. Substantially fewer effective samples are needed when using Stan due to the algorithm used.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -98,7 +151,7 @@ MCMCsummary(MCMC_data,
 
 ## MCMCpstr
 
-`MCMCpstr` is used to output summary information from MCMCoutput while preserving the original structure of the specified parameters (i.e., scalar, vector, matrix, array). Function outputs a `list` with calculated values for each specified parameter, similar to output obtained when fitting models with the `jags.samples` function (as opposed to `coda.samples`) from the `rjags` package. Preserving the original strucutre can be helpful when plotting or summarizing parameters with multidimensional structure. Particular parameters of interest can be specified as with other functions with the `params` argument.
+`MCMCpstr` is used to output summary information from MCMC output while preserving the original structure of the specified parameters (i.e., scalar, vector, matrix, array). Function outputs a `list` with calculated values for each specified parameter, similar to output obtained when fitting models with the `jags.samples` function (as opposed to `coda.samples`) from the `rjags` package. Preserving the original structure can be helpful when plotting or summarizing parameters with multidimensional structure. Particular parameters of interest can be specified as with other functions with the `params` argument.
 
 The function calculates summary information only for the specified function. The function to be used is specified using the `func` argument.
 
@@ -147,11 +200,12 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-PDF document will be output to the current working directory by default, but another directory can be specified.
+PDF document will be output to the current working directory by default, but another directory can be specified. The `open_pdf` argument can be used to prevent the produced pdf from opening in a viewer once generated.
 
 ```{r, eval=FALSE}
 MCMCtrace(MCMC_data, 
         pdf = TRUE, 
+        open_pdf = FALSE,
         filename = 'MYpdf', 
         wd = 'DIRECTORY_HERE')
 ```
@@ -164,16 +218,16 @@ MCMCtrace(MCMC_data,
 MCMCtrace(MCMC_data, 
         params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
         ISB = FALSE,
-        iter = 1800,
+        iter = 100,
         ind = TRUE,
         pdf = FALSE)
 ```
 
 &nbsp;
 
-Overlap between the priors and posteriors can also be calculated by specifying the priors associated with each parameter using the `priors` argument. Ths is particularly useful when investigating how large the effect of the prior is on the posterior distribution - this can be informative when trying to determine how identifiable a particular parameter is in a model.
+Overlap between the priors and posteriors can also be calculated by specifying the priors associated with each parameter using the `priors` argument. This is particularly useful when investigating how large the effect of the prior is on the posterior distribution - this can be informative when trying to determine how identifiable a particular parameter is in a model.
 
-The `priors` argument takes a matrix as input, with each column representing a prior for a different parameter and each row representing a random draw from that prior distribution. These draws can be generated using R functions such as rnorm, rgamma, runif, etc. Parameters are plotted alphabetically - priors should be sorted accordingly. If the `priors` argument contains only one prior and more than one parameter is specified for the `params` argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. It is important to note that some discrepencies between MCMC samplers and R may exist regarding the parameterization of distributions - one example of this is the use of precision in JAGS but standard deviation in R for the 'second parameter' of the normal distribution.
+The `priors` argument takes a matrix as input, with each column representing a prior for a different parameter and each row representing a random draw from that prior distribution. These draws can be generated using R functions such as rnorm, rgamma, runif, etc. Parameters are plotted alphabetically - priors should be sorted accordingly. If the `priors` argument contains only one prior and more than one parameter is specified for the `params` argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. It is important to note that some discrepancies between MCMC samplers and R may exist regarding the parameterization of distributions - one example of this is the use of precision in JAGS but standard deviation in R for the 'second parameter' of the normal distribution.
 
 ```{r, fig.width=5, fig.height=6}
 #same prior used for all parameters
@@ -182,6 +236,21 @@ MCMCtrace(MCMC_data,
           params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
           ISB = FALSE,
           priors = PR,
+          pdf = FALSE)
+```
+
+&nbsp;
+
+If simulated data was used to fit the model, the generating values used to simulate the data can be specified using the `gvals` argument. This makes it possible to compare posterior estimates with the true parameter values. Generating values will be displayed as vertical dotted lines. Similar to the `priors` argument, if one value is specified when more than one parameter is used, this one generating value will be used for all parameters. If the lines are not apparent in the 
+
+
+```{r, fig.width=5, fig.height=6}
+#same prior used for all parameters
+GV <- c(-10, -5.5, -15)
+MCMCtrace(MCMC_data,
+          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          ISB = FALSE,
+          gvals = GV,
           pdf = FALSE)
 ```
 
@@ -213,7 +282,7 @@ ex2 <- MCMCchains(MCMC_data,
 
 ## MCMCplot
 
-`MCMCplot` is used to create caterpillar plots from MCMC output. Points represent posterior medians. For parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. For parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. For parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
+`MCMCplot` is used to create caterpillar plots from MCMC output. Points represent posterior medians. Thick lines represent 50 percent credible intervals while thin lines represent 95 percent credible intervals.
 
 As with the other functions in the package, particular parameters of interest can be specified.
 
@@ -224,13 +293,12 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-`ref_ovl = FALSE` can be used to disable this feature. All median dots will be represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
+`ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. Parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. All median dots are represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
        params = 'beta',
-       ref_ovl = FALSE, 
-       ref = NULL)
+       ref_ovl = TRUE)
 ```
 
 &nbsp;
@@ -257,7 +325,7 @@ MCMCplot(MCMC_data,
 ```
 
 
-Graphical parameters for x and y-axis limitation, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, and margins can be specified.
+Graphical parameters for x and y-axis limitation, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, color of posterior estimates, and margins can be specified.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
@@ -269,6 +337,7 @@ MCMCplot(MCMC_data,
                   'Fourth param', 'Fifth param', 'Sixth param', 
                   'Seventh param', 'Eighth param', 'Nineth param', 
                   'Tenth param'), 
+       col = 'red',
        labels_sz = 1.5,
        med_sz = 2,
        thick_sz = 7,
