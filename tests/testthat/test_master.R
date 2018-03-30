@@ -7,7 +7,6 @@ context("test_master")
 
 # create data -------------------------------------------------------------
 
-
 library(rjags)
 library(R2jags)
 library(jagsUI)
