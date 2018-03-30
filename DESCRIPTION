@@ -2,7 +2,7 @@ Package: MCMCvis
 Type: Package
 Title: Tools to Visualize, Manipulate, and Summarize MCMC Output
 Version: 0.10.0
-Author@R: person("Casey", "Youngflesh", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6343-3311"))
+Authors@R: person("Casey", "Youngflesh", role = c("aut", "cre"), email = "caseyyoungflesh@gmail.com", comment = c(ORCID = "0000-0001-6343-3311"))
 Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
 Description: Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
 License: GPL-3
@@ -12,6 +12,9 @@ LazyData: TRUE
 Imports:
     coda,
     rstan,
+    rjags,
+    R2jags,
+    jagsUI,
     grDevices,
     graphics,
     stats,

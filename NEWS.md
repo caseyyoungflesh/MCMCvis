@@ -9,6 +9,7 @@ NEWS
 - `MCMCtrace` now takes `open_pdf` as an argument. When `open_pdf = FALSE`, the generated pdf will not be opened in a viewer automatically.
 - `MCMCtrace` now takes `gvals` as an argument. When simulated data are used to fit a model, the generating values used to simulate the data (true parameter values) will be plotted as vertical lines on the density plots.
 - `MCMCplot` `ref_ovl` argument now defaults to FALSE (one color is plotting for all parameter estimates)
+- Change `MCMC_data` (exmaple data) so that it's smaller (only 5k iterations and two parameters)
 
 
 0.9.4:

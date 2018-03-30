@@ -9,6 +9,7 @@
 ^Viz_ex\.png$
 ^LICENSE.md
 ^paper/
+^paper.*
 ^codemeta.json
 ^generate.rb
 
