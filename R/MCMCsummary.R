@@ -71,11 +71,6 @@ MCMCsummary <- function(object,
                       func_name = NULL)
 {
   #SORTING BLOCK
-  if(class(object) == 'jagsUI')
-  {
-    object <- object$samples
-  }
-
   if(typeof(object) == 'double')
   {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
