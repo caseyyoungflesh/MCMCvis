@@ -13,6 +13,8 @@
 #'
 #' @param iter Number of iterations to plot for trace and density plots. The default value is 5000, meaning the last 5000 iterations of the chain will be plotted.
 #'
+#' @param gvals Vector containing generating values if simulated data was used to fit model. These values will be plotted as vertical lines on the density plots to compare posterior distributions with the true parameter values used to generate the data.
+#'
 #' @param priors Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. Parameters are plotted alphabetically - priors should be sorted accordingly. If \code{priors} contains only one prior and more than one parameter is specified for the \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.
 #'
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
@@ -52,6 +54,7 @@ MCMCtrace <- function(object,
                     excl = NULL,
                     ISB = TRUE,
                     iter = 5000,
+                    gvals = NULL,
                     priors = NULL,
                     pdf = TRUE,
                     open_pdf = TRUE,
@@ -94,6 +97,7 @@ MCMCtrace <- function(object,
 
 
   #PLOT BLOCK
+  ref_col <- 'red'
   A_VAL <- 0.5 #alpha value
   graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
   graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
@@ -143,6 +147,19 @@ MCMCtrace <- function(object,
       warning("Prior overlap cannot be plotting without density plots. Use type = 'both' or type = 'density'.")
     }
   }
+
+  if (!is.null(gvals))
+  {
+    if (length(gvals) == 1 & length(np) > 1)
+    {
+      warning('Only one generating value specified for > 1 parameter. Using a single generating value for all parameters.')
+    }
+    if (length(gvals) > 1 & length(gvals) != length(np))
+    {
+      stop('Number of generating values does not equal number of specified parameters.')
+    }
+  }
+
 
   if (type == 'both')
   {
@@ -219,6 +236,18 @@ MCMCtrace <- function(object,
         dpr <- stats::density(wp2)
         graphics::lines(dpr, col = 'red')
         graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
+      }
+
+      #if generating values are specified - warnings in block above
+      if (!is.null(gvals))
+      {
+        if (length(gvals) == 1)
+        {
+          gv <- gvals
+        }else {
+          gv <- gvals[j]
+        }
+        graphics::abline(v = gv, lty = 2, lwd = 3, col = ref_col)
       }
     }
   }
@@ -303,6 +332,18 @@ MCMCtrace <- function(object,
         dpr <- stats::density(wp2)
         graphics::lines(dpr, col = 'red')
         graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
+      }
+
+      #if generating values are specified - warnings in block above
+      if (!is.null(gvals))
+      {
+        if (length(gvals) == 1)
+        {
+          gv <- gvals
+        }else {
+          gv <- gvals[j]
+        }
+        graphics::abline(v = gv, lty = 2, lwd = 3, col = ref_col)
       }
     }
   }
