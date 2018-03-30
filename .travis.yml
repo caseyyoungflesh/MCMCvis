@@ -3,3 +3,9 @@
 language: R
 sudo: false
 cache: packages
+
+
+before_install:
+  - sudo add-apt-repository ppa:marutter/rrutter -y
+  - sudo apt-get update
+  - sudo apt-get install r-cran-rjags 
