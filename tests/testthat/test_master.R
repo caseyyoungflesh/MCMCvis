@@ -3,7 +3,8 @@ library(MCMCvis)
 context("test_master")
 
 
-# run tests ---------------------------------------------------------------
+
+# load data ---------------------------------------------------------------
 
 load('../testdata/jags_data.rda')
 load('../testdata/R2jags_data.rda')
@@ -13,6 +14,10 @@ load('../testdata/stan_data.rda')
 load('../testdata/matrix_data.rda')
 load('../testdata/jagssamps_data.rda')
 load('../testdata/threed_data.rda')
+
+
+
+# run tests ---------------------------------------------------------------
 
 test_that('MCMCsummary returns output for all supported object types',
           {
