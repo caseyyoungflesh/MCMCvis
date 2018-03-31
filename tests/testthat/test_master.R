@@ -3,120 +3,16 @@ library(MCMCvis)
 context("test_master")
 
 
-
-
-# create data -------------------------------------------------------------
-
-library(rjags)
-library(R2jags)
-library(jagsUI)
-library(rstan)
-
-#create JAGS model
-mf <- "
-model {
-for (i in 1:10)
-{
-  y[i] ~ dnorm(mu, 0.01);
-}
-mu ~ dnorm(0, 0.01)
-}
-"
-
-data <- list(y = rnorm(10))
-jm <- rjags::jags.model(textConnection(mf),
-                 data = data,
-                 n.chains = 3)
-#rjags
-jags_data <- rjags::coda.samples(jm,
-                         variable.names = 'mu',
-                         n.iter = 100)
-
-#jags.samples
-jagssamps_data <- rjags::jags.samples(jm,
-                               variable.names = 'mu',
-                               n.iter = 100)
-#R2jags
-R2jags_data <- R2jags::jags(data = data,
-                    n.chains = 3,
-                    model.file = textConnection(mf),
-                    parameters.to.save = 'mu',
-                    n.iter = 100)
-
-#jags.parallel
-jagsparallel_data <- R2jags::jags(data = data,
-                    n.chains = 3,
-                    model.file = textConnection(mf),
-                    parameters.to.save = 'mu',
-                    n.iter = 100)
-
-#jagsUI
-jagsUI_data <- jagsUI::autojags(data = data,
-                                parameters.to.save = 'mu',
-                                model.file = textConnection(mf),
-                                n.chains = 3,
-                                iter.increment = 10,
-                                Rhat.limit=1.2,
-                                max.iter= 100)
-
-#Stan data
-
-sm <- "
-data {
-real y[10];
-}
-parameters {
-real mu;
-}
-model {
-for (i in 1:10)
-{
-  y[i] ~ normal(mu, 10);
-}
-mu ~ normal(0, 10);
-}
-"
-
-stan_data <- stan(model_code = sm,
-                 data = data,
-                 iter = 10)
-
-#matrix data
-matrix_data <- cbind(rnorm(100), rnorm(100), rnorm(100))
-colnames(matrix_data) <- c('mu', 'alpha', 'beta')
-
-#3d data
-pnames <- rep(NA, 8)
-id <- 0
-for (i in 1:2)
-{
-  for (j in 1:2)
-  {
-    for (k in 1:2)
-    {
-      id <- sum(id, 1)
-      pnames[id] <- c(paste0('alpha[', i, ',', j, ',', k, ']'))
-    }
-  }
-}
-nc <- 8
-nr <- 10
-means <- c(rnorm(nc, -10, 3))
-sds <- abs(rnorm(nc, 5, 3))
-threed_data <- coda::as.mcmc.list(
-  lapply(1:3,
-         function(i) coda::mcmc(matrix(rnorm(nc*nr, rep(means,each=nr), rep(sds, each=nr)),
-                                       nrow=nr, dimnames=list(NULL,pnames)))))
-
-
-
-
-
-
-
 # run tests ---------------------------------------------------------------
 
-
+load('../testdata/jags_data.rda')
+load('../testdata/R2jags_data.rda')
+load('../testdata/jagsparallel_data.rda')
+load('../testdata/jagsUI_data.rda')
+load('../testdata/stan_data.rda')
+load('../testdata/matrix_data.rda')
+load('../testdata/jagssamps_data.rda')
+load('../testdata/threed_data.rda')
 
 test_that('MCMCsummary returns output for all supported object types',
           {
