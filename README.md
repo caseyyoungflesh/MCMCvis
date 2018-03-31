@@ -79,6 +79,7 @@ just_betas_mcmc_obj <- MCMCchains(MCMC_data, params = 'beta', mcmc.list = TRUE)
 MCMCplot(MCMC_data, 
        params = 'beta', 
        rank = TRUE,
-       horiz = FALSE)
+       horiz = FALSE, 
+       ref_ovl = TRUE)
 ```
 ![](Viz_ex.png)
