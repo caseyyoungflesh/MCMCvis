@@ -27,56 +27,84 @@ All functions in the package accept `stanfit` objects (created with the `rstan` 
 
 #### JAGS model
 
-```{r, message= FALSE, warning = FALSE, results = FALSE}
-library(MCMCvis)
+```{r, eval = FALSE}
 library(rjags)
 
 #create JAGS model
 mf <- "
 model {
-for (i in 1:3)
+for (i in 1:10)
 {
-  mu[i] ~ dnorm(0, 0.01);
+  y[i] ~ dnorm(mu, 0.01);
 }
+mu ~ dnorm(0, 0.01)
 }
 "
 
+data <- list(y = rnorm(10))
+
 jm <- rjags::jags.model(textConnection(mf),
-                 n.chains = 3)
+                        data = data,
+                        n.chains = 3)
+
 jags_out <- rjags::coda.samples(jm,
-                         variable.names = 'mu',
-                         n.iter = 100)
+                                 variable.names = 'mu',
+                                 n.iter = 10)
 ```
+
 ```{r}
+library(MCMCvis)
+```
+
+```{r, eval = FALSE}
 #plug object directly into package function
 MCMCsummary(jags_out)
 ```
 
+```{r, eval = FALSE}
+##     mean   sd  2.5%   50% 97.5% Rhat
+## mu -0.98 2.32 -5.45 -0.91  2.82 1.04
+```
+
+
 #### Stan model
 
-```{r, message= FALSE, warning = FALSE, results = FALSE}
+```{r, eval = FALSE}
 library(rstan)
 
 #create Stan model
+
 sm <- "
-parameters {
-real mu[3]; 
-} 
-model {
-for (i in 1:3)
-{
-  mu[i] ~ normal(0, 10);
+data {
+real y[10];
 }
-} 
+parameters {
+real mu;
+}
+model {
+for (i in 1:10)
+{
+  y[i] ~ normal(mu, 10);
+}
+mu ~ normal(0, 10);
+}
 "
 
-stan_out <- rstan::stan(model_code = sm, iter = 10) 
+stan_out <- stan(model_code = sm,
+                  data = data,
+                  iter = 5)
 ```
-```{r}
+
+```{r, eval = FALSE}
 #plug object directly into package function
 MCMCsummary(stan_out)
 ```
 
+```{r, eval = FALSE}
+##       mean   sd  2.5%   50% 97.5% Rhat
+## mu    1.69 2.85 -3.43  1.38  5.03 1.54
+## lp__ -0.62 0.51 -1.45 -0.62 -0.09 2.77
+```
 
 &nbsp;
 
