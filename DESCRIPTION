@@ -12,9 +12,6 @@ LazyData: TRUE
 Imports:
     coda,
     rstan,
-    rjags,
-    R2jags,
-    jagsUI,
     grDevices,
     graphics,
     stats,
