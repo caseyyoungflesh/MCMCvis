@@ -273,7 +273,7 @@ If simulated data was used to fit the model, the generating values used to simul
 
 
 ```{r, fig.width=5, fig.height=6}
-#same prior used for all parameters
+#generating values for each parameter used to simulate data
 GV <- c(-10, -5.5, -15)
 MCMCtrace(MCMC_data,
           params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
