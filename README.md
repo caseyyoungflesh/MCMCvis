@@ -19,7 +19,7 @@ The package contains five functions:
 
 **This package can be sighted as:**
 
-Youngflesh, C. (2018) MCMCvis: Tools to Visualize, Manipulate, and Summarize MCMC Output. *Journal of Open Source Software*, 3(24), 640, https://doi.org/10.21105/joss.00640
+Youngflesh, C. (2018) MCMCvis: tools to visualize, manipulate, and summarize MCMC output. *Journal of Open Source Software*, 3(24), 640, https://doi.org/10.21105/joss.00640
 
 Installation
 ------------
