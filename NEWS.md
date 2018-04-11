@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.10.1:
+
+- `MCMCpstr` fix bug to institute rounding when parameters as scalars or vectors
+
+
 0.10.0:
 
 - Fix warning when feeding jags.parallel object to `MCMCsummary`
