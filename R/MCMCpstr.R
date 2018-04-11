@@ -111,7 +111,7 @@ MCMCpstr <- function(object,
       for (j in 1:length(ind))
       {
         #j <- 1
-        temp_obj[j] <- func(ch_bind[,ind[j]])
+        temp_obj[j] <- round(func(ch_bind[,ind[j]]), digits = digits)
       }
 
       #fill list
