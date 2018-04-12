@@ -4,6 +4,7 @@ NEWS
 0.10.1:
 
 - `MCMCpstr` fix bug to institute rounding when parameters as scalars or vectors
+- Add CITATION file
 
 
 0.10.0:
