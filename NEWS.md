@@ -4,6 +4,7 @@ NEWS
 0.10.1:
 
 - `MCMCpstr` fix bug to institute rounding when parameters as scalars or vectors
+- `MCMCtrace` now takes `PPO_out` as an argmuent. When `PPO_out = TRUE`, the percent overlap between prior and posterior for each paras will be returned as a dataframe.
 - Add CITATION file
 
 
