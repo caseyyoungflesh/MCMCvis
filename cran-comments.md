@@ -3,8 +3,8 @@ CRAN comments
 
 
 ## Test environments
-* local OS X install, R 3.4.3
-* Ubuntu 14.04.5 (on travis-ci), R 3.4.4
+* local macOS install, R 3.4.3
+* Ubuntu 14.04.5 (on travis-ci), R 3.5.0
 * win-builder (devel)
 
 
