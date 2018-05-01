@@ -5,8 +5,9 @@
 \title{Trace and density plots from MCMC output}
 \usage{
 MCMCtrace(object, params = "all", excl = NULL, ISB = TRUE, iter = 5000,
-  gvals = NULL, priors = NULL, PPO_out = FALSE, pdf = TRUE,
-  open_pdf = TRUE, filename, wd = getwd(), type = "both", ind = FALSE)
+  gvals = NULL, priors = NULL, post_zm = TRUE, PPO_out = FALSE,
+  pdf = TRUE, open_pdf = TRUE, filename, wd = getwd(), type = "both",
+  ind = FALSE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -24,6 +25,8 @@ Default \code{'all'} returns chains for all parameters.}
 \item{gvals}{Vector containing generating values if simulated data was used to fit model. These values will be plotted as vertical lines on the density plots to compare posterior distributions with the true parameter values used to generate the data. No line will be apparent if the generating value is outside the plotted range of the posterior distribution.}
 
 \item{priors}{Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior (PPO) is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. Parameters are plotted alphabetically - priors should be sorted accordingly. If \code{priors} contains only one prior and more than one parameter is specified for the \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.}
+
+\item{post_zm}{Logical - if \code{post_zm = FALSE} x- and y-limits of density plots are scaled so that both the prior and posterior can be visualized on a single density plot (rather than zoomed on the posterior).}
 
 \item{PPO_out}{Logical - if \code{PPO_out = TRUE} percent overlap between prior and posterior (PPO) will be output to a dataframe.}
 

@@ -1,6 +1,10 @@
 NEWS
 ====
 
+0.10.2:
+
+- `MCMCtrace` now takes `post_zm` as an argument. When `post_zm = FALSE`, x- and y-limits of density plots are scaled so that both the prior and posterior can be visualized on a plot (rather than zoomed on the posterior).
+
 0.10.1:
 
 - `MCMCpstr` fix bug to institute rounding when parameters as scalars or vectors
