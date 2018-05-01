@@ -15,8 +15,9 @@
 #'
 #' @param gvals Vector containing generating values if simulated data was used to fit model. These values will be plotted as vertical lines on the density plots to compare posterior distributions with the true parameter values used to generate the data. No line will be apparent if the generating value is outside the plotted range of the posterior distribution.
 #'
-#' @param priors Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. Parameters are plotted alphabetically - priors should be sorted accordingly. If \code{priors} contains only one prior and more than one parameter is specified for the \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.
+#' @param priors Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior (PPO) is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. Parameters are plotted alphabetically - priors should be sorted accordingly. If \code{priors} contains only one prior and more than one parameter is specified for the \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.
 #'
+#' @param PPO_out Logical - if \code{PPO_out = TRUE} percent overlap between prior and posterior (PPO) will be output to a dataframe.
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param open_pdf Logical - if \code{open_pdf = TRUE} pdf will open in viewer after being generated.
 #' @param filename Name of pdf file to be printed. Default is 'MCMCtrace'.
@@ -41,7 +42,7 @@
 #' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
 #' MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, ind = TRUE, pdf = FALSE)
 #'
-#' #Plot prior on top of posterior and calculate prior/posterior overlap just for 'beta[1]'
+#' #Plot prior on top of posterior and calculate prior/posterior overlap (PPO) just for 'beta[1]'
 #' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
 #' PR <- rnorm(15000, 0, 32)
 #' MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, priors = PR, pdf = FALSE)
@@ -56,6 +57,7 @@ MCMCtrace <- function(object,
                     iter = 5000,
                     gvals = NULL,
                     priors = NULL,
+                    PPO_out = FALSE,
                     pdf = TRUE,
                     open_pdf = TRUE,
                     filename,
@@ -144,7 +146,7 @@ MCMCtrace <- function(object,
     }
     if (type == 'trace')
     {
-      warning("Prior overlap cannot be plotting without density plots. Use type = 'both' or type = 'density'.")
+      warning("Prior posterior overlap (PPO) cannot be plotting without density plots. Use type = 'both' or type = 'density'.")
     }
   }
 
@@ -160,6 +162,10 @@ MCMCtrace <- function(object,
     }
   }
 
+  if (PPO_out == TRUE)
+  {
+    PPO_df <- data.frame(param = rep(NA, length(np)), percent_PPO = rep(NA, length(np)))
+  }
 
   if (type == 'both')
   {
@@ -230,7 +236,14 @@ MCMCtrace <- function(object,
         #calculate percent ovelap
         tmlt_1c <- matrix(tmlt, ncol = 1)
         pp <- list(wp2, tmlt_1c)
-        ovrlap <- paste0(round((overlapping::overlap(pp)$OV[[1]])*100, digits = 1), '% overlap')
+        ovr_v <- round((overlapping::overlap(pp)$OV[[1]])*100, digits = 1)
+        ovrlap <- paste0(ovr_v, '% overlap')
+
+        if (PPO_out == TRUE)
+        {
+          PPO_df$param[j] <- np[j]
+          PPO_df$percent_PPO[j] <- ovr_v
+        }
 
         #plot prior and overlap text
         dpr <- stats::density(wp2)
@@ -326,7 +339,14 @@ MCMCtrace <- function(object,
         #calculate percent ovelap
         tmlt_1c <- matrix(tmlt, ncol = 1)
         pp <- list(wp2, tmlt_1c)
-        ovrlap <- paste0(round((overlapping::overlap(pp)$OV[[1]])*100, digits = 1), '% overlap')
+        ovr_v <- round((overlapping::overlap(pp)$OV[[1]])*100, digits = 1)
+        ovrlap <- paste0(ovr_v, '% overlap')
+
+        if (PPO_out == TRUE)
+        {
+          PPO_df$param[j] <- np[j]
+          PPO_df$percent_PPO[j] <- ovr_v
+        }
 
         #plot prior and overlap text
         dpr <- stats::density(wp2)
@@ -362,5 +382,15 @@ MCMCtrace <- function(object,
     }
   }else{
     graphics::par(.pardefault)
+  }
+
+  if (PPO_out == TRUE)
+  {
+    if (is.null(priors))
+    {
+      warning('NAs produced for PPO dataframe as priors not specified.')
+    }
+
+    return(PPO_df)
   }
 }
