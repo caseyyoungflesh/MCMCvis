@@ -17,6 +17,7 @@
 #'
 #' @param priors Matrix containing random draws from prior distributions corresponding to parameters of interest. If specified, priors are plotted along with posterior density plots. Percent overlap between prior and posterior (PPO) is also calculated and displayed on each plot. Each column of the matrix represents a prior for a different parameter. Parameters are plotted alphabetically - priors should be sorted accordingly. If \code{priors} contains only one prior and more than one parameter is specified for the \code{params} argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. See DETAILS below.
 #'
+#' @param post_zm Logical - if \code{post_zm = FALSE} x- and y-limits of density plots are scaled so that both the prior and posterior can be visualized on a single density plot (rather than zoomed on the posterior).
 #' @param PPO_out Logical - if \code{PPO_out = TRUE} percent overlap between prior and posterior (PPO) will be output to a dataframe.
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #' @param open_pdf Logical - if \code{open_pdf = TRUE} pdf will open in viewer after being generated.
@@ -57,6 +58,7 @@ MCMCtrace <- function(object,
                     iter = 5000,
                     gvals = NULL,
                     priors = NULL,
+                    post_zm = TRUE,
                     PPO_out = FALSE,
                     pdf = TRUE,
                     open_pdf = TRUE,
@@ -179,33 +181,8 @@ MCMCtrace <- function(object,
                        blue= gg_cols[3,], alpha = A_VAL),
               xlab= 'Iteration', ylab= 'Value')
 
-      #density
-      if (ind == TRUE & n_chains > 1)
-      {
-        dens <- apply(tmlt, 2, stats::density)
-        max_den <- c()
-        for (k in 1:NCOL(tmlt))
-        {
-          max_den <- c(max_den, max(dens[[k]]$y))
-        }
-        ylim <- c(0, max(max_den))
 
-        graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
-             lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
-             col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
-
-        for (l in 2:NCOL(tmlt))
-        {
-          graphics::lines(dens[[l]],
-                col = grDevices::rgb(red = gg_cols[1,l], green = gg_cols[2,l],
-                          blue = gg_cols[3,l]))
-        }
-      }else{
-        #density plot
-        graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
-             lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
-      }
-
+      #PPO
       #if priors are specified
       if (!is.null(priors))
       {
@@ -233,6 +210,11 @@ MCMCtrace <- function(object,
           wp2 <- wp
         }
 
+        #for PPO plotting below
+        dpr <- stats::density(wp2)
+        PPO_x_rng <- range(dpr$x)
+        PPO_y_rng <- range(dpr$y)
+
         #calculate percent ovelap
         tmlt_1c <- matrix(tmlt, ncol = 1)
         pp <- list(wp2, tmlt_1c)
@@ -244,9 +226,63 @@ MCMCtrace <- function(object,
           PPO_df$param[j] <- np[j]
           PPO_df$percent_PPO[j] <- ovr_v
         }
+      }
 
+      #density
+      if (ind == TRUE & n_chains > 1)
+      {
+        dens <- apply(tmlt, 2, stats::density)
+        max_den_y <- c()
+        rng_den_x <- c()
+        for (k in 1:NCOL(tmlt))
+        {
+          max_den_y <- c(max_den_y, max(dens[[k]]$y))
+          rng_den_x <- c(rng_den_x, range(dens[[k]]$x))
+        }
+        ylim <- c(0, max(max_den_y))
+        xlim <- range(rng_den_x)
+
+        #using PPO rng
+        if (!is.null(priors) & post_zm == FALSE)
+        {
+          ylim <- range(c(ylim, PPO_y_rng))
+          xlim <- range(c(xlim, PPO_x_rng))
+        } else {
+          xlim <- NULL
+        }
+
+        graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim, xlim = xlim,
+             lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
+             col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
+
+        for (l in 2:NCOL(tmlt))
+        {
+          graphics::lines(dens[[l]],
+                col = grDevices::rgb(red = gg_cols[1,l], green = gg_cols[2,l],
+                          blue = gg_cols[3,l]))
+        }
+      } else{
+
+        dens <- stats::density(rbind(tmlt))
+        #using PPO rng
+        if (!is.null(priors) & post_zm == FALSE)
+        {
+          ylim <- range(c(range(dens$y), PPO_y_rng))
+          xlim <- range(c(range(dens$x), PPO_x_rng))
+        } else {
+          ylim <- NULL
+          xlim <- NULL
+        }
+
+        #density plot
+        graphics::plot(dens, xlab = 'Parameter estimate', ylim = ylim,
+                       xlim = xlim, lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
+      }
+
+      #plotting PPO
+      if (!is.null(priors))
+      {
         #plot prior and overlap text
-        dpr <- stats::density(wp2)
         graphics::lines(dpr, col = 'red')
         graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
       }
@@ -282,39 +318,13 @@ MCMCtrace <- function(object,
   {
     for (j in 1: length(np))
     {
-      #trace
       tmlt <- do.call('cbind', object2[it, np[j]])
 
-      if (ind == TRUE & n_chains > 1)
-      {
-        dens <- apply(tmlt, 2, stats::density)
-        max_den <- c()
-        for (k in 1:NCOL(tmlt))
-        {
-          max_den <- c(max_den, max(dens[[k]]$y))
-        }
-        ylim <- c(0, max(max_den))
-
-        graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim,
-             lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
-             col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
-
-        for (l in 2:NCOL(tmlt))
-        {
-          graphics::lines(dens[[l]],
-                col = grDevices::rgb(red= gg_cols[1,l], green= gg_cols[2,l],
-                          blue= gg_cols[3,l]))
-        }
-      }else{
-        #density plot
-        graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate',
-             lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
-      }
-
+      #PPO
       #if priors are specified
       if (!is.null(priors))
       {
-        if (NCOL(priors) == 1 & length(np) > 1)
+        if (NCOL(priors) == 1)
         {
           wp <- priors
         }else{
@@ -323,11 +333,13 @@ MCMCtrace <- function(object,
         lwp <- length(wp)
         if (lwp > length(it)*n_chains)
         {
+          #warnings in block above
           pit <- (lwp - (length(it)*n_chains)+1) : lwp
           wp2 <- wp[pit]
         }
         if (lwp < length(it)*n_chains)
         {
+          #warnings in block above
           samps <- sample(wp, size = ((length(it)*n_chains)-lwp), replace = TRUE)
           wp2 <- c(wp, samps)
         }
@@ -335,6 +347,11 @@ MCMCtrace <- function(object,
         {
           wp2 <- wp
         }
+
+        #for PPO plotting below
+        dpr <- stats::density(wp2)
+        PPO_x_rng <- range(dpr$x)
+        PPO_y_rng <- range(dpr$y)
 
         #calculate percent ovelap
         tmlt_1c <- matrix(tmlt, ncol = 1)
@@ -347,9 +364,63 @@ MCMCtrace <- function(object,
           PPO_df$param[j] <- np[j]
           PPO_df$percent_PPO[j] <- ovr_v
         }
+      }
 
+
+      if (ind == TRUE & n_chains > 1)
+      {
+        dens <- apply(tmlt, 2, stats::density)
+        max_den_y <- c()
+        rng_den_x <- c()
+        for (k in 1:NCOL(tmlt))
+        {
+          max_den_y <- c(max_den_y, max(dens[[k]]$y))
+          rng_den_x <- c(rng_den_x, range(dens[[k]]$x))
+        }
+        ylim <- c(0, max(max_den_y))
+        xlim <- range(rng_den_x)
+
+        #using PPO rng
+        if (!is.null(priors) & post_zm == FALSE)
+        {
+          ylim <- range(c(ylim, PPO_y_rng))
+          xlim <- range(c(xlim, PPO_x_rng))
+        } else {
+          xlim <- NULL
+        }
+
+        graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim, xlim = xlim,
+             lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
+             col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
+
+        for (l in 2:NCOL(tmlt))
+        {
+          graphics::lines(dens[[l]],
+                col = grDevices::rgb(red= gg_cols[1,l], green= gg_cols[2,l],
+                          blue= gg_cols[3,l]))
+        }
+      } else{
+
+        dens <- stats::density(rbind(tmlt))
+        #using PPO rng
+        if (!is.null(priors) & post_zm == FALSE)
+        {
+          ylim <- range(c(range(dens$y), PPO_y_rng))
+          xlim <- range(c(range(dens$x), PPO_x_rng))
+        } else {
+          ylim <- NULL
+          xlim <- NULL
+        }
+
+        #density plot
+        graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate', ylim = ylim,
+             xlim = xlim, lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
+      }
+
+      #plotting PPO
+      if (!is.null(priors))
+      {
         #plot prior and overlap text
-        dpr <- stats::density(wp2)
         graphics::lines(dpr, col = 'red')
         graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
       }
@@ -390,7 +461,6 @@ MCMCtrace <- function(object,
     {
       warning('NAs produced for PPO dataframe as priors not specified.')
     }
-
     return(PPO_df)
   }
 }
