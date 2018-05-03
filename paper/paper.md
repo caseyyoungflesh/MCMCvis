@@ -89,7 +89,7 @@ MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, priors = PR)
 
 #### Manipulate
 
-Extract posterior chains for parameters of interest. In this way, large MCMC objects can be subset to smaller, more manageable, objects. Ouput can be in matrix format, or 'mcmc.list' format.
+Extract posterior chains for parameters of interest. In this way, large MCMC objects can be subset to smaller, more manageable, objects. Output can be in matrix format, or 'mcmc.list' format.
 
 ```{r}
 just_betas_mcmc_obj <- MCMCchains(MCMC_data, params = 'beta', mcmc.list = TRUE)

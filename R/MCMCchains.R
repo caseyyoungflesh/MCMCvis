@@ -145,7 +145,7 @@ MCMCchains <- function(object,
     }
     if(length(rm_ind) < 1)
     {
-      stop(paste0('"', excl, '"', ' not found in MCMC ouput.'))
+      stop(paste0('"', excl, '"', ' not found in MCMC output.'))
     }
     dups <- which(duplicated(rm_ind))
     if(length(dups) > 0)
@@ -177,7 +177,7 @@ MCMCchains <- function(object,
 
       if (length(get_ind) < 1)
       {
-        stop(paste0('"', params, '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', params, '"', ' not found in MCMC output.'))
       }
       if(!is.null(excl))
       {
@@ -209,7 +209,7 @@ MCMCchains <- function(object,
 
       if (length(get_ind) < 1)
       {
-        stop(paste0('"', params[i], '"', ' not found in MCMC ouput.'))
+        stop(paste0('"', params[i], '"', ' not found in MCMC output.'))
       }
       grouped <- c(grouped, get_ind)
     }
