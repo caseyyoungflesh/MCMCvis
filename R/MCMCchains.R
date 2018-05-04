@@ -209,7 +209,8 @@ MCMCchains <- function(object,
 
       if (length(get_ind) < 1)
       {
-        stop(paste0('"', params[i], '"', ' not found in MCMC output.'))
+        warning(paste0('"', params[i], '"', ' not found in MCMC output.'))
+        next()
       }
       grouped <- c(grouped, get_ind)
     }
@@ -245,7 +246,6 @@ MCMCchains <- function(object,
       }
     }
   }
-
 
   #PROCESSING BLOCK
   if(coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
