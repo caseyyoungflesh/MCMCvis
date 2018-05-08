@@ -1,6 +1,12 @@
 NEWS
 ====
 
+0.10.3:
+
+- All functions now return a warning for missing params in`excl` and `params` arguments instead of an error. This means that output will be returned even when values specified do not exist. Change was made to `MCMCchains` code but impacts all functions.
+- Fix typos
+- Add contributors Che-Castaldo and Hardy
+
 
 0.10.2:
 
@@ -10,7 +16,7 @@ NEWS
 0.10.1:
 
 - `MCMCpstr` fix bug to institute rounding when parameters as scalars or vectors
-- `MCMCtrace` now takes `PPO_out` as an argmuent. When `PPO_out = TRUE`, the percent overlap between prior and posterior for each paras will be returned as a dataframe.
+- `MCMCtrace` now takes `PPO_out` as an argument. When `PPO_out = TRUE`, the percent overlap between prior and posterior for each paras will be returned as a data.frame.
 - Add CITATION file
 
 
@@ -22,13 +28,13 @@ NEWS
 - `MCMCtrace` now takes `open_pdf` as an argument. When `open_pdf = FALSE`, the generated pdf will not be opened in a viewer automatically.
 - `MCMCtrace` now takes `gvals` as an argument. When simulated data are used to fit a model, the generating values used to simulate the data (true parameter values) will be plotted as vertical lines on the density plots.
 - `MCMCplot` `ref_ovl` argument now defaults to FALSE (one color is plotting for all parameter estimates)
-- Change `MCMC_data` (exmaple data) so that it's smaller (only 5k iterations and two parameters)
+- Change `MCMC_data` (example data) so that it's smaller (only 5k iterations and two parameters)
 
 
 0.9.4:
 
-- Fix whitespace issue in `MCMCplot` when many parameters are plotted and large fig dimensions are used
-- Fix label alginment issue in `MCMCplot` when `horiz = FALSE` and large numbers of parameters are plotted
+- Fix white space issue in `MCMCplot` when many parameters are plotted and large fig dimensions are used
+- Fix label alignment issue in `MCMCplot` when `horiz = FALSE` and large numbers of parameters are plotted
 
 
 0.9.3:
