@@ -137,22 +137,33 @@ MCMCchains <- function(object,
       {
         n_excl <- vapply(strsplit(excl,
                                   split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-        rm_ind <- c(rm_ind, which(names %in% n_excl[i]))
+        ind_excl <- which(names %in% n_excl[i])
+        if(length(ind_excl) < 1)
+        {
+          warning(paste0('"', excl[i], '"', ' not found in MCMC output.'))
+        }
+        rm_ind <- c(rm_ind, ind_excl)
       }else{
         n_excl <- excl
-        rm_ind <- c(rm_ind, grep(n_excl[i], names, fixed = FALSE))
+        ind_excl <- grep(n_excl[i], names, fixed = FALSE)
+        if(length(ind_excl) < 1)
+        {
+          warning(paste0('"', excl[i], '"', ' not found in MCMC output.'))
+        }
+        rm_ind <- c(rm_ind, ind_excl)
       }
     }
-    if(length(rm_ind) < 1)
+    if(length(rm_ind) > 0)
     {
-      stop(paste0('"', excl, '"', ' not found in MCMC output.'))
-    }
-    dups <- which(duplicated(rm_ind))
-    if(length(dups) > 0)
-    {
-      rm_ind2 <- rm_ind[-dups]
+      dups <- which(duplicated(rm_ind))
+      if(length(dups) > 0)
+      {
+        rm_ind2 <- rm_ind[-dups]
+      }else{
+        rm_ind2 <- rm_ind
+      }
     }else{
-      rm_ind2 <- rm_ind
+      excl <- NULL
     }
   }
 
