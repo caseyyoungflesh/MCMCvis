@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.10.4:
+
+- `MCMCchains` now takes `chain_num` as an argument. When specified, single posterior chains can be output for a particular parameter of interest. Useful for determining the last value in an MCMC chain for each parameter (to be used as inital values for a subseqent model run).
+
+
 0.10.3:
 
 - All functions now return a warning for missing params in`excl` and `params` arguments instead of an error. This means that output will be returned even when values specified do not exist. Change was made to `MCMCchains` code but impacts all functions.

@@ -13,6 +13,8 @@
 #'
 #' @param mcmc.list Logical specifying whether to return an mcmc.list. If \code{TRUE}, an \code{mcmc.list} object is returned, rather than a matrix.
 #'
+#' @param chain_num Numeric - specifies posterior chain numer. When a value is specified, posterior for only that chain is output. Useful for determining the last iteration for each parameter, to be used as initial values in a subsequent model, to effectively 'continue' a model run.
+#'
 #' @section Details:
 #' Function returns matrix with one chain per column for specified parameters. Multiple input chains for each parameter are combined to one posterior chain. Parameters are arranged in columns alphabetically.
 #'
@@ -42,7 +44,8 @@ MCMCchains <- function(object,
                      params = 'all',
                      excl = NULL,
                      ISB = TRUE,
-                     mcmc.list = FALSE)
+                     mcmc.list = FALSE,
+                     chain_num = NULL)
 {
   if(length(class(object)) > 1)
   {
@@ -123,8 +126,6 @@ MCMCchains <- function(object,
       names <- rownames(object$BUGSoutput$summary)
     }
   }
-
-
 
   #INDEX BLOCK
   #exclusions
@@ -259,31 +260,84 @@ MCMCchains <- function(object,
   }
 
   #PROCESSING BLOCK
-  if(coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
+  if (is.null(chain_num))
   {
-    if(length(f_ind) > 1)
+    if(coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
     {
-      dsort <- do.call(coda::mcmc.list, temp_in[,f_ind])
-      OUT <- do.call('rbind', dsort)
-    }else{
-      dsort <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
-      OUT <- as.matrix(do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE]), ncol = 1)
+      if(length(f_ind) > 1)
+      {
+        dsort_mcmc <- do.call(coda::mcmc.list, temp_in[,f_ind])
+        OUT <- do.call('rbind', dsort_mcmc)
+      }else{
+        dsort_mcmc <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
+        OUT <- as.matrix(do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE]), ncol = 1)
+      }
+    }
+    if(typeof(object) == 'double')
+    {
+      OUT <- temp_in[,f_ind, drop = FALSE]
+      if(mcmc.list == TRUE)
+      {
+        stop('Cannot produce mcmc.list output with matrix input')
+      }
+    }
+
+    if(class(object) == 'rjags')
+    {
+      OUT <- temp_in[,f_ind, drop = FALSE]
+      if(mcmc.list == TRUE)
+      {
+        #modified coda::as.mcmc (removing ordering of param names)
+        x <- object$BUGSoutput
+        mclist <- vector("list", x$n.chains)
+        mclis <- vector("list", x$n.chains)
+        strt <- x$n.burnin + 1
+        end <- x$n.iter
+        ord <- dimnames(x$sims.array)[[3]]
+        for (i in 1:x$n.chains)
+        {
+          tmp1 <- x$sims.array[, i, ord]
+          mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+        }
+        temp2 <- coda::as.mcmc.list(mclis)
+        #end mod as.mcmc
+        dsort_mcmc <- do.call(coda::mcmc.list, temp2[,f_ind, drop = FALSE])
+      }
     }
   }
 
-  if(typeof(object) == 'double')
+  if (!is.null(chain_num))
   {
-    OUT <- temp_in[,f_ind, drop = FALSE]
-    if(mcmc.list == TRUE)
+    if(coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
     {
-      stop('Cannot produce mcmc.list output with matrix input')
-    }
-  }
+      if(length(f_ind) > 1)
+      {
+        dsort <- do.call(coda::mcmc.list, temp_in[,f_ind])
 
-  if(class(object) == 'rjags')
-  {
-    OUT <- temp_in[,f_ind, drop = FALSE]
-    if(mcmc.list == TRUE)
+        if (chain_num > length(dsort))
+        {
+          stop('Invalid value for chain_num specified.')
+        }
+        dsort_mcmc <- dsort[[chain_num]]
+        OUT <- as.matrix(dsort_mcmc)
+      }else{
+        dsort <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
+
+        if (chain_num > length(dsort))
+        {
+          stop('Invalid value for chain_num specified.')
+        }
+        dsort_mcmc <- dsort[[chain_num]]
+        OUT <- as.matrix(dsort_mcmc)
+      }
+    }
+
+    if(typeof(object) == 'double')
+    {
+      stop('Cannot extract posterior information for individual chains from matrix input.')
+    }
+
+    if(class(object) == 'rjags')
     {
       #modified coda::as.mcmc (removing ordering of param names)
       x <- object$BUGSoutput
@@ -300,6 +354,12 @@ MCMCchains <- function(object,
       temp2 <- coda::as.mcmc.list(mclis)
       #end mod as.mcmc
       dsort <- do.call(coda::mcmc.list, temp2[,f_ind, drop = FALSE])
+      if (chain_num > length(dsort))
+      {
+        stop('Invalid value for chain_num specified.')
+      }
+      dsort_mcmc <- dsort[[chain_num]]
+      OUT <- as.matrix(dsort_mcmc)
     }
   }
 
@@ -307,10 +367,9 @@ MCMCchains <- function(object,
   {
     return(OUT)
   }
-
   if(mcmc.list == TRUE)
   {
-    return(dsort)
+    return(dsort_mcmc)
   }
 }
 
