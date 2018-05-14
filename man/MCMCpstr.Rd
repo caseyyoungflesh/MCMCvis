@@ -31,6 +31,6 @@ Extract summary information from MCMC output (specific function specified) for s
 #Load data
 data(MCMC_data)
 
-MCMCpstr(MCMC_data, func = function(x) quantile(x, probs = c(0.01, 0.99))
+MCMCpstr(MCMC_data, func = function(x) quantile(x, probs = c(0.01, 0.99)))
 
 }
