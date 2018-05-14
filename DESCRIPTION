@@ -1,7 +1,7 @@
 Package: MCMCvis
 Type: Package
 Title: Tools to Visualize, Manipulate, and Summarize MCMC Output
-Version: 0.10.4
+Version: 0.10.5
 Authors@R: c(
     person("Casey", "Youngflesh", role = c("aut", "cre"), email = "caseyyoungflesh@gmail.com", comment = c(ORCID = "0000-0001-6343-3311")),
     person("Christian", "Che-Castaldo", role = c("ctb")),

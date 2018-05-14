@@ -88,45 +88,45 @@ test_that('MCMCchains converts all supported object types to mcmc.list',
 test_that('MCMCsummary values agree with manual values derived from posterior chains',
           {
             #mcmc.list - mean
-            expect_equal(MCMCsummary(MCMC_data,
+            expect_equal(round(MCMCsummary(MCMC_data,
                                       param = 'alpha\\[1\\]',
-                                      ISB = FALSE)[1],
-                         round(mean(MCMCchains(MCMC_data,
+                                      ISB = FALSE)[1], 3),
+                              round(mean(MCMCchains(MCMC_data,
                                     param = 'alpha\\[1\\]',
-                                    ISB = FALSE)), 2))
+                                    ISB = FALSE)), 3))
             #mcmc.list - sd
-            expect_equal(MCMCsummary(MCMC_data,
+            expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[2],
-                         round(sd(MCMCchains(MCMC_data,
+                                     ISB = FALSE)[2], 3),
+                               round(sd(MCMCchains(MCMC_data,
                                                param = 'alpha\\[1\\]',
-                                               ISB = FALSE)), 2))
+                                               ISB = FALSE)), 3))
             #mcmc.list - 2.5%
-            expect_equal(MCMCsummary(MCMC_data,
+            expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[3],
-                         round(quantile(MCMCchains(MCMC_data,
+                                     ISB = FALSE)[3], 3),
+                               round(quantile(MCMCchains(MCMC_data,
                                                param = 'alpha\\[1\\]',
-                                               ISB = FALSE), probs = 0.025)[[1]], 2))
+                                               ISB = FALSE), probs = 0.025)[[1]], 3))
             #mcmc.list - 50%
-            expect_equal(MCMCsummary(MCMC_data,
+            expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[4],
-                         round(quantile(MCMCchains(MCMC_data,
+                                     ISB = FALSE)[4], 3),
+                               round(quantile(MCMCchains(MCMC_data,
                                                    param = 'alpha\\[1\\]',
-                                                   ISB = FALSE), probs = 0.5)[[1]], 2))
+                                                   ISB = FALSE), probs = 0.5)[[1]], 3))
             #mcmc.list - 97.5%
-            expect_equal(MCMCsummary(MCMC_data,
+            expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[5],
-                         round(quantile(MCMCchains(MCMC_data,
+                                     ISB = FALSE)[5], 3),
+                               round(quantile(MCMCchains(MCMC_data,
                                                    param = 'alpha\\[1\\]',
-                                                   ISB = FALSE), probs = 0.975)[[1]], 2))
+                                                   ISB = FALSE), probs = 0.975)[[1]], 3))
             #mcmc.list - rhat
-            expect_equal(MCMCsummary(MCMC_data,
+            expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[6],
-                         round(coda::gelman.diag(MCMCchains(MCMC_data,
+                                     ISB = FALSE)[6], 3),
+                               round(coda::gelman.diag(MCMCchains(MCMC_data,
                                                param = 'alpha\\[1\\]',
-                                               ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 2))
+                                               ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 3))
           })

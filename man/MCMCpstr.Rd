@@ -4,8 +4,7 @@
 \alias{MCMCpstr}
 \title{Summary function for MCMC output that preserves parameter structure}
 \usage{
-MCMCpstr(object, params = "all", excl = NULL, ISB = TRUE, digits = 2,
-  func = mean)
+MCMCpstr(object, params = "all", excl = NULL, ISB = TRUE, func = mean)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -17,10 +16,6 @@ Default \code{'all'} returns all parameters in summary output.}
 \item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
 
 \item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.}
-
-\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified number of digits (except for Rhat which is always rounded to 2 digits).
-
-Default is \code{digits = 2}.}
 
 \item{func}{Function to be performed on MCMC output. Output of specified function must be of length 1.}
 }

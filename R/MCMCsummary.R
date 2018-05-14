@@ -12,9 +12,9 @@
 #'
 #' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
 #'
-#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified number of digits (except for Rhat which is always rounded to 2 digits).
+#' @param digits Number of significant digits to include for posterior summary. All computed digits will be included by default. Note that Rhat is always rounded to 2 decimal places.
 #'
-#' Default is \code{digits = 2}.
+#' @param round Number of decimal places to to round to for posterior summary. Cannot be used in connjunction with \code{digits} argument Note that Rhat is always rounded to 2 decimal places.
 #'
 #' @param Rhat Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). Values near 1 suggest convergence (Brooks and Gelman 1998). \code{Rhat = FALSE} will prevent display of this column in summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.
 #'
@@ -47,11 +47,11 @@
 #' #Load data
 #' data(MCMC_data)
 #'
-#' #Summary information for MCMC output
-#' MCMCsummary(MCMC_data)
+#' #Summary information for MCMC output - display 2 significant digits
+#' MCMCsummary(MCMC_data, digits = 2)
 #'
-#' #Just 'beta' parameters
-#' MCMCsummary(MCMC_data, params = 'beta')
+#' #Just 'beta' parameters - round to 2 decimal places
+#' MCMCsummary(MCMC_data, params = 'beta', round = 2)
 #'
 #' #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
 #' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
@@ -63,7 +63,8 @@ MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
                       ISB = TRUE,
-                      digits = 2,
+                      digits = NULL,
+                      round = NULL,
                       Rhat = TRUE,
                       n.eff = FALSE,
                       func = NULL,
@@ -77,7 +78,6 @@ MCMCsummary <- function(object,
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
   }
 
-
   #PROCESSING BLOCK
     if(coda::is.mcmc.list(object2) == TRUE)
     {
@@ -90,11 +90,34 @@ MCMCsummary <- function(object,
         ch_bind <- as.matrix(object2)
       }
 
-      bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
-      bind_sd <- round(apply(ch_bind, 2, stats::sd), digits = digits)
-      bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
-      bind_med <- round(apply(ch_bind, 2, stats::median), digits = digits)
-      bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
+      if (!is.null(digits))
+      {
+        if (!is.null(round))
+        {
+          warning("'digits' and 'round' arguments cannot be used together. Using 'digits'.")
+        }
+        bind_mn <- signif(apply(ch_bind, 2, mean), digits = digits)
+        bind_sd <- signif(apply(ch_bind, 2, stats::sd), digits = digits)
+        bind_LCI <- signif(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
+        bind_med <- signif(apply(ch_bind, 2, stats::median), digits = digits)
+        bind_UCI <- signif(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
+      }
+      if (is.null(digits) & !is.null(round))
+      {
+        bind_mn <- round(apply(ch_bind, 2, mean), digits = round)
+        bind_sd <- round(apply(ch_bind, 2, stats::sd), digits = round)
+        bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = round)
+        bind_med <- round(apply(ch_bind, 2, stats::median), digits = round)
+        bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = round)
+      }
+      if (is.null(digits) & is.null(round))
+      {
+        bind_mn <- apply(ch_bind, 2, mean)
+        bind_sd <- apply(ch_bind, 2, stats::sd)
+        bind_LCI <- apply(ch_bind, 2, stats::quantile, probs= 0.025)
+        bind_med <- apply(ch_bind, 2, stats::median)
+        bind_UCI <- apply(ch_bind, 2, stats::quantile, probs= 0.975)
+      }
 
       if(Rhat == TRUE)
       {
@@ -108,11 +131,9 @@ MCMCsummary <- function(object,
             {
               r_hat[v] <- round(coda::gelman.diag(object2[,v])$psrf[,1], digits = 2)
             }
-
           }else{
             r_hat <- round(coda::gelman.diag(object2, multivariate = FALSE)$psrf[,1], digits = 2)
           }
-
         }else{
           warning('Rhat statistic cannot be calculated with one chain. NAs inserted.')
           r_hat <- rep(NA, NCOL(object2))
@@ -135,7 +156,18 @@ MCMCsummary <- function(object,
 
       if(!is.null(func))
       {
-        tmp <- round(apply(ch_bind, 2, func), digits = digits)
+        if (!is.null(digits))
+        {
+          tmp <- signif(apply(ch_bind, 2, func), digits = digits)
+        }
+        if (is.null(digits) & !is.null(round))
+        {
+          tmp <- round(apply(ch_bind, 2, func), digits = round)
+        }
+        if (is.null(digits) & is.null(round))
+        {
+          tmp <- apply(ch_bind, 2, func)
+        }
 
         if(!is.null(dim(tmp)) & NROW(tmp) > 1)
         {
@@ -179,11 +211,34 @@ MCMCsummary <- function(object,
       np <- NCOL(object2)
       ch_bind <- object2
 
-      bind_mn <- round(apply(ch_bind, 2, mean), digits = digits)
-      bind_sd <- round(apply(ch_bind, 2, stats::sd), digits = digits)
-      bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
-      bind_med <- round(apply(ch_bind, 2, stats::median), digits = digits)
-      bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
+      if (!is.null(digits))
+      {
+        if (!is.null(round))
+        {
+          warning("'digits' and 'round' arguments cannot be used together. Using 'digits'.")
+        }
+        bind_mn <- signif(apply(ch_bind, 2, mean), digits = digits)
+        bind_sd <- signif(apply(ch_bind, 2, stats::sd), digits = digits)
+        bind_LCI <- signif(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = digits)
+        bind_med <- signif(apply(ch_bind, 2, stats::median), digits = digits)
+        bind_UCI <- signif(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = digits)
+      }
+      if (is.null(digits) & !is.null(round))
+      {
+        bind_mn <- round(apply(ch_bind, 2, mean), digits = round)
+        bind_sd <- round(apply(ch_bind, 2, stats::sd), digits = round)
+        bind_LCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.025), digits = round)
+        bind_med <- round(apply(ch_bind, 2, stats::median), digits = round)
+        bind_UCI <- round(apply(ch_bind, 2, stats::quantile, probs= 0.975), digits = round)
+      }
+      if (is.null(digits) & is.null(round))
+      {
+        bind_mn <- apply(ch_bind, 2, mean)
+        bind_sd <- apply(ch_bind, 2, stats::sd)
+        bind_LCI <- apply(ch_bind, 2, stats::quantile, probs= 0.025)
+        bind_med <- apply(ch_bind, 2, stats::median)
+        bind_UCI <- apply(ch_bind, 2, stats::quantile, probs= 0.975)
+      }
 
       if(Rhat == TRUE)
       {
@@ -208,7 +263,18 @@ MCMCsummary <- function(object,
 
       if(!is.null(func))
       {
-        tmp <- round(apply(ch_bind, 2, func), digits = digits)
+        if (!is.null(digits))
+        {
+          tmp <- signif(apply(ch_bind, 2, func), digits = digits)
+        }
+        if (is.null(digits) & !is.null(round))
+        {
+          tmp <- round(apply(ch_bind, 2, func), digits = round)
+        }
+        if (is.null(digits) & is.null(round))
+        {
+          tmp <- apply(ch_bind, 2, func)
+        }
 
         if(!is.null(dim(tmp)) & NROW(tmp) > 1)
         {

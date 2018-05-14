@@ -1,6 +1,14 @@
 NEWS
 ====
 
+0.10.5:
+
+- `MCMCsummary` `digits` argument uses `signif` rather than `round` for rounding (in other words, `digits` specifies number of significant digits rather than number of decimal places)
+- `MCMCsummary` `digits` argument is now NULL by default (all computed digits are returned)
+- `MCMCsummary` now takes `round` argument to round output to specified number of decimal places
+- `MCMCpstr` no longer has the option to restrict the number of digits output (returns all digits)
+
+
 0.10.4:
 
 - `MCMCchains` now takes `chain_num` as an argument. When specified, single posterior chains can be output for a particular parameter of interest. Useful for determining the last value in an MCMC chain for each parameter (to be used as inital values for a subseqent model run).

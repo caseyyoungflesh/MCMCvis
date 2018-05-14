@@ -4,8 +4,9 @@
 \alias{MCMCsummary}
 \title{Summary function for MCMC output}
 \usage{
-MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE, digits = 2,
-  Rhat = TRUE, n.eff = FALSE, func = NULL, func_name = NULL)
+MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE,
+  digits = NULL, round = NULL, Rhat = TRUE, n.eff = FALSE,
+  func = NULL, func_name = NULL)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -18,9 +19,9 @@ Default \code{'all'} returns all parameters in summary output.}
 
 \item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.}
 
-\item{digits}{Number of digits to include for posterior summary. Values will be rounded to the specified number of digits (except for Rhat which is always rounded to 2 digits).
+\item{digits}{Number of significant digits to include for posterior summary. All computed digits will be included by default. Note that Rhat is always rounded to 2 decimal places.}
 
-Default is \code{digits = 2}.}
+\item{round}{Number of decimal places to to round to for posterior summary. Cannot be used in connjunction with \code{digits} argument Note that Rhat is always rounded to 2 decimal places.}
 
 \item{Rhat}{Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). Values near 1 suggest convergence (Brooks and Gelman 1998). \code{Rhat = FALSE} will prevent display of this column in summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.}
 
@@ -63,11 +64,11 @@ Kruschke, J. 2014. Doing Bayesian data analysis: A tutorial with R, JAGS, and St
 #Load data
 data(MCMC_data)
 
-#Summary information for MCMC output
-MCMCsummary(MCMC_data)
+#Summary information for MCMC output - display 2 significant digits
+MCMCsummary(MCMC_data, digits = 2)
 
-#Just 'beta' parameters
-MCMCsummary(MCMC_data, params = 'beta')
+#Just 'beta' parameters - round to 2 decimal places
+MCMCsummary(MCMC_data, params = 'beta', round = 2)
 
 #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
 #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\\\'

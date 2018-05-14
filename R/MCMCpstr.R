@@ -11,10 +11,6 @@
 #'
 #' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
 #'
-#' @param digits Number of digits to include for posterior summary. Values will be rounded to the specified number of digits (except for Rhat which is always rounded to 2 digits).
-#'
-#' Default is \code{digits = 2}.
-#'
 #' @param func Function to be performed on MCMC output. Output of specified function must be of length 1.
 #'
 #' @section Details:
@@ -32,7 +28,6 @@ MCMCpstr <- function(object,
                    params = 'all',
                    excl = NULL,
                    ISB = TRUE,
-                   digits = 2,
                    func = mean)
 {
   #SORTING BLOCK
@@ -111,7 +106,7 @@ MCMCpstr <- function(object,
       for (j in 1:length(ind))
       {
         #j <- 1
-        temp_obj[j] <- round(func(ch_bind[,ind[j]]), digits = digits)
+        temp_obj[j] <- func(ch_bind[,ind[j]])
       }
 
       #fill list
@@ -143,7 +138,7 @@ MCMCpstr <- function(object,
 
       for (j in 1:length(ind))
       {
-        temp_obj[RI[j], CI[j]] <- round(func(ch_bind[,ind[j]]), digits = digits)
+        temp_obj[RI[j], CI[j]] <- func(ch_bind[,ind[j]])
       }
 
       #fill list
@@ -178,7 +173,7 @@ MCMCpstr <- function(object,
 
       for (j in 1:length(ind))
       {
-        temp_obj[RI[j], CI[j], TI[j]] <- round(func(ch_bind[,ind[j]]), digits = digits)
+        temp_obj[RI[j], CI[j], TI[j]] <- func(ch_bind[,ind[j]])
       }
 
       #fill list
@@ -216,7 +211,7 @@ MCMCpstr <- function(object,
 
       for (j in 1:length(ind))
       {
-        temp_obj[RI[j], CI[j], TI[j], FI[j]] <- round(func(ch_bind[,ind[j]]), digits = digits)
+        temp_obj[RI[j], CI[j], TI[j], FI[j]] <- func(ch_bind[,ind[j]])
       }
 
       #fill list
