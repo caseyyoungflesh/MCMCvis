@@ -11,7 +11,7 @@
 #'
 #' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
 #'
-#' @param func Function to be performed on MCMC output. Output of specified function must be of length 1.
+#' @param func Function to be performed on MCMC output. When output of specified function is greater than length 1, an extra dimension is added. For instance, output of length 3 for a parameter with dimensions 2x2 results in a 2x2x3 output. Functions that produce output with dimensionality greater than 1 are not permitted.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
@@ -20,7 +20,7 @@
 #' #Load data
 #' data(MCMC_data)
 #'
-#' MCMCpstr(MCMC_data, func = function(x) quantile(x, probs = 0.01))
+#' MCMCpstr(MCMC_data, func = function(x) quantile(x, probs = c(0.01, 0.99))
 #'
 #' @export
 
@@ -80,7 +80,6 @@ MCMCpstr <- function(object,
     onames <- colnames(temp_in)
   }
 
-
   #create empty list
   out_list <- vector('list', length(un))
 
@@ -91,30 +90,41 @@ MCMCpstr <- function(object,
     ind <- which(un[i] == names)
 
     #determine how many ',' and therefore how many dimensions for parameter
-    dimensions <- length(strsplit(onames[ind[1]], split = ',', fixed = TRUE)[[1]])
-
-    if (length(func(ch_bind[,ind[1]])) > 1)
-    {
-      stop("Output from 'func' argument must be of length 1.")
-    }
+    dims <- length(strsplit(onames[ind[1]], split = ',', fixed = TRUE)[[1]])
 
     #scalar or vector
-    if(dimensions == 1)
+    if (dims == 1)
     {
       #1 dimension
-      temp_obj <- rep(NA, length(ind))
-      for (j in 1:length(ind))
+      func_out <- func(ch_bind[,ind[1]])
+      if (length(func_out) > 1)
       {
-        #j <- 1
-        temp_obj[j] <- func(ch_bind[,ind[j]])
+        if (!is.null(dim(func_out)))
+        {
+          stop("Output from 'func' argument must be of dimension 1.")
+        }
+        temp_obj <- matrix(NA, nrow = length(ind), ncol = length(func_out))
+        dimnames(temp_obj)[[2]] <- names(func_out)
+        dimnames(temp_obj)[[1]] <- onames[ind]
+
+        for (j in 1:length(ind))
+        {
+          temp_obj[j,] <- func(ch_bind[,ind[j]])
+        }
+      } else{
+        temp_obj <- rep(NA, length(ind))
+        for (j in 1:length(ind))
+        {
+          temp_obj[j] <- func(ch_bind[,ind[j]])
+        }
       }
 
       #fill list
       out_list[[i]] <- temp_obj
     }
-    if(dimensions == 2)
+    #2 dimensions
+    if (dims == 2)
     {
-      #2 dimensions
       pnames <- vapply(strsplit(onames[ind],
                                 '[', fixed = TRUE), `[`, 2, FUN.VALUE=character(1))
       pnames2 <- vapply(strsplit(pnames,
@@ -133,20 +143,38 @@ MCMCpstr <- function(object,
         CI <- c(CI, ci)
       }
 
-      #create blank matrix
-      temp_obj <- matrix(NA, nrow = max(RI), ncol = max(CI))
-
-      for (j in 1:length(ind))
+      func_out <- func(ch_bind[,ind[1]])
+      if (length(func_out) > 1)
       {
-        temp_obj[RI[j], CI[j]] <- func(ch_bind[,ind[j]])
+        if (!is.null(dim(func_out)))
+        {
+          stop("Output from 'func' argument must be of dimension 1.")
+        }
+        #create blank array
+        temp_obj <- array(NA, dim = c(max(RI), max(CI), length(func_out)))
+        dimnames(temp_obj)[[3]] <- names(func_out)
+
+        for (j in 1:length(ind))
+        {
+          #j <- 1
+          temp_obj[RI[j], CI[j], ] <- func(ch_bind[,ind[j]])
+        }
+      } else {
+        #create blank matrix
+        temp_obj <- matrix(NA, nrow = max(RI), ncol = max(CI))
+
+        for (j in 1:length(ind))
+        {
+          temp_obj[RI[j], CI[j]] <- func(ch_bind[,ind[j]])
+        }
       }
 
       #fill list
       out_list[[i]] <- temp_obj
     }
-    if(dimensions == 3)
+    #3 dimensions
+    if (dims == 3)
     {
-      #3 dimensions
       pnames <- vapply(strsplit(onames[ind],
                                 '[', fixed = TRUE), `[`, 2, FUN.VALUE=character(1))
       pnames2 <- vapply(strsplit(pnames,
@@ -168,20 +196,38 @@ MCMCpstr <- function(object,
         TI <- c(TI, ti)
       }
 
-      #create blank array
-      temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI)))
-
-      for (j in 1:length(ind))
+      func_out <- func(ch_bind[,ind[1]])
+      if (length(func_out) > 1)
       {
-        temp_obj[RI[j], CI[j], TI[j]] <- func(ch_bind[,ind[j]])
+        if (!is.null(dim(func_out)))
+        {
+          stop("Output from 'func' argument must be of dimension 1.")
+        }
+        #create blank array
+        temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI), length(func_out)))
+        dimnames(temp_obj)[[4]] <- names(func_out)
+
+        for (j in 1:length(ind))
+        {
+          #j <- 1
+          temp_obj[RI[j], CI[j], TI[j], ] <- func(ch_bind[,ind[j]])
+        }
+      } else {
+        #create blank array
+        temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI)))
+
+        for (j in 1:length(ind))
+        {
+          temp_obj[RI[j], CI[j], TI[j]] <- func(ch_bind[,ind[j]])
+        }
       }
 
       #fill list
       out_list[[i]] <- temp_obj
     }
-    if(dimensions == 4)
+    #4 dimensions
+    if (dims == 4)
     {
-      #4 dimensions
       pnames <- vapply(strsplit(onames[ind],
                                 '[', fixed = TRUE), `[`, 2, FUN.VALUE=character(1))
       pnames2 <- vapply(strsplit(pnames,
@@ -206,18 +252,36 @@ MCMCpstr <- function(object,
         FI <- c(FI, fi)
       }
 
-      #create blank array
-      temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI), max(FI)))
-
-      for (j in 1:length(ind))
+      func_out <- func(ch_bind[,ind[1]])
+      if (length(func_out) > 1)
       {
-        temp_obj[RI[j], CI[j], TI[j], FI[j]] <- func(ch_bind[,ind[j]])
+        if (!is.null(dim(func_out)))
+        {
+          stop("Output from 'func' argument must be of dimension 1.")
+        }
+        #create blank array
+        temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI), max(FI), length(func_out)))
+        dimnames(temp_obj)[[5]] <- names(func_out)
+
+        for (j in 1:length(ind))
+        {
+          #j <- 1
+          temp_obj[RI[j], CI[j], TI[j], FI[j], ] <- func(ch_bind[,ind[j]])
+        }
+      } else {
+        #create blank array
+        temp_obj <- array(NA, dim = c(max(RI), max(CI), max(TI), max(FI)))
+
+        for (j in 1:length(ind))
+        {
+          temp_obj[RI[j], CI[j], TI[j], FI[j]] <- func(ch_bind[,ind[j]])
+        }
       }
 
       #fill list
       out_list[[i]] <- temp_obj
     }
-    if(dimensions > 4)
+    if(dims > 4)
     {
       stop('This function does not currently support parameters with > 4 dimensions. If you have a need for this functionality, please put in a bug report on the package Github page.')
     }

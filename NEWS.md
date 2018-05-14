@@ -3,6 +3,7 @@ NEWS
 
 0.10.5:
 
+- `MCMCpstr` if func output is length > 1, a dimension is added - vector turns into matrix (where output[1] is column 1, output[2] is column 2, etc.)
 - `MCMCsummary` `digits` argument uses `signif` rather than `round` for rounding (in other words, `digits` specifies number of significant digits rather than number of decimal places)
 - `MCMCsummary` `digits` argument is now NULL by default (all computed digits are returned)
 - `MCMCsummary` now takes `round` argument to round output to specified number of decimal places

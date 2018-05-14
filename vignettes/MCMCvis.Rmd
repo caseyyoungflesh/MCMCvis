@@ -198,11 +198,11 @@ MCMCpstr(MCMC_data,
 &nbsp;
 
 
-Custom functions can be specified as well.
+Custom functions can be specified as well. If the output length of the specified function is greater than 1, an extra dimension is added to the function output. For instance, a vector becomes a matrix, a matrix a three dimensional array, and so forth.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCpstr(MCMC_data, 
-         func = function(x) quantile(x, probs = 0.01))
+         func = function(x) quantile(x, probs = c(0.01, 0.99)))
 ```
 
 &nbsp;

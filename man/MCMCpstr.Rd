@@ -17,7 +17,7 @@ Default \code{'all'} returns all parameters in summary output.}
 
 \item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.}
 
-\item{func}{Function to be performed on MCMC output. Output of specified function must be of length 1.}
+\item{func}{Function to be performed on MCMC output. When output of specified function is greater than length 1, an extra dimension is added. For instance, output of length 3 for a parameter with dimensions 2x2 results in a 2x2x3 output. Functions that produce output with dimensionality greater than 1 are not permitted.}
 }
 \description{
 Extract summary information from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (i.e., scalar, vector, matrix, array). Function outputs a \code{list} with calculated values for each specified parameter.
@@ -31,6 +31,6 @@ Extract summary information from MCMC output (specific function specified) for s
 #Load data
 data(MCMC_data)
 
-MCMCpstr(MCMC_data, func = function(x) quantile(x, probs = 0.01))
+MCMCpstr(MCMC_data, func = function(x) quantile(x, probs = c(0.01, 0.99))
 
 }
