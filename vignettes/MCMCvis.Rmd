@@ -15,7 +15,7 @@ vignette: >
 The package contains five functions:
 
 - `MCMCsummary` - summarize MCMC output for particular parameters of interest
-- `MCMCpstr` - summarize MCMC output for particular parameters of interest while preserving parameter structure
+- `MCMCpstr` - summarize MCMC output and extract posterior chains for particular parameters of interest while preserving parameter structure
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `MCMCchains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
@@ -110,7 +110,9 @@ MCMCsummary(stan_out, digits = 2)
 
 ## MCMCsummary
 
-`MCMCsummary` is used to output summary information from MCMC output. All digits are reported by default, though the number of significant digits displayed can be specified with `digits` (except for Rhat which is always rounded to 2 decimal places). We'll use the build in `mcmc.list` object data for the examples below, but model output of any of the supported types will behave in the same way.
+`MCMCsummary` is used to output summary information from MCMC output. All digits are reported by default. The number of significant digits displayed can be specified with `digits` (except for Rhat which is always rounded to 2 decimal places). Alternatively, the `round` argument can be used to specify the number of decimal places to round output to.
+
+We'll use the build in `mcmc.list` object data for the examples below, but model output of any of the supported types will behave in the same way.
 
 
 
@@ -122,7 +124,7 @@ MCMCsummary(MCMC_data, digits = 2)
 
 &nbsp;
 
-Specific parameters can be specified to subset summary information. Square brackets in parameter names are ignored by default. For instance, all `alpha` parameters can be plotted using `params = 'alpha'`. As an alternative to significant digits, the number of decimal places to round output to can be specified with `round`.
+Specific parameters can be specified to subset summary information. Square brackets in parameter names are ignored by default. For instance, all `alpha` parameters can be plotted using `params = 'alpha'`. Output using the `round` argument is shown. This generally produces more readable summary output.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -184,7 +186,9 @@ MCMCsummary(MCMC_data,
 
 ## MCMCpstr
 
-`MCMCpstr` is used to output summary information from MCMC output while preserving the original structure of the specified parameters (i.e., scalar, vector, matrix, array). Function outputs a `list` with calculated values for each specified parameter, similar to output obtained when fitting models with the `jags.samples` function (as opposed to `coda.samples`) from the `rjags` package. Preserving the original structure can be helpful when plotting or summarizing parameters with multidimensional structure. Particular parameters of interest can be specified as with other functions with the `params` argument.
+`MCMCpstr` is used to output summary information and posterior chains from MCMC output while preserving the original structure of the specified parameters (i.e., scalar, vector, matrix, array). Preserving the original structure can be helpful when plotting or summarizing parameters with multidimensional structure. Particular parameters of interest can be specified as with other functions with the `params` argument.
+
+Function output has two types. When `type = 'summary'` (the default),  a `list` with calculated values for each specified parameter is returned, similar to output obtained when fitting models with the `jags.samples` function (as opposed to `coda.samples`) from the `rjags` package. 
 
 The function calculates summary information only for the specified function. The function to be used is specified using the `func` argument.
 
@@ -192,13 +196,14 @@ The function calculates summary information only for the specified function. The
 ```{r, fig.width=5, fig.height=6}
 MCMCpstr(MCMC_data,
          params = 'alpha',
-         func = mean)
+         func = mean,
+         type = 'summary')
 ```
 
 &nbsp;
 
 
-Custom functions can be specified as well. If the output length of the specified function is greater than 1, an extra dimension is added to the function output. For instance, a vector becomes a matrix, a matrix a three dimensional array, and so forth.
+Custom functions can be specified as well. If the output length of the specified function is greater than 1 when `type = 'summary'`, an extra dimension is added to the function output. For instance, a vector becomes a matrix, a matrix a three dimensional array, and so forth.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCpstr(MCMC_data, 
@@ -206,6 +211,14 @@ MCMCpstr(MCMC_data,
 ```
 
 &nbsp;
+
+When `type = 'chains'`,  a `list` with posterior chain values for each specified parameter is returned. The structure of the parameter is preserved - posterior chain values are placed in an additional dimension. For instance, output for a vector parameter will be in matrix format. Similarly, output for a matrix parameter will be in a three dimensional array.
+
+```{r}
+ex <- MCMCpstr(MCMC_data, type = 'chains')
+
+dim(ex$alpha)
+```
 
 
 ## MCMCtrace

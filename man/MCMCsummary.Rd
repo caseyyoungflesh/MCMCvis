@@ -2,7 +2,7 @@
 % Please edit documentation in R/MCMCsummary.R
 \name{MCMCsummary}
 \alias{MCMCsummary}
-\title{Summary function for MCMC output}
+\title{Summarize MCMC output}
 \usage{
 MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE,
   digits = NULL, round = NULL, Rhat = TRUE, n.eff = FALSE,

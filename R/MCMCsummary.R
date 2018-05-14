@@ -1,4 +1,4 @@
-#' Summary function for MCMC output
+#' Summarize MCMC output
 #'
 #' Extract summary information from MCMC output (mean, median, quantiles, Gelman-Rubin convergence statistic, number of effective samples, and specified custom metrics)
 #' for specific parameters of interest.

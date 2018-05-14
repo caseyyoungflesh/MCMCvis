@@ -1,13 +1,14 @@
 NEWS
 ====
 
-0.10.5:
+0.11.0:
 
-- `MCMCpstr` if func output is length > 1, a dimension is added - vector turns into matrix (where output[1] is column 1, output[2] is column 2, etc.)
 - `MCMCsummary` `digits` argument uses `signif` rather than `round` for rounding (in other words, `digits` specifies number of significant digits rather than number of decimal places)
 - `MCMCsummary` `digits` argument is now NULL by default (all computed digits are returned)
 - `MCMCsummary` now takes `round` argument to round output to specified number of decimal places
 - `MCMCpstr` no longer has the option to restrict the number of digits output (returns all digits)
+- `MCMCpstr` now takes `type` as an argument. When `type = 'summary'` (default), values calculated with the `func` argument (default `mean`) are returned. When `type = 'chains'`, posterior chains are returned while preserving the parameter structure. Posterior samples are stored in the last dimension of the array. In this way vector parameters are output in matrix format, matrix parameters are output in three dimension array format.
+- `MCMCpstr` now accepts output greater than length 1 from argument `func`. If output is greater than length 1, function output are stored in the last dimension of the array.
 
 
 0.10.4:
