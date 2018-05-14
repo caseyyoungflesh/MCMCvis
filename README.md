@@ -1,7 +1,7 @@
 MCMCvis
 ====
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.10.4](https://img.shields.io/badge/devel-0.10.4-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.11.0](https://img.shields.io/badge/devel-0.11.0-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
 
 
 
@@ -50,7 +50,7 @@ Examples
 
 ```{r}
 data(MCMC_data)
-MCMCsummary(MCMC_data, params = 'beta', n.eff = TRUE)
+MCMCsummary(MCMC_data, params = 'beta', round = 2, n.eff = TRUE)
 #>           mean   sd   2.5%    50%  97.5% Rhat n.eff
 #> beta[1]  -13.83 5.53 -24.67 -13.78  -2.96    1 18000
 #> beta[2]   -5.60 0.14  -5.88  -5.60  -5.32    1 17868
