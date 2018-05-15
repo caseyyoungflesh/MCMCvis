@@ -58,12 +58,12 @@ library(MCMCvis)
 
 ```{r, eval = FALSE}
 #plug object directly into package function
-MCMCsummary(jags_out, digits = 2)
+MCMCsummary(jags_out, round = 2)
 ```
 
 ```{r, eval = FALSE}
-##    mean  sd 2.5%  50% 97.5% Rhat
-## mu 0.37 3.2 -4.9 0.51   5.7 0.99
+##     mean   sd  2.5%   50% 97.5% Rhat
+## mu -0.67 2.95 -6.03 -0.75  4.01 1.19
 ```
 
 
@@ -97,39 +97,48 @@ stan_out <- stan(model_code = sm,
 
 ```{r, eval = FALSE}
 #plug object directly into package function
-MCMCsummary(stan_out, digits = 2)
+MCMCsummary(stan_out, round = 2)
 ```
 
 ```{r, eval = FALSE}
-##       mean   sd  2.5%   50%  97.5% Rhat
-## mu   -0.84 1.80 -3.70 -1.10  2.200 1.05
-## lp__ -0.25 0.27 -0.85 -0.15 -0.044 1.53
+##       mean   sd  2.5%   50% 97.5% Rhat
+## mu   -0.26 2.82 -4.49 -0.62  4.45 0.94
+## lp__ -0.44 0.50 -1.47 -0.30 -0.04 1.21
 ```
 
 &nbsp;
 
 ## MCMCsummary
 
-`MCMCsummary` is used to output summary information from MCMC output. All digits are reported by default. The number of significant digits displayed can be specified with `digits` (except for Rhat which is always rounded to 2 decimal places). Alternatively, the `round` argument can be used to specify the number of decimal places to round output to.
+`MCMCsummary` is used to output summary information from MCMC output. All digits are reported by default. 
 
 We'll use the build in `mcmc.list` object data for the examples below, but model output of any of the supported types will behave in the same way.
-
 
 
 ```{r, message=FALSE}
 data(MCMC_data)
 
-MCMCsummary(MCMC_data, digits = 2)
+MCMCsummary(MCMC_data)
 ```
 
 &nbsp;
 
-Specific parameters can be specified to subset summary information. Square brackets in parameter names are ignored by default. For instance, all `alpha` parameters can be plotted using `params = 'alpha'`. Output using the `round` argument is shown. This generally produces more readable summary output.
+The number of decimal places displayed can be specified with `round` (except for Rhat which is always rounded to 2 decimal places). Alternatively, the significant digits displayed can be specified with `digits`.
+
+```{r, message=FALSE}
+
+MCMCsummary(MCMC_data, round = 2)
+```
+
+
+&nbsp;
+
+Specific parameters can be specified to subset summary information. Square brackets in parameter names are ignored by default. For instance, all `alpha` parameters can be plotted using `params = 'alpha'`. Output using the `digits` argument is shown.
 
 ```{r}
 MCMCsummary(MCMC_data, 
           params = 'alpha', 
-          round = 2)
+          digits = 2)
 ```
 
 &nbsp;
@@ -140,7 +149,7 @@ Individual parameters can also be specified. For example, one `alpha` (of many) 
 MCMCsummary(MCMC_data, 
           params = 'alpha\\[1\\]', 
           ISB = FALSE,
-          digits = 2)
+          round = 2)
 ```
 
 &nbsp;
@@ -152,7 +161,7 @@ MCMCsummary(MCMC_data,
           params = 'alpha',
           excl = 'alpha\\[1\\]', 
           ISB = FALSE,
-          digits = 2)
+          round = 2)
 ```
 
 
@@ -165,7 +174,7 @@ MCMCsummary(MCMC_data,
           params = 'alpha',
           Rhat = TRUE,
           n.eff = TRUE,
-          digits = 2)
+          round = 2)
 ```
 
 &nbsp;
@@ -179,7 +188,7 @@ MCMCsummary(MCMC_data,
           n.eff = TRUE,
           func = function(x) quantile(x, probs = c(0.01, 0.99)),
           func_name = c('1%', '99%'),
-          digits = 2)
+          round = 2)
 ```
 
 &nbsp;
@@ -203,7 +212,7 @@ MCMCpstr(MCMC_data,
 &nbsp;
 
 
-Custom functions can be specified as well. If the output length of the specified function is greater than 1 when `type = 'summary'`, an extra dimension is added to the function output. For instance, a vector becomes a matrix, a matrix a three dimensional array, and so forth.
+Custom functions can be specified as well. If the output length of the specified function is greater than 1 when `type = 'summary'`, an extra dimension is added to the function output. For instance, a `vector` becomes a `matrix`, a `matrix` a three dimensional `array`, and so forth.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCpstr(MCMC_data, 
@@ -212,7 +221,7 @@ MCMCpstr(MCMC_data,
 
 &nbsp;
 
-When `type = 'chains'`,  a `list` with posterior chain values for each specified parameter is returned. The structure of the parameter is preserved - posterior chain values are placed in an additional dimension. For instance, output for a vector parameter will be in matrix format. Similarly, output for a matrix parameter will be in a three dimensional array.
+When `type = 'chains'`,  a `list` with posterior chain values for each specified parameter is returned. The structure of the parameter is preserved - posterior chain values are placed in an additional dimension. For instance, output for a vector parameter will be in `matrix` format for that element of the `list`. Similarly, output for a matrix parameter will be in a three dimensional `array`.
 
 ```{r}
 ex <- MCMCpstr(MCMC_data, type = 'chains')
@@ -286,6 +295,25 @@ MCMCtrace(MCMC_data,
 ```
 
 &nbsp;
+
+Plots can be scaled to see both the posterior and the prior distribution using the `post_zm` argument. Percent overlap can be output to an object as well using the `PPO_out` argument.
+
+```{r, fig.width=5, fig.height=6}
+#same prior used for all parameters
+PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
+PPO <- MCMCtrace(MCMC_data, 
+                 params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+                 ISB = FALSE,
+                 priors = PR,
+                 pdf = FALSE,
+                 post_zm = FALSE,
+                 PPO_out = TRUE)
+
+PPO
+```
+
+&nbsp;
+
 
 If simulated data was used to fit the model, the generating values used to simulate the data can be specified using the `gvals` argument. This makes it possible to compare posterior estimates with the true parameter values. Generating values will be displayed as vertical dotted lines. Similar to the `priors` argument, if one value is specified when more than one parameter is used, this one generating value will be used for all parameters. If the lines are not apparent in the 
 
