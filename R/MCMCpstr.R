@@ -13,7 +13,7 @@
 #'
 #' @param func Function to be performed on MCMC output. When output of specified function is greater than length 1, an extra dimension is added. For instance, output of length 3 for a parameter with dimensions 2x2 results in a 2x2x3 output. Functions that produce output with dimensionality greater than 1 are not permitted. \code{func} is ignored whe \code{type = 'chains'}.
 #'
-#' @param type Character string specifying whether to return summary information (calculated based on \code{func} argument) or posterior chains. Valid options are \code{'summary'} and \code{'chains'}. When \code{type = 'chains'}, the \code{'func'} argument is ignored. When \code{type = 'chains'}, posterior chains are stored in the last dimension in the array for each element (parameter) of the list.
+#' @param type Character string specifying whether to return summary information (calculated based on \code{func} argument) or posterior chains. Valid options are \code{'summary'} and \code{'chains'}. When \code{type = 'chains'}, the \code{'func'} argument is ignored. When \code{type = 'chains'}, posterior chains are concatenated and stored in the last dimension in the array for each element (parameter) of the list.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.

@@ -20,7 +20,7 @@ Default \code{'all'} returns all parameters in output.}
 
 \item{func}{Function to be performed on MCMC output. When output of specified function is greater than length 1, an extra dimension is added. For instance, output of length 3 for a parameter with dimensions 2x2 results in a 2x2x3 output. Functions that produce output with dimensionality greater than 1 are not permitted. \code{func} is ignored whe \code{type = 'chains'}.}
 
-\item{type}{Character string specifying whether to return summary information (calculated based on \code{func} argument) or posterior chains. Valid options are \code{'summary'} and \code{'chains'}. When \code{type = 'chains'}, the \code{'func'} argument is ignored. When \code{type = 'chains'}, posterior chains are stored in the last dimension in the array for each element (parameter) of the list.}
+\item{type}{Character string specifying whether to return summary information (calculated based on \code{func} argument) or posterior chains. Valid options are \code{'summary'} and \code{'chains'}. When \code{type = 'chains'}, the \code{'func'} argument is ignored. When \code{type = 'chains'}, posterior chains are concatenated and stored in the last dimension in the array for each element (parameter) of the list.}
 }
 \description{
 Extract summary information and posterior chains from MCMC output (specific function specified) for specific parameters of interest while preserving original parameter structure (i.e., scalar, vector, matrix, array). Function outputs a \code{list} with calculated values or posterior chains for each specified parameter.

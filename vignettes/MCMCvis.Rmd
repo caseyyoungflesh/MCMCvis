@@ -221,7 +221,7 @@ MCMCpstr(MCMC_data,
 
 &nbsp;
 
-When `type = 'chains'`,  a `list` with posterior chain values for each specified parameter is returned. The structure of the parameter is preserved - posterior chain values are placed in an additional dimension. For instance, output for a vector parameter will be in `matrix` format for that element of the `list`. Similarly, output for a matrix parameter will be in a three dimensional `array`.
+When `type = 'chains'`,  a `list` with posterior chain values for each specified parameter is returned. The structure of the parameter is preserved - posterior chain values are concatenated are placed in an additional dimension. For instance, output for a vector parameter will be in `matrix` format for that element of the `list`. Similarly, output for a matrix parameter will be in a three dimensional `array`.
 
 ```{r}
 ex <- MCMCpstr(MCMC_data, type = 'chains')
