@@ -101,10 +101,56 @@ MCMCtrace <- function(object,
 
 
   #PLOT BLOCK
+
+  #parameter names
+  np <- colnames(object2[[1]])
+
+  #plotting parameters
   ref_col <- 'red'
   A_VAL <- 0.5 #alpha value
-  graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
-  graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+
+  #adjust layout based on # params - differs based on den, tr, both
+  if (type == 'both')
+  {
+    if (length(np) >= 3)
+    {
+      graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
+      graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+    }
+    if (length(np) == 2)
+    {
+      graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
+      graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+    }
+    if (length(np) == 1)
+    {
+      graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
+      graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
+      title(line = -2)
+    }
+  } else {
+    if (length(np) >= 5)
+    {
+      graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
+      graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+    }
+    if (length(np) == 3 | length(np) == 4)
+    {
+      graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
+      graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+    }
+    if (length(np) == 2)
+    {
+      graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
+      graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
+    }
+    if (length(np) == 1)
+    {
+      graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 1, byrow = TRUE))
+      graphics::par(mar = c(5.1, 4.1, 4.1, 2.1)) # bottom, left, top, right
+    }
+  }
+
   graphics::par(mgp = c(2.5,1,0)) #axis text distance
   gg_color_hue <- function(n)
   {
@@ -123,9 +169,6 @@ MCMCtrace <- function(object,
   }else {
     it <- 1 : nrow(object2[[1]])
   }
-
-  #parameter names
-  np <- colnames(object2[[1]])
 
   #warnings and errors
   if (!is.null(priors))
