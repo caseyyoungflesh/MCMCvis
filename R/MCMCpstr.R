@@ -126,7 +126,13 @@ MCMCpstr <- function(object,
       if (type == 'chains')
       {
         temp_obj <- matrix(NA, nrow = length(ind), ncol = NROW(ch_bind))
-        dimnames(temp_obj)[[1]] <- onames[ind]
+
+        if (NROW(temp_obj) > 1)
+        {
+          dimnames(temp_obj)[[1]] <- onames[ind]
+        } else {
+          rownames(temp_obj) <- onames[ind]
+        }
 
         for (j in 1:length(ind))
         {
