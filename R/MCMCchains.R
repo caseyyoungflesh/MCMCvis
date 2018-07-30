@@ -106,6 +106,13 @@ MCMCchains <- function(object,
   if(typeof(object) == 'double')
   {
     temp_in <- object
+    if(is.null(colnames(temp_in)))
+    {
+      warning('No column names (parameter names) provided. Assigning arbitrary names.')
+      sub_cn <- paste0('Param_', 1:NCOL(temp_in))
+      colnames(temp_in) <- sub_cn
+    }
+
     if(ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in),
