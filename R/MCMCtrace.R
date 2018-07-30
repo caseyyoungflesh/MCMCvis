@@ -67,7 +67,6 @@ MCMCtrace <- function(object,
                     type = 'both',
                     ind = FALSE)
 {
-
   .pardefault <- graphics::par(no.readonly = T)
 
   #SORTING BLOCK
@@ -126,7 +125,6 @@ MCMCtrace <- function(object,
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
       graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
-      title(line = -2)
     }
   } else {
     if (length(np) >= 5)
