@@ -359,7 +359,7 @@ MCMCpstr <- function(object,
     }
     if(dims > 4)
     {
-      stop('This function does not currently support parameters with > 4 dimensions. If you have a need for this functionality, please put in a bug report on the package Github page.')
+      stop('This function does not currently support parameters with > 4 dimensions. If you have a need for this functionality, please create an "issue" at https://github.com/caseyyoungflesh/MCMCvis.')
     }
   }
 
