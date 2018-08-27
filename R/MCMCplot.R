@@ -41,6 +41,8 @@
 #'
 #' Option \code{NULL} will return plot with no labels on axis.
 #'
+#' @param guide_axis Logical specifying whether a second axis should be plotted (x-axis if \code{HORIZ = TRUE}, y-axis if \code{HORIZ = FALSE}) to help interpret values on plot.
+#'
 #' @param labels_sz Number specifying size of text for parameter labels on axis.
 #'
 #' @param med_sz Number specifying size of points represents posterior medians.
@@ -104,6 +106,9 @@
 #'
 
 
+object <- MCMC_data
+
+
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -119,6 +124,7 @@ MCMCplot <- function(object,
                    ylab,
                    main,
                    labels,
+                   guide_axis = TRUE,
                    labels_sz = 1.2,
                    med_sz = 1.5,
                    thick_sz = 5,
@@ -289,9 +295,14 @@ MCMCplot <- function(object,
 
     #title
     graphics::title(main, cex.main = main_text_sz)
-    #bottom axis params
-    graphics::axis(3, lwd.ticks = ax_sz, labels = FALSE,
-         at = tick_pos, lwd = ax_sz)
+
+    if (guide_axis == TRUE)
+    {
+      #top axis params
+      graphics::axis(3, lwd.ticks = ax_sz, labels = FALSE,
+           at = tick_pos, lwd = ax_sz)
+    }
+
     #bottom axis params
     graphics::axis(1, lwd.ticks = ax_sz, labels = TRUE,
          at = tick_pos, lwd = ax_sz,
@@ -441,9 +452,13 @@ MCMCplot <- function(object,
 
     #title
     graphics::title(main, cex.main = main_text_sz, line = 0.5)
-    #right axis params
-    graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
-                   at = tick_pos, lwd = ax_sz)
+
+    if (guide_axis == TRUE)
+    {
+      #right axis params
+      graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
+                     at = tick_pos, lwd = ax_sz)
+    }
 
     #bottom axis params (labels)
     graphics::axis(1, at = (len:1) + 0.013, tick = FALSE,
