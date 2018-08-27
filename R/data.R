@@ -5,4 +5,5 @@
 #'
 #' @format \code{mcmc.list} object with 3 chains for each parameter, 6000 iterations for each chain
 #'
-"MCMC_data"
+
+'MCMC_data'

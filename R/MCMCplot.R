@@ -106,9 +106,6 @@
 #'
 
 
-object <- MCMC_data
-
-
 MCMCplot <- function(object,
                    params = 'all',
                    excl = NULL,

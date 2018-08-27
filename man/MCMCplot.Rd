@@ -6,10 +6,10 @@
 \usage{
 MCMCplot(object, params = "all", excl = NULL, ISB = TRUE, ref = 0,
   ref_ovl = FALSE, col = "black", rank = FALSE, horiz = TRUE, xlim,
-  ylim, xlab, ylab, main, labels, labels_sz = 1.2, med_sz = 1.5,
-  thick_sz = 5, thin_sz = 2, ax_sz = 3, axis_text_sz = 1.3,
-  tick_text_sz = 1.2, main_text_sz = 1.2, tick_pos, mar = c(5.1, 4.1, 4.1,
-  2.1))
+  ylim, xlab, ylab, main, labels, guide_axis = TRUE, labels_sz = 1.2,
+  med_sz = 1.5, thick_sz = 5, thin_sz = 2, ax_sz = 3,
+  axis_text_sz = 1.3, tick_text_sz = 1.2, main_text_sz = 1.2,
+  tick_pos, mar = c(5.1, 4.1, 4.1, 2.1))
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -55,6 +55,8 @@ Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with 
 Default option will use parameter names from \code{object}.
 
 Option \code{NULL} will return plot with no labels on axis.}
+
+\item{guide_axis}{Logical specifying whether a second axis should be plotted (x-axis if \code{HORIZ = TRUE}, y-axis if \code{HORIZ = FALSE}) to help interpret values on plot.}
 
 \item{labels_sz}{Number specifying size of text for parameter labels on axis.}
 

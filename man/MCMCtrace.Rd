@@ -4,10 +4,10 @@
 \alias{MCMCtrace}
 \title{Trace and density plots from MCMC output}
 \usage{
-MCMCtrace(object, params = "all", excl = NULL, ISB = TRUE, iter = 5000,
-  gvals = NULL, priors = NULL, post_zm = TRUE, PPO_out = FALSE,
-  pdf = TRUE, open_pdf = TRUE, filename, wd = getwd(), type = "both",
-  ind = FALSE)
+MCMCtrace(object, params = "all", excl = NULL, ISB = TRUE,
+  iter = 5000, gvals = NULL, priors = NULL, post_zm = TRUE,
+  PPO_out = FALSE, pdf = TRUE, open_pdf = TRUE, filename,
+  wd = getwd(), type = "both", ind = FALSE)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}

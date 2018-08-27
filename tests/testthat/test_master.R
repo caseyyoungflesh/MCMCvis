@@ -90,43 +90,43 @@ test_that('MCMCsummary values agree with manual values derived from posterior ch
             #mcmc.list - mean
             expect_equal(round(MCMCsummary(MCMC_data,
                                       param = 'alpha\\[1\\]',
-                                      ISB = FALSE)[1], 3),
+                                      ISB = FALSE)[1], 2),
                               round(mean(MCMCchains(MCMC_data,
                                     param = 'alpha\\[1\\]',
-                                    ISB = FALSE)), 3))
+                                    ISB = FALSE)), 2))
             #mcmc.list - sd
             expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[2], 3),
+                                     ISB = FALSE)[2], 2),
                                round(sd(MCMCchains(MCMC_data,
                                                param = 'alpha\\[1\\]',
-                                               ISB = FALSE)), 3))
+                                               ISB = FALSE)), 2))
             #mcmc.list - 2.5%
             expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[3], 3),
+                                     ISB = FALSE)[3], 2),
                                round(quantile(MCMCchains(MCMC_data,
                                                param = 'alpha\\[1\\]',
-                                               ISB = FALSE), probs = 0.025)[[1]], 3))
+                                               ISB = FALSE), probs = 0.025)[[1]], 2))
             #mcmc.list - 50%
             expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[4], 3),
+                                     ISB = FALSE)[4], 2),
                                round(quantile(MCMCchains(MCMC_data,
                                                    param = 'alpha\\[1\\]',
-                                                   ISB = FALSE), probs = 0.5)[[1]], 3))
+                                                   ISB = FALSE), probs = 0.5)[[1]], 2))
             #mcmc.list - 97.5%
             expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[5], 3),
+                                     ISB = FALSE)[5], 2),
                                round(quantile(MCMCchains(MCMC_data,
                                                    param = 'alpha\\[1\\]',
-                                                   ISB = FALSE), probs = 0.975)[[1]], 3))
+                                                   ISB = FALSE), probs = 0.975)[[1]], 2))
             #mcmc.list - rhat
             expect_equal(round(MCMCsummary(MCMC_data,
                                      param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[6], 3),
+                                     ISB = FALSE)[6], 2),
                                round(coda::gelman.diag(MCMCchains(MCMC_data,
                                                param = 'alpha\\[1\\]',
-                                               ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 3))
+                                               ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 2))
           })
