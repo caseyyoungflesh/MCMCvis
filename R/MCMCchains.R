@@ -53,13 +53,11 @@ MCMCchains <- function(object,
     x <- object$BUGSoutput
     mclist <- vector("list", x$n.chains)
     mclis <- vector("list", x$n.chains)
-    strt <- x$n.burnin + 1
-    end <- x$n.iter
     ord <- dimnames(x$sims.array)[[3]]
     for (i in 1:x$n.chains)
     {
       tmp1 <- x$sims.array[, i, ord]
-      mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+      mclis[[i]] <- coda::mcmc(tmp1, thin = x$n.thin)
     }
     object <- coda::as.mcmc.list(mclis)
     #end mod as.mcmc
@@ -298,13 +296,11 @@ MCMCchains <- function(object,
         x <- object$BUGSoutput
         mclist <- vector("list", x$n.chains)
         mclis <- vector("list", x$n.chains)
-        strt <- x$n.burnin + 1
-        end <- x$n.iter
         ord <- dimnames(x$sims.array)[[3]]
         for (i in 1:x$n.chains)
         {
           tmp1 <- x$sims.array[, i, ord]
-          mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+          mclis[[i]] <- coda::mcmc(tmp1, thin = x$n.thin)
         }
         temp2 <- coda::as.mcmc.list(mclis)
         #end mod as.mcmc
@@ -350,13 +346,11 @@ MCMCchains <- function(object,
       x <- object$BUGSoutput
       mclist <- vector("list", x$n.chains)
       mclis <- vector("list", x$n.chains)
-      strt <- x$n.burnin + 1
-      end <- x$n.iter
       ord <- dimnames(x$sims.array)[[3]]
       for (i in 1:x$n.chains)
       {
         tmp1 <- x$sims.array[, i, ord]
-        mclis[[i]] <- coda::mcmc(tmp1, start = strt, end = end, thin = x$n.thin)
+        mclis[[i]] <- coda::mcmc(tmp1, thin = x$n.thin)
       }
       temp2 <- coda::as.mcmc.list(mclis)
       #end mod as.mcmc

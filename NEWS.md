@@ -1,6 +1,9 @@
 NEWS
 ====
 
+0.11.3
+- `MCMCchains` fix error associated with coda::mcmc and `rjags` objects
+
 0.11.2
 - `MCMCplot` now takes `guide_axis` argument. If `TRUE`, a second axis (x-axis if `HORIZ = TRUE`, y-axis if `HORIZ = FALSE`) is plotted to help interpret values on plot.
 
