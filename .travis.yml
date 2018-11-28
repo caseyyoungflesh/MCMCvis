@@ -3,3 +3,13 @@
 language: R
 sudo: false
 cache: packages
+
+# To get rstan to build correctly - from: https://github.com/dmenne/breathteststan/blob/master/.travis.yml
+
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes'
+
+before_install:
+  - mkdir -p ~/.R
+  - echo "CXX14FLAGS=-O3 -mtune=native -march=native -Wno-unused-variable -Wno-unused-function  -Wno-macro-redefined" >> ~/.R/Makevars
+- echo "CXX14=g++ -std=c++1y -fPIC" >> ~/.R/Makevars
