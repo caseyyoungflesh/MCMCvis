@@ -120,6 +120,10 @@ MCMCtrace <- function(object,
                       type = 'both',
                       ylim = NULL,
                       xlim = NULL,
+                      xlab_tr,
+                      ylab_tr,
+                      xlab_den,
+                      ylab_den,
                       ind = FALSE)
 {
   .pardefault <- graphics::par(no.readonly = T)
@@ -265,9 +269,38 @@ MCMCtrace <- function(object,
     PPO_df <- data.frame(param = rep(NA, length(np)), percent_PPO = rep(NA, length(np)))
   }
   
-  #from input
+  #from input - for lim
   YLIM <- ylim
   XLIM <- xlim
+  
+  #from input - for lab
+  if (!missing(xlab_tr))
+  {
+    xlab_tr <- xlab_tr
+  } else {
+    xlab_tr <- 'Iteration'
+  }
+  
+  if (!missing(ylab_tr))
+  {
+    ylab_tr <- ylab_tr
+  } else {
+    ylab_tr <- 'Value'
+  }
+  
+  if (!missing(xlab_den))
+  {
+    xlab_den <- xlab_den
+  } else {
+    xlab_den <- 'Parameter estimate'
+  }
+  
+  if (!missing(ylab_den))
+  {
+    ylab_den <- ylab_den
+  } else {
+    ylab_den <- 'Density'
+  }
   
   if (type == 'both')
   {
@@ -276,10 +309,10 @@ MCMCtrace <- function(object,
       #j <- 1
       #trace
       tmlt <- do.call('cbind', object2[it, np[j]]) #make into matrix with three chains in columns
-      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', np[j]),
-                        col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
-                                            blue= gg_cols[3,], alpha = A_VAL),
-                        xlab= 'Iteration', ylab= 'Value')
+      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = paste0('Trace - ', np[j]),
+                        col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
+                                            blue = gg_cols[3,], alpha = A_VAL),
+                        xlab = xlab_tr, ylab = ylab_tr)
       
       
       #PPO
@@ -359,7 +392,7 @@ MCMCtrace <- function(object,
           }
         }
         
-        graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim, xlim = xlim,
+        graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
                        lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
         
@@ -391,7 +424,7 @@ MCMCtrace <- function(object,
         }
         
         #density plot
-        graphics::plot(dens, xlab = 'Parameter estimate', ylim = ylim,
+        graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim,
                        xlim = xlim, lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
       }
       
@@ -423,10 +456,10 @@ MCMCtrace <- function(object,
     {
       #trace
       tmlt <- do.call('cbind', object2[it, np[j]])
-      graphics::matplot(it, tmlt, lwd = 1, lty= 1, type='l', main = paste0('Trace - ', np[j]),
-                        col= grDevices::rgb(red= gg_cols[1,], green= gg_cols[2,],
-                                            blue= gg_cols[3,], alpha = A_VAL),
-                        xlab= 'Iteration', ylab= 'Value')
+      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type='l', main = paste0('Trace - ', np[j]),
+                        col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
+                                            blue = gg_cols[3,], alpha = A_VAL),
+                        xlab = xlab_tr, ylab = ylab_tr)
     }
   }
   
@@ -512,7 +545,7 @@ MCMCtrace <- function(object,
           }
         }
         
-        graphics::plot(dens[[1]], xlab = 'Parameter estimate', ylim = ylim, xlim = xlim,
+        graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
                        lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
                        col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
         
@@ -544,7 +577,7 @@ MCMCtrace <- function(object,
         }
         
         #density plot
-        graphics::plot(stats::density(rbind(tmlt)), xlab = 'Parameter estimate', ylim = ylim,
+        graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = ylim,
                        xlim = xlim, lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
       }
       
