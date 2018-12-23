@@ -141,10 +141,10 @@ MCMCtrace <- function(object,
                       col_txt,
                       sz_txt,
                       pos_txt = 'topright',
-                      sz_ax = 1, #DONE
-                      sz_ax_txt = 1, #DONE
-                      sz_tick_txt = 1, #DONE
-                      sz_main_txt = 1.2, #DONE
+                      sz_ax = 1, 
+                      sz_ax_txt = 1, 
+                      sz_tick_txt = 1, 
+                      sz_main_txt = 1.2, 
                       pos_tick_x_tr = NULL,
                       pos_tick_y_tr = NULL,
                       pos_tick_x_den = NULL,
@@ -424,6 +424,20 @@ MCMCtrace <- function(object,
   } else {
     YAXT_DEN <- 'n'
   }
+  if (is.null(pos_tick_x_tr))
+  {
+    XAXT_TR <- 's'
+  } else {
+    XAXT_TR <- 'n'
+  }
+  if (is.null(pos_tick_y_tr))
+  {
+    YAXT_TR <- 's'
+  } else {
+    YAXT_TR <- 'n'
+  }
+  
+  
   
   
   if (type == 'both')
@@ -437,7 +451,8 @@ MCMCtrace <- function(object,
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
-                        cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+                        cex.lab = sz_ax_txt, cex.main = sz_main_txt, xaxt = XAXT_TR, 
+                        yaxt = YAXT_TR)
       
       graphics::axis(side = 1, at = pos_tick_x_tr, cex.axis = sz_tick_txt)
       graphics::axis(side = 2, at = pos_tick_y_tr, cex.axis = sz_tick_txt)
@@ -587,7 +602,7 @@ MCMCtrace <- function(object,
         {
           graphics::box(lwd = sz_ax)
           graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
-          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_den)
         }
       }
       
@@ -629,7 +644,8 @@ MCMCtrace <- function(object,
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
-                        cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+                        cex.lab = sz_ax_txt, cex.main = sz_main_txt, xaxt = XAXT_TR, 
+                        yaxt = YAXT_TR)
       
       graphics::axis(side = 1, at = pos_tick_x_tr, cex.axis = sz_tick_txt)
       graphics::axis(side = 2, at = pos_tick_y_tr, cex.axis = sz_tick_txt)
@@ -748,7 +764,7 @@ MCMCtrace <- function(object,
         {
           graphics::box(lwd = sz_ax)
           graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
-          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_den)
         }
       } else{
         
@@ -786,7 +802,7 @@ MCMCtrace <- function(object,
         {
           graphics::box(lwd = sz_ax)
           graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
-          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_den)
         }
       }
       
