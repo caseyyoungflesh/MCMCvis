@@ -1,6 +1,25 @@
 NEWS
 ====
 
+0.12.0
+- `MCMCplot` the following argument names have been changed: 
+    orig: `labels_sz`, new: `sz_labels`
+    orig: `med_sz`, new: `sz_med`
+    orig: `thick_sz`, new: `sz_thick`
+    orig: `thin_sz`, new: `sz_thin`
+    orig: `ax_sz`, new: `sz_axis`
+    orig: `axis_text_sz`, new: `sz_axis_text`
+    orig: `ax_sz`, new: `sz_axis`
+    orig: `tick_text_sz`, new: `sz_tick_text`
+    orig: `main_text_sz`, new: `sz_main_text`
+    orig: `tick_pos`, new: `pos_tick`
+- `MCMCtrace` add ability to specify xlim and ylim for density plots
+- `MCMCtrace` add ability to specify xlab and ylab for density and trace plots
+- `MCMCtrace` add ability to specify title for trace and density plot
+- `MCMCtrace` add ability to specify line width and line type for density and prior lines on density plots
+- `MCMCtrace` add ability to specify color for density and priors lines on density plots
+
+
 0.11.3
 - `MCMCchains` fix error associated with coda::mcmc and `rjags` objects
 
