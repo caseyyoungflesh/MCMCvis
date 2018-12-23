@@ -43,21 +43,21 @@
 #'
 #' @param guide_axis Logical specifying whether a second axis should be plotted (x-axis if \code{HORIZ = TRUE}, y-axis if \code{HORIZ = FALSE}) to help interpret values on plot.
 #'
-#' @param labels_sz Number specifying size of text for parameter labels on axis.
+#' @param sz_labels Number specifying size of text for parameter labels on axis.
 #'
-#' @param med_sz Number specifying size of points represents posterior medians.
+#' @param sz_med Number specifying size of points represents posterior medians.
 #'
-#' @param thick_sz Number specifying thickness of 50 percent CI line (thicker line).
+#' @param sz_thick Number specifying thickness of 50 percent CI line (thicker line).
 #'
-#' @param thin_sz Number specifying thickness of 95 percent CI line (thinner line).
+#' @param sz_thin Number specifying thickness of 95 percent CI line (thinner line).
 #'
-#' @param ax_sz Number specifying thickness of axis and ticks.
+#' @param sz_axis Number specifying thickness of axis and ticks.
 #'
-#' @param axis_text_sz Number specifying size of text for axis label.
+#' @param sz_axis_text Number specifying size of text for axis label.
 #'
-#' @param tick_text_sz Number specifying size of text for tick labels on axis.
+#' @param sz_tick_text Number specifying size of text for tick labels on axis.
 #'
-#' @param main_text_sz Number specifying size of text for main title.
+#' @param sz_main_text Number specifying size of text for main title.
 #'
 #' @param tick_pos Numeric vector specifying where ticks on axis should be placed.
 #'
@@ -122,15 +122,15 @@ MCMCplot <- function(object,
                    main,
                    labels,
                    guide_axis = TRUE,
-                   labels_sz = 1.2,
-                   med_sz = 1.5,
-                   thick_sz = 5,
-                   thin_sz = 2,
-                   ax_sz = 3,
-                   axis_text_sz = 1.3,
-                   tick_text_sz = 1.2,
-                   main_text_sz = 1.2,
-                   tick_pos,
+                   sz_labels = 1.2,
+                   sz_med = 1.5,
+                   sz_thick = 5,
+                   sz_thin = 2,
+                   sz_axis = 3,
+                   sz_axis_text = 1.3,
+                   sz_tick_text = 1.2,
+                   sz_main_text = 1.2,
+                   pos_tick,
                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
   data <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
@@ -279,35 +279,35 @@ MCMCplot <- function(object,
     }
 
     #0.2 inches per line - mar measured in lines
-    m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
+    m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = sz_labels, units = 'in')}))/0.2)
 
     graphics::par(mar=c(mar[1], (m_char + (mar[2] - 3)), mar[3], mar[4]-1))
 
     #plot blank plot
     graphics::plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
          ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-         xlab = xlab, cex.lab = axis_text_sz,
+         xlab = xlab, cex.lab = sz_axis_text,
          yaxs = 'i') #cex.lab is axis label
     #lab #number of ticks to plot on each axis
 
     #title
-    graphics::title(main, cex.main = main_text_sz)
+    graphics::title(main, cex.main = sz_main_text)
 
     if (guide_axis == TRUE)
     {
       #top axis params
-      graphics::axis(3, lwd.ticks = ax_sz, labels = FALSE,
-           at = tick_pos, lwd = ax_sz)
+      graphics::axis(3, lwd.ticks = sz_axis, labels = FALSE,
+           at = tick_pos, lwd = sz_axis)
     }
 
     #bottom axis params
-    graphics::axis(1, lwd.ticks = ax_sz, labels = TRUE,
-         at = tick_pos, lwd = ax_sz,
-         cex.axis = tick_text_sz) #bottom axis
+    graphics::axis(1, lwd.ticks = sz_axis, labels = TRUE,
+         at = tick_pos, lwd = sz_axis,
+         cex.axis = sz_tick_text) #bottom axis
     #left axis params (labels)
     graphics::axis(2, at = ((1:len)), tick = FALSE,
          labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
-         line = -1, cex.axis = labels_sz)
+         line = -1, cex.axis = sz_labels)
 
     #positions to plot CI
     blk_bnd <- rbind(black_cl, black_cl)
@@ -327,10 +327,10 @@ MCMCplot <- function(object,
       {
         #Thick
         graphics::matlines(thick_q[,black_cl], blk_bnd,
-                 type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+                 type = 'l', lty = 1, lwd = sz_thick, col = 'black')
         #Thin
         graphics::matlines(thin_q[,black_cl], blk_bnd,
-                 type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+                 type = 'l', lty = 1, lwd = sz_thin, col = 'black')
       }
 
       #Gray CI
@@ -338,34 +338,34 @@ MCMCplot <- function(object,
       {
         #Thick
         graphics::matlines(thick_q[,gray_cl], gry_bnd,
-                 type = 'l', lty = 1, lwd = thick_sz, col = gr_col)
+                 type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
         #Thin
         graphics::matlines(thin_q[,gray_cl], gry_bnd,
-                 type = 'l', lty = 1, lwd = thin_sz, col = gr_col)
+                 type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
       }
 
       #White CI
       if (!is.null(white_cl))
       {
         graphics::matlines(thick_q[,white_cl], wht_bnd,
-                 type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+                 type = 'l', lty = 1, lwd = sz_thick, col = gr_col) #white (gray)
         graphics::matlines(thin_q[,white_cl], wht_bnd,
-                 type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+                 type = 'l', lty = 1, lwd = sz_thin, col = gr_col) #white (gray)
       }
 
       #Medians
-      graphics::points(medians, 1:len, pch = 16, col = 'white', cex = med_sz)
-      graphics::points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = med_sz)
-      graphics::points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = med_sz)
-      graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = med_sz, lwd = 2)
+      graphics::points(medians, 1:len, pch = 16, col = 'white', cex = sz_med)
+      graphics::points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = sz_med)
+      graphics::points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = sz_med)
+      graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = sz_med, lwd = 2)
     } else{
       graphics::matlines(thick_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = thick_sz, col = col)
+               type = 'l', lty = 1, lwd = sz_thick, col = col)
       graphics::matlines(thin_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = thin_sz, col = col)
+               type = 'l', lty = 1, lwd = sz_thin, col = col)
       #medians
       graphics::points(medians[1:len], 1:len, pch = 16,
-             col = col, cex = med_sz)
+             col = col, cex = sz_med)
     }
   }
 
@@ -417,20 +417,20 @@ MCMCplot <- function(object,
 
     #to determine margins for plot
     #0.2 inches per line - mar measured in lines
-    m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = labels_sz, units = 'in')}))/0.2)
+    m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = sz_labels, units = 'in')}))/0.2)
     #blank plot - do not display
     grDevices::pdf(file = NULL)
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = axis_text_sz, xaxs = 'i')
+                   xlab = NA, cex.lab = sz_axis_text, xaxs = 'i')
     #create invisible ticks to determine where to put y-axis label
-    tickp <- graphics::axis(2, lwd.ticks = ax_sz, labels = FALSE,
-                            at = tick_pos, lwd = ax_sz,
-                            cex.axis = tick_text_sz, las = 1, col = 'white',
+    tickp <- graphics::axis(2, lwd.ticks = sz_axis, labels = FALSE,
+                            at = tick_pos, lwd = sz_axis,
+                            cex.axis = sz_tick_text, las = 1, col = 'white',
                             col.ticks = 'white')
     invisible(grDevices::dev.off())
     #determine how long labels are
-    ml_tickp <- max(graphics::strwidth(tickp, cex = tick_text_sz, units = 'in'))
+    ml_tickp <- max(graphics::strwidth(tickp, cex = sz_tick_text, units = 'in'))
     #5 lines/inch
     ll <- 1.8 + 5 * ml_tickp
     #set plot margins according to labels
@@ -439,28 +439,28 @@ MCMCplot <- function(object,
     #new blank plot
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = axis_text_sz, xaxs = 'i')
+                   xlab = NA, cex.lab = sz_axis_text, xaxs = 'i')
     #ticks
-    graphics::axis(2, lwd.ticks = ax_sz, labels = TRUE,
-                   at = tick_pos, lwd = ax_sz,
-                   cex.axis = tick_text_sz, las = 1)
+    graphics::axis(2, lwd.ticks = sz_axis, labels = TRUE,
+                   at = tick_pos, lwd = sz_axis,
+                   cex.axis = sz_tick_text, las = 1)
     #y-axis label
-    graphics::title(ylab = ylab, cex.lab = axis_text_sz, line = ll)
+    graphics::title(ylab = ylab, cex.lab = sz_axis_text, line = ll)
 
     #title
-    graphics::title(main, cex.main = main_text_sz, line = 0.5)
+    graphics::title(main, cex.main = sz_main_text, line = 0.5)
 
     if (guide_axis == TRUE)
     {
       #right axis params
-      graphics::axis(4, lwd.ticks = ax_sz, labels = FALSE,
-                     at = tick_pos, lwd = ax_sz)
+      graphics::axis(4, lwd.ticks = sz_axis, labels = FALSE,
+                     at = tick_pos, lwd = sz_axis)
     }
 
     #bottom axis params (labels)
     graphics::axis(1, at = (len:1) + 0.013, tick = FALSE,
                    labels = labs, las = 2, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
-                   line = -1, cex.axis = labels_sz)
+                   line = -1, cex.axis = sz_labels)
 
     #ref line
     if(!is.null(ref))
@@ -484,10 +484,10 @@ MCMCplot <- function(object,
       {
         #Thick
         graphics::matlines(v_blk_bnd, thick_q[,v_black_cl],
-                           type = 'l', lty = 1, lwd = thick_sz, col = 'black')
+                           type = 'l', lty = 1, lwd = sz_thick, col = 'black')
         #Thin
         graphics::matlines(v_blk_bnd, thin_q[,v_black_cl],
-                           type = 'l', lty = 1, lwd = thin_sz, col = 'black')
+                           type = 'l', lty = 1, lwd = sz_thin, col = 'black')
       }
 
       #Gray CI
@@ -495,34 +495,34 @@ MCMCplot <- function(object,
       {
         #Thick
         graphics::matlines(v_gry_bnd, thick_q[,v_gray_cl],
-                           type = 'l', lty = 1, lwd = thick_sz, col = gr_col)
+                           type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
         #Thin
         graphics::matlines(v_gry_bnd, thin_q[,v_gray_cl],
-                           type = 'l', lty = 1, lwd = thin_sz, col = gr_col)
+                           type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
       }
 
       #White CI
       if (!is.null(white_cl))
       {
         graphics::matlines(v_wht_bnd, thick_q[,v_white_cl],
-                           type = 'l', lty = 1, lwd = thick_sz, col = gr_col) #white (gray)
+                           type = 'l', lty = 1, lwd = sz_thick, col = gr_col) #white (gray)
         graphics::matlines(v_wht_bnd, thin_q[,v_white_cl],
-                           type = 'l', lty = 1, lwd = thin_sz, col = gr_col) #white (gray)
+                           type = 'l', lty = 1, lwd = sz_thin, col = gr_col) #white (gray)
       }
 
       #Medians
-      graphics::points(len:1, medians, pch = 16, col = 'white', cex = med_sz)
-      graphics::points(v_blk_bnd[1,], medians[v_black_cl], pch = 16, col = 'black', cex = med_sz)
-      graphics::points(v_gry_bnd[1,], medians[v_gray_cl], pch = 16, col = gr_col, cex = med_sz)
-      graphics::points(v_wht_bnd[1,], medians[v_white_cl], pch = 21, col = gr_col, cex = med_sz, lwd = 2)
+      graphics::points(len:1, medians, pch = 16, col = 'white', cex = sz_med)
+      graphics::points(v_blk_bnd[1,], medians[v_black_cl], pch = 16, col = 'black', cex = sz_med)
+      graphics::points(v_gry_bnd[1,], medians[v_gray_cl], pch = 16, col = gr_col, cex = sz_med)
+      graphics::points(v_wht_bnd[1,], medians[v_white_cl], pch = 21, col = gr_col, cex = sz_med, lwd = 2)
     } else{
       graphics::matlines(rbind(1:len, 1:len), thick_q[,len:1],
-                         type = 'l', lty = 1, lwd = thick_sz, col = col)
+                         type = 'l', lty = 1, lwd = sz_thick, col = col)
       graphics::matlines(rbind(1:len, 1:len), thin_q[,len:1],
-                         type = 'l', lty = 1, lwd = thin_sz, col = col)
+                         type = 'l', lty = 1, lwd = sz_thin, col = col)
       #medians
       graphics::points(1:len, medians[len:1], pch = 16,
-                       col = col, cex = med_sz)
+                       col = col, cex = sz_med)
     }
   }
   graphics::par(mar=c(5,4,4,2) + 0.1)
