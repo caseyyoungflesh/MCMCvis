@@ -199,37 +199,44 @@ MCMCtrace <- function(object,
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+      MN_LINE <- NULL
     }
     if (length(np) == 2)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+      MN_LINE <- NULL
     }
     if (length(np) == 1)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
       graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
+      MN_LINE <- 1.1      
     }
   } else {
     if (length(np) >= 5)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+      MN_LINE <- NULL
     }
     if (length(np) == 3 | length(np) == 4)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
+      MN_LINE <- NULL
     }
     if (length(np) == 2)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
       graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
+      MN_LINE <- 1.1
     }
     if (length(np) == 1)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 1, byrow = TRUE))
       graphics::par(mar = c(5.1, 4.1, 4.1, 2.1)) # bottom, left, top, right
+      MN_LINE <- NULL
     }
   }
   
@@ -369,7 +376,7 @@ MCMCtrace <- function(object,
         return(paste0(mtr[idx]))
       }
     } else {
-      return(paste0('Density - ', x))
+      return(paste0('Trace - ', x))
     }
   }
   
@@ -438,8 +445,6 @@ MCMCtrace <- function(object,
   }
   
   
-  
-  
   if (type == 'both')
   {
     for (j in 1:length(np))
@@ -447,12 +452,13 @@ MCMCtrace <- function(object,
       #j <- 1
       #trace
       tmlt <- do.call('cbind', object2[it, np[j]]) #make into matrix with three chains in columns
-      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = MAIN_TR(np[j], main_tr, j),
+      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = NULL,
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
-                        cex.lab = sz_ax_txt, cex.main = sz_main_txt, xaxt = XAXT_TR, 
-                        yaxt = YAXT_TR)
+                        cex.lab = sz_ax_txt, xaxt = XAXT_TR, yaxt = YAXT_TR)
+      
+      graphics::title(main = MAIN_TR(np[j], main_tr, j), line = MN_LINE, cex.main = sz_main_txt)
       
       graphics::axis(side = 1, at = pos_tick_x_tr, cex.axis = sz_tick_txt)
       graphics::axis(side = 2, at = pos_tick_y_tr, cex.axis = sz_tick_txt)
@@ -543,11 +549,14 @@ MCMCtrace <- function(object,
         }
         
         graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
-                       lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
+                       lty = lty_den, lwd = lwd_den, main = '',
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                             blue = gg_cols[3,1]),
-                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt,
-                       xaxt = XAXT_DEN, yaxt = YAXT_DEN)
+                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, xaxt = XAXT_DEN, 
+                       yaxt = YAXT_DEN)
+        
+        graphics::title(main = MAIN_DEN(np[j], main_den, j), line = MN_LINE, 
+                        cex.main = sz_main_txt)
         
         graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
         graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
@@ -589,10 +598,13 @@ MCMCtrace <- function(object,
         }
         
         #density plot
-        graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, col = COL_DEN, 
-                       xlim = xlim, lty = lty_den, lwd = lwd_den, cex.axis = sz_tick_txt,
-                       main = MAIN_DEN(np[j], main_den, j), cex.lab = sz_ax_txt, 
-                       cex.main = sz_main_txt, xaxt = XAXT_DEN, yaxt = YAXT_DEN)
+        graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, 
+                       main = '', col = COL_DEN,xlim = xlim, lty = lty_den, 
+                       lwd = lwd_den, cex.axis = sz_tick_txt,
+                       cex.lab = sz_ax_txt, xaxt = XAXT_DEN, yaxt = YAXT_DEN)
+        
+        graphics::title(main = MAIN_DEN(np[j], main_den, j), line = MN_LINE, 
+                        cex.main = sz_main_txt)
         
         graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
         graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
@@ -640,12 +652,14 @@ MCMCtrace <- function(object,
     {
       #trace
       tmlt <- do.call('cbind', object2[it, np[j]])
-      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type='l', main = MAIN_TR(np[j], main_tr, j),
+      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type='l', main = NULL,
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
-                        cex.lab = sz_ax_txt, cex.main = sz_main_txt, xaxt = XAXT_TR, 
-                        yaxt = YAXT_TR)
+                        cex.lab = sz_ax_txt, xaxt = XAXT_TR, yaxt = YAXT_TR)
+      
+      graphics::title(main = MAIN_TR(np[j], main_tr, j), line = MN_LINE, 
+                      cex.main = sz_main_txt)
       
       graphics::axis(side = 1, at = pos_tick_x_tr, cex.axis = sz_tick_txt)
       graphics::axis(side = 2, at = pos_tick_y_tr, cex.axis = sz_tick_txt)
@@ -743,11 +757,14 @@ MCMCtrace <- function(object,
         }
         
         graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
-                       lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
+                       lty = lty_den, lwd = lwd_den, main = '',
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                             blue = gg_cols[3,1]),
-                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt, 
-                       xaxt = XAXT_DEN, yaxt = YAXT_DEN)
+                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, xaxt = XAXT_DEN, 
+                       yaxt = YAXT_DEN)
+        
+        graphics::title(main = MAIN_DEN(np[j], main_den, j), line = MN_LINE, 
+                        cex.main = sz_main_txt)
         
         graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
         graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
@@ -789,10 +806,12 @@ MCMCtrace <- function(object,
         
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = ylim,
-                       col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, 
-                       main = MAIN_DEN(np[j], main_den, j), cex.axis = sz_tick_txt, 
-                       cex.lab = sz_ax_txt, cex.main = sz_main_txt, xaxt = XAXT_DEN, 
+                       col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, main = '',
+                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, xaxt = XAXT_DEN, 
                        yaxt = YAXT_DEN)
+        
+        graphics::title(main = MAIN_DEN(np[j], main_den, j), line = MN_LINE, 
+                        cex.main = sz_main_txt)
         
         graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
         graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
