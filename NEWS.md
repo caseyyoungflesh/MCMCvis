@@ -8,17 +8,18 @@ NEWS
     orig: `thick_sz`, new: `sz_thick`
     orig: `thin_sz`, new: `sz_thin`
     orig: `ax_sz`, new: `sz_axis`
-    orig: `axis_text_sz`, new: `sz_axis_text`
-    orig: `ax_sz`, new: `sz_axis`
-    orig: `tick_text_sz`, new: `sz_tick_text`
-    orig: `main_text_sz`, new: `sz_main_text`
+    orig: `axis_text_sz`, new: `sz_ax_txt`
+    orig: `ax_sz`, new: `sz_ax`
+    orig: `tick_text_sz`, new: `sz_tick_txt`
+    orig: `main_text_sz`, new: `sz_main_txt`
     orig: `tick_pos`, new: `pos_tick`
 - `MCMCtrace` add ability to specify xlim and ylim for density plots
 - `MCMCtrace` add ability to specify xlab and ylab for density and trace plots
 - `MCMCtrace` add ability to specify title for trace and density plot
 - `MCMCtrace` add ability to specify line width and line type for density and prior lines on density plots
 - `MCMCtrace` add ability to specify color for density and priors lines on density plots
-
+- `MCMCtrace` add ability to specify size and position of txt when priors specified, and the position of ticks for density and trace plots
+- `MCMCtrace` add ability to specify size of tick labels, axes labels, and thickness of axes
 
 0.11.3
 - `MCMCchains` fix error associated with coda::mcmc and `rjags` objects
