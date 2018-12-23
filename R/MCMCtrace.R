@@ -74,10 +74,14 @@
 #' @param sz_tick_txt Number specifying size of text for tick labels on axis.
 #'
 #' @param sz_main_txt Number specifying size of text for main title.
+#' 
+#' #' @param pos_tick_x_tr Numeric vector specifying where ticks on x-axis should be placed for trace plots.
 #'
-#' @param pos_tick_x Numeric vector specifying where ticks on x-axis should be placed.
+#' @param pos_tick_y_tr Numeric vector specifying where ticks on y-axis should be placed for trace plots.
 #'
-#' @param pos_tick_y Numeric vector specifying where ticks on y-axis should be placed.
+#' @param pos_tick_x_den Numeric vector specifying where ticks on x-axis should be placed for density plots.
+#'
+#' @param pos_tick_y_den Numeric vector specifying where ticks on y-axis should be placed for density plots.
 #'
 #' @param ind Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If
 #' \code{ind= FALSE}, one density line will be plotted for all chains.
@@ -141,8 +145,10 @@ MCMCtrace <- function(object,
                       sz_ax_txt = 1, #DONE
                       sz_tick_txt = 1, #DONE
                       sz_main_txt = 1.2, #DONE
-                      pos_tick_x, #may need to use 'axis' call
-                      pos_tick_y,
+                      pos_tick_x_tr = NULL,
+                      pos_tick_y_tr = NULL,
+                      pos_tick_x_den = NULL,
+                      pos_tick_y_den = NULL,
                       ind = FALSE)
 {
   .pardefault <- graphics::par(no.readonly = T)
@@ -396,13 +402,27 @@ MCMCtrace <- function(object,
     SZ_TXT <- sz_txt
   }
   
-  
+  #text position
   if (pos_txt %in% c('bottomright', 'bottom', 'bottomleft', 
                      'left', 'topleft', 'top', 'topright', 'right', 'center'))
   {
     POS_TXT <- pos_txt
   } else {
     stop("Invalid argument for `pos_txt'. Valid arguments are 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right', and 'center'.")
+  }
+  
+  #tick position
+  if (is.null(pos_tick_x_den))
+  {
+    XAXT_DEN <- 's'
+  } else {
+    XAXT_DEN <- 'n'
+  }
+  if (is.null(pos_tick_y_den))
+  {
+    YAXT_DEN <- 's'
+  } else {
+    YAXT_DEN <- 'n'
   }
   
   
@@ -419,12 +439,15 @@ MCMCtrace <- function(object,
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
                         cex.lab = sz_ax_txt, cex.main = sz_main_txt)
       
+      graphics::axis(side = 1, at = pos_tick_x_tr, cex.axis = sz_tick_txt)
+      graphics::axis(side = 2, at = pos_tick_y_tr, cex.axis = sz_tick_txt)
+      
       #if sz_ax is specified
       if (!missing(sz_ax))
       {
-        box(lwd = sz_ax)
-        graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
-        graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+        graphics::box(lwd = sz_ax)
+        graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_tr)
+        graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_tr)
       }
       
       #PPO
@@ -508,7 +531,11 @@ MCMCtrace <- function(object,
                        lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                             blue = gg_cols[3,1]),
-                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt,
+                       xaxt = XAXT_DEN, yaxt = YAXT_DEN)
+        
+        graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
+        graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
         
         for (l in 2:NCOL(tmlt))
         {
@@ -520,9 +547,9 @@ MCMCtrace <- function(object,
         #if sz_ax is specified
         if (!missing(sz_ax))
         {
-          box(lwd = sz_ax)
-          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
-          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_den)
         }
         
       } else{
@@ -550,14 +577,17 @@ MCMCtrace <- function(object,
         graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, col = COL_DEN, 
                        xlim = xlim, lty = lty_den, lwd = lwd_den, cex.axis = sz_tick_txt,
                        main = MAIN_DEN(np[j], main_den, j), cex.lab = sz_ax_txt, 
-                       cex.main = sz_main_txt)
+                       cex.main = sz_main_txt, xaxt = XAXT_DEN, yaxt = YAXT_DEN)
+        
+        graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
+        graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
         
         #if sz_ax is specified
         if (!missing(sz_ax))
         {
-          box(lwd = sz_ax)
-          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
-          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
         }
       }
       
@@ -600,12 +630,16 @@ MCMCtrace <- function(object,
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
                         cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+      
+      graphics::axis(side = 1, at = pos_tick_x_tr, cex.axis = sz_tick_txt)
+      graphics::axis(side = 2, at = pos_tick_y_tr, cex.axis = sz_tick_txt)
+      
       #if sz_ax is specified
       if (!missing(sz_ax))
       {
-        box(lwd = sz_ax)
-        graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
-        graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+        graphics::box(lwd = sz_ax)
+        graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_tr)
+        graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_tr)
       }
     }
   }
@@ -696,7 +730,11 @@ MCMCtrace <- function(object,
                        lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                             blue = gg_cols[3,1]),
-                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt, 
+                       xaxt = XAXT_DEN, yaxt = YAXT_DEN)
+        
+        graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
+        graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
         
         for (l in 2:NCOL(tmlt))
         {
@@ -708,9 +746,9 @@ MCMCtrace <- function(object,
         #if sz_ax is specified
         if (!missing(sz_ax))
         {
-          box(lwd = sz_ax)
-          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
-          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
         }
       } else{
         
@@ -737,14 +775,18 @@ MCMCtrace <- function(object,
         graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = ylim,
                        col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, 
                        main = MAIN_DEN(np[j], main_den, j), cex.axis = sz_tick_txt, 
-                       cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+                       cex.lab = sz_ax_txt, cex.main = sz_main_txt, xaxt = XAXT_DEN, 
+                       yaxt = YAXT_DEN)
+        
+        graphics::axis(side = 1, at = pos_tick_x_den, cex.axis = sz_tick_txt)
+        graphics::axis(side = 2, at = pos_tick_y_den, cex.axis = sz_tick_txt)
         
         #if sz_ax is specified
         if (!missing(sz_ax))
         {
-          box(lwd = sz_ax)
-          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
-          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_x_den)
         }
       }
       
