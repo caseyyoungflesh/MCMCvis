@@ -67,15 +67,13 @@
 #'
 #' @param pos_txt Character string specifying where on plot text should be placed - default is 'topright'. Valid arguments are 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right' and 'center'.
 #'
-#' @param sz_labels Number specifying size of text for parameter labels on axis.
+#' @param sz_ax Number specifying thickness of axes and ticks.
 #'
-#' @param sz_axis Number specifying thickness of axis and ticks.
+#' @param sz_ax_txt Number specifying size of text for axes labels.
 #'
-#' @param sz_axis_text Number specifying size of text for axis label.
+#' @param sz_tick_txt Number specifying size of text for tick labels on axis.
 #'
-#' @param sz_tick_text Number specifying size of text for tick labels on axis.
-#'
-#' @param sz_main_text Number specifying size of text for main title.
+#' @param sz_main_txt Number specifying size of text for main title.
 #'
 #' @param pos_tick_x Numeric vector specifying where ticks on x-axis should be placed.
 #'
@@ -139,12 +137,11 @@ MCMCtrace <- function(object,
                       col_txt,
                       sz_txt,
                       pos_txt = 'topright',
-                      sz_labels = 1, 
-                      sz_axis,
-                      sz_axis_text,
-                      sz_tick_text,
-                      sz_main_text,
-                      pos_tick_x,
+                      sz_ax = 1, #issue - may need 'axis' call
+                      sz_ax_txt = 1, #DONE
+                      sz_tick_txt = 1, #DONE
+                      sz_main_txt = 1.2, #DONE
+                      pos_tick_x, #may need to use 'axis' call
                       pos_tick_y,
                       ind = FALSE)
 {
@@ -419,7 +416,8 @@ MCMCtrace <- function(object,
       graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = MAIN_TR(np[j], main_tr, j),
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
-                        xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_labels)
+                        xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
+                        cex.lab = sz_ax_txt, cex.main = sz_main_txt)
       
       
       #PPO
@@ -503,7 +501,7 @@ MCMCtrace <- function(object,
                        lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                             blue = gg_cols[3,1]),
-                       cex.axis = sz_labels)
+                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt)
         
         for (l in 2:NCOL(tmlt))
         {
@@ -534,8 +532,9 @@ MCMCtrace <- function(object,
         
         #density plot
         graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, col = COL_DEN, 
-                       xlim = xlim, lty = lty_den, lwd = lwd_den, cex.axis = sz_labels,
-                       main = MAIN_DEN(np[j], main_den, j))
+                       xlim = xlim, lty = lty_den, lwd = lwd_den, cex.axis = sz_tick_txt,
+                       main = MAIN_DEN(np[j], main_den, j), cex.lab = sz_ax_txt, 
+                       lwd.ticks = sz_ax, cex.main = sz_main_txt)
       }
       
       #plotting PPO
@@ -575,7 +574,8 @@ MCMCtrace <- function(object,
       graphics::matplot(it, tmlt, lwd = 1, lty = 1, type='l', main = MAIN_TR(np[j], main_tr, j),
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
-                        xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_labels)
+                        xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
+                        cex.lab = sz_ax_txt, cex.main = sz_main_txt)
     }
   }
   
@@ -665,7 +665,7 @@ MCMCtrace <- function(object,
                        lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                             blue = gg_cols[3,1]),
-                       cex.axis = sz_labels)
+                       cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, cex.main = sz_main_txt)
         
         for (l in 2:NCOL(tmlt))
         {
@@ -697,7 +697,8 @@ MCMCtrace <- function(object,
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = ylim,
                        col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, 
-                       main = MAIN_DEN(np[j], main_den, j), cex.axis = sz_labels)
+                       main = MAIN_DEN(np[j], main_den, j), cex.axis = sz_tick_txt, 
+                       cex.lab = sz_ax_txt, cex.main = sz_main_txt)
       }
       
       #plotting PPO
