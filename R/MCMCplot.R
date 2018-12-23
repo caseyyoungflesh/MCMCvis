@@ -51,15 +51,15 @@
 #'
 #' @param sz_thin Number specifying thickness of 95 percent CI line (thinner line).
 #'
-#' @param sz_axis Number specifying thickness of axis and ticks.
+#' @param sz_ax Number specifying thickness of axis and ticks.
 #'
-#' @param sz_axis_text Number specifying size of text for axis label.
+#' @param sz_ax_txt Number specifying size of text for axis label.
 #'
-#' @param sz_tick_text Number specifying size of text for tick labels on axis.
+#' @param sz_tick_txt Number specifying size of text for tick labels on axis.
 #'
-#' @param sz_main_text Number specifying size of text for main title.
+#' @param sz_main_txt Number specifying size of text for main title.
 #'
-#' @param tick_pos Numeric vector specifying where ticks on axis should be placed.
+#' @param pos_tico Numeric vector specifying where ticks on axis should be placed.
 #'
 #' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 #'
@@ -126,10 +126,10 @@ MCMCplot <- function(object,
                    sz_med = 1.5,
                    sz_thick = 5,
                    sz_thin = 2,
-                   sz_axis = 3,
-                   sz_axis_text = 1.3,
-                   sz_tick_text = 1.2,
-                   sz_main_text = 1.2,
+                   sz_ax = 3,
+                   sz_ax_txt = 1.3,
+                   sz_tick_txt = 1.2,
+                   sz_main_txt = 1.2,
                    pos_tick,
                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
@@ -137,8 +137,8 @@ MCMCplot <- function(object,
 
   # Plotting parameters -----------------------------------------------------
 
-  if (missing(tick_pos))
-  {tick_pos = NULL}
+  if (missing(pos_tick))
+  {pos_tick = NULL}
 
   gr_col = 'gray60' #color used for CI and medians
   ref_col = 'gray60' #color used for 0 line
@@ -286,24 +286,24 @@ MCMCplot <- function(object,
     #plot blank plot
     graphics::plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
          ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-         xlab = xlab, cex.lab = sz_axis_text,
+         xlab = xlab, cex.lab = sz_ax_txt,
          yaxs = 'i') #cex.lab is axis label
     #lab #number of ticks to plot on each axis
 
     #title
-    graphics::title(main, cex.main = sz_main_text)
+    graphics::title(main, cex.main = sz_main_txt)
 
     if (guide_axis == TRUE)
     {
       #top axis params
-      graphics::axis(3, lwd.ticks = sz_axis, labels = FALSE,
-           at = tick_pos, lwd = sz_axis)
+      graphics::axis(3, lwd.ticks = sz_ax, labels = FALSE,
+           at = pos_tick, lwd = sz_ax)
     }
 
     #bottom axis params
-    graphics::axis(1, lwd.ticks = sz_axis, labels = TRUE,
-         at = tick_pos, lwd = sz_axis,
-         cex.axis = sz_tick_text) #bottom axis
+    graphics::axis(1, lwd.ticks = sz_ax, labels = TRUE,
+         at = pos_tick, lwd = sz_ax,
+         cex.axis = sz_tick_txt) #bottom axis
     #left axis params (labels)
     graphics::axis(2, at = ((1:len)), tick = FALSE,
          labels = labs, las = 1, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
@@ -422,15 +422,15 @@ MCMCplot <- function(object,
     grDevices::pdf(file = NULL)
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = sz_axis_text, xaxs = 'i')
+                   xlab = NA, cex.lab = sz_ax_txt, xaxs = 'i')
     #create invisible ticks to determine where to put y-axis label
-    tickp <- graphics::axis(2, lwd.ticks = sz_axis, labels = FALSE,
-                            at = tick_pos, lwd = sz_axis,
-                            cex.axis = sz_tick_text, las = 1, col = 'white',
+    tickp <- graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE,
+                            at = pos_tick, lwd = sz_ax,
+                            cex.axis = sz_tick_txt, las = 1, col = 'white',
                             col.ticks = 'white')
     invisible(grDevices::dev.off())
     #determine how long labels are
-    ml_tickp <- max(graphics::strwidth(tickp, cex = sz_tick_text, units = 'in'))
+    ml_tickp <- max(graphics::strwidth(tickp, cex = sz_tick_txt, units = 'in'))
     #5 lines/inch
     ll <- 1.8 + 5 * ml_tickp
     #set plot margins according to labels
@@ -439,22 +439,22 @@ MCMCplot <- function(object,
     #new blank plot
     graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
-                   xlab = NA, cex.lab = sz_axis_text, xaxs = 'i')
+                   xlab = NA, cex.lab = sz_ax_txt, xaxs = 'i')
     #ticks
-    graphics::axis(2, lwd.ticks = sz_axis, labels = TRUE,
-                   at = tick_pos, lwd = sz_axis,
-                   cex.axis = sz_tick_text, las = 1)
+    graphics::axis(2, lwd.ticks = sz_ax, labels = TRUE,
+                   at = pos_tick, lwd = sz_ax,
+                   cex.axis = sz_tick_txt, las = 1)
     #y-axis label
-    graphics::title(ylab = ylab, cex.lab = sz_axis_text, line = ll)
+    graphics::title(ylab = ylab, cex.lab = sz_ax_txt, line = ll)
 
     #title
-    graphics::title(main, cex.main = sz_main_text, line = 0.5)
+    graphics::title(main, cex.main = sz_main_txt, line = 0.5)
 
     if (guide_axis == TRUE)
     {
       #right axis params
-      graphics::axis(4, lwd.ticks = sz_axis, labels = FALSE,
-                     at = tick_pos, lwd = sz_axis)
+      graphics::axis(4, lwd.ticks = sz_ax, labels = FALSE,
+                     at = pos_tick, lwd = sz_ax)
     }
 
     #bottom axis params (labels)
