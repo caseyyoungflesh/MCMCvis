@@ -137,7 +137,7 @@ MCMCtrace <- function(object,
                       col_txt,
                       sz_txt,
                       pos_txt = 'topright',
-                      sz_ax = 1, #issue - may need 'axis' call
+                      sz_ax = 1, #DONE
                       sz_ax_txt = 1, #DONE
                       sz_tick_txt = 1, #DONE
                       sz_main_txt = 1.2, #DONE
@@ -419,6 +419,13 @@ MCMCtrace <- function(object,
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
                         cex.lab = sz_ax_txt, cex.main = sz_main_txt)
       
+      #if sz_ax is specified
+      if (!missing(sz_ax))
+      {
+        box(lwd = sz_ax)
+        graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
+        graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+      }
       
       #PPO
       #if priors are specified
@@ -509,6 +516,15 @@ MCMCtrace <- function(object,
                           col = grDevices::rgb(red = gg_cols[1,l], green = gg_cols[2,l],
                                                blue = gg_cols[3,l]))
         }
+        
+        #if sz_ax is specified
+        if (!missing(sz_ax))
+        {
+          box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+        }
+        
       } else{
         
         dens <- stats::density(rbind(tmlt))
@@ -534,7 +550,15 @@ MCMCtrace <- function(object,
         graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, col = COL_DEN, 
                        xlim = xlim, lty = lty_den, lwd = lwd_den, cex.axis = sz_tick_txt,
                        main = MAIN_DEN(np[j], main_den, j), cex.lab = sz_ax_txt, 
-                       lwd.ticks = sz_ax, cex.main = sz_main_txt)
+                       cex.main = sz_main_txt)
+        
+        #if sz_ax is specified
+        if (!missing(sz_ax))
+        {
+          box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+        }
       }
       
       #plotting PPO
@@ -576,6 +600,13 @@ MCMCtrace <- function(object,
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_tick_txt, 
                         cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+      #if sz_ax is specified
+      if (!missing(sz_ax))
+      {
+        box(lwd = sz_ax)
+        graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
+        graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+      }
     }
   }
   
@@ -673,6 +704,14 @@ MCMCtrace <- function(object,
                           col = grDevices::rgb(red = gg_cols[1,l], green = gg_cols[2,l],
                                                blue = gg_cols[3,l]))
         }
+        
+        #if sz_ax is specified
+        if (!missing(sz_ax))
+        {
+          box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+        }
       } else{
         
         dens <- stats::density(rbind(tmlt))
@@ -699,6 +738,14 @@ MCMCtrace <- function(object,
                        col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, 
                        main = MAIN_DEN(np[j], main_den, j), cex.axis = sz_tick_txt, 
                        cex.lab = sz_ax_txt, cex.main = sz_main_txt)
+        
+        #if sz_ax is specified
+        if (!missing(sz_ax))
+        {
+          box(lwd = sz_ax)
+          graphics::axis(1, lwd.ticks = sz_ax, labels = FALSE)
+          graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE)
+        }
       }
       
       #plotting PPO
