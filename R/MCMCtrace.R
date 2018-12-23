@@ -61,23 +61,25 @@
 #'
 #' @param col_pr Character string specifying color of prior line on density plots.
 #'
-#' @param col_txt Character string specifying color of overlap text on plot when values specified for \code{priors}.
+#' @param col_txt Character string specifying color of text (denoting PPO) on plot when value specified for \code{priors}. If \code{NULL} is specified, no text will be plot.
 #' 
-#' @param sz_povr Number XXXXXXXXX specify size of overlap text.
+#' @param sz_txt Number specifying size of text (denoting PPO) when value specified for \code{priors}. If \code{NULL} is specified, no text will be plot.
 #'
-#' @param labels_sz Number specifying size of text for parameter labels on axis.
+#' @param pos_txt Character string specifying where on plot text should be placed - default is 'topright'. Valid arguments are 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right' and 'center'.
 #'
-#' @param ax_sz Number specifying thickness of axis and ticks.
+#' @param sz_labels Number specifying size of text for parameter labels on axis.
 #'
-#' @param axis_text_sz Number specifying size of text for axis label.
+#' @param sz_axis Number specifying thickness of axis and ticks.
 #'
-#' @param tick_text_sz Number specifying size of text for tick labels on axis.
+#' @param sz_axis_text Number specifying size of text for axis label.
 #'
-#' @param main_text_sz Number specifying size of text for main title.
+#' @param sz_tick_text Number specifying size of text for tick labels on axis.
 #'
-#' @param tick_pos_x Numeric vector specifying where ticks on x-axis should be placed.
+#' @param sz_main_text Number specifying size of text for main title.
 #'
-#' @param tick_pos_y Numeric vector specifying where ticks on y-axis should be placed.
+#' @param pos_tick_x Numeric vector specifying where ticks on x-axis should be placed.
+#'
+#' @param pos_tick_y Numeric vector specifying where ticks on y-axis should be placed.
 #'
 #' @param ind Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If
 #' \code{ind= FALSE}, one density line will be plotted for all chains.
@@ -135,6 +137,15 @@ MCMCtrace <- function(object,
                       col_den,
                       col_pr,
                       col_txt,
+                      sz_txt,
+                      pos_txt = 'topright',
+                      sz_labels = 1, 
+                      sz_axis,
+                      sz_axis_text,
+                      sz_tick_text,
+                      sz_main_text,
+                      pos_tick_x,
+                      pos_tick_y,
                       ind = FALSE)
 {
   .pardefault <- graphics::par(no.readonly = T)
@@ -381,6 +392,23 @@ MCMCtrace <- function(object,
     COL_TXT <- col_txt
   }
   
+  if (missing(sz_txt))
+  {
+    SZ_TXT <- 1
+  } else {
+    SZ_TXT <- sz_txt
+  }
+  
+  
+  if (pos_txt %in% c('bottomright', 'bottom', 'bottomleft', 
+                     'left', 'topleft', 'top', 'topright', 'right', 'center'))
+  {
+    POS_TXT <- pos_txt
+  } else {
+    stop("Invalid argument for `pos_txt'. Valid arguments are 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right', and 'center'.")
+  }
+  
+  
   if (type == 'both')
   {
     for (j in 1:length(np))
@@ -391,7 +419,7 @@ MCMCtrace <- function(object,
       graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = MAIN_TR(np[j], main_tr, j),
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
-                        xlab = xlab_tr, ylab = ylab_tr)
+                        xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_labels)
       
       
       #PPO
@@ -473,7 +501,9 @@ MCMCtrace <- function(object,
         
         graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
                        lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
-                       col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
+                       col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
+                                            blue = gg_cols[3,1]),
+                       cex.axis = sz_labels)
         
         for (l in 2:NCOL(tmlt))
         {
@@ -504,7 +534,8 @@ MCMCtrace <- function(object,
         
         #density plot
         graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, col = COL_DEN, 
-                       xlim = xlim, lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j))
+                       xlim = xlim, lty = lty_den, lwd = lwd_den, cex.axis = sz_labels,
+                       main = MAIN_DEN(np[j], main_den, j))
       }
       
       #plotting PPO
@@ -512,7 +543,13 @@ MCMCtrace <- function(object,
       {
         #plot prior and overlap text
         graphics::lines(dpr, col = COL_PR, lwd = lwd_pr, lty = lty_pr)
-        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = COL_TXT)
+        
+        #don't plot text if NULL specified for SZ or COL
+        if (!is.null(SZ_TXT) & !is.null(COL_TXT))
+        {
+          graphics::legend(POS_TXT, legend = ovrlap, bty = 'n', pch = NA, 
+                           text.col = COL_TXT, cex = SZ_TXT)
+        }
       }
       
       #if generating values are specified - warnings in block above
@@ -538,7 +575,7 @@ MCMCtrace <- function(object,
       graphics::matplot(it, tmlt, lwd = 1, lty = 1, type='l', main = MAIN_TR(np[j], main_tr, j),
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
-                        xlab = xlab_tr, ylab = ylab_tr)
+                        xlab = xlab_tr, ylab = ylab_tr, cex.axis = sz_labels)
     }
   }
   
@@ -626,7 +663,9 @@ MCMCtrace <- function(object,
         
         graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
                        lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
-                       col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
+                       col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
+                                            blue = gg_cols[3,1]),
+                       cex.axis = sz_labels)
         
         for (l in 2:NCOL(tmlt))
         {
@@ -658,7 +697,7 @@ MCMCtrace <- function(object,
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = ylim,
                        col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, 
-                       main = MAIN_DEN(np[j], main_den, j))
+                       main = MAIN_DEN(np[j], main_den, j), cex.axis = sz_labels)
       }
       
       #plotting PPO
@@ -666,7 +705,13 @@ MCMCtrace <- function(object,
       {
         #plot prior and overlap text
         graphics::lines(dpr, col = COL_PR, lwd = lwd_pr, lty = lty_pr)
-        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = COL_TXT)
+        
+        #don't plot text if NULL specified for SZ or COL
+        if (!is.null(SZ_TXT) & !is.null(COL_TXT))
+        {
+          graphics::legend(POS_TXT, legend = ovrlap, bty = 'n', pch = NA, 
+                           text.col = COL_TXT, cex = SZ_TXT)
+        }
       }
       
       #if generating values are specified - warnings in block above
