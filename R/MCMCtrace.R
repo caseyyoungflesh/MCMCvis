@@ -45,9 +45,9 @@
 #'
 #' @param ylab_tr Character string specifying label for x-axis on trace plots.
 #'
-#' @param main_den Character string (or vector of character strings if plotting > 1 parameter) specifying title of density plot(s).
+#' @param main_den Character string (or vector of character strings if plotting > 1 parameter) specifying title(s) of density plot(s).
 #'
-#' @param main_tr Character string (or vector of character strings if plotting > 1 parameter) specifying title of trace plot(s).
+#' @param main_tr Character string (or vector of character strings if plotting > 1 parameter) specifying title(s) of trace plot(s).
 #'
 #' @param lwd_den Number specifying thickness of density line on density plots.
 #'
@@ -57,10 +57,12 @@
 #'
 #' @param lty_pr Number specifying the line type for the prior line on density plots.
 #'
-#' @param col_den Character string specifying color of density line on density plots.
+#' @param col_den Character string specifying color of density line on density plots. Does not specify color if \code{ind = TRUE}.
 #'
 #' @param col_pr Character string specifying color of prior line on density plots.
 #'
+#' @param col_txt Character string specifying color of overlap text on plot when values specified for \code{priors}.
+#' 
 #' @param sz_povr Number XXXXXXXXX specify size of overlap text.
 #'
 #' @param labels_sz Number specifying size of text for parameter labels on axis.
@@ -124,6 +126,15 @@ MCMCtrace <- function(object,
                       ylab_tr,
                       xlab_den,
                       ylab_den,
+                      main_den = NULL,
+                      main_tr = NULL,
+                      lwd_den = 1,
+                      lwd_pr = 1,
+                      lty_den = 1,
+                      lty_pr = 1,
+                      col_den,
+                      col_pr,
+                      col_txt,
                       ind = FALSE)
 {
   .pardefault <- graphics::par(no.readonly = T)
@@ -302,6 +313,74 @@ MCMCtrace <- function(object,
     ylab_den <- 'Density'
   }
   
+  #from input - for main - if length one and given, print - if length > 1, print that element 
+  if (!missing(main_den))
+  {
+    if (length(main_den) != length(np))
+    {
+      stop("Number of elements for 'main_den' does not equal number of specified parameters.")
+    }
+  }
+  if (!missing(main_tr))
+  {
+    if (length(main_tr) != length(np))
+    {
+      stop("Number of elements for 'main_tr' does not equal number of specified parameters.")
+    }
+  }
+  
+  MAIN_DEN <- function(x, md = main_den, idx)
+  {
+    if (!is.null(md))
+    {
+      if (length(md) == 1)
+      {
+        return(paste0(md))
+      } else {
+        return(paste0(md[idx]))
+      }
+    } else {
+      return(paste0('Density - ', x))
+    }
+  }
+  
+  MAIN_TR <- function(x, mtr = main_tr, idx)
+  {
+    if (!is.null(mtr))
+    {
+      if (length(mtr) == 1)
+      {
+        return(paste0(mtr))
+      } else {
+        return(paste0(mtr[idx]))
+      }
+    } else {
+      return(paste0('Density - ', x))
+    }
+  }
+  
+  #color for density and prior lines
+  if (missing(col_den))
+  {
+    COL_DEN <- 'black'
+  } else {
+    COL_DEN <- col_den
+  }
+  
+  if (missing(col_pr))
+  {
+    COL_PR <- 'red'
+  } else {
+    COL_PR <- col_pr
+  }
+  
+  if (missing(col_txt))
+  {
+    COL_TXT <- 'red'
+  } else {
+    COL_TXT <- col_txt
+  }
+  
   if (type == 'both')
   {
     for (j in 1:length(np))
@@ -309,7 +388,7 @@ MCMCtrace <- function(object,
       #j <- 1
       #trace
       tmlt <- do.call('cbind', object2[it, np[j]]) #make into matrix with three chains in columns
-      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = paste0('Trace - ', np[j]),
+      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = MAIN_TR(np[j], main_tr, j),
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr)
@@ -380,25 +459,25 @@ MCMCtrace <- function(object,
           ylim <- range(c(0, max(max_den_y), PPO_y_rng))
           xlim <- range(c(range(rng_den_x), PPO_x_rng))
         } else {
-          if (is.null(ylim) & is.null(xlim))
-          {
-            ylim <- c(0, max(max_den_y))
-            xlim <- NULL
-          }
           if (!is.null(ylim))
           {
             ylim <- YLIM
             xlim <- XLIM
           }
+          if (is.null(ylim) & is.null(xlim))
+          {
+            ylim <- c(0, max(max_den_y))
+            xlim <- NULL
+          }
         }
         
         graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
-                       lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
+                       lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
                        col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
         
         for (l in 2:NCOL(tmlt))
         {
-          graphics::lines(dens[[l]],
+          graphics::lines(dens[[l]], lty = lty_den, lwd = lwd_den,
                           col = grDevices::rgb(red = gg_cols[1,l], green = gg_cols[2,l],
                                                blue = gg_cols[3,l]))
         }
@@ -411,29 +490,29 @@ MCMCtrace <- function(object,
           ylim <- range(c(range(dens$y), PPO_y_rng))
           xlim <- range(c(range(dens$x), PPO_x_rng))
         } else {
-          if (is.null(ylim) & is.null(xlim))
-          {
-            ylim <- NULL
-            xlim <- NULL
-          }
           if (!is.null(ylim))
           {
             ylim <- YLIM
             xlim <- XLIM
           }
+          if (is.null(ylim) & is.null(xlim))
+          {
+            ylim <- NULL
+            xlim <- NULL
+          }
         }
         
         #density plot
-        graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim,
-                       xlim = xlim, lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
+        graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, col = COL_DEN, 
+                       xlim = xlim, lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j))
       }
       
       #plotting PPO
       if (!is.null(priors))
       {
         #plot prior and overlap text
-        graphics::lines(dpr, col = 'red')
-        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
+        graphics::lines(dpr, col = COL_PR, lwd = lwd_pr, lty = lty_pr)
+        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = COL_TXT)
       }
       
       #if generating values are specified - warnings in block above
@@ -456,7 +535,7 @@ MCMCtrace <- function(object,
     {
       #trace
       tmlt <- do.call('cbind', object2[it, np[j]])
-      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type='l', main = paste0('Trace - ', np[j]),
+      graphics::matplot(it, tmlt, lwd = 1, lty = 1, type='l', main = MAIN_TR(np[j], main_tr, j),
                         col = grDevices::rgb(red = gg_cols[1,], green = gg_cols[2,],
                                             blue = gg_cols[3,], alpha = A_VAL),
                         xlab = xlab_tr, ylab = ylab_tr)
@@ -533,27 +612,27 @@ MCMCtrace <- function(object,
           ylim <- range(c(0, max(max_den_y), PPO_y_rng))
           xlim <- range(c(range(rng_den_x), PPO_x_rng))
         } else {
-          if (is.null(ylim) & is.null(xlim))
-          {
-            ylim <- c(0, max(max_den_y))
-            xlim <- NULL
-          }
           if (!is.null(ylim))
           {
             ylim <- YLIM
             xlim <- XLIM
           }
+          if (is.null(ylim) & is.null(xlim))
+          {
+            ylim <- c(0, max(max_den_y))
+            xlim <- NULL
+          }
         }
         
         graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
-                       lty = 1, lwd = 1, main = paste0('Density - ', np[j]),
-                       col = grDevices::rgb(red= gg_cols[1,1], green= gg_cols[2,1], blue= gg_cols[3,1]))
+                       lty = lty_den, lwd = lwd_den, main = MAIN_DEN(np[j], main_den, j),
+                       col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], blue = gg_cols[3,1]))
         
         for (l in 2:NCOL(tmlt))
         {
-          graphics::lines(dens[[l]],
-                          col = grDevices::rgb(red= gg_cols[1,l], green= gg_cols[2,l],
-                                               blue= gg_cols[3,l]))
+          graphics::lines(dens[[l]], lty = lty_den, lwd = lwd_den,
+                          col = grDevices::rgb(red = gg_cols[1,l], green = gg_cols[2,l],
+                                               blue = gg_cols[3,l]))
         }
       } else{
         
@@ -564,29 +643,30 @@ MCMCtrace <- function(object,
           ylim <- range(c(range(dens$y), PPO_y_rng))
           xlim <- range(c(range(dens$x), PPO_x_rng))
         } else {
-          if (is.null(ylim) & is.null(xlim))
-          {
-            ylim <- NULL
-            xlim <- NULL
-          }
           if (!is.null(ylim))
           {
             ylim <- YLIM
             xlim <- XLIM
           }
+          if (is.null(ylim) & is.null(xlim))
+          {
+            ylim <- NULL
+            xlim <- NULL
+          }
         }
         
         #density plot
         graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = ylim,
-                       xlim = xlim, lty = 1, lwd = 1, main = paste0('Density - ', np[j]))
+                       col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, 
+                       main = MAIN_DEN(np[j], main_den, j))
       }
       
       #plotting PPO
       if (!is.null(priors))
       {
         #plot prior and overlap text
-        graphics::lines(dpr, col = 'red')
-        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = 'red')
+        graphics::lines(dpr, col = COL_PR, lwd = lwd_pr, lty = lty_pr)
+        graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, text.col = COL_TXT)
       }
       
       #if generating values are specified - warnings in block above
