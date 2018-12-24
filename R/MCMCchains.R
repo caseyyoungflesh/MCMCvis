@@ -62,7 +62,7 @@ MCMCchains <- function(object,
     object <- coda::as.mcmc.list(mclis)
     #end mod as.mcmc
   }
-  if(coda::is.mcmc.list(object) != TRUE &
+  if (coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
      class(object) != 'rjags' &
      typeof(object) != 'S4' &
@@ -72,19 +72,19 @@ MCMCchains <- function(object,
   }
 
   #NAME SORTING BLOCK
-  if(typeof(object) == 'S4')
+  if (typeof(object) == 'S4')
   {
     temp_in <- rstan::As.mcmc.list(object)
-    if(ISB == TRUE)
+    if (ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in[[1]]),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    }else{
+    } else{
       names <- colnames(temp_in[[1]])
     }
   }
 
-  if(class(object) == 'jagsUI')
+  if (class(object) == 'jagsUI')
   {
     object <- object$samples
   }
