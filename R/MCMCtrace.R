@@ -490,31 +490,6 @@ MCMCtrace <- function(object,
         graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_tr)
       }
       
-      #diagnostic plotted on trace plots
-      if (Rhat == TRUE & n.eff == TRUE)
-      {
-        diag_txt <- paste0('Rhat: ', Rhat[j], '
-                           n.eff: ', neff[j])
-      } 
-      if (Rhat == TRUE & n.eff == FALSE)
-      {
-        diag_txt <- paste0('Rhat: ', Rhat[j])
-      }
-      if (Rhat == FALSE & n.eff == TRUE)
-      {
-        diag_txt <- paste0('n.eff: ', n.eff[j])
-      }
-
-      #don't plot text if NULL specified for SZ or COL
-      if (Rhat == TRUE | n.eff == TRUE)
-      {
-        if (!is.null(SZ_TXT) & !is.null(COL_TXT))
-        {
-          graphics::legend(POS_TXT, legend = diag_txt, bty = 'n', pch = NA, 
-                           text.col = COL_TXT, cex = SZ_TXT)
-        }
-      }
-            
       #PPO
       #if priors are specified
       if (!is.null(priors))
@@ -620,8 +595,8 @@ MCMCtrace <- function(object,
         }
         
       } else {
-        
         dens <- stats::density(rbind(tmlt))
+        rng_den_x <- range(dens$x)
         #set axes limits according to inputs
         if (!is.null(priors) & post_zm == FALSE & is.null(ylim) & is.null(xlim))
         {
@@ -642,7 +617,7 @@ MCMCtrace <- function(object,
         
         #density plot
         graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, 
-                       main = '', col = COL_DEN,xlim = xlim, lty = lty_den, 
+                       main = '', col = COL_DEN, xlim = xlim, lty = lty_den, 
                        lwd = lwd_den, cex.axis = sz_tick_txt,
                        cex.lab = sz_ax_txt, xaxt = XAXT_DEN, yaxt = YAXT_DEN)
         
@@ -672,6 +647,34 @@ MCMCtrace <- function(object,
         {
           graphics::legend(POS_TXT, legend = ovrlap, bty = 'n', pch = NA, 
                            text.col = COL_TXT, cex = SZ_TXT)
+        }
+      }
+      
+      #diagnostic plotted on density plots
+      if (Rhat == TRUE & n.eff == TRUE)
+      {
+        diag_txt <- list(paste0('Rhat: ', rhat[j]),
+                         paste0('n.eff: ', neff[j]))
+      } 
+      if (Rhat == TRUE & n.eff == FALSE)
+      {
+        diag_txt <- paste0('Rhat: ', rhat[j])
+      }
+      if (Rhat == FALSE & n.eff == TRUE)
+      {
+        diag_txt <- paste0('n.eff: ', neff[j])
+      }
+      
+      #don't plot text if NULL specified for SZ or COL
+      if (Rhat == TRUE | n.eff == TRUE)
+      {
+        if (!is.null(SZ_TXT) & !is.null(COL_TXT))
+        {
+          #inset needs to be smaller when sz_txt is larger
+          ofs <- (SZ_TXT - 1)/10
+          graphics::legend('topleft',inset = c(-0.075-ofs, 0), 
+                           legend = diag_txt, 
+                           bty = 'n', pch = NA, text.col = COL_TXT, cex = SZ_TXT)
         }
       }
       
