@@ -2,6 +2,7 @@ NEWS
 ====
 
 0.12.0
+- `MCMCsummary` For `stanfit` objects (model output derived from Stan) Rhat and n_eff are calculated using the `rstan` package. Note that `rstan` calculates Rhat and n_eff values slightly differently (more conservatively) than the `coda` package (commonly used to summarize model output derived from JAGS).
 - `MCMCplot` the following argument names have been changed: 
     orig: `labels_sz`, new: `sz_labels`
     orig: `med_sz`, new: `sz_med`
@@ -20,6 +21,9 @@ NEWS
 - `MCMCtrace` add ability to specify color for density and priors lines on density plots
 - `MCMCtrace` add ability to specify size and position of txt when priors specified, and the position of ticks for density and trace plots
 - `MCMCtrace` add ability to specify size of tick labels, axes labels, and thickness of axes
+- `MCMCtrace` clean up plotting of trace plots when only two plots are plotted in window
+- `MCMCtrace` add ability to include Rhat value on trace plots
+
 
 0.11.3
 - `MCMCchains` fix error associated with coda::mcmc and `rjags` objects
