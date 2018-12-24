@@ -22,6 +22,10 @@
 #'
 #' @param PPO_out Logical - if \code{PPO_out = TRUE} percent overlap between prior and posterior (PPO) will be output to a dataframe.
 #'
+#' @param Rhat Logical - if \code{Rhat = TRUE} potential scale reduction factor (Rhat) for each parameter is plotted on the trace plots.
+#'
+#' @param n.eff Logical - if \code{n.eff = TRUE} number of effective samples for each parameter is plotted on the trace plots.
+#' 
 #' @param pdf Logical - if \code{pdf = TRUE} plots will be exported to a pdf.
 #'
 #' @param open_pdf Logical - if \code{open_pdf = TRUE} pdf will open in viewer after being generated.
@@ -119,6 +123,8 @@ MCMCtrace <- function(object,
                       priors = NULL,
                       post_zm = TRUE,
                       PPO_out = FALSE,
+                      Rhat = FALSE,
+                      n.eff = FALSE,
                       pdf = TRUE,
                       open_pdf = TRUE,
                       filename,
@@ -444,6 +450,19 @@ MCMCtrace <- function(object,
     YAXT_TR <- 'n'
   }
   
+  if (Rhat == TRUE | n.eff == TRUE)
+  {
+    summ <- MCMCsummary(object, params = params, excl = excl, ISB = ISB, 
+                        Rhat = Rhat, n.eff = n.eff)
+    if (Rhat == TRUE)
+    {
+      rhat <- summ[,grep('Rhat', colnames(summ))]
+    }
+    if (n.eff == TRUE)
+    {
+      neff <- summ[,grep('n.eff', colnames(summ))]
+    }
+  }
   
   if (type == 'both')
   {
@@ -471,6 +490,31 @@ MCMCtrace <- function(object,
         graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_tr)
       }
       
+      #diagnostic plotted on trace plots
+      if (Rhat == TRUE & n.eff == TRUE)
+      {
+        diag_txt <- paste0('Rhat: ', Rhat[j], '
+                           n.eff: ', neff[j])
+      } 
+      if (Rhat == TRUE & n.eff == FALSE)
+      {
+        diag_txt <- paste0('Rhat: ', Rhat[j])
+      }
+      if (Rhat == FALSE & n.eff == TRUE)
+      {
+        diag_txt <- paste0('n.eff: ', n.eff[j])
+      }
+
+      #don't plot text if NULL specified for SZ or COL
+      if (Rhat == TRUE | n.eff == TRUE)
+      {
+        if (!is.null(SZ_TXT) & !is.null(COL_TXT))
+        {
+          graphics::legend(POS_TXT, legend = diag_txt, bty = 'n', pch = NA, 
+                           text.col = COL_TXT, cex = SZ_TXT)
+        }
+      }
+            
       #PPO
       #if priors are specified
       if (!is.null(priors))
@@ -529,7 +573,6 @@ MCMCtrace <- function(object,
           rng_den_x <- c(rng_den_x, range(dens[[k]]$x))
         }
         
-        
         #set axes limits according to inputs
         if (!is.null(priors) & post_zm == FALSE & is.null(ylim) & is.null(xlim))
         {
@@ -576,7 +619,7 @@ MCMCtrace <- function(object,
           graphics::axis(2, lwd.ticks = sz_ax, labels = FALSE, at = pos_tick_y_den)
         }
         
-      } else{
+      } else {
         
         dens <- stats::density(rbind(tmlt))
         #set axes limits according to inputs
