@@ -69,8 +69,6 @@
 #' 
 #' @param sz_txt Number specifying size of text (denoting PPO) when value specified for \code{priors}. If \code{NULL} is specified, no text will be plot.
 #'
-#' @param pos_txt Character string specifying where on plot text should be placed - default is 'topright'. Valid arguments are 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right' and 'center'.
-#'
 #' @param sz_ax Number specifying thickness of axes and ticks.
 #'
 #' @param sz_ax_txt Number specifying size of text for axes labels.
@@ -146,7 +144,6 @@ MCMCtrace <- function(object,
                       col_pr,
                       col_txt,
                       sz_txt,
-                      pos_txt = 'topright',
                       sz_ax = 1, 
                       sz_ax_txt = 1, 
                       sz_tick_txt = 1, 
@@ -415,15 +412,6 @@ MCMCtrace <- function(object,
     SZ_TXT <- sz_txt
   }
   
-  #text position
-  if (pos_txt %in% c('bottomright', 'bottom', 'bottomleft', 
-                     'left', 'topleft', 'top', 'topright', 'right', 'center'))
-  {
-    POS_TXT <- pos_txt
-  } else {
-    stop("Invalid argument for `pos_txt'. Valid arguments are 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right', and 'center'.")
-  }
-  
   #tick position
   if (is.null(pos_tick_x_den))
   {
@@ -645,7 +633,7 @@ MCMCtrace <- function(object,
         #don't plot text if NULL specified for SZ or COL
         if (!is.null(SZ_TXT) & !is.null(COL_TXT))
         {
-          graphics::legend(POS_TXT, legend = ovrlap, bty = 'n', pch = NA, 
+          graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, 
                            text.col = COL_TXT, cex = SZ_TXT)
         }
       }
@@ -880,7 +868,7 @@ MCMCtrace <- function(object,
         #don't plot text if NULL specified for SZ or COL
         if (!is.null(SZ_TXT) & !is.null(COL_TXT))
         {
-          graphics::legend(POS_TXT, legend = ovrlap, bty = 'n', pch = NA, 
+          graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, 
                            text.col = COL_TXT, cex = SZ_TXT)
         }
       }
