@@ -307,8 +307,8 @@ MCMCsummary <- function(object,
   if (typeof(object2) == 'S4')
   {
     #rhat and n_eff directly from rstan output
-    all_params <- row.names(data.frame(summary(stan_data)$summary)['n_eff'])
-    rs_df <- data.frame(summary(stan_data)$summary)
+    all_params <- row.names(data.frame(rstan::summary(stan_data)$summary)['n_eff'])
+    rs_df <- data.frame(rstan::summary(stan_data)$summary)
     
     #filtering of parameters from rstan object - from MCMCchains
     if (ISB == TRUE)
@@ -482,7 +482,7 @@ MCMCsummary <- function(object,
     
     if (Rhat == TRUE)
     {
-      if (dim(summary(object)$c_summary)[3] > 1)
+      if (dim(rstan::summary(object)$c_summary)[3] > 1)
       {
         r_hat <- round(rs_df['Rhat'][f_ind,1], digits = 2)
       } else {
