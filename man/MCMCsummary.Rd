@@ -23,16 +23,16 @@ Default \code{'all'} returns all parameters in summary output.}
 
 \item{round}{Number of decimal places to to round to for posterior summary. Cannot be used in conjunction with \code{digits} argument Note that Rhat is always rounded to 2 decimal places.}
 
-\item{Rhat}{Logical specifying whether to calculate and display the Gelman-Rubin convergence statistic (Rhat). Values near 1 suggest convergence (Brooks and Gelman 1998). \code{Rhat = FALSE} will prevent display of this column in summary output. Specifying \code{Rhat = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.}
+\item{Rhat}{Logical specifying whether to calculate and display the potential scale reduction statistic (Rhat). Values near 1 suggest convergence (Brooks and Gelman 1998). \code{Rhat = FALSE} will prevent display of this column in summary output. Specifying \code{Rhat = FALSE}, may increase function speed for very large \code{mcmc.list} objects.}
 
-\item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. Kruschke (2014) recommends n.eff > 10,000 for reasonably stable posterior estimates from M-H/Gibbs sampling derived output. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, will increase function speed, particularly with very large `mcmc.list` objects.}
+\item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, may increase function speed for very large \code{mcmc.list} objects.}
 
 \item{func}{Function to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).}
 
 \item{func_name}{Character string (or vector of character strings) specifying labels for output from \code{func} argument. If \code{func_name} is not specified, columns with \code{func} argument will be labeled 'func'.}
 }
 \value{
-Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, Gelman-Rubin convergence statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
+Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, potential scale reduction statistic statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
 }
 \description{
 Extract summary information from MCMC output (mean, median, quantiles, Gelman-Rubin convergence statistic, number of effective samples, and specified custom metrics)
@@ -46,10 +46,9 @@ for specific parameters of interest.
 \section{Notes}{
 
 
-For \code{mcmc.list} objects, Gelman-Rubin convergence statistic (Rhat) is calculated using the
-\code{gelman.diag} function in the \code{coda} package.
+For \code{mcmc.list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} objects, Rhat is calculated using the \code{rstan} package which computes a 'split chain' Rhat, which is thought to be a more conservative diagnostic (Stan Development Team 2018).
 
-For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package.
+For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} objects, Rhat is calculated using the \code{rstan} package which (in a similar way to the Rhat computation noted above) employs a slightly different (and more conservative) method of computation for the number of effective samples (Stan Development Team 2018).
 }
 
 \section{References}{
@@ -57,7 +56,7 @@ For \code{mcmc.list} objects, the number of effective samples is calculated usin
 
 Brooks, S. P., and A. Gelman. 1998. General methods for monitoring convergence of iterative simulations. Journal of Computational and Graphical Statistics 7:434.
 
-Kruschke, J. 2014. Doing Bayesian data analysis: A tutorial with R, JAGS, and Stan. Academic Press.
+Stan Development Team. 2018. Stan Modeling Language Users Guide and Reference Manual, Version 2.18.0.   http://mc-stan.org
 }
 
 \examples{

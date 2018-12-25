@@ -6,8 +6,14 @@
 \usage{
 MCMCtrace(object, params = "all", excl = NULL, ISB = TRUE,
   iter = 5000, gvals = NULL, priors = NULL, post_zm = TRUE,
-  PPO_out = FALSE, pdf = TRUE, open_pdf = TRUE, filename,
-  wd = getwd(), type = "both", ind = FALSE)
+  PPO_out = FALSE, Rhat = FALSE, n.eff = FALSE, ind = FALSE,
+  pdf = TRUE, open_pdf = TRUE, filename, wd = getwd(),
+  type = "both", ylim = NULL, xlim = NULL, xlab_tr, ylab_tr,
+  xlab_den, ylab_den, main_den = NULL, main_tr = NULL, lwd_den = 1,
+  lwd_pr = 1, lty_den = 1, lty_pr = 1, col_den, col_pr, col_txt,
+  sz_txt = 1.2, sz_ax = 1, sz_ax_txt = 1, sz_tick_txt = 1,
+  sz_main_txt = 1.2, pos_tick_x_tr = NULL, pos_tick_y_tr = NULL,
+  pos_tick_x_den = NULL, pos_tick_y_den = NULL)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -30,6 +36,12 @@ Default \code{'all'} returns chains for all parameters.}
 
 \item{PPO_out}{Logical - if \code{PPO_out = TRUE} percent overlap between prior and posterior (PPO) will be output to a dataframe.}
 
+\item{Rhat}{Logical - if \code{Rhat = TRUE} potential scale reduction factor (Rhat) for each parameter is plotted on the trace plots.}
+
+\item{n.eff}{Logical - if \code{n.eff = TRUE} number of effective samples for each parameter is plotted on the trace plots.
+
+#' @param ind Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If \code{ind= FALSE}, one density line will be plotted for all chains.}
+
 \item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
 
 \item{open_pdf}{Logical - if \code{open_pdf = TRUE} pdf will open in viewer after being generated.}
@@ -41,8 +53,53 @@ Default \code{'all'} returns chains for all parameters.}
 \item{type}{Type of plot to be output. \code{'both'} outputs both trace and density plots, \code{'trace'}
 outputs only trace plots, and \code{'density'} outputs only density plots.}
 
-\item{ind}{Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If
-\code{ind= FALSE}, one density line will be plotted for all chains.}
+\item{ylim}{Vector of length two specifying limits for y-axis on density plots only. If specified, overrides argument \code{post_zm}.}
+
+\item{xlim}{Vector of length two specifying limits for x-axis on density plots only. If specified, overrides argument \code{post_zm}.}
+
+\item{xlab_tr}{Character string specifying label for x-axis on trace plots.}
+
+\item{ylab_tr}{Character string specifying label for x-axis on trace plots.}
+
+\item{xlab_den}{Character string specifying label for x-axis on density plots.}
+
+\item{ylab_den}{Character string specifying label for x-axis on density plots.}
+
+\item{main_den}{Character string (or vector of character strings if plotting > 1 parameter) specifying title(s) of density plot(s).}
+
+\item{main_tr}{Character string (or vector of character strings if plotting > 1 parameter) specifying title(s) of trace plot(s).}
+
+\item{lwd_den}{Number specifying thickness of density line on density plots.}
+
+\item{lwd_pr}{Number specifying thickness of prior line on density plots.}
+
+\item{lty_den}{Number specifying the line type for the density line on density plots.}
+
+\item{lty_pr}{Number specifying the line type for the prior line on density plots.}
+
+\item{col_den}{Character string specifying color of density line on density plots. Does not specify color if \code{ind = TRUE}.}
+
+\item{col_pr}{Character string specifying color of prior line on density plots.}
+
+\item{col_txt}{Character string specifying color of text (denoting PPO) on plot when value specified for \code{priors}. If \code{NULL} is specified, no text will be plot.}
+
+\item{sz_txt}{Number specifying size of text (denoting PPO) when value specified for \code{priors}. If \code{NULL} is specified, no text will be plot.}
+
+\item{sz_ax}{Number specifying thickness of axes and ticks.}
+
+\item{sz_ax_txt}{Number specifying size of text for axes labels.}
+
+\item{sz_tick_txt}{Number specifying size of text for tick labels on axis.}
+
+\item{sz_main_txt}{Number specifying size of text for main title.}
+
+\item{pos_tick_x_tr}{Numeric vector specifying where ticks on x-axis should be placed for trace plots.}
+
+\item{pos_tick_y_tr}{Numeric vector specifying where ticks on y-axis should be placed for trace plots.}
+
+\item{pos_tick_x_den}{Numeric vector specifying where ticks on x-axis should be placed for density plots.}
+
+\item{pos_tick_y_den}{Numeric vector specifying where ticks on y-axis should be placed for density plots.}
 }
 \description{
 Trace and density plots of MCMC chains for specific parameters of interest. Print plots to pdf by default.

@@ -19,11 +19,10 @@ NEWS
 - `MCMCtrace` add ability to specify title for trace and density plot
 - `MCMCtrace` add ability to specify line width and line type for density and prior lines on density plots
 - `MCMCtrace` add ability to specify color for density and priors lines on density plots
-- `MCMCtrace` add ability to specify size and position of txt when priors specified, and the position of ticks for density and trace plots
+- `MCMCtrace` add ability to specify size and color of txt when priors specified, and the position of ticks for density and trace plots
 - `MCMCtrace` add ability to specify size of tick labels, axes labels, and thickness of axes
 - `MCMCtrace` clean up plotting of trace plots when only two plots are plotted in window
-- `MCMCtrace` add ability to include Rhat value on trace plots
-
+- `MCMCtrace` add ability to include Rhat and number of effective samples on trace plots
 
 0.11.3
 - `MCMCchains` fix error associated with coda::mcmc and `rjags` objects
