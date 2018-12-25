@@ -195,6 +195,13 @@ MCMCtrace <- function(object,
   ref_col <- 'red'
   A_VAL <- 0.5 #alpha value
   
+  if (missing(sz_txt))
+  {
+    SZ_TXT <- 1
+  } else {
+    SZ_TXT <- sz_txt
+  }
+  
   #adjust layout based on # params - differs based on den, tr, both
   if (type == 'both')
   {
@@ -203,18 +210,21 @@ MCMCtrace <- function(object,
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
+      INOF <- -0.05 - ((SZ_TXT-1)/10)
     }
     if (length(np) == 2)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
+      INOF <- -0.075 - ((SZ_TXT-1)/10)
     }
     if (length(np) == 1)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
       graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
-      MN_LINE <- 1.1      
+      MN_LINE <- 1.1   
+      INOF <- -0.1 - ((SZ_TXT-1)/10)
     }
   } else {
     if (length(np) >= 5)
@@ -222,24 +232,28 @@ MCMCtrace <- function(object,
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
+      INOF <- -0.05 - ((SZ_TXT-1)/10)
     }
     if (length(np) == 3 | length(np) == 4)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
+      INOF <- -0.075 - ((SZ_TXT-1)/10)
     }
     if (length(np) == 2)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
       graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
       MN_LINE <- 1.1
+      INOF <- -0.1 - ((SZ_TXT-1)/10)
     }
     if (length(np) == 1)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 1, byrow = TRUE))
       graphics::par(mar = c(5.1, 4.1, 4.1, 2.1)) # bottom, left, top, right
       MN_LINE <- NULL
+      INOF <- -0.03 - ((SZ_TXT-1)/10)
     }
   }
   
@@ -403,13 +417,6 @@ MCMCtrace <- function(object,
     COL_TXT <- 'red'
   } else {
     COL_TXT <- col_txt
-  }
-  
-  if (missing(sz_txt))
-  {
-    SZ_TXT <- 1
-  } else {
-    SZ_TXT <- sz_txt
   }
   
   #tick position
@@ -638,7 +645,7 @@ MCMCtrace <- function(object,
         }
       }
       
-      #diagnostic plotted on density plots
+      #diagnostics plotted on density plots
       if (Rhat == TRUE & n.eff == TRUE)
       {
         diag_txt <- list(paste0('Rhat: ', rhat[j]),
@@ -660,7 +667,7 @@ MCMCtrace <- function(object,
         {
           #inset needs to be smaller when sz_txt is larger
           ofs <- (SZ_TXT - 1)/10
-          graphics::legend('topleft',inset = c(-0.075-ofs, 0), 
+          graphics::legend('topleft', inset = c(INOF, 0), 
                            legend = diag_txt, 
                            bty = 'n', pch = NA, text.col = COL_TXT, cex = SZ_TXT)
         }
@@ -870,6 +877,34 @@ MCMCtrace <- function(object,
         {
           graphics::legend('topright', legend = ovrlap, bty = 'n', pch = NA, 
                            text.col = COL_TXT, cex = SZ_TXT)
+        }
+      }
+      
+      #diagnostics plotted on density plots
+      if (Rhat == TRUE & n.eff == TRUE)
+      {
+        diag_txt <- list(paste0('Rhat: ', rhat[j]),
+                         paste0('n.eff: ', neff[j]))
+      } 
+      if (Rhat == TRUE & n.eff == FALSE)
+      {
+        diag_txt <- paste0('Rhat: ', rhat[j])
+      }
+      if (Rhat == FALSE & n.eff == TRUE)
+      {
+        diag_txt <- paste0('n.eff: ', neff[j])
+      }
+      
+      #don't plot text if NULL specified for SZ or COL
+      if (Rhat == TRUE | n.eff == TRUE)
+      {
+        if (!is.null(SZ_TXT) & !is.null(COL_TXT))
+        {
+          #inset needs to be smaller when sz_txt is larger
+          ofs <- (SZ_TXT - 1)/10
+          graphics::legend('topleft',inset = c(INOF, 0), 
+                           legend = diag_txt, 
+                           bty = 'n', pch = NA, text.col = COL_TXT, cex = SZ_TXT)
         }
       }
       
