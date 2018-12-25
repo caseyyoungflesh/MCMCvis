@@ -77,7 +77,7 @@
 #'
 #' @param sz_main_txt Number specifying size of text for main title.
 #' 
-#' #' @param pos_tick_x_tr Numeric vector specifying where ticks on x-axis should be placed for trace plots.
+#' @param pos_tick_x_tr Numeric vector specifying where ticks on x-axis should be placed for trace plots.
 #'
 #' @param pos_tick_y_tr Numeric vector specifying where ticks on y-axis should be placed for trace plots.
 #'
