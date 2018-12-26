@@ -15,9 +15,6 @@ LazyData: TRUE
 Imports:
     coda,
     rstan,
-    grDevices,
-    graphics,
-    stats,
     overlapping
 Depends:
     R (>= 3.3.0)
