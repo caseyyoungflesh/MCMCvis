@@ -6,7 +6,6 @@ CRAN comments
 * local macOS install - R 3.5.1
 * Ubuntu 14.04 (on travis-ci) - R 3.5.1
 * Ubuntu 16.04 (on rhub) - R-release
-* Fedora (on rhub) - R-devel
 * Windows Server 2008 (on rhub) - R-devel
 
 
@@ -14,7 +13,7 @@ CRAN comments
 
 There were no ERRORs, WARNINGs, or NOTEs.
 
-r-hub Ubuntu 16.04 check notes "Author field differs from thatdevtools::release() derived from Authors@R" due to the ORCID id auto-expansion to a URL.
+r-hub Ubuntu 16.04 check notes "Author field differs from that derived from Authors@R" due to the ORCID id auto-expansion to a URL.
 
 ## Downstream dependencies
 
