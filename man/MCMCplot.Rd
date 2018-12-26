@@ -74,11 +74,11 @@ Option \code{NULL} will return plot with no labels on axis.}
 
 \item{sz_main_txt}{Number specifying size of text for main title.}
 
+\item{pos_tick}{Numeric vector specifying where ticks on axis should be placed.}
+
 \item{mar}{Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 
 Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.}
-
-\item{pos_tico}{Numeric vector specifying where ticks on axis should be placed.}
 }
 \description{
 Visualize posterior distributions from MCMC output for specific parameters of interest using caterpillar plots. Color of median dot represents the overlap of the posterior distribution with 0 (or other specified value).

@@ -38,9 +38,9 @@ Default \code{'all'} returns chains for all parameters.}
 
 \item{Rhat}{Logical - if \code{Rhat = TRUE} potential scale reduction factor (Rhat) for each parameter is plotted on the trace plots.}
 
-\item{n.eff}{Logical - if \code{n.eff = TRUE} number of effective samples for each parameter is plotted on the trace plots.
+\item{n.eff}{Logical - if \code{n.eff = TRUE} number of effective samples for each parameter is plotted on the trace plots.}
 
-#' @param ind Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If \code{ind= FALSE}, one density line will be plotted for all chains.}
+\item{ind}{Logical - if \code{ind = TRUE}, separate density lines will be plotted for each chain. If \code{ind= FALSE}, one density line will be plotted for all chains.}
 
 \item{pdf}{Logical - if \code{pdf = TRUE} plots will be exported to a pdf.}
 
@@ -122,9 +122,11 @@ MCMCtrace(MCMC_data, params = 'beta', pdf = FALSE)
 #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\\\'
 MCMCtrace(MCMC_data, params = 'beta\\\\[1\\\\]', ISB = FALSE, ind = TRUE, pdf = FALSE)
 
-#Plot prior on top of posterior and calculate prior/posterior overlap (PPO) just for 'beta[1]'
+#Plot prior on top of posterior, calculate prior/posterior overlap (PPO) just for 'beta[1]'
+#Add Rhat and n.eff values to density plots
 #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\\\'
 PR <- rnorm(15000, 0, 32)
-MCMCtrace(MCMC_data, params = 'beta\\\\[1\\\\]', ISB = FALSE, priors = PR, pdf = FALSE)
+MCMCtrace(MCMC_data, params = 'beta\\\\[1\\\\]', ISB = FALSE, priors = PR, 
+pdf = FALSE, Rhat = TRUE, n.eff = TRUE)
 
 }
