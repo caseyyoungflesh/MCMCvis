@@ -1,23 +1,173 @@
 {
-  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@context": ["https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld", "http://schema.org"],
   "@type": "Code",
   "author": [
     {
-      "@id": "https://orcid.org/0000-0001-6343-3311",
       "@type": "Person",
+      "givenName": "Casey",
+      "familyName": "Youngflesh",
       "email": "caseyyoungflesh@gmail.com",
-      "name": "Casey Youngflesh",
-      "affiliation": ""
+      "@id": "https://orcid.org/0000-0001-6343-3311"
     }
   ],
-  "identifier": "",
-  "codeRepository": "https://github.com/caseyyoungflesh/MCMCvis",
-  "datePublished": "2018-02-16",
+  "identifier": "MCMCvis",
+  "codeRepository": "http://github.com/caseyyoungflesh/MCMCvis",
   "dateModified": "2018-02-16",
   "dateCreated": "2018-02-16",
-  "description": "Tools to Visualize, Manipulate, and Summarize MCMC Output",
+  "description": "Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.",
   "keywords": "MCMC, Bayesian, Visualization, PPO",
-  "license": "GPL v3.0",
+  "license": "https://spdx.org/licenses/GPL-3.0",
   "title": "MCMCvis",
-  "version": "v0.9.4"
+  "version": "0.12.0",
+  "name": "MCMCvis: Tools to Visualize, Manipulate, and Summarize MCMC Output",
+  "issueTracker": "http://github.com/caseyyoungflesh/MCMCvis/issues",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "version": "3.5.1",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 3.5.1 (2018-07-02)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Christian",
+      "familyName": "Che-Castaldo"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Tyler",
+      "familyName": "Hardy"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Casey",
+      "familyName": "Youngflesh",
+      "email": "caseyyoungflesh@gmail.com",
+      "@id": "https://orcid.org/0000-0001-6343-3311"
+    }
+  ],
+  "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "knitr",
+      "name": "knitr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rmarkdown",
+      "name": "rmarkdown",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "testthat",
+      "name": "testthat",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=testthat"
+    }
+  ],
+  "softwareRequirements": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "coda",
+      "name": "coda",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=coda"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rstan",
+      "name": "rstan",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rstan"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "overlapping",
+      "name": "overlapping",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=overlapping"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "R",
+      "name": "R",
+      "version": ">= 3.3.0"
+    }
+  ],
+  "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/NEWS.md",
+  "readme": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/README.md",
+  "fileSize": "1830.564KB",
+  "contIntegration": "https://travis-ci.org/caseyyoungflesh/MCMCvis",
+  "citation": [
+    {
+      "@type": "ScholarlyArticle",
+      "datePublished": "2018",
+      "author": [
+        {
+          "@type": "Person",
+          "givenName": "Casey",
+          "familyName": "Youngflesh"
+        }
+      ],
+      "name": "MCMCvis: Tools to visualize, manipulate, and summarize MCMC output",
+      "identifier": "10.21105/joss.00640",
+      "paginiation": "640",
+      "@id": "https://doi.org/10.21105/joss.00640",
+      "sameAs": "https://doi.org/10.21105/joss.00640",
+      "isPartOf": {
+        "@type": "PublicationIssue",
+        "issueNumber": "24",
+        "datePublished": "2018",
+        "isPartOf": {
+          "@type": ["PublicationVolume", "Periodical"],
+          "volumeNumber": "3",
+          "name": "Journal of Open Source Software"
+        }
+      }
+    }
+  ],
+  "relatedLink": "https://CRAN.R-project.org/package=MCMCvis"
 }
