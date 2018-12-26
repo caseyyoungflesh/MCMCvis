@@ -3,9 +3,10 @@ CRAN comments
 
 
 ## Test environments
-* local macOS install, R 3.5.0
-* Ubuntu 14.04.5 (on travis-ci), R 3.5.0
-* win-builder (devel)
+* local macOS install - R 3.5.1
+* Ubuntu 16.04 LTS (on rhub) - R-release
+* Fedora (on rhub) - R-devel
+* Windows Server 2008 R2 SP1 (on rhub) - R-devel
 
 
 ## R CMD check results
