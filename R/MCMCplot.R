@@ -59,7 +59,7 @@
 #'
 #' @param sz_main_txt Number specifying size of text for main title.
 #'
-#' @param pos_tico Numeric vector specifying where ticks on axis should be placed.
+#' @param pos_tick Numeric vector specifying where ticks on axis should be placed.
 #'
 #' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 #'
