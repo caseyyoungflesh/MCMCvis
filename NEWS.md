@@ -1,7 +1,8 @@
 NEWS
 ====
 
-0.12.0
+0.12.0:
+
 - `MCMCsummary` For `stanfit` objects (model output derived from Stan) Rhat and n_eff are calculated using the `rstan` package. Note that `rstan` calculates Rhat and n_eff values slightly differently (more conservatively) than the `coda` package (commonly used to summarize model output derived from JAGS).
 - `MCMCplot` the following argument names have been changed: 
     orig: `labels_sz`, new: `sz_labels`
@@ -24,10 +25,14 @@ NEWS
 - `MCMCtrace` clean up plotting of trace plots when only two plots are plotted in window
 - `MCMCtrace` add ability to include Rhat and number of effective samples on trace plots
 
-0.11.3
+
+0.11.3:
+
 - `MCMCchains` fix error associated with coda::mcmc and `rjags` objects
 
-0.11.2
+
+0.11.2:
+
 - `MCMCplot` now takes `guide_axis` argument. If `TRUE`, a second axis (x-axis if `HORIZ = TRUE`, y-axis if `HORIZ = FALSE`) is plotted to help interpret values on plot.
 
 
