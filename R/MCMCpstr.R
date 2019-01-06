@@ -14,7 +14,7 @@
 #'
 #' @param func Function to be performed on MCMC output. When output of specified function is greater than length 1, an extra dimension is added. For instance, output of length 3 for a parameter with dimensions 2x2 results in a 2x2x3 output. Functions that produce output with dimensionality greater than 1 are not permitted. \code{func} is ignored when \code{type = 'chains'}.
 #'
-#' @param type Character string specifying whether to return summary information (calculated based on \code{func} argument) or posterior chains. Valid options are \code{'summary'} and \code{'chains'}. When \code{type = 'chains'}, the \code{'func'} argument is ignored. When \code{type = 'chains'}, posterior chains are concatenated and stored in the last dimension in the array for each element (parameter) of the list (for scalars iterations are stored as a vector).
+#' @param type Character string specifying whether to return summary information (calculated based on \code{func} argument) or posterior chains. Valid options are \code{'summary'} and \code{'chains'}. When \code{type = 'chains'}, the \code{'func'} argument is ignored. When \code{type = 'chains'}, posterior chains are concatenated and stored in the last dimension in the array for each element (parameter) of the list.
 #'
 #' @section Details:
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
@@ -27,7 +27,6 @@
 #'
 #' @export
 
-
 MCMCpstr <- function(object,
                    params = 'all',
                    excl = NULL,
@@ -36,21 +35,21 @@ MCMCpstr <- function(object,
                    type = 'summary')
 {
   #SORTING BLOCK
-  if (typeof(object) == 'double')
+  if(typeof(object) == 'double')
   {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
-  } else {
+  }else{
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
   }
 
-  if (coda::is.mcmc.list(object2) == TRUE)
+  if(coda::is.mcmc.list(object2) == TRUE)
   {
     temp_in <- object2
-    if (ISB == TRUE)
+    if(ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in[[1]]),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    } else {
+    }else{
       names <- colnames(temp_in[[1]])
     }
     np <- NCOL(object2[[1]])
@@ -58,7 +57,7 @@ MCMCpstr <- function(object,
     if(np > 1)
     {
       ch_bind <- do.call('rbind', object2)
-    } else {
+    }else{
       ch_bind <- as.matrix(object2)
     }
 
@@ -67,14 +66,14 @@ MCMCpstr <- function(object,
     onames <- colnames(temp_in[[1]])
   }
 
-  if (typeof(object2) == 'double')
+  if(typeof(object2) == 'double')
   {
     temp_in <- object2
-    if (ISB == TRUE)
+    if(ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    } else {
+    }else{
       names <- colnames(temp_in)
     }
     np <- NCOL(object2)
@@ -127,17 +126,18 @@ MCMCpstr <- function(object,
       }
       if (type == 'chains')
       {
-        if (length(ind) == 1)
+        temp_obj <- matrix(NA, nrow = length(ind), ncol = NROW(ch_bind))
+
+        if (NROW(temp_obj) > 1)
         {
-          temp_obj <- as.vector(ch_bind)
-        } else {
-          temp_obj <- matrix(NA, nrow = length(ind), ncol = NROW(ch_bind))
           dimnames(temp_obj)[[1]] <- onames[ind]
-          
-          for (j in 1:length(ind))
-          {
-            temp_obj[j,] <- ch_bind[,ind[j]]
-          }
+        } else {
+          rownames(temp_obj) <- onames[ind]
+        }
+
+        for (j in 1:length(ind))
+        {
+          temp_obj[j,] <- ch_bind[,ind[j]]
         }
       }
       if (type != 'summary' & type != 'chains')
