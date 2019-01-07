@@ -204,21 +204,18 @@ MCMCtrace <- function(object,
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
-      INOF <- -0.05 - ((sz_txt-1)/10)
     }
     if (length(np) == 2)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
-      INOF <- -0.075 - ((sz_txt-1)/10)
     }
     if (length(np) == 1)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
       graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
       MN_LINE <- 1.1   
-      INOF <- -0.1 - ((sz_txt-1)/10)
     }
   } else {
     if (length(np) >= 5)
@@ -226,28 +223,24 @@ MCMCtrace <- function(object,
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 3, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
-      INOF <- -0.05 - ((sz_txt-1)/10)
     }
     if (length(np) == 3 | length(np) == 4)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
       graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
       MN_LINE <- NULL
-      INOF <- -0.075 - ((sz_txt-1)/10)
     }
     if (length(np) == 2)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
       graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
       MN_LINE <- 1.1
-      INOF <- -0.1 - ((sz_txt-1)/10)
     }
     if (length(np) == 1)
     {
       graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 1, byrow = TRUE))
       graphics::par(mar = c(5.1, 4.1, 4.1, 2.1)) # bottom, left, top, right
       MN_LINE <- NULL
-      INOF <- -0.03 - ((sz_txt-1)/10)
     }
   }
   
@@ -660,7 +653,7 @@ MCMCtrace <- function(object,
         if (!is.null(sz_txt) & !is.null(COL_TXT))
         {
           #inset needs to be smaller when sz_txt is larger
-          graphics::legend('topleft', inset = c(INOF, 0), 
+          graphics::legend('topleft', x.intersp = -0.5,  
                            legend = diag_txt, 
                            bty = 'n', pch = NA, text.col = COL_TXT, cex = sz_txt)
         }
@@ -894,7 +887,7 @@ MCMCtrace <- function(object,
         if (!is.null(sz_txt) & !is.null(COL_TXT))
         {
           #inset needs to be smaller when sz_txt is larger
-          graphics::legend('topleft',inset = c(INOF, 0), 
+          graphics::legend('topleft', x.intersp = -0.5, 
                            legend = diag_txt, 
                            bty = 'n', pch = NA, text.col = COL_TXT, cex = sz_txt)
         }

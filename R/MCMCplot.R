@@ -45,21 +45,39 @@
 #'
 #' @param sz_labels Number specifying size of text for parameter labels on axis.
 #'
+#' @param labels_sz Deprecated - see \code{sz_labels}.
+#'
 #' @param sz_med Number specifying size of points represents posterior medians.
+#' 
+#' @param med_sz Deprecated - see \code{sz_med}.
 #'
 #' @param sz_thick Number specifying thickness of 50 percent CI line (thicker line).
+#' 
+#' @param thick_sz Deprecated - see \code{sz_thick}.
 #'
 #' @param sz_thin Number specifying thickness of 95 percent CI line (thinner line).
+#' 
+#' @param thin_sz Deprecated - see \code{sz_thin}.
 #'
 #' @param sz_ax Number specifying thickness of axis and ticks.
 #'
+#' @param ax_sz Deprecated - see \code{sz_ax}.
+#'
 #' @param sz_ax_txt Number specifying size of text for axis label.
+#' 
+#' @param axis_text_sz Deprecated - see \code{sz_ax}.
 #'
 #' @param sz_tick_txt Number specifying size of text for tick labels on axis.
 #'
+#' @param tick_text_sz Deprecated - see \code{sz_tick_txt}.
+#'
 #' @param sz_main_txt Number specifying size of text for main title.
 #'
+#' @param main_text_sz Deprecated - see \code{sz_main_txt}.
+#'
 #' @param pos_tick Numeric vector specifying where ticks on axis should be placed.
+#' 
+#' @param tick_pos Deprecated - see \code{pos_tick}.
 #'
 #' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 #'
@@ -123,14 +141,23 @@ MCMCplot <- function(object,
                    labels,
                    guide_axis = TRUE,
                    sz_labels = 1.2,
+                   labels_sz,
                    sz_med = 1.5,
+                   med_sz,
                    sz_thick = 5,
+                   thick_sz,
                    sz_thin = 2,
+                   thin_sz,
                    sz_ax = 3,
+                   ax_sz,
                    sz_ax_txt = 1.3,
+                   axis_text_sz,
                    sz_tick_txt = 1.2,
+                   tick_text_sz,
                    sz_main_txt = 1.2,
+                   main_text_sz,
                    pos_tick,
+                   tick_pos,
                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
   data <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
@@ -146,6 +173,55 @@ MCMCplot <- function(object,
   thick = 50 #CI for thick line
   PL_SC = 0.3 #how much whitespace flanks plotted estimates
 
+
+  # Deprecation warnings --------------------------------------------------------
+
+  if (!missing(labels_sz))
+  {
+    warning('Argument "labels_sz" is deprecated; please use "sz_labels" instead.', call. = FALSE)
+    sz_labels <- labels_sz
+  }
+  if (!missing(med_sz))
+  {
+    warning('Argument "med_sz" is deprecated; please use "sz_med" instead.', call. = FALSE)
+    sz_med <- med_sz
+  }
+  if (!missing(thick_sz))
+  {
+    warning('Argument "thick_sz" is deprecated; please use "sz_thick" instead.', call. = FALSE)
+    sz_thick <- thick_sz
+  }
+  if (!missing(thin_sz))
+  {
+    warning('Argument "thin_sz" is deprecated; please use "sz_thin" instead.', call. = FALSE)
+    sz_thin <- thin_sz
+  }
+  if (!missing(axis_text_sz))
+  {
+    warning('Argument "axis_text_sz" is deprecated; please use "sz_ax_txt" instead.', call. = FALSE)
+    sz_ax_txt <- axis_text_sz
+  }
+  if (!missing(ax_sz))
+  {
+    warning('Argument "ax_sz" is deprecated; please use "sz_ax" instead.', call. = FALSE)
+    sz_ax <- ax_sz
+  }
+  if (!missing(tick_text_sz))
+  {
+    warning('Argument "tick_text_sz" is deprecated; please use "sz_tick_txt" instead.', call. = FALSE)
+    sz_tick_txt <- tick_text_sz
+  }
+  if (!missing(main_text_sz))
+  {
+    warning('Argument "main_text_sz" is deprecated; please use "sz_main_txt" instead.', call. = FALSE)
+    sz_main_txt <- main_text_sz
+  }
+  if (!missing(tick_pos))
+  {
+    warning('Argument "tick_pos" is deprecated; please use "pos_tick" instead.', call. = FALSE)
+    pos_tick <- tick_pos
+  }
+  
   # Process data ------------------------------------------------------------
 
   if (NCOL(data) > 1)

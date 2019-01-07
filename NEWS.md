@@ -1,15 +1,20 @@
 NEWS
 ====
 
+0.12.1:
+
+- `MCMCtrace` fix spacing issue for Rhat and n.eff text when `Rhat = TRUE` and `n.eff = TRUE`
+- `MCMCplot` add deprecation warnings for arguments
+
+
 0.12.0:
 
-- `MCMCsummary` For `stanfit` objects (model output derived from Stan) Rhat and n_eff are calculated using the `rstan` package. Note that `rstan` calculates Rhat and n_eff values slightly differently (more conservatively) than the `coda` package (commonly used to summarize model output derived from JAGS).
+- `MCMCsummary` for `stanfit` objects (model output derived from Stan) Rhat and n_eff are calculated using the `rstan` package. Note that `rstan` calculates Rhat and n_eff values slightly differently (more conservatively) than the `coda` package (commonly used to summarize model output derived from JAGS).
 - `MCMCplot` the following argument names have been changed: 
     orig: `labels_sz`, new: `sz_labels`
     orig: `med_sz`, new: `sz_med`
     orig: `thick_sz`, new: `sz_thick`
     orig: `thin_sz`, new: `sz_thin`
-    orig: `ax_sz`, new: `sz_axis`
     orig: `axis_text_sz`, new: `sz_ax_txt`
     orig: `ax_sz`, new: `sz_ax`
     orig: `tick_text_sz`, new: `sz_tick_txt`

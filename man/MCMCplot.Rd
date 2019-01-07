@@ -7,9 +7,10 @@
 MCMCplot(object, params = "all", excl = NULL, ISB = TRUE, ref = 0,
   ref_ovl = FALSE, col = "black", rank = FALSE, horiz = TRUE, xlim,
   ylim, xlab, ylab, main, labels, guide_axis = TRUE, sz_labels = 1.2,
-  sz_med = 1.5, sz_thick = 5, sz_thin = 2, sz_ax = 3,
-  sz_ax_txt = 1.3, sz_tick_txt = 1.2, sz_main_txt = 1.2, pos_tick,
-  mar = c(5.1, 4.1, 4.1, 2.1))
+  labels_sz, sz_med = 1.5, med_sz, sz_thick = 5, thick_sz,
+  sz_thin = 2, thin_sz, sz_ax = 3, ax_sz, sz_ax_txt = 1.3,
+  axis_text_sz, sz_tick_txt = 1.2, tick_text_sz, sz_main_txt = 1.2,
+  main_text_sz, pos_tick, tick_pos, mar = c(5.1, 4.1, 4.1, 2.1))
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -60,21 +61,39 @@ Option \code{NULL} will return plot with no labels on axis.}
 
 \item{sz_labels}{Number specifying size of text for parameter labels on axis.}
 
+\item{labels_sz}{Deprecated - see \code{sz_labels}.}
+
 \item{sz_med}{Number specifying size of points represents posterior medians.}
+
+\item{med_sz}{Deprecated - see \code{sz_med}.}
 
 \item{sz_thick}{Number specifying thickness of 50 percent CI line (thicker line).}
 
+\item{thick_sz}{Deprecated - see \code{sz_thick}.}
+
 \item{sz_thin}{Number specifying thickness of 95 percent CI line (thinner line).}
+
+\item{thin_sz}{Deprecated - see \code{sz_thin}.}
 
 \item{sz_ax}{Number specifying thickness of axis and ticks.}
 
+\item{ax_sz}{Deprecated - see \code{sz_ax}.}
+
 \item{sz_ax_txt}{Number specifying size of text for axis label.}
+
+\item{axis_text_sz}{Deprecated - see \code{sz_ax}.}
 
 \item{sz_tick_txt}{Number specifying size of text for tick labels on axis.}
 
+\item{tick_text_sz}{Deprecated - see \code{sz_tick_txt}.}
+
 \item{sz_main_txt}{Number specifying size of text for main title.}
 
+\item{main_text_sz}{Deprecated - see \code{sz_main_txt}.}
+
 \item{pos_tick}{Numeric vector specifying where ticks on axis should be placed.}
+
+\item{tick_pos}{Deprecated - see \code{pos_tick}.}
 
 \item{mar}{Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 

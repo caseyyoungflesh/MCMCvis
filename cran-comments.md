@@ -3,7 +3,7 @@ CRAN comments
 
 
 ## Test environments
-* local macOS install - R 3.5.1
+* local macOS install - R 3.5.2
 * Ubuntu 14.04 (on travis-ci) - R 3.5.1
 * Ubuntu 16.04 (on rhub) - R-release
 * Windows Server 2008 (on rhub) - R-devel
