@@ -307,7 +307,7 @@ MCMCsummary <- function(object,
   if (typeof(object2) == 'S4')
   {
     #rhat and n_eff directly from rstan output
-    all_params <- row.names(data.frame(rstan::summary(object2)$summary)['n_eff'])
+    all_params <- row.names(rstan::summary(object2)$summary)
     rs_df <- data.frame(rstan::summary(object2)$summary)
     
     #filtering of parameters from rstan object - from MCMCchains

@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.12.2:
+
+- `MCMCsummary` fix bug where Stan input was not being sorted by parameter index
+
+
 0.12.1:
 
 - `MCMCtrace` fix spacing issue for Rhat and n.eff text when `Rhat = TRUE` and `n.eff = TRUE`
