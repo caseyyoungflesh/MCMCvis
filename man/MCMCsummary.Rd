@@ -5,7 +5,7 @@
 \title{Summarize MCMC output}
 \usage{
 MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE,
-  digits = NULL, round = NULL, Rhat = TRUE, n.eff = FALSE,
+  digits = NULL, round = NULL, Rhat = TRUE, n.eff = TRUE,
   func = NULL, func_name = NULL)
 }
 \arguments{
@@ -25,7 +25,7 @@ Default \code{'all'} returns all parameters in summary output.}
 
 \item{Rhat}{Logical specifying whether to calculate and display the potential scale reduction statistic (Rhat). Values near 1 suggest convergence (Brooks and Gelman 1998). \code{Rhat = FALSE} will prevent display of this column in summary output. Specifying \code{Rhat = FALSE}, may increase function speed for very large \code{mcmc.list} objects.}
 
-\item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, may increase function speed for very large \code{mcmc.list} objects.}
+\item{n.eff}{Logical specifying whether to calculate and display the number of effective samples for each parameter. \code{n.eff = FALSE} will prevent display of this column in summary output. Specifying \code{n.eff = FALSE}, may increase function speed for very large \code{mcmc.list} objects. Default is \code{n.eff = TRUE}.}
 
 \item{func}{Function to be performed on MCMC output. If a function is specified, it will be evaluated on posteriors for each specified parameter and returned as a column in the summary output (or multiple columns if the function returns more than one value).}
 
