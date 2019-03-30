@@ -476,16 +476,17 @@ PPO <- MCMCtrace(MCMC_data,
 
 Then use `MCMCplot` to create the posterior plot and loop to plot PPO as text on plot.
 
-```{r}
+```{r, fig.width=5, fig.height=6}
 #make caterpillar plot for beta parameters
 MCMCplot(MCMC_data, 
          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
-         ISB = FALSE)
+         ISB = FALSE,
+         xlim = c(-60, 35))
 
 #each parameter is a y-unit of 1
 for (i in 1:NROW(PPO))
 {
-  text(x = 30, y = NROW(PPO) - i + 1, 
+  text(x = 10, y = NROW(PPO) - i + 1, 
        paste0('PPO: ', PPO[i,2], '%'), 
        pos = 4, col = 'red')
 }
