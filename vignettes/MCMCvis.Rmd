@@ -123,7 +123,7 @@ MCMCsummary(MCMC_data)
 
 &nbsp;
 
-The number of decimal places displayed can be specified with `round` (except for Rhat which is always rounded to 2 decimal places). Alternatively, the significant digits displayed can be specified with `digits`.
+The number of decimal places displayed can be specified with `round` (except for Rhat which is always rounded to 2 decimal places and n.eff which always displays whole numbers). Alternatively, the significant digits displayed can be specified with `digits`.
 
 ```{r, message=FALSE}
 
@@ -167,7 +167,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively (default for `Rhat` and `n.eff` are `TRUE` and `FALSE`, respectively). Specifying `FALSE` may greatly increase function speed with very large `mcmc.list` objects. Values for Rhat near 1 suggest convergence (Brooks and Gelman 1998). Rhat and n.eff values for `mcmc.list` objects are calculated using the `coda` package (what is typically returned by packages that utilize JAGS). Rhat and n.eff values for `stanfit` objects are calculated using the `rstan` package. The approaches used to calculate these values differ slightly between packages (`rstan` typically being more conservative). Details on calculation of Rhat and number of effective samples using `rstan` can be found in the Stan manual (Stan Development Team 2018).
+Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively (defaults for both `Rhat` and `n.eff` are `TRUE`). Specifying `FALSE` may greatly increase function speed with very large `mcmc.list` objects. Values for Rhat near 1 suggest convergence (Brooks and Gelman 1998). Rhat and n.eff values for `mcmc.list` objects are calculated using the `coda` package (what is typically returned by packages that utilize JAGS). Rhat and n.eff values for `stanfit` objects are calculated using the `rstan` package. The approaches used to calculate these values differ slightly between packages (`rstan` typically being more conservative). Details on calculation of Rhat and number of effective samples using `rstan` can be found in the Stan manual (Stan Development Team 2018).
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -280,7 +280,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-Overlap between the priors and posteriors can also be calculated by specifying the priors associated with each parameter using the `priors` argument. This is particularly useful when investigating how large the effect of the prior is on the posterior distribution - this can be informative when trying to determine how identifiable a particular parameter is in a model.
+Overlap between the priors and posteriors (PPO - prior posterior overlap) can also be calculated by specifying the priors associated with each parameter using the `priors` argument. This is particularly useful when investigating how large the effect of the prior is on the posterior distribution - this can be informative when trying to determine how identifiable a particular parameter is in a model.
 
 The `priors` argument takes a matrix as input, with each column representing a prior for a different parameter and each row representing a random draw from that prior distribution. These draws can be generated using R functions such as rnorm, rgamma, runif, etc. Parameters are plotted alphabetically - priors should be sorted accordingly. If the `priors` argument contains only one prior and more than one parameter is specified for the `params` argument, this prior will be used for all parameters. The number of draws for each prior should equal the number of iterations specified by \code{iter} (or total draws if less than \code{iter}) times the number of chains, though the function will automatically adjust if more or fewer iterations are specified. It is important to note that some discrepancies between MCMC samplers and R may exist regarding the parameterization of distributions - one example of this is the use of precision in JAGS but standard deviation in R and Stan for the 'second parameter' of the normal distribution. Values for Rhat and number of effective samples can be plotting on the density plots using the `Rhat` and `n.eff` arguments.
 
@@ -298,18 +298,31 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-Plots can be scaled to see both the posterior and the prior distribution using the `post_zm` argument. Percent overlap can be output to an object as well using the `PPO_out` argument.
+Plots can be scaled to see both the posterior and the prior distribution using the `post_zm` argument.
 
 ```{r, fig.width=5, fig.height=6}
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
+MCMCtrace(MCMC_data, 
+          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          ISB = FALSE,
+          priors = PR,
+          pdf = FALSE,
+          post_zm = FALSE)
+```
+
+&nbsp;
+
+Percent overlap can be output to an R object as well using the `PPO_out` argument. Plotting of the trace plots can be supressed with `plot = FALSE`.
+
+```{r}
+PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 PPO <- MCMCtrace(MCMC_data, 
-                 params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
-                 ISB = FALSE,
-                 priors = PR,
-                 pdf = FALSE,
-                 post_zm = FALSE,
-                 PPO_out = TRUE)
+          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          ISB = FALSE,
+          priors = PR,
+          plot = FALSE,
+          PPO_out = TRUE)
 
 PPO
 ```
@@ -447,6 +460,38 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
+Other elements can be added to `MCMCplot` figures as well. For instance, to add PPO (prior posterior overlap) to the posterior plot, first calculate PPO using the `MCMCtrace` function (with `PPO_out = TRUE` and `plot = FALSE` to supress plotting).
+
+```{r}
+PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
+PPO <- MCMCtrace(MCMC_data, 
+          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          ISB = FALSE,
+          priors = PR,
+          plot = FALSE,
+          PPO_out = TRUE)
+```
+
+&nbsp;
+
+Then use `MCMCplot` to create the posterior plot and loop to plot PPO as text on plot.
+
+```{r}
+#make caterpillar plot for beta parameters
+MCMCplot(MCMC_data, 
+         params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+         ISB = FALSE)
+
+#each parameter is a y-unit of 1
+for (i in 1:NROW(PPO))
+{
+  text(x = 30, y = NROW(PPO) - i + 1, 
+       paste0('PPO: ', PPO[i,2], '%'), 
+       pos = 4, col = 'red')
+}
+```
+
+&nbsp;
 
 ## References
 

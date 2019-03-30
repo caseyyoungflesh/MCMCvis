@@ -16,7 +16,7 @@
 #' @param chain_num Numeric - specifies posterior chain number. When a value is specified, posterior for only that chain is output. Useful for determining the last iteration for each parameter, to be used as initial values in a subsequent model, to effectively 'continue' a model run.
 #'
 #' @section Details:
-#' Function returns matrix with one parameter per column (for specified parameters). Multiple chains for each parameter are combined to one posterior chain (unless \code{chain_num} is specified, in which case only the specified chain will be returned). Parameters are arranged in columns alphabetically.
+#' Function returns matrix with one parameter per column (for specified parameters). Each iteration is represented as a row. Multiple chains for each parameter are combined to one posterior chain (unless \code{chain_num} is specified, in which case only the specified chain will be returned). Parameters are arranged in columns alphabetically.
 #'
 #' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'

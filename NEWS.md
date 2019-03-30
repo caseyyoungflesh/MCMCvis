@@ -1,6 +1,12 @@
 NEWS
 ====
 
+0.12.3:
+
+- `MCMCsummary` for `n.eff` the default is now `TRUE` (displays number of effective samples by default)
+- `MCMCtrace` now has the option `plot`. When `FALSE` no plot is output. Used in conjunction with `PPO_out = TRUE` to to calculate PPO without plotting trace plots.
+
+
 0.12.2:
 
 - `MCMCsummary` fix bug where Stan input was not being sorted by parameter index
