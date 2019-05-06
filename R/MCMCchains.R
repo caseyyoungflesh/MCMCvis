@@ -110,6 +110,13 @@ MCMCchains <- function(object,
   if(coda::is.mcmc.list(object) == TRUE)
   {
     temp_in <- object
+    if(is.null(colnames(temp_in[[1]])))
+    {
+      warning('No parameter names provided. Assigning arbitrary names.')
+      sub_cn <- paste0('Param_', 1:NCOL(temp_in[[1]]))
+      colnames(temp_in[[1]]) <- sub_cn
+    }
+    
     if(ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in[[1]]),
@@ -124,7 +131,7 @@ MCMCchains <- function(object,
     temp_in <- object
     if(is.null(colnames(temp_in)))
     {
-      warning('No column names (parameter names) provided. Assigning arbitrary names.')
+      warning('No parameter names (column names) provided. Assigning arbitrary names.')
       sub_cn <- paste0('Param_', 1:NCOL(temp_in))
       colnames(temp_in) <- sub_cn
     }
