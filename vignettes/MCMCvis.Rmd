@@ -23,7 +23,7 @@ The package contains five functions:
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
-All functions in the package accept `stanfit` objects (created with the `rstan` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Output objects can be inserted directly into the `MCMCvis` functions as an argument.
+All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Output objects can be inserted directly into the `MCMCvis` functions as an argument.
 
 #### JAGS model
 
@@ -143,7 +143,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. `\\d` can be used to specify any digits in a particular place.
+Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as oppossed to `\[`). `\\d` can be used to specify any digits in a particular place.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -153,6 +153,8 @@ MCMCsummary(MCMC_data,
 ```
 
 &nbsp;
+
+If `alpha` has 10 or more parameters (i.e., more than two digits for the index), the `|` (OR) may be needed. For instance, while one could use `alpha[1:10]` to select the first ten indices of the vector `alpha` in R, the regex equivalent to do the same with `MCMCvis` would be `alpha\\[(\\d|[1][0])\\]`. The `\\d` specifies any digit, the `|` represents OR (so any one digit number OR), the `[1]` specifies that the first digit must be one, and the `[0]` specifies that the second digit must be zero (so return any one digit number, or 10, resulting in the equivalent of `alpha[1:10]`). Ranges for each digit can also be specified. For instance, the regex equivalent of the R `alpha[5:15]` would be `alpha\\[([5-9]|[1][0-5])\\]`.
 
 The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `params` argument. This is particularly useful when specifying `ISB = FALSE`. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `params = 'alpha', excl = 'alpha\\[1\\]', ISB = FALSE` can be used. Once again, since the `params` argument takes a regular expression, the square brackets must be escaped using `\\`. When `ISB = TRUE`, an exact match of the specified parameter is required (excluding the square brackets). When `ISB = FALSE`, partial names will be matched. Leaving the default (`ISB = TRUE`) is generally recommended for simplicity. These arguments can be used in any of the functions in the package.
 
@@ -449,7 +451,7 @@ MCMCplot(MCMC_data,
        main = 'MCMCvis plot',
        labels = c('First param', 'Second param', 'Third param', 
                   'Fourth param', 'Fifth param', 'Sixth param'), 
-       col = 'red',
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'black'),
        sz_labels = 1.5,
        sz_med = 2,
        sz_thick = 7,
