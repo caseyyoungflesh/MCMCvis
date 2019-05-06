@@ -1,6 +1,12 @@
 NEWS
 ====
 
+0.13.0:
+
+- Add support for objects output from `rstanarm` and `brms` packages
+- `MCMCplot` add support for plotting multiple colors on the same plot
+
+
 0.12.3:
 
 - `MCMCsummary` for `n.eff` the default is now `TRUE` (displays number of effective samples by default)
