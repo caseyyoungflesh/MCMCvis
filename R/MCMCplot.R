@@ -20,7 +20,7 @@
 #'
 #' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line. See DETAILS for more information.
 #'
-#' @param col Character string (or vector of character strings) specifying which color to render estimates on plot. When \code{ref_ovl = TRUE}, this argument has no effect and colors plotted will be based on the credible intervals and reference line.
+#' @param col Character string (or vector of character strings) specifying which color to render estimates on plot. When \code{ref_ovl = TRUE}, this argument has no effect and colors plotted will be based on the credible intervals and reference line. Number of specified colors must equal the number of specified parameters or one.
 #'
 #' @param rank Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
@@ -172,8 +172,25 @@ MCMCplot <- function(object,
   thin = 95 #CI for thin line
   thick = 50 #CI for thick line
   PL_SC = 0.3 #how much whitespace flanks plotted estimates
-
-
+  
+  np <- NCOL(data)
+  
+  #if col is great
+  if (np > 1)
+  {
+    if (length(col) == 1)
+    {
+      COL <- rep(col, np)
+    } else {
+      if (length(col) != np)
+      {
+        stop('Number of specified colors must equal number of plotted parameters (or one).')
+      } else {
+        COL <- col
+      }
+    }
+  }
+  
   # Deprecation warnings --------------------------------------------------------
 
   if (!missing(labels_sz))
@@ -224,12 +241,12 @@ MCMCplot <- function(object,
   
   # Process data ------------------------------------------------------------
 
-  if (NCOL(data) > 1)
+  if (np > 1)
   {
     if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
     {
       chains <- as.data.frame(data)
-      len <- NCOL(data)
+      len <- np
 
       if (rank == TRUE)
       {
@@ -254,7 +271,7 @@ MCMCplot <- function(object,
     }
   }
 
-  if (NCOL(data) == 1)
+  if (np == 1)
   {
     if (length(thin) == 1 & typeof(thin) == 'double' & length(thick) == 1 & typeof(thick) == 'double')
     {
@@ -436,12 +453,12 @@ MCMCplot <- function(object,
       graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = sz_med, lwd = 2)
     } else{
       graphics::matlines(thick_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = sz_thick, col = col[idx])
+               type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
       graphics::matlines(thin_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = sz_thin, col = col[idx])
+               type = 'l', lty = 1, lwd = sz_thin, col = COL[idx])
       #medians
       graphics::points(medians[1:len], 1:len, pch = 16,
-             col = col[idx], cex = sz_med)
+             col = COL[idx], cex = sz_med)
     }
   }
 
@@ -593,12 +610,12 @@ MCMCplot <- function(object,
       graphics::points(v_wht_bnd[1,], medians[v_white_cl], pch = 21, col = gr_col, cex = sz_med, lwd = 2)
     } else{
       graphics::matlines(rbind(1:len, 1:len), thick_q[,len:1],
-                         type = 'l', lty = 1, lwd = sz_thick, col = col)
+                         type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
       graphics::matlines(rbind(1:len, 1:len), thin_q[,len:1],
-                         type = 'l', lty = 1, lwd = sz_thin, col = col)
+                         type = 'l', lty = 1, lwd = sz_thin, col = COL[idx])
       #medians
       graphics::points(1:len, medians[len:1], pch = 16,
-                       col = col, cex = sz_med)
+                       col = COL[idx], cex = sz_med)
     }
   }
   graphics::par(mar=c(5,4,4,2) + 0.1)
