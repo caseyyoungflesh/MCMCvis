@@ -18,7 +18,7 @@
 #' @section Details:
 #' Function returns matrix with one parameter per column (for specified parameters). Each iteration is represented as a row. Multiple chains for each parameter are combined to one posterior chain (unless \code{chain_num} is specified, in which case only the specified chain will be returned). Parameters are arranged in columns alphabetically.
 #'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
 #'
 #' @examples
@@ -47,7 +47,20 @@ MCMCchains <- function(object,
                      mcmc.list = FALSE,
                      chain_num = NULL)
 {
-  if(length(class(object)) > 1)
+  if (coda::is.mcmc.list(object) != TRUE &
+     typeof(object) != 'double' &
+     class(object) != 'rjags' &
+     class(object) != 'stanfit' &
+     class(object) != 'brmsfit' &
+     class(object) != 'jagsUI' &
+     class(object)[1] != 'rjags.parallel' &
+     class(object)[1] != 'stanreg')
+  {
+    stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+  }
+
+  #if from R2jags::jags.parallel
+  if (class(object)[1] == 'rjags.parallel')
   {
     #modified coda::as.mcmc (removing ordering of param names)
     x <- object$BUGSoutput
@@ -62,17 +75,22 @@ MCMCchains <- function(object,
     object <- coda::as.mcmc.list(mclis)
     #end mod as.mcmc
   }
-  if (coda::is.mcmc.list(object) != TRUE &
-     typeof(object) != 'double' &
-     class(object) != 'rjags' &
-     typeof(object) != 'S4' &
-     class(object) != 'jagsUI')
+  
+  #if from rstanarm::stan_glm
+  if(class(object)[1] == 'stanreg')
   {
-    stop('Invalid object type. Input must be stanfit object (rstan), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+    object <- object$stanfit
   }
-
+  
+  #if from brms::brm
+  if (class(object) == 'brmsfit')
+  {
+    #extract stanfit portion of object
+    object <- object$fit
+  }
+  
   #NAME SORTING BLOCK
-  if (typeof(object) == 'S4')
+  if (class(object) == 'stanfit')
   {
     temp_in <- rstan::As.mcmc.list(object)
     if (ISB == TRUE)

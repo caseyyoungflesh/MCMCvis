@@ -20,7 +20,7 @@
 #'
 #' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line. See DETAILS for more information.
 #'
-#' @param col Character string specifying which color to render estimates on plot. When \code{ref_ovl = TRUE}, this argument has no effect and colors plotted will be based on the credible intervals and reference line.
+#' @param col Character string (or vector of character strings) specifying which color to render estimates on plot. When \code{ref_ovl = TRUE}, this argument has no effect and colors plotted will be based on the credible intervals and reference line.
 #'
 #' @param rank Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
@@ -86,7 +86,7 @@
 #' @section Details:
 #' Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = TRUE} can be used to enable this feature.
 #'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
 #' @section Notes:
 #'
@@ -436,12 +436,12 @@ MCMCplot <- function(object,
       graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = sz_med, lwd = 2)
     } else{
       graphics::matlines(thick_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = sz_thick, col = col)
+               type = 'l', lty = 1, lwd = sz_thick, col = col[idx])
       graphics::matlines(thin_q[,1:len], rbind(1:len, 1:len),
-               type = 'l', lty = 1, lwd = sz_thin, col = col)
+               type = 'l', lty = 1, lwd = sz_thin, col = col[idx])
       #medians
       graphics::points(medians[1:len], 1:len, pch = 16,
-             col = col, cex = sz_med)
+             col = col[idx], cex = sz_med)
     }
   }
 
