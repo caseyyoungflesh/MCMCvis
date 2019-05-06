@@ -47,39 +47,39 @@ MCMCchains <- function(object,
                      mcmc.list = FALSE,
                      chain_num = NULL)
 {
+  if(length(class(object)) > 1)
+  {
+    #if from R2jags::jags.parallel
+    if (class(object)[1] == 'rjags.parallel')
+    {
+      #modified coda::as.mcmc (removing ordering of param names)
+      x <- object$BUGSoutput
+      mclist <- vector("list", x$n.chains)
+      mclis <- vector("list", x$n.chains)
+      ord <- dimnames(x$sims.array)[[3]]
+      for (i in 1:x$n.chains)
+      {
+        tmp1 <- x$sims.array[, i, ord]
+        mclis[[i]] <- coda::mcmc(tmp1, thin = x$n.thin)
+      }
+      object <- coda::as.mcmc.list(mclis)
+      #end mod as.mcmc
+    }
+    
+    #if from rstanarm::stan_glm
+    if(class(object)[1] == 'stanreg')
+    {
+      object <- object$stanfit
+    }
+  }
   if (coda::is.mcmc.list(object) != TRUE &
      typeof(object) != 'double' &
      class(object) != 'rjags' &
      class(object) != 'stanfit' &
      class(object) != 'brmsfit' &
-     class(object) != 'jagsUI' &
-     class(object)[1] != 'rjags.parallel' &
-     class(object)[1] != 'stanreg')
+     class(object) != 'jagsUI')
   {
     stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
-  }
-
-  #if from R2jags::jags.parallel
-  if (class(object)[1] == 'rjags.parallel')
-  {
-    #modified coda::as.mcmc (removing ordering of param names)
-    x <- object$BUGSoutput
-    mclist <- vector("list", x$n.chains)
-    mclis <- vector("list", x$n.chains)
-    ord <- dimnames(x$sims.array)[[3]]
-    for (i in 1:x$n.chains)
-    {
-      tmp1 <- x$sims.array[, i, ord]
-      mclis[[i]] <- coda::mcmc(tmp1, thin = x$n.thin)
-    }
-    object <- coda::as.mcmc.list(mclis)
-    #end mod as.mcmc
-  }
-  
-  #if from rstanarm::stan_glm
-  if(class(object)[1] == 'stanreg')
-  {
-    object <- object$stanfit
   }
   
   #if from brms::brm
