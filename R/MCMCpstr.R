@@ -45,12 +45,22 @@ MCMCpstr <- function(object,
   if(coda::is.mcmc.list(object2) == TRUE)
   {
     temp_in <- object2
+    cti <- colnames(temp_in[[1]])
+    
+    if (class(object) == 'brmsfit' &  length(grep('Intercept]', cti)) > 1)
+    {
+      #remove Intercept and close bracket
+      i_idx <- grep('Intercept]', cti)
+      cti[i_idx] <- gsub(',Intercept', '', cti[i_idx])
+      colnames(temp_in[[1]]) <- cti
+    }
+    
     if(ISB == TRUE)
     {
-      names <- vapply(strsplit(colnames(temp_in[[1]]),
+      names <- vapply(strsplit(cti,
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
     }else{
-      names <- colnames(temp_in[[1]])
+      names <- cti
     }
     np <- NCOL(object2[[1]])
 
