@@ -74,23 +74,23 @@ MCMCsummary <- function(object,
   {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
   } else {
-    #rstan
-    if (class(object) == 'stanfit')
+    if (class(object)[1] == 'stanfit')
     {
       object2 <- object
-    } 
-    #rstanarm
-    if (class(object)[1] == 'stanreg')
-    {
-      object2 <- object$stanfit
-    }
-    #brms
-    if (class(object) == 'brmsfit')
-    {
-      object2 <- object$fit
-    }
-    else {
-      object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
+    } else {
+      #rstanarm
+      if (class(object)[1] == 'stanreg')
+      {
+        object2 <- object$stanfit
+      } else {
+        #brms
+        if (class(object)[1] == 'brmsfit')
+        {
+          object2 <- object$fit
+        } else {
+        object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
+        }
+      }
     }
   }
 
@@ -494,7 +494,7 @@ MCMCsummary <- function(object,
     
     if (Rhat == TRUE)
     {
-      if (dim(rstan::summary(object)$c_summary)[3] > 1)
+      if (dim(rstan::summary(object2)$c_summary)[3] > 1)
       {
         r_hat <- round(rs_df['Rhat'][f_ind,1], digits = 2)
       } else {
@@ -521,7 +521,7 @@ MCMCsummary <- function(object,
     if(!is.null(func))
     {
       #convert stan object to matrix
-      ch_bind <- as.matrix(object)[,f_ind]
+      ch_bind <- as.matrix(object2)[,f_ind]
       
       if (!is.null(digits))
       {
