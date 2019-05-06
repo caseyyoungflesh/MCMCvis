@@ -1,7 +1,7 @@
 NEWS
 ====
 
-0.13.0:
+0.12.4:
 
 - Add support for objects output from `rstanarm` and `brms` packages
 - `MCMCplot` add support for plotting multiple colors on the same plot
