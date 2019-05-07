@@ -21,16 +21,16 @@
   "keywords": "MCMC, Bayesian, Visualization, PPO",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "title": "MCMCvis",
-  "version": "0.12.1",
+  "version": "0.12.4",
   "name": "MCMCvis: Tools to Visualize, Manipulate, and Summarize MCMC Output",
   "issueTracker": "http://github.com/caseyyoungflesh/MCMCvis/issues",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.2",
+    "version": "3.6.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.2 (2018-12-20)",
+  "runtimePlatform": "R version 3.6.0 (2019-04-26)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -142,7 +142,7 @@
   ],
   "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/NEWS.md",
   "readme": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/README.md",
-  "fileSize": "1831.35KB",
+  "fileSize": "1833.216KB",
   "contIntegration": "https://travis-ci.org/caseyyoungflesh/MCMCvis",
   "citation": [
     {
@@ -172,5 +172,7 @@
       }
     }
   ],
-  "relatedLink": "https://CRAN.R-project.org/package=MCMCvis"
+  "relatedLink": "https://CRAN.R-project.org/package=MCMCvis",
+  "copyrightHolder": {},
+  "funder": {}
 }
