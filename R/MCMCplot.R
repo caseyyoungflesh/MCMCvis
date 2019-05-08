@@ -190,6 +190,15 @@ MCMCplot <- function(object,
       }
     }
   }
+  if (np == 1)
+  {
+    if (length(col) == 1)
+    {
+      COL <- col
+    } else {
+      stop('Number of specified colors must equal number of plotted parameters (or one).')
+    }
+  }
   
   # Deprecation warnings --------------------------------------------------------
 
