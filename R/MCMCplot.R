@@ -41,43 +41,27 @@
 #'
 #' Option \code{NULL} will return plot with no labels on axis.
 #'
+#' @param guide_lines Logical specifying whether to plot reference lines for each parameter in order to better visualize which parameter names correspond to each posterior.
+#'
 #' @param guide_axis Logical specifying whether a second axis should be plotted (x-axis if \code{HORIZ = TRUE}, y-axis if \code{HORIZ = FALSE}) to help interpret values on plot.
 #'
 #' @param sz_labels Number specifying size of text for parameter labels on axis.
 #'
-#' @param labels_sz Deprecated - see \code{sz_labels}.
-#'
 #' @param sz_med Number specifying size of points represents posterior medians.
 #' 
-#' @param med_sz Deprecated - see \code{sz_med}.
-#'
 #' @param sz_thick Number specifying thickness of 50 percent CI line (thicker line).
-#' 
-#' @param thick_sz Deprecated - see \code{sz_thick}.
 #'
 #' @param sz_thin Number specifying thickness of 95 percent CI line (thinner line).
-#' 
-#' @param thin_sz Deprecated - see \code{sz_thin}.
 #'
 #' @param sz_ax Number specifying thickness of axis and ticks.
 #'
-#' @param ax_sz Deprecated - see \code{sz_ax}.
-#'
 #' @param sz_ax_txt Number specifying size of text for axis label.
-#' 
-#' @param axis_text_sz Deprecated - see \code{sz_ax}.
 #'
 #' @param sz_tick_txt Number specifying size of text for tick labels on axis.
 #'
-#' @param tick_text_sz Deprecated - see \code{sz_tick_txt}.
-#'
 #' @param sz_main_txt Number specifying size of text for main title.
 #'
-#' @param main_text_sz Deprecated - see \code{sz_main_txt}.
-#'
 #' @param pos_tick Numeric vector specifying where ticks on axis should be placed.
-#' 
-#' @param tick_pos Deprecated - see \code{pos_tick}.
 #'
 #' @param mar Numerical vector of length 4 specifying plot margins - (BOTTOM, LEFT, TOP, RIGHT). Changes to the margin should be made within the function rather than using the \code{par} call.
 #'
@@ -139,25 +123,17 @@ MCMCplot <- function(object,
                    ylab,
                    main,
                    labels,
+                   guide_lines = FALSE,
                    guide_axis = TRUE,
                    sz_labels = 1.2,
-                   labels_sz,
                    sz_med = 1.5,
-                   med_sz,
                    sz_thick = 5,
-                   thick_sz,
                    sz_thin = 2,
-                   thin_sz,
                    sz_ax = 3,
-                   ax_sz,
                    sz_ax_txt = 1.3,
-                   axis_text_sz,
                    sz_tick_txt = 1.2,
-                   tick_text_sz,
                    sz_main_txt = 1.2,
-                   main_text_sz,
                    pos_tick,
-                   tick_pos,
                    mar = c(5.1, 4.1, 4.1, 2.1))
 {
   data <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
@@ -167,11 +143,12 @@ MCMCplot <- function(object,
   if (missing(pos_tick))
   {pos_tick = NULL}
 
-  gr_col = 'gray60' #color used for CI and medians
-  ref_col = 'gray60' #color used for 0 line
-  thin = 95 #CI for thin line
-  thick = 50 #CI for thick line
-  PL_SC = 0.3 #how much whitespace flanks plotted estimates
+  gr_col <- 'gray60' #color used for CI and medians
+  ref_col <- 'gray60' #color used for 0 line
+  guide_col <- 'gray80'
+  thin <- 95 #CI for thin line
+  thick <- 50 #CI for thick line
+  PL_SC <- 0.3 #how much whitespace flanks plotted estimates
   
   np <- NCOL(data)
   
@@ -198,54 +175,6 @@ MCMCplot <- function(object,
     } else {
       stop('Number of specified colors must equal number of plotted parameters (or one).')
     }
-  }
-  
-  # Deprecation warnings --------------------------------------------------------
-
-  if (!missing(labels_sz))
-  {
-    warning('Argument "labels_sz" is deprecated; please use "sz_labels" instead.', call. = FALSE)
-    sz_labels <- labels_sz
-  }
-  if (!missing(med_sz))
-  {
-    warning('Argument "med_sz" is deprecated; please use "sz_med" instead.', call. = FALSE)
-    sz_med <- med_sz
-  }
-  if (!missing(thick_sz))
-  {
-    warning('Argument "thick_sz" is deprecated; please use "sz_thick" instead.', call. = FALSE)
-    sz_thick <- thick_sz
-  }
-  if (!missing(thin_sz))
-  {
-    warning('Argument "thin_sz" is deprecated; please use "sz_thin" instead.', call. = FALSE)
-    sz_thin <- thin_sz
-  }
-  if (!missing(axis_text_sz))
-  {
-    warning('Argument "axis_text_sz" is deprecated; please use "sz_ax_txt" instead.', call. = FALSE)
-    sz_ax_txt <- axis_text_sz
-  }
-  if (!missing(ax_sz))
-  {
-    warning('Argument "ax_sz" is deprecated; please use "sz_ax" instead.', call. = FALSE)
-    sz_ax <- ax_sz
-  }
-  if (!missing(tick_text_sz))
-  {
-    warning('Argument "tick_text_sz" is deprecated; please use "sz_tick_txt" instead.', call. = FALSE)
-    sz_tick_txt <- tick_text_sz
-  }
-  if (!missing(main_text_sz))
-  {
-    warning('Argument "main_text_sz" is deprecated; please use "sz_main_txt" instead.', call. = FALSE)
-    sz_main_txt <- main_text_sz
-  }
-  if (!missing(tick_pos))
-  {
-    warning('Argument "tick_pos" is deprecated; please use "pos_tick" instead.', call. = FALSE)
-    pos_tick <- tick_pos
   }
   
   # Process data ------------------------------------------------------------
@@ -340,7 +269,9 @@ MCMCplot <- function(object,
     if (missing(xlim))
     {
       rn <- diff(range(thin_q))*PL_SC
-      xlim = c((min(thin_q) - rn), (max(thin_q) + rn))
+      XLIM <- c((min(thin_q) - rn), (max(thin_q) + rn))
+    } else {
+      XLIM <- xlim
     }
     if (len > 20)
     {
@@ -350,16 +281,16 @@ MCMCplot <- function(object,
       beta <- 0.0412
       tt <- alpha + beta*len
     }
-    ylim = c(1-tt,(len)+tt)
+    YLIM <- c(1 - tt,(len) + tt)
     if (missing(xlab))
-    {xlab = 'Parameter Estimate'}
+    {xlab <- 'Parameter Estimate'}
     if (is.null(xlab))
-    {xlab = ''}
+    {xlab <- ''}
     if (missing(main))
-    {main = ''}
+    {main <- ''}
     if (missing(labels))
     {
-      labs = names(medians)
+      labs <- names(medians)
     }else{
       if (!missing(labels))
       {
@@ -386,7 +317,7 @@ MCMCplot <- function(object,
     graphics::par(mar=c(mar[1], (m_char + (mar[2] - 3)), mar[3], mar[4]-1))
 
     #plot blank plot
-    graphics::plot(medians, (1:len), xlim = xlim, ylim = ylim, type = "n",
+    graphics::plot(medians, (1:len), xlim = XLIM, ylim = YLIM, type = "n",
          ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
          xlab = xlab, cex.lab = sz_ax_txt,
          yaxs = 'i') #cex.lab is axis label
@@ -416,6 +347,20 @@ MCMCplot <- function(object,
     gry_bnd <- rbind(gray_cl, gray_cl)
     wht_bnd <- rbind(white_cl, white_cl)
 
+    if (guide_lines == TRUE)
+    {
+      #limits
+      if (missing(xlim))
+      {
+        XLIM2 <- c(XLIM[1], (XLIM[2] - ((XLIM[2] - XLIM[1]) * 0.1)))
+        xs <- matrix(rep(XLIM2, len), nrow = 2)
+      } else {
+        xs <- matrix(rep(xlim, len), nrow = 2)
+      }
+      ys <- rbind(1:len, 1:len)
+      graphics::matlines(xs, ys, lty = 1, col = guide_col)
+    }
+    
     #ref line
     if(!is.null(ref))
     {
@@ -470,14 +415,16 @@ MCMCplot <- function(object,
              col = COL[idx], cex = sz_med)
     }
   }
-
+  
   #vertical plot - CI lines perpendicular to x-axis
   if (horiz == FALSE)
   {
     if (missing(ylim))
     {
       rn <- diff(range(thin_q))*PL_SC
-      ylim = c((min(thin_q) - rn), (max(thin_q) + rn))
+      YLIM <- c((min(thin_q) - rn), (max(thin_q) + rn))
+    } else {
+      YLIM <- ylim
     }
     if (len > 20)
     {
@@ -487,7 +434,7 @@ MCMCplot <- function(object,
       beta <- 0.0412
       tt <- alpha + beta*len
     }
-    xlim = c(1-tt,(len)+tt)
+    XLIM = c(1-tt,(len)+tt)
     if (missing(ylab))
     {ylab = 'Parameter Estimate'}
     if (is.null(ylab))
@@ -522,7 +469,7 @@ MCMCplot <- function(object,
     m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = sz_labels, units = 'in')}))/0.2)
     #blank plot - do not display
     grDevices::pdf(file = NULL)
-    graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
+    graphics::plot((len:1), medians, xlim = XLIM, ylim = YLIM, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
                    xlab = NA, cex.lab = sz_ax_txt, xaxs = 'i')
     #create invisible ticks to determine where to put y-axis label
@@ -539,7 +486,7 @@ MCMCplot <- function(object,
     graphics::par(mar = c((m_char + (mar[1] - 4)), mar[2]+1+ll-3, mar[3] - 1.5, mar[4]))
 
     #new blank plot
-    graphics::plot((len:1), medians, xlim = xlim, ylim = ylim, type = "n",
+    graphics::plot((len:1), medians, xlim = XLIM, ylim = YLIM, type = "n",
                    ann = TRUE, xaxt = 'n', yaxt = "n", bty = "n", ylab = NA,
                    xlab = NA, cex.lab = sz_ax_txt, xaxs = 'i')
     #ticks
@@ -564,6 +511,20 @@ MCMCplot <- function(object,
                    labels = labs, las = 2, adj = 0, #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
                    line = -1, cex.axis = sz_labels)
 
+    if (guide_lines == TRUE)
+    {
+      #limits
+      if (missing(ylim))
+      {
+        YLIM2 <- c(YLIM[1], (YLIM[2] - ((YLIM[2] - YLIM[1]) * 0.1)))
+        ys <- matrix(rep(YLIM2, len), nrow = 2)
+      } else {
+        ys <- matrix(rep(ylim, len), nrow = 2)
+      }
+      xs <- rbind(1:len, 1:len)
+      graphics::matlines(xs, ys, lty = 1, col = guide_col)
+    }
+    
     #ref line
     if(!is.null(ref))
     {
