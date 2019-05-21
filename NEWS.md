@@ -1,6 +1,12 @@
 NEWS
 ====
 
+0.12.5:
+
+- `MCMCplot` now has `guide_lines` argument, to plot lines to help reference whicih posterior corresponds to each parameter name
+- Remove deprecated arguments
+
+
 0.12.4:
 
 - Add support for objects output from `rstanarm` and `brms` packages
