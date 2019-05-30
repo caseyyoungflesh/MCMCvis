@@ -68,7 +68,9 @@ MCMCsummary(MCMC_data, params = 'beta', round = 2, n.eff = TRUE)
 
 ```{r}
 PR <- rnorm(15000, 0, 32)
-MCMCtrace(MCMC_data, params = 'beta\\[1\\]', ISB = FALSE, priors = PR)
+MCMCvis::MCMCtrace(MCMC_data, params = 'beta\\[1\\]', 
+                   ISB = FALSE, priors = PR, ind = TRUE,
+                   Rhat = TRUE, n.eff = TRUE, pdf = FALSE)
 ```
 ![](Evaluate_ex.png)
 
@@ -82,10 +84,7 @@ just_betas_mcmc_obj <- MCMCchains(MCMC_data, params = 'beta', mcmc.list = TRUE)
 #### Visualize
 
 ```{r}
-MCMCplot(MCMC_data, 
-       params = 'beta', 
-       rank = TRUE,
-       horiz = FALSE, 
-       ref_ovl = TRUE)
+MCMCplot(object = MCMC_data, object2 = MCMC_data2,
+         params = 'beta', rank = TRUE, offset = 0.14)
 ```
 ![](Viz_ex.png)
