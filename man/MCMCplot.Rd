@@ -4,8 +4,9 @@
 \alias{MCMCplot}
 \title{Caterpillar plots of posterior distributions from MCMC output}
 \usage{
-MCMCplot(object, params = "all", excl = NULL, ISB = TRUE, ref = 0,
-  ref_ovl = FALSE, col = "black", rank = FALSE, horiz = TRUE, xlim,
+MCMCplot(object, object2 = NULL, params = "all", excl = NULL,
+  ISB = TRUE, ref = 0, ref_ovl = FALSE, col = "black",
+  col2 = "red", offset = 0.1, rank = FALSE, horiz = TRUE, xlim,
   ylim, xlab, ylab, main, labels, guide_lines = FALSE,
   guide_axis = TRUE, sz_labels = 1.2, sz_med = 1.5, sz_thick = 5,
   sz_thin = 2, sz_ax = 3, sz_ax_txt = 1.3, sz_tick_txt = 1.2,
@@ -13,6 +14,8 @@ MCMCplot(object, params = "all", excl = NULL, ISB = TRUE, ref = 0,
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
+
+\item{object2}{Optional second object containing MCMC output. If specified, parameter estimates from each model will be displayed in a paired manner. Parameter names for \code{'object'} and \code{'object2'} must be identical. See DETAILS below.}
 
 \item{params}{Character string (or vector of character strings) denoting parameters to be plotted.
 
@@ -31,6 +34,10 @@ Argument \code{NULL} will plot no reference line.}
 \item{ref_ovl}{Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line. See DETAILS for more information.}
 
 \item{col}{Character string (or vector of character strings) specifying which color to render estimates on plot. When \code{ref_ovl = TRUE}, this argument has no effect and colors plotted will be based on the credible intervals and reference line. Number of specified colors must equal the number of specified parameters or one.}
+
+\item{col2}{Character string (or vector of character strings) specifying which color to render estimates on plot for \code{object2} (if specified). Number of specified colors must equal the number of specified parameters or one. Red by default.}
+
+\item{offset}{Value indicating how much to offset plotted posteriors when \code{object2} is specified (i.e., control the amount of space between the two  plotted posteriors for each parameter). The distance from one set of parameters to another corresponds to a value of 1.}
 
 \item{rank}{Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.}
 
@@ -88,6 +95,8 @@ Visualize posterior distributions from MCMC output for specific parameters of in
 \section{Details}{
 
 Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = TRUE} can be used to enable this feature.
+
+When \code{object2} is specified, paired caterpillar plots of each parameter are produced. For this reason, parameter names of \code{object} and \code{object2} must be identical (to be used for comparing posterior estimates of similar models). \code{col} and \code{col2} arguments can be specified to change the color of output from \code{object} and \code{object2}, respectively. By default, output from \code{object} is plotted in black and \code{object2} is plotted in red. The \code{ref_ovl} argument can also be specified.
 
 \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 }

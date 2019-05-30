@@ -1,9 +1,14 @@
 NEWS
 ====
 
+0.12.6:
+
+- `MCMCplot` now has `object2`, `col2`, and `offset` arguments. Allows user to plot output from two separate models, as long as both model outputs have identical parameter names.
+
+
 0.12.5:
 
-- `MCMCplot` now has `guide_lines` argument, to plot lines to help reference whicih posterior corresponds to each parameter name
+- `MCMCplot` now has `guide_lines` argument, to plot lines to help reference which posterior corresponds to each parameter name
 - Remove deprecated arguments
 
 

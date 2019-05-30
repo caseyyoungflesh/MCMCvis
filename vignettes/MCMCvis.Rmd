@@ -62,8 +62,8 @@ MCMCsummary(jags_out, round = 2)
 ```
 
 ```{r, eval = FALSE}
-##     mean   sd  2.5%   50% 97.5% Rhat
-## mu -0.46 3.09 -6.32 -0.51  5.44    1
+##     mean   sd  2.5%   50% 97.5% Rhat n.eff
+## mu -0.28 2.97 -6.13 -0.14  5.22    1  1397
 ```
 
 
@@ -101,9 +101,9 @@ MCMCsummary(stan_out, round = 2)
 ```
 
 ```{r, eval = FALSE}
-##       mean   sd  2.5%   50% 97.5% Rhat
-## mu   -0.48 2.91 -6.07 -0.35  5.39 1.01
-## lp__ -0.56 0.68 -2.42 -0.28 -0.09 1.00
+##       mean   sd  2.5%   50% 97.5% Rhat n.eff
+## mu   -0.51 2.82 -6.06 -0.36  5.07 1.01   414
+## lp__ -0.45 0.61 -2.27 -0.23 -0.01 1.00   508
 ```
 
 &nbsp;
@@ -359,7 +359,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-If simulated data was used to fit the model, the generating values used to simulate the data can be specified using the `gvals` argument. This makes it possible to compare posterior estimates with the true parameter values. Generating values will be displayed as vertical dotted lines. Similar to the `priors` argument, if one value is specified when more than one parameter is used, this one generating value will be used for all parameters. If the lines are not apparent in the 
+If simulated data were used to fit the model, the generating values used to simulate the data can be specified using the `gvals` argument. This makes it possible to compare posterior estimates with the true parameter values. Generating values will be displayed as vertical dotted lines. Similar to the `priors` argument, if one value is specified when more than one parameter is used, this one generating value will be used for all parameters. If the lines are not apparent in the 
 
 
 ```{r, fig.width=5, fig.height=6}
@@ -404,7 +404,7 @@ As with the other functions in the package, particular parameters of interest ca
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
-       params = 'beta')
+         params = 'beta')
 ```
 
 &nbsp;
@@ -413,8 +413,8 @@ MCMCplot(MCMC_data,
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
-       params = 'beta',
-       ref_ovl = TRUE)
+         params = 'beta',
+         ref_ovl = TRUE)
 ```
 
 &nbsp;
@@ -423,9 +423,9 @@ Parameters can be ranked by posterior median estimates using the `rank` argument
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
-       params = 'beta', 
-       rank = TRUE,
-       xlab = 'ESTIMATE')
+         params = 'beta', 
+         rank = TRUE,
+         xlab = 'ESTIMATE')
 ```
 
 &nbsp;
@@ -434,12 +434,24 @@ The orientation of the plot can also be change using the `horiz` argument. `ylab
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
-       params = 'beta', 
-       rank = TRUE,
-       horiz = FALSE,
-       ylab = 'ESTIMATE')
+         params = 'beta', 
+         rank = TRUE,
+         horiz = FALSE,
+         ylab = 'ESTIMATE')
 ```
 
+&nbsp;
+
+Output from two models can also be plotted side-by-side, as long as the parameter names are identical (NOTE: not ALL parmeters need to be identical, just the parameters specified in the `params` argument). This is useful for comparing output from similar models. By default, the the first model input (`object`) will be plotted in black, while the second model input (`object2`) will be plotted in red. Different colors for each model output can be specified with `col` and `col2`. The spacing between the plotted posteriors for each parameter can be adjusted with `offset` (as the desired spacing will depend on the size of the image as well as the specified thickness/size of the lines/dots).
+
+```{r, fig.width=5, fig.height=6}
+MCMCplot(object = MCMC_data, 
+         object2 = MCMC_data2,
+         params = 'beta',
+         offset = 0.1)
+```
+
+&nbsp;
 
 Graphical parameters for x and y-axis limitation, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, color of posterior estimates, and margins can be specified.
 
