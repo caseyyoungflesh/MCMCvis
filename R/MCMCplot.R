@@ -27,11 +27,16 @@
 #' 
 #' @param col2 Character string (or vector of character strings) specifying which color to render estimates on plot for \code{object2} (if specified). Number of specified colors must equal the number of specified parameters or one. Red by default.
 #'
+#' @param offset Value indicating how much to offset plotted posteriors when \code{object2} is specified (i.e., control the amount of space between the two  plotted posteriors for each parameter). The distance from one set of parameters to another corresponds to a value of 1.
+#'
 #' @param rank Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
 #'
 #' @param horiz Logical specifying orientation of plot. If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
+#' 
 #' @param xlim Numerical vector of length 2, indicating range of x-axis. Only applicable if \code{horiz = TRUE}.
+#' 
 #' @param ylim Numerical vector of length 2, indicating range of y-axis. Only applicable if \code{horiz = FALSE}.
+#' 
 #' @param xlab Character string labeling x-axis. Only applicable if \code{horiz = TRUE}.
 #'
 #' Default label is 'Parameter Estimate'. Option \code{NULL} will return plot with no label on x-axis.
@@ -333,6 +338,13 @@ MCMCplot <- function(object,
       }
     }
     
+    if (horiz == FALSE)
+    {
+      v_black_cl <- rev(black_cl)
+      v_gray_cl <- rev(gray_cl)
+      v_white_cl <- rev(white_cl)
+    }
+    
     if (!is.null(object2))
     {
       black_cl2 <- c()
@@ -355,6 +367,13 @@ MCMCplot <- function(object,
             white_cl2 <- c(white_cl2, i)
           }
         }
+      }
+      
+      if (horiz == FALSE)
+      {
+        v_black_cl2 <- rev(black_cl2)
+        v_gray_cl2 <- rev(gray_cl2)
+        v_white_cl2 <- rev(white_cl2)
       }
     }
   }
@@ -601,19 +620,19 @@ MCMCplot <- function(object,
        } else {
          
          #object
-         graphics::matlines(thick_q[,1:len], (rbind(1:len, 1:len) + OFFSET),
+         graphics::matlines(thick_q[,1:len], (rbind(1:len, 1:len) + offset),
                             type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
-         graphics::matlines(thin_q[,1:len], (rbind(1:len, 1:len) + OFFSET),
+         graphics::matlines(thin_q[,1:len], (rbind(1:len, 1:len) + offset),
                             type = 'l', lty = 1, lwd = sz_thin, col = COL[idx])
-         graphics::points(medians[1:len], (1:len + OFFSET), pch = 16,
+         graphics::points(medians[1:len], (1:len + offset), pch = 16,
                           col = COL[idx], cex = sz_med)
          
          #object2
-         graphics::matlines(thick_q2[,1:len], (rbind(1:len, 1:len) - OFFSET),
+         graphics::matlines(thick_q2[,1:len], (rbind(1:len, 1:len) - offset),
                             type = 'l', lty = 1, lwd = sz_thick, col = COL2[idx])
-         graphics::matlines(thin_q2[,1:len], (rbind(1:len, 1:len) - OFFSET),
+         graphics::matlines(thin_q2[,1:len], (rbind(1:len, 1:len) - offset),
                             type = 'l', lty = 1, lwd = sz_thin, col = COL2[idx])
-         graphics::points(medians2[1:len], (1:len - OFFSET), pch = 16,
+         graphics::points(medians2[1:len], (1:len - offset), pch = 16,
                           col = COL2[idx], cex = sz_med)
        }
      }
@@ -668,10 +687,10 @@ MCMCplot <- function(object,
        }
      }
 
-     #to determine margins for plot
      #0.2 inches per line - mar measured in lines
      m_char <- (max(sapply(labs, function(x){graphics::strwidth(x, cex = sz_labels, 
                                                                 units = 'i')}))  /0.2)
+     
      #blank plot - do not display
      grDevices::pdf(file = NULL)
      graphics::plot((len:1), medians, xlim = XLIM, ylim = YLIM, type = "n",
@@ -713,7 +732,7 @@ MCMCplot <- function(object,
      }
 
      #bottom axis params (labels)
-     #las - 0 parallel to axis, 1 horiz, 2 perp to ax  is, 3 vert
+     #las - 0 parallel to axis, 1 horiz, 2 perp to axis, 3 vert
      graphics::axis(1, at = (len:1) + 0.013, tick = FALSE,
                     labels = labs, las = 2, adj = 0,
                     line = -1, cex.axis = sz_labels)
@@ -738,64 +757,151 @@ MCMCplot <- function(object,
        graphics::abline(h=ref, lty = 2, lwd = 3, col = ref_col)
      }
 
-     #positions to plot CI
-     v_black_cl <- rev(black_cl)
-     v_gray_cl <- rev(gray_cl)
-     v_white_cl <- rev(white_cl)
-
-     v_blk_bnd <- matrix(rep(rev(len + 1 - black_cl), 2), nrow = 2, byrow = TRUE)
-     v_gry_bnd <- matrix(rep(rev(len + 1 - gray_cl), 2), nrow = 2, byrow = TRUE)
-     v_wht_bnd <- matrix(rep(rev(len + 1 - white_cl), 2), nrow = 2, byrow = TRUE)
-
      if (ref_ovl == TRUE)
      {
+       #positions to plot CI
+       v_blk_bnd <- matrix(rep(rev(len + 1 - black_cl), 2), nrow = 2, byrow = TRUE)
+       v_gry_bnd <- matrix(rep(rev(len + 1 - gray_cl), 2), nrow = 2, byrow = TRUE)
+       v_wht_bnd <- matrix(rep(rev(len + 1 - white_cl), 2), nrow = 2, byrow = TRUE)
+       
        #Black CI
        if (!is.null(black_cl))
        {
-         #Thick
-         graphics::matlines(v_blk_bnd, thick_q[,v_black_cl],
-                            type = 'l', lty = 1, lwd = sz_thick, col = 'black')
-         #Thin
-         graphics::matlines(v_blk_bnd, thin_q[,v_black_cl],
-                            type = 'l', lty = 1, lwd = sz_thin, col = 'black')
+         if (is.null(object2))
+         {
+          #Thick
+          graphics::matlines(v_blk_bnd, thick_q[,v_black_cl], 
+                             type = 'l', lty = 1, lwd = sz_thick, col = 'black')
+          #Thin
+          graphics::matlines(v_blk_bnd, thin_q[,v_black_cl], 
+                             type = 'l', lty = 1, lwd = sz_thin, col = 'black')
+         } else {
+           
+           v_blk_bnd2 <- matrix(rep(rev(len + 1 - black_cl2), 2), nrow = 2, byrow = TRUE)
+           #object
+           graphics::matlines((v_blk_bnd - offset), thick_q[,v_black_cl], 
+                              type = 'l', lty = 1, lwd = sz_thick, col = 'black')
+           graphics::matlines((v_blk_bnd - offset), thin_q[,v_black_cl], 
+                              type = 'l', lty = 1, lwd = sz_thin, col = 'black')
+           #object2
+           graphics::matlines((v_blk_bnd2 + offset), thick_q2[,v_black_cl2], 
+                              type = 'l', lty = 1, lwd = sz_thick, col = 'black')
+           graphics::matlines((v_blk_bnd2 + offset), thin_q2[,v_black_cl2], 
+                              type = 'l', lty = 1, lwd = sz_thin, col = 'black')
+         }
        }
 
        #Gray CI
        if (!is.null(gray_cl))
        {
-         #Thick
-         graphics::matlines(v_gry_bnd, thick_q[,v_gray_cl],
-                            type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
-         #Thin
-         graphics::matlines(v_gry_bnd, thin_q[,v_gray_cl],
-                            type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
+         if (is.null(object2))
+         {
+          #Thick
+          graphics::matlines(v_gry_bnd, thick_q[,v_gray_cl], 
+                             type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
+          #Thin
+          graphics::matlines(v_gry_bnd, thin_q[,v_gray_cl],
+                             type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
+         } else {
+           
+           v_gry_bnd2 <- matrix(rep(rev(len + 1 - gray_cl2), 2), nrow = 2, byrow = TRUE)
+           #object
+           graphics::matlines((v_gry_bnd - offset), thick_q[,v_gray_cl], 
+                              type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
+           graphics::matlines((v_gry_bnd - offset), thin_q[,v_gray_cl], 
+                              type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
+           #object2
+           graphics::matlines((v_gry_bnd2 + offset), thick_q2[,v_gray_cl2], 
+                              type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
+           graphics::matlines((v_gry_bnd2 + offset), thin_q2[,v_gray_cl2], 
+                              type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
+         }
        }
 
        #White CI
        if (!is.null(white_cl))
        {
-         graphics::matlines(v_wht_bnd, thick_q[,v_white_cl],
-                            type = 'l', lty = 1, lwd = sz_thick, col = gr_col) #white (gray)
-         graphics::matlines(v_wht_bnd, thin_q[,v_white_cl],
-                            type = 'l', lty = 1, lwd = sz_thin, col = gr_col) #white (gray)
+         if (is.null(object2))
+         {
+          graphics::matlines(v_wht_bnd, thick_q[,v_white_cl], 
+                             type = 'l', lty = 1, lwd = sz_thick, 
+                             col = gr_col) #white (gray)
+          graphics::matlines(v_wht_bnd, thin_q[,v_white_cl], 
+                             type = 'l', lty = 1, lwd = sz_thin, 
+                             col = gr_col) #white (gray)
+         } else {
+           
+           v_wht_bnd2 <- matrix(rep(rev(len + 1 - white_cl2), 2), nrow = 2, byrow = TRUE)
+           #object
+           graphics::matlines((v_wht_bnd - offset), thick_q[,v_white_cl], 
+                              type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
+           graphics::matlines((v_wht_bnd - offset), thin_q[,v_white_cl], 
+                              type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
+           #object2
+           graphics::matlines((v_wht_bnd2 + offset), thick_q2[,v_white_cl2], 
+                              type = 'l', lty = 1, lwd = sz_thick, col = gr_col)
+           graphics::matlines((v_wht_bnd2 + offset), thin_q2[,v_white_cl2], 
+                              type = 'l', lty = 1, lwd = sz_thin, col = gr_col)
+         }
        }
 
        #Medians
-       graphics::points(len:1, medians, pch = 16, col = 'white', cex = sz_med)
-       graphics::points(v_blk_bnd[1,], medians[v_black_cl], pch = 16, 
-                        col = 'black', cex = sz_med)
-       graphics::points(v_gry_bnd[1,], medians[v_gray_cl], pch = 16, 
-                        col = gr_col, cex = sz_med)
-       graphics::points(v_wht_bnd[1,], medians[v_white_cl], pch = 21, 
-                        col = gr_col, cex = sz_med, lwd = 2)
+       if (is.null(object2))
+       {
+        graphics::points(len:1, medians, pch = 16, col = 'white', cex = sz_med)
+        graphics::points(v_blk_bnd[1,], medians[v_black_cl], pch = 16, 
+                          col = 'black', cex = sz_med)
+        graphics::points(v_gry_bnd[1,], medians[v_gray_cl], pch = 16, 
+                          col = gr_col, cex = sz_med)
+        graphics::points(v_wht_bnd[1,], medians[v_white_cl], pch = 21, 
+                          col = gr_col, cex = sz_med, lwd = 2)
+       } else {
+         #object
+         graphics::points((len:1 - offset), medians, pch = 16, 
+                          col = 'white', cex = sz_med)
+         graphics::points((v_blk_bnd[1,] - offset), medians[v_black_cl], pch = 16, 
+                          col = 'black', cex = sz_med)
+         graphics::points((v_gry_bnd[1,] - offset), medians[v_gray_cl], pch = 16, 
+                          col = gr_col, cex = sz_med)
+         graphics::points((v_wht_bnd[1,] - offset), medians[v_white_cl], pch = 21, 
+                          col = gr_col, cex = sz_med, lwd = 2)
+         
+         #object2
+         graphics::points((len:1 + offset), medians2, pch = 16, 
+                          col = 'white', cex = sz_med)
+         graphics::points((v_blk_bnd2[1,] + offset), medians2[v_black_cl2], pch = 16, 
+                          col = 'black', cex = sz_med)
+         graphics::points((v_gry_bnd2[1,] + offset), medians2[v_gray_cl2], pch = 16, 
+                          col = gr_col, cex = sz_med)
+         graphics::points((v_wht_bnd2[1,] + offset), medians2[v_white_cl2], pch = 21, 
+                          col = gr_col, cex = sz_med, lwd = 2)
+       }
      } else {
-       graphics::matlines(rbind(1:len, 1:len), thick_q[,len:1],
-                          type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
-       graphics::matlines(rbind(1:len, 1:len), thin_q[,len:1],
-                          type = 'l', lty = 1, lwd = sz_thin, col = COL[idx])
-       #medians
-       graphics::points(1:len, medians[len:1], pch = 16,
-                        col = COL[idx], cex = sz_med)
+       if (is.null(object2))
+       {
+        graphics::matlines(rbind(1:len, 1:len), thick_q[,len:1],
+                            type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
+        graphics::matlines(rbind(1:len, 1:len), thin_q[,len:1],
+                            type = 'l', lty = 1, lwd = sz_thin, col = COL[idx])
+        graphics::points(1:len, medians[len:1], pch = 16,
+                          col = COL[idx], cex = sz_med)
+       } else {
+         #object
+         graphics::matlines((rbind(1:len, 1:len) - offset), thick_q[,len:1],
+                            type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
+         graphics::matlines((rbind(1:len, 1:len) - offset), thin_q[,len:1],
+                            type = 'l', lty = 1, lwd = sz_thin, col = COL[idx])
+         graphics::points((1:len - offset), medians[len:1], pch = 16,
+                          col = COL[idx], cex = sz_med)
+         
+         #object2
+         graphics::matlines((rbind(1:len, 1:len) + offset), thick_q2[,len:1],
+                            type = 'l', lty = 1, lwd = sz_thick, col = COL2[idx])
+         graphics::matlines((rbind(1:len, 1:len) + offset), thin_q2[,len:1],
+                            type = 'l', lty = 1, lwd = sz_thin, col = COL2[idx])
+         graphics::points((1:len + offset), medians2[len:1], pch = 16,
+                          col = COL2[idx], cex = sz_med)
+       }
      }
    }
   
