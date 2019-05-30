@@ -558,7 +558,7 @@ MCMCplot <- function(object,
                              col = gr_col) #white (gray)
          } else {
            
-           wht_bnd2 <- rbind(wht_cl2, wht_cl2)
+           wht_bnd2 <- rbind(white_cl2, white_cl2)
            #object
            graphics::matlines(thick_q[,white_cl], (wht_bnd + offset),
                               type = 'l', lty = 1, lwd = sz_thick, 
