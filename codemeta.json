@@ -21,7 +21,7 @@
   "keywords": "MCMC, Bayesian, Visualization, PPO",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "title": "MCMCvis",
-  "version": "0.12.4",
+  "version": "0.12.6",
   "name": "MCMCvis: Tools to Visualize, Manipulate, and Summarize MCMC Output",
   "issueTracker": "http://github.com/caseyyoungflesh/MCMCvis/issues",
   "programmingLanguage": {
@@ -142,7 +142,7 @@
   ],
   "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/NEWS.md",
   "readme": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/README.md",
-  "fileSize": "1833.216KB",
+  "fileSize": "2804.589KB",
   "contIntegration": "https://travis-ci.org/caseyyoungflesh/MCMCvis",
   "citation": [
     {
