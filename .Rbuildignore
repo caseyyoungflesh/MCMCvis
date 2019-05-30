@@ -13,4 +13,4 @@
 ^paper.*
 ^codemeta.json
 ^generate.rb
-
+^R/MCMCdiag\.R$

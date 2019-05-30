@@ -143,7 +143,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as oppossed to `\[`). `\\d` can be used to specify any digits in a particular place.
+Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -315,7 +315,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-Percent overlap can be output to an R object as well using the `PPO_out` argument. Plotting of the trace plots can be supressed with `plot = FALSE`.
+Percent overlap can be output to an R object as well using the `PPO_out` argument. Plotting of the trace plots can be suppressed with `plot = FALSE`.
 
 ```{r}
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
@@ -442,7 +442,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-Output from two models can also be plotted side-by-side, as long as the parameter names are identical (NOTE: not ALL parmeters need to be identical, just the parameters specified in the `params` argument). This is useful for comparing output from similar models. By default, the the first model input (`object`) will be plotted in black, while the second model input (`object2`) will be plotted in red. Different colors for each model output can be specified with `col` and `col2`. The spacing between the plotted posteriors for each parameter can be adjusted with `offset` (as the desired spacing will depend on the size of the image as well as the specified thickness/size of the lines/dots).
+Output from two models can also be plotted side-by-side, as long as the parameter names are identical (NOTE: not ALL parameters need to be identical, just the parameters specified in the `params` argument). This is useful for comparing output from similar models. By default, the the first model input (`object`) will be plotted in black, while the second model input (`object2`) will be plotted in red. Different colors for each model output can be specified with `col` and `col2`. The spacing between the plotted posteriors for each parameter can be adjusted with `offset` (as the desired spacing will depend on the size of the image as well as the specified thickness/size of the lines/dots).
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(object = MCMC_data, 
@@ -474,7 +474,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-Other elements can be added to `MCMCplot` figures as well. For instance, to add PPO (prior posterior overlap) to the posterior plot, first calculate PPO using the `MCMCtrace` function (with `PPO_out = TRUE` and `plot = FALSE` to supress plotting).
+Other elements can be added to `MCMCplot` figures as well. For instance, to add PPO (prior posterior overlap) to the posterior plot, first calculate PPO using the `MCMCtrace` function (with `PPO_out = TRUE` and `plot = FALSE` to suppress plotting).
 
 ```{r}
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS

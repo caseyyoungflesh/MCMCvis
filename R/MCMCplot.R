@@ -299,6 +299,8 @@ MCMCplot <- function(object,
     thick_q2 <- pf_out2[[3]]
     thin_q2 <- pf_out2[[4]]
     medians2 <- pf_out2[[5]]
+  } else {
+    thin_q2 <- NULL
   }
 
   
