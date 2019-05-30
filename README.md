@@ -50,7 +50,7 @@ Examples
 
 ```{r}
 data(MCMC_data)
-MCMCsummary(MCMC_data, params = 'beta', round = 2, n.eff = TRUE)
+MCMCsummary(MCMC_data, params = 'beta', round = 2)
 
 #>           mean    sd   2.5%    50%  97.5% Rhat n.eff
 #> beta[1]  -4.62  6.54 -17.19  -4.62   8.38    1 10411
