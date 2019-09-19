@@ -63,13 +63,14 @@ MCMCsummary <- function(object,
                       excl = NULL,
                       ISB = TRUE,
                       probs = c(.025, .5, .975),
+                      HPD = FALSE,
                       digits = NULL,
                       round = NULL,
                       Rhat = TRUE,
                       n.eff = TRUE,
                       func = NULL,
-                      func_name = NULL)
-
+                      func_name = NULL) {
+  
 #--------------------------------------------------------------------------------------------------------------                        
 # SORTING BLOCK
                       
@@ -98,7 +99,7 @@ MCMCsummary <- function(object,
 
   if (coda::is.mcmc.list(object2) == TRUE | typeof(object) == "double") {
 
-    if (typeof(object2) == "double") {
+    if (typeof(object) == "double") {
       np <- NCOL(object2)
       ch_bind <- object2
     } else {
@@ -118,18 +119,18 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (is.null(HPD)) {
+      if (HPD == FALSE) {
         if (length(probs)==1) {    
           bind_q <- data.frame(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else { 
           bind_q <- data.frame(t(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits)))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         }   
       } else {    
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
         bind_q <- data.frame(signif(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = digits))
-        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 2), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 2), "%_HPDU"))  
+        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
     
@@ -140,38 +141,40 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
      
-      if (is.null(HPD)) {
+      if (HPD == FALSE) {
         if (length(probs)==1) {    
           bind_q <- data.frame(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else { 
           bind_q <- data.frame(t(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round)))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         }   
       } else {    
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
         bind_q <- data.frame(round(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = round))
-        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 2), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 2), "%_HPDU"))  
+        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
     
     if (is.null(digits) & is.null(round)) {
 
-      bind_mn <- apply(ch_bind, 2, mean)
-      bind_sd <- apply(ch_bind, 2, stats::sd)
+      bind_mn <- data.frame(apply(ch_bind, 2, mean))
+      bind_sd <- data.frame(apply(ch_bind, 2, stats::sd))
+      colnames(bind_mn) <- "mean"  
+      colnames(bind_sd) <- "sd"  
       
-      if (is.null(HPD)) {
+      if (HPD==FALSE) {
         if (length(probs)==1) {    
           bind_q <- data.frame(apply(ch_bind, 2, stats::quantile, probs = probs))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits =3), "%")                    
         } else { 
-          bind_q <- data.frame(t(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          bind_q <- data.frame(t(apply(ch_bind, 2, stats::quantile, probs = probs)))
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         }   
       } else {    
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
-        bind_q <- data.frame(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = round)
-        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 2), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 2), "%_HPDU"))  
+        bind_q <- data.frame(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]))
+        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
     x[[1]] <- cbind(bind_mn, bind_sd, bind_q) 
@@ -179,23 +182,27 @@ MCMCsummary <- function(object,
 # rhat 
 
     if (Rhat == TRUE) {
-      if (length(object2) > 1) {
-    
-        # If > 750 params use loop to calculate Rhat
-        if (NCOL(object2[[1]]) > 750) {
-          r_hat <- c(rep(NA, NCOL(object2[[1]])))
-          for (v in 1:length(r_hat)) r_hat[v] <- round(coda::gelman.diag(object2[, v])$psrf[, 1], digits = 2)
-          r_hat <- data.frame(r_hat)
+      if (typeof(object) != "double") {
+        if (length(object2) > 1) {
+          # If > 750 params use loop to calculate Rhat
+          if (NCOL(object2[[1]]) > 750) {
+            r_hat <- c(rep(NA, NCOL(object2[[1]])))
+            for (v in 1:length(r_hat)) r_hat[v] <- round(coda::gelman.diag(object2[, v])$psrf[, 1], digits = 2)
+            r_hat <- data.frame(r_hat)
+            colnames(r_hat) <- "Rhat"
+          } else { 
+            r_hat <- data.frame(round(coda::gelman.diag(object2, multivariate = FALSE)$psrf[, 1], digits = 2))
+            colnames(r_hat) <- "Rhat"
+          } 
+        } else {
+          warning("Rhat statistic cannot be calculated with one chain. NAs inserted.")
+          r_hat <- data.frame(rep(NA, np))
           colnames(r_hat) <- "Rhat"
-        } else { 
-          r_hat <- data.frame(round(coda::gelman.diag(object2, multivariate = FALSE)$psrf[, 1], digits = 2))
-          colnames(r_hat) <- "Rhat"
-        } 
+        }
       } else {
         warning("Rhat statistic cannot be calculated with one chain. NAs inserted.")
         r_hat <- data.frame(rep(NA, np))
         colnames(r_hat) <- "Rhat"
-  
       }
     x[[(length(x) + 1)]] <- r_hat  
     }
@@ -203,7 +210,7 @@ MCMCsummary <- function(object,
 # neff
    
     if (n.eff == TRUE) {
-      if (length(object2) > 1) {      
+      if (typeof(object) != "double") {
         neff <- data.frame(round(coda::effectiveSize(object2), digits = 0))
         colnames(neff) <- "n.eff"
       } else {
@@ -365,7 +372,7 @@ MCMCsummary <- function(object,
 # end sort
     
 # convert stan object to matrix if computing non default intervals or using custom func
-    if (!is.null(func) | !is.null(HPD) | identical(probs, c(.025, .5, .975)==FALSE)) {
+    if (!is.null(func) | HPD==TRUE | identical(probs, c(.025, .5, .975))==FALSE) {
       ch_bind <- as.matrix(object2)[, f_ind]
     }    
 
@@ -381,26 +388,26 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (is.null(HPD)) {
+      if (HPD==FALSE) {
         if (length(probs)==1) {    
           bind_q <- data.frame(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
           if (identical(probs, c(.025, .5, .975)==TRUE)) {    
             bind_LCI <- signif(rs_df["X2.5."][f_ind, 1], digits = digits)
             bind_med <- signif(rs_df["X50."][f_ind, 1], digits = digits)
             bind_UCI <- signif(rs_df["X97.5."][f_ind, 1], digits = digits)
             bind_q <- data.frame(cbind(bind_LCI, bind_med, bind_UCI))
-            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
           } else {
             bind_q <- data.frame(t(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits)))
-            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
           }
         }
       } else {
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
         bind_q <- data.frame(signif(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = digits))
-        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 2), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 2), "%_HPDU"))  
+        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
       
@@ -411,26 +418,26 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (is.null(HPD)) {
+      if (HPD==FALSE) {
         if (length(probs)==1) {    
           bind_q <- data.frame(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
           if (identical(probs, c(.025, .5, .975)==TRUE)) {    
             bind_LCI <- round(rs_df["X2.5."][f_ind, 1], digits = round)
             bind_med <- round(rs_df["X50."][f_ind, 1], digits = round)
             bind_UCI <- round(rs_df["X97.5."][f_ind, 1], digits = round)
             bind_q <- data.frame(cbind(bind_LCI, bind_med, bind_UCI))
-            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
           } else {
             bind_q <- data.frame(t(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round)))
-            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
           }
         }
       } else {
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
         bind_q <- data.frame(round(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = round))
-        colnames(bind_q) <- c(paste0(round(probs[1] * 100, digits = 2), "%_HPDL"), paste0(signif(probs[1] * 100, round = 2), "%_HPDU"))  
+        colnames(bind_q) <- c(paste0(round(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
     
@@ -441,29 +448,29 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (is.null(HPD)) {
+      if (HPD==FALSE) {
         if (length(probs)==1) {    
           bind_q <- data.frame(apply(ch_bind, 2, stats::quantile, probs = probs))
-          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+          colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
           if (identical(probs, c(.025, .5, .975)==TRUE)) {    
             bind_LCI <- rs_df["X2.5."][f_ind, 1]
             bind_med <- rs_df["X50."][f_ind, 1]
             bind_UCI <- rs_df["X97.5."][f_ind, 1]
             bind_q <- data.frame(cbind(bind_LCI, bind_med, bind_UCI))
-            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
           } else {
             bind_q <- data.frame(t(apply(ch_bind, 2, stats::quantile, probs = probs)))
-            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 2), "%")                    
+            colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
           }
         }
       } else {
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
         bind_q <- data.frame(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]))
-        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 2), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 2), "%_HPDU"))  
+        colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
-
     }
+    x[[1]] <- cbind(bind_mn, bind_sd, bind_q) 
 
 # rhat 
 
@@ -514,6 +521,10 @@ MCMCsummary <- function(object,
 # bind them  
   
     mcmc_summary <- do.call("cbind", x)
-    row.names(mcmc_summary) <- all_params[f_ind]
+    #row.names(mcmc_summary) <- all_params[f_ind]
 
   }
+
+  return(mcmc_summary)
+  
+}
