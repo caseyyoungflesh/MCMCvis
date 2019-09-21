@@ -133,7 +133,7 @@ MCMCsummary <- function(object,
         }   
       } else {    
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
-        bind_q <- data.frame(signif(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = digits))
+        bind_q <- data.frame(signif(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = probs[1]), digits = digits))
         colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
@@ -155,7 +155,7 @@ MCMCsummary <- function(object,
         }   
       } else {    
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
-        bind_q <- data.frame(round(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = round))
+        bind_q <- data.frame(round(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = probs[1]), digits = round))
         colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
@@ -177,7 +177,7 @@ MCMCsummary <- function(object,
         }   
       } else {    
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
-        bind_q <- data.frame(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]))
+        bind_q <- data.frame(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = probs[1]))
         colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
@@ -410,7 +410,7 @@ MCMCsummary <- function(object,
         }
       } else {
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
-        bind_q <- data.frame(signif(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = digits))
+        bind_q <- data.frame(signif(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = probs[1]), digits = digits))
         colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
@@ -440,7 +440,7 @@ MCMCsummary <- function(object,
         }
       } else {
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
-        bind_q <- data.frame(round(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]), digits = round))
+        bind_q <- data.frame(round(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = probs[1]), digits = round))
         colnames(bind_q) <- c(paste0(round(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
@@ -470,7 +470,7 @@ MCMCsummary <- function(object,
         }
       } else {
         if (length(probs) > 1) { warning("too many probs specified. Using first value.") }
-        bind_q <- data.frame(coda::HPDinterval(as.mcmc(ch_bind), prob = probs[1]))
+        bind_q <- data.frame(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = probs[1]))
         colnames(bind_q) <- c(paste0(signif(probs[1] * 100, digits = 3), "%_HPDL"), paste0(signif(probs[1] * 100, digits = 3), "%_HPDU"))  
       }
     }
