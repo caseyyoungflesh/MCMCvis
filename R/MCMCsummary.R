@@ -12,6 +12,10 @@
 #'
 #' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
 #'
+#' @param probs Numeric vector or scalar with value(s) in (0,1) representing probabilities used to calculate posterior sample quantiles or highest posterior density intervals for the selected parameters. Default is c(0.025, 0.5, 0.975).
+#' 
+#' @param HPD Logicial specifying whether to calculate equal-tailed credible intervals \code{HPD = FALSE} or highest posterior density intervals \code{HPD = TRUE} for the selected parameters. Default is \code{HPD = FALSE}.
+#' 
 #' @param digits Number of significant digits to include for posterior summary. All computed digits will be included by default. Note that Rhat is always rounded to 2 decimal places.
 #'
 #' @param round Number of decimal places to round to for posterior summary. Cannot be used in conjunction with \code{digits} argument. Note that Rhat is always rounded to 2 decimal places.
