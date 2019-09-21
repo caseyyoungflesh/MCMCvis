@@ -32,7 +32,7 @@ library(ggplot2)
 
 set.seed(1)
 
-mbm <- microbenchmark(
+mbm <- microbenchmark::microbenchmark(
   "jags large default" = {MCMCsummary(MCMC_data)}, 
   "jags large HPD" = {MCMCsummary(MCMC_data, HPD = TRUE, probs = .9) },
   "jags large custom ET" = {MCMCsummary(MCMC_data,  probs = c(.1, .5, .9))},
@@ -43,5 +43,5 @@ mbm <- microbenchmark(
   "stan HPD" = {MCMCsummary(stan_data, HPD = TRUE, probs = .9, round = 2)},
   "stan custome ET" = {MCMCsummary(stan_data, probs = c(.1, .5, .9), digits = 2)})
 
-autoplot(mbm)
+ggplot::autoplot(mbm)
 
