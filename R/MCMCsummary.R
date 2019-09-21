@@ -393,7 +393,7 @@ MCMCsummary <- function(object,
           bind_q <- data.frame(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
-          if (identical(probs, c(.025, .5, .975)==TRUE)) {    
+          if (identical(probs, c(.025, .5, .975))==TRUE) {    
             bind_LCI <- signif(rs_df["X2.5."][f_ind, 1], digits = digits)
             bind_med <- signif(rs_df["X50."][f_ind, 1], digits = digits)
             bind_UCI <- signif(rs_df["X97.5."][f_ind, 1], digits = digits)
@@ -423,7 +423,7 @@ MCMCsummary <- function(object,
           bind_q <- data.frame(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
-          if (identical(probs, c(.025, .5, .975)==TRUE)) {    
+          if (identical(probs, c(.025, .5, .975))==TRUE) {    
             bind_LCI <- round(rs_df["X2.5."][f_ind, 1], digits = round)
             bind_med <- round(rs_df["X50."][f_ind, 1], digits = round)
             bind_UCI <- round(rs_df["X97.5."][f_ind, 1], digits = round)
@@ -453,7 +453,7 @@ MCMCsummary <- function(object,
           bind_q <- data.frame(apply(ch_bind, 2, stats::quantile, probs = probs))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
-          if (identical(probs, c(.025, .5, .975)==TRUE)) {    
+          if (identical(probs, c(0.025, 0.500, 0.975))==TRUE) {    
             bind_LCI <- rs_df["X2.5."][f_ind, 1]
             bind_med <- rs_df["X50."][f_ind, 1]
             bind_UCI <- rs_df["X97.5."][f_ind, 1]
