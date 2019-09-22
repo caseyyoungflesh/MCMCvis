@@ -419,13 +419,14 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis.
+Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis. Guidelines can be produced using the `guide_lines` argument. This can be helpful when there are a large number of parameters and matching labels to lines becomes difficult.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
          params = 'beta', 
          rank = TRUE,
-         xlab = 'ESTIMATE')
+         xlab = 'ESTIMATE',
+         guide_lines = TRUE)
 ```
 
 &nbsp;

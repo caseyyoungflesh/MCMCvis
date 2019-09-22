@@ -5,6 +5,7 @@ NEWS
 
 - `MCMCsummary` now takes `quantiles` as an argument, allowing user to specify which quantiles to return
 - `MCMCsummary` now takes `HPD` as an argument so calculate highest posterior density intervals
+- `MCMCsummary` now outputs as a data.frame rather than a matrix
 - `MCMCplot` fix bug that caused guidelines to plot over appropriate bounds
 
 

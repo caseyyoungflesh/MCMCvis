@@ -465,18 +465,10 @@ MCMCplot <- function(object,
      if (guide_lines == TRUE)
      {
        #limits
-       if (missing(xlim))
-       {
-         #determine where ticks were placed
-         #from axTicks source code:
-         #https://github.com/wch/r-source/blob/trunk/src/library/graphics/R/axis.R
-         XY <- function(ch) paste0(if(is.x) "x" else "y", ch)
-         axp <- par(XY("axp"))
-         XLIM2 <- c(axp[1], axp[2])
-         xs <- matrix(rep(XLIM2, len), nrow = 2)
-       } else {
-         xs <- matrix(rep(xlim, len), nrow = 2)
-       }
+       #determine where ticks were placed - from axTicks source code:
+       xaxp <- graphics::par("xaxp")
+       XLIM2 <- c(xaxp[1], xaxp[2])
+       xs <- matrix(rep(XLIM2, len), nrow = 2)
        ys <- rbind(1:len, 1:len)
        graphics::matlines(xs, ys, lty = 1, col = guide_col)
      }
@@ -747,15 +739,9 @@ MCMCplot <- function(object,
      if (guide_lines == TRUE)
      {
        #limits
-       if (missing(ylim))
-       {
-         YX <- function(ch) paste0(if(is.x) "y" else "x", ch)
-         axp <- par(YX("axp"))
-         YLIM2 <- c(axp[1], axp[2])
-         ys <- matrix(rep(YLIM2, len), nrow = 2)
-       } else {
-         ys <- matrix(rep(ylim, len), nrow = 2)
-       }
+       yaxp <- graphics::par("yaxp")
+       YLIM2 <- c(yaxp[1], yaxp[2])
+       ys <- matrix(rep(YLIM2, len), nrow = 2)
        xs <- rbind(1:len, 1:len)
        graphics::matlines(xs, ys, lty = 1, col = guide_col)
      }
