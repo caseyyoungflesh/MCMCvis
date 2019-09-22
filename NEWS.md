@@ -1,6 +1,13 @@
 NEWS
 ====
 
+0.13.0:
+
+- `MCMCsummary` now takes `quantiles` as an argument, allowing user to specify which quantiles to return
+- `MCMCsummary` now takes `HPD` as an argument so calculate highest posterior density intervals
+- `MCMCplot` fix bug that caused guidelines to plot over appropriate bounds
+
+
 0.12.6:
 
 - `MCMCplot` now has `object2`, `col2`, and `offset` arguments. Allows user to plot output from two separate models, as long as both model outputs have identical parameter names.
