@@ -229,7 +229,7 @@ MCMCsummary <- function(object,
   
     if (!is.null(func)) {
       if (!is.null(digits)) {
-        tmp <- data.frame(signif(apply(ch_bind, 2, func), digits = digits))
+        tmp <- signif(apply(ch_bind, 2, func), digits = digits)
       }
       if (is.null(digits) & !is.null(round)) {
         tmp <- round(apply(ch_bind, 2, func), digits = round)
@@ -237,7 +237,11 @@ MCMCsummary <- function(object,
       if (is.null(digits) & is.null(round)) {
         tmp <- apply(ch_bind, 2, func)
       }
-      if (NROW(tmp) > 1) tmp <- t(tmp)
+      if (!is.null(dim(tmp))) { 
+        tmp <- data.frame(t(tmp)) 
+      } else { 
+        tmp <- data.frame(tmp)
+      }
       if (length(func_name) != NCOL(tmp)) { stop("length(func_name) must equal number of func outputs") }
       colnames(tmp) <- func_name
       x[[(length(x) + 1)]] <- tmp
@@ -508,7 +512,7 @@ MCMCsummary <- function(object,
   
     if (!is.null(func)) {
       if (!is.null(digits)) {
-        tmp <- data.frame(signif(apply(ch_bind, 2, func), digits = digits))
+        tmp <- signif(apply(ch_bind, 2, func), digits = digits)
       }
       if (is.null(digits) & !is.null(round)) {
         tmp <- round(apply(ch_bind, 2, func), digits = round)
@@ -516,7 +520,11 @@ MCMCsummary <- function(object,
       if (is.null(digits) & is.null(round)) {
         tmp <- apply(ch_bind, 2, func)
       }
-      if (NROW(tmp) > 1) tmp <- t(tmp)
+      if (!is.null(dim(tmp))) { 
+        tmp <- data.frame(t(tmp)) 
+      } else { 
+        tmp <- data.frame(tmp)
+      }
       if (length(func_name) != NCOL(tmp)) { stop("length(func_name) must equal number of func outputs") }
       colnames(tmp) <- func_name
       x[[(length(x) + 1)]] <- tmp
@@ -525,7 +533,6 @@ MCMCsummary <- function(object,
 # bind them  
   
     mcmc_summary <- do.call("cbind", x)
-    #row.names(mcmc_summary) <- all_params[f_ind]
 
   }
 
