@@ -1,6 +1,6 @@
 ---
 title: "'MCMCvis' package"
-author: "Casey Youngflesh"
+author: "Casey Youngflesh, Christian Che-Castaldo"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MCMCvis}
@@ -110,7 +110,7 @@ MCMCsummary(stan_out, round = 2)
 
 ## MCMCsummary
 
-`MCMCsummary` is used to output summary information from MCMC output. All digits are reported by default. 
+`MCMCsummary` is used to output summary information from MCMC output as a data frame. All digits are reported by default. 
 
 We'll use the built in `mcmc.list` object for the examples below, but model output of any of the supported types will behave in the same way. 
 
@@ -180,7 +180,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Sample quantiles can now be specified directly using the `probs` argument in MCMCsummary, removing the need to define custom quantiles with the `func` argument. The default behavior is to provide 2.5%, 50%, and 97.5% quantiles. These probabilities can be changed by supplying a numeric vector or a scalar to the `probs` argument. 
+Sample quantiles can now be specified directly using the `probs` argument in MCMCsummary, removing the need to define custom quantiles with the `func` argument. The default behavior is to provide 2.5%, 50%, and 97.5% quantiles. These probabilities can be changed by supplying a numeric vector or scalar to the `probs` argument. 
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -193,7 +193,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
   
-Setting `HPD = TRUE` will cause MCMCsummary to use `HPDinterval` from the `coda` package to compute highest posterior density intervals specific to the probability specified in the `probs` argument. In this case, `probs` should be a scalar. If it is not, MCMCsummary will simply use the first value in the `probs` vector. Note that for each parameter `HPDinterval` returns one HPD interval for each chain. However, in MCMCsummary the chains are pooled such that the interval is computed across all samples for convenience.
+Setting `HPD = TRUE` will cause MCMCsummary to use `HPDinterval` from the `coda` package to compute highest posterior density intervals specific to the probability specified in the `probs` argument. In this case, `probs` should be a scalar. If it is not, MCMCsummary will use the first value in the `probs` vector. Note that for each parameter `HPDinterval` normally returns one interval chain. For convenience, the chains are pooled in MCMCsummary such that HPD intervals is computed across all posterior samples.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -207,7 +207,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. Below we use the empiricial cumulative distribution function to compute the probability that each alpha parameter is below -10.
+The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empiricial cumulative distribution function `ecdf` to compute the proportion of `alpha` posterior samples that are less than -10.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -216,8 +216,7 @@ MCMCsummary(MCMC_data,
           n.eff = TRUE,
           digits = 2,
           func = function(x) ecdf(x)(-10),
-          func_name = "ecdf10",
-          round = 2)
+          func_name = "ecdf-10")
 ```
 
 &nbsp;
