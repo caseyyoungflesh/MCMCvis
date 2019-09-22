@@ -85,48 +85,126 @@ test_that('MCMCchains converts all supported object types to mcmc.list',
           })
 
 
-test_that('MCMCsummary values agree with manual values derived from posterior chains',
-          {
-            #mcmc.list - mean
-            expect_equal(round(MCMCsummary(MCMC_data,
-                                      param = 'alpha\\[1\\]',
-                                      ISB = FALSE)[1], 2),
-                              round(mean(MCMCchains(MCMC_data,
-                                    param = 'alpha\\[1\\]',
-                                    ISB = FALSE)), 2))
-            #mcmc.list - sd
-            expect_equal(round(MCMCsummary(MCMC_data,
-                                     param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[2], 2),
-                               round(sd(MCMCchains(MCMC_data,
-                                               param = 'alpha\\[1\\]',
-                                               ISB = FALSE)), 2))
-            #mcmc.list - 2.5%
-            expect_equal(round(MCMCsummary(MCMC_data,
-                                     param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[3], 2),
-                               round(quantile(MCMCchains(MCMC_data,
-                                               param = 'alpha\\[1\\]',
-                                               ISB = FALSE), probs = 0.025)[[1]], 2))
-            #mcmc.list - 50%
-            expect_equal(round(MCMCsummary(MCMC_data,
-                                     param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[4], 2),
-                               round(quantile(MCMCchains(MCMC_data,
-                                                   param = 'alpha\\[1\\]',
-                                                   ISB = FALSE), probs = 0.5)[[1]], 2))
-            #mcmc.list - 97.5%
-            expect_equal(round(MCMCsummary(MCMC_data,
-                                     param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[5], 2),
-                               round(quantile(MCMCchains(MCMC_data,
-                                                   param = 'alpha\\[1\\]',
-                                                   ISB = FALSE), probs = 0.975)[[1]], 2))
-            #mcmc.list - rhat
-            expect_equal(round(MCMCsummary(MCMC_data,
-                                     param = 'alpha\\[1\\]',
-                                     ISB = FALSE)[6], 2),
-                               round(coda::gelman.diag(MCMCchains(MCMC_data,
-                                               param = 'alpha\\[1\\]',
-                                               ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 2))
-          })
+test_that('MCMCsummary values agree with manual values derived from posterior chains', { 
+
+  # mcmc.list - mean
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[1]),
+    round(mean(MCMCchains(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE)), 2))
+  
+  # mcmc.list - sd
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[2]),
+    round(sd(MCMCchains(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE)), 2))
+
+  # mcmc.list - 2.5%
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[3]),
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha\\[1\\]', ISB = FALSE), probs = 0.025)[[1]], 2))
+
+  # mcmc.list - 50%
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[4]),
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha\\[1\\]', ISB = FALSE), probs = 0.5)[[1]], 2))
+
+  # mcmc.list - 97.5%
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[5]),
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha\\[1\\]', ISB = FALSE), probs = 0.975)[[1]], 2))
+  
+  # mcmc.list - rhat
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[6]),
+    round(coda::gelman.diag(MCMCchains(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 2))
+  
+  })
+
+
+test_that('MCMCsummary returns no errors for default and non-default specifications', { 
+
+  # MCMC_data
+  expect_error(MCMCsummary(MCMC_data), NA)
+  expect_error(MCMCsummary(MCMC_data, round = 2), NA)
+  expect_error(MCMCsummary(MCMC_data, digits = 2), NA)
+  expect_error(MCMCsummary(MCMC_data, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(MCMC_data, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(MCMC_data, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(MCMC_data, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(MCMC_data, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(MCMC_data, probs = c(.1, .5, .9), digits = 2), NA)
+  
+  # MCMC_data2
+  expect_error(MCMCsummary(MCMC_data2), NA)
+  expect_error(MCMCsummary(MCMC_data2, round = 2), NA)
+  expect_error(MCMCsummary(MCMC_data2, digits = 2), NA)
+  expect_error(MCMCsummary(MCMC_data2, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(MCMC_data2, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(MCMC_data2, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(MCMC_data2, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(MCMC_data2, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(MCMC_data2, probs = c(.1, .5, .9), digits = 2), NA)
+
+  # jags_data
+  expect_error(MCMCsummary(jags_data), NA)
+  expect_error(MCMCsummary(jags_data, round = 2), NA)
+  expect_error(MCMCsummary(jags_data, digits = 2), NA)
+  expect_error(MCMCsummary(jags_data, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(jags_data, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(jags_data, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(jags_data, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(jags_data, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(jags_data, probs = c(.1, .5, .9), digits = 2), NA)
+  
+  # jagsparallel_data
+  expect_error(MCMCsummary(jagsparallel_data), NA)
+  expect_error(MCMCsummary(jagsparallel_data, round = 2), NA)
+  expect_error(MCMCsummary(jagsparallel_data, digits = 2), NA)
+  expect_error(MCMCsummary(jagsparallel_data, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(jagsparallel_data, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(jagsparallel_data, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(jagsparallel_data, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(jagsparallel_data, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(jagsparallel_data, probs = c(.1, .5, .9), digits = 2), NA)
+  
+  # jagsUI_data
+  expect_error(MCMCsummary(jagsUI_data), NA)
+  expect_error(MCMCsummary(jagsUI_data, round = 2), NA)
+  expect_error(MCMCsummary(jagsUI_data, digits = 2), NA)
+  expect_error(MCMCsummary(jagsUI_data, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(jagsUI_data, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(jagsUI_data, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(jagsUI_data, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(jagsUI_data, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(jagsUI_data, probs = c(.1, .5, .9), digits = 2), NA)
+  
+  # R2jags_data
+  expect_error(MCMCsummary(R2jags_data), NA)
+  expect_error(MCMCsummary(R2jags_data, round = 2), NA)
+  expect_error(MCMCsummary(R2jags_data, digits = 2), NA)
+  expect_error(MCMCsummary(R2jags_data, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(R2jags_data, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(R2jags_data, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(R2jags_data, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(R2jags_data, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(R2jags_data, probs = c(.1, .5, .9), digits = 2), NA)
+  
+  # matrix_data
+  expect_error(MCMCsummary(matrix_data), NA)
+  expect_error(MCMCsummary(matrix_data, round = 2), NA)
+  expect_error(MCMCsummary(matrix_data, digits = 2), NA)
+  expect_error(MCMCsummary(matrix_data, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(matrix_data, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(matrix_data, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(matrix_data, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(matrix_data, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(matrix_data, probs = c(.1, .5, .9), digits = 2), NA)
+  
+  # stan_data
+  expect_error(MCMCsummary(stan_data), NA)
+  expect_error(MCMCsummary(stan_data, round = 2), NA)
+  expect_error(MCMCsummary(stan_data, digits = 2), NA)
+  expect_error(MCMCsummary(stan_data, HPD = TRUE, probs = .9), NA)
+  expect_error(MCMCsummary(stan_data, HPD = TRUE, probs = .9, round = 2), NA)
+  expect_error(MCMCsummary(stan_data, HPD = TRUE, probs = .9, digits = 2), NA)
+  expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9), digits = 2), NA)
+
+})
+
+
+
