@@ -467,7 +467,12 @@ MCMCplot <- function(object,
        #limits
        if (missing(xlim))
        {
-         XLIM2 <- c(XLIM[1], (XLIM[2] - ((XLIM[2] - XLIM[1]) * 0.1)))
+         #determine where ticks were placed
+         #from axTicks source code:
+         #https://github.com/wch/r-source/blob/trunk/src/library/graphics/R/axis.R
+         XY <- function(ch) paste0(if(is.x) "x" else "y", ch)
+         axp <- par(XY("axp"))
+         XLIM2 <- c(axp[1], axp[2])
          xs <- matrix(rep(XLIM2, len), nrow = 2)
        } else {
          xs <- matrix(rep(xlim, len), nrow = 2)
@@ -613,11 +618,11 @@ MCMCplot <- function(object,
      } else {
        if (is.null(object2))
        {
-        graphics::matlines(thick_q[,1:len], rbind(1:len, 1:len),
-                  type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
-        graphics::matlines(thin_q[,1:len], rbind(1:len, 1:len),
+         graphics::matlines(thick_q[,1:len], rbind(1:len, 1:len), 
+                            type = 'l', lty = 1, lwd = sz_thick, col = COL[idx])
+         graphics::matlines(thin_q[,1:len], rbind(1:len, 1:len),
                   type = 'l', lty = 1, lwd = sz_thin, col = COL[idx])
-        graphics::points(medians[1:len], 1:len, pch = 16,
+         graphics::points(medians[1:len], 1:len, pch = 16,
                 col = COL[idx], cex = sz_med)
        } else {
          
@@ -744,7 +749,9 @@ MCMCplot <- function(object,
        #limits
        if (missing(ylim))
        {
-         YLIM2 <- c(YLIM[1], (YLIM[2] - ((YLIM[2] - YLIM[1]) * 0.1)))
+         YX <- function(ch) paste0(if(is.x) "y" else "x", ch)
+         axp <- par(YX("axp"))
+         YLIM2 <- c(axp[1], axp[2])
          ys <- matrix(rep(YLIM2, len), nrow = 2)
        } else {
          ys <- matrix(rep(ylim, len), nrow = 2)
