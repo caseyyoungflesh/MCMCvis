@@ -30,7 +30,7 @@ All functions in the package accept `stanfit` objects (created with the `rstan` 
 ```{r, eval = FALSE}
 library(rjags)
 
-#create JAGS model
+# create JAGS model
 mf <- "
 model {
 for (i in 1:10)
@@ -57,7 +57,7 @@ library(MCMCvis)
 ```
 
 ```{r, eval = FALSE}
-#plug object directly into package function
+# plug object directly into package function
 MCMCsummary(jags_out, round = 2)
 ```
 
@@ -72,7 +72,7 @@ MCMCsummary(jags_out, round = 2)
 ```{r, eval = FALSE}
 library(rstan)
 
-#create Stan model
+# create Stan model
 
 sm <- "
 data {
@@ -96,7 +96,7 @@ stan_out <- stan(model_code = sm,
 ```
 
 ```{r, eval = FALSE}
-#plug object directly into package function
+# plug object directly into package function
 MCMCsummary(stan_out, round = 2)
 ```
 
@@ -112,8 +112,7 @@ MCMCsummary(stan_out, round = 2)
 
 `MCMCsummary` is used to output summary information from MCMC output. All digits are reported by default. 
 
-We'll use the build in `mcmc.list` object data for the examples below, but model output of any of the supported types will behave in the same way.
-
+We'll use the built in `mcmc.list` object for the examples below, but model output of any of the supported types will behave in the same way. 
 
 ```{r, message=FALSE}
 data(MCMC_data)
@@ -181,15 +180,43 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument.
+Sample quantiles can now be specified directly using the `probs` argument in MCMCsummary, removing the need to define custom quantiles with the `func` argument. The default behavior is to provide 2.5%, 50%, and 97.5% quantiles. These probabilities can be changed by supplying a numeric vector or a scalar to the `probs` argument. 
 
 ```{r}
 MCMCsummary(MCMC_data, 
           params = 'alpha',
           Rhat = TRUE,
           n.eff = TRUE,
-          func = function(x) quantile(x, probs = c(0.01, 0.99)),
-          func_name = c('1%', '99%'),
+          probs = c(.1, .5, .9),
+          round = 2)
+```
+
+&nbsp;
+  
+Setting `HPD = TRUE` will cause MCMCsummary to use `HPDinterval` from the `coda` package to compute highest posterior density intervals specific to the probability specified in the `probs` argument. In this case, `probs` should be a scalar. If it is not, MCMCsummary will simply use the first value in the `probs` vector. Note that for each parameter `HPDinterval` returns one HPD interval for each chain. However, in MCMCsummary the chains are pooled such that the interval is computed across all samples for convenience.
+
+```{r}
+MCMCsummary(MCMC_data, 
+          params = 'alpha',
+          Rhat = TRUE,
+          n.eff = TRUE,
+          HPD = TRUE,
+          probs = .8,
+          round = 2)
+```
+
+&nbsp;
+
+The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. Below we use the empiricial cumulative distribution function to compute the probability that each alpha parameter is below -10.
+
+```{r}
+MCMCsummary(MCMC_data, 
+          params = 'alpha',
+          Rhat = TRUE,
+          n.eff = TRUE,
+          digits = 2,
+          func = function(x) ecdf(x)(-10),
+          func_name = "ecdf10",
           round = 2)
 ```
 
