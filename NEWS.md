@@ -6,6 +6,7 @@ NEWS
 - `MCMCsummary` now takes `quantiles` as an argument, allowing user to specify which quantiles to return
 - `MCMCsummary` now takes `HPD` as an argument to calculate highest posterior density intervals
 - `MCMCsummary` now outputs as a data.frame rather than a matrix
+- `MCMCchains` fix bug that output different parameters names for `stanreg` and `brms` objects
 - `MCMCplot` fix bug that caused guidelines to plot over appropriate bounds
 
 
