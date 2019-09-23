@@ -11,6 +11,13 @@
       "familyName": "Youngflesh",
       "email": "caseyyoungflesh@gmail.com",
       "@id": "https://orcid.org/0000-0001-6343-3311"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Christian",
+      "familyName": "Che-Castaldo",
+      "email": "chrischecastaldo@protonmail.com",
+      "@id": "https://orcid.org/0000-0002-7670-2178"
     }
   ],
   "identifier": "MCMCvis",
@@ -21,16 +28,16 @@
   "keywords": "MCMC, Bayesian, Visualization, PPO",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "title": "MCMCvis",
-  "version": "0.12.6",
+  "version": "0.13.0",
   "name": "MCMCvis: Tools to Visualize, Manipulate, and Summarize MCMC Output",
   "issueTracker": "http://github.com/caseyyoungflesh/MCMCvis/issues",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.0",
+    "version": "3.6.1",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.0 (2019-04-26)",
+  "runtimePlatform": "R version 3.6.1 (2019-07-05)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -38,11 +45,6 @@
     "url": "https://cran.r-project.org"
   },
   "contributor": [
-    {
-      "@type": "Person",
-      "givenName": "Christian",
-      "familyName": "Che-Castaldo"
-    },
     {
       "@type": "Person",
       "givenName": "Tyler",
@@ -142,7 +144,7 @@
   ],
   "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/NEWS.md",
   "readme": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/README.md",
-  "fileSize": "2804.589KB",
+  "fileSize": "2806.531KB",
   "contIntegration": "https://travis-ci.org/caseyyoungflesh/MCMCvis",
   "citation": [
     {
