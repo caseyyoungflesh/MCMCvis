@@ -47,7 +47,7 @@ MCMCchains <- function(object,
                      mcmc.list = FALSE,
                      chain_num = NULL)
 {
-  if(length(class(object)) > 1)
+  if (length(class(object)) > 1)
   {
     #if from R2jags::jags.parallel
     if (class(object)[1] == 'rjags.parallel')
@@ -67,7 +67,7 @@ MCMCchains <- function(object,
     }
     
     #if from rstanarm::stan_glm
-    if(class(object)[1] == 'stanreg')
+    if (class(object)[1] == 'stanreg')
     {
       object <- object$stanfit
     }
@@ -92,7 +92,11 @@ MCMCchains <- function(object,
   #NAME SORTING BLOCK
   if (class(object) == 'stanfit')
   {
+    #convert to mcmc.list
     temp_in <- rstan::As.mcmc.list(object)
+    #assign new colnames for mccm.list object (important for stanreg obj)
+    coda::varnames(temp_in) <- object@sim$fnames_oi
+    
     if (ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in[[1]]),
