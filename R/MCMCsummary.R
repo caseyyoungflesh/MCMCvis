@@ -14,7 +14,7 @@
 #'
 #' @param probs Numeric vector where each element in (0,1) representing probabilities used to calculate posterior sample quantiles for the selected parameters. Default is c(0.025, 0.5, 0.975).
 #' 
-#' @param prob Scalar in (0,1) representing probability used to calculate highest posterior density intervals for the selected parameters. Default is 0.95.
+#' @param hpd_prob Scalar in (0,1) representing probability used to calculate highest posterior density intervals for the selected parameters. Default is 0.95.
 #' 
 #' @param HPD Logical specifying whether to calculate equal-tailed credible intervals (\code{HPD = FALSE}) or highest posterior density intervals (\code{HPD = TRUE}) for the selected parameters. Default is \code{HPD = FALSE}.
 #' 
@@ -69,7 +69,7 @@ MCMCsummary <- function(object,
                       excl = NULL,
                       ISB = TRUE,
                       probs = c(.025, .5, .975),
-                      prob = .95,
+                      hpd_prob = .95,
                       HPD = FALSE,
                       digits = NULL,
                       round = NULL,
@@ -136,9 +136,9 @@ MCMCsummary <- function(object,
         }
       }
       if (HPD == TRUE) {
-        if (length(prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
-        bind_q <- data.frame(signif(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = prob), digits = digits))
-        colnames(bind_q) <- c(paste0(signif(prob * 100, digits = 3), "%_HPDL"), paste0(signif(prob * 100, digits = 3), "%_HPDU"))  
+        if (length(hpd_prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
+        bind_q <- data.frame(signif(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob), digits = digits))
+        colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
       }
     }
     
@@ -159,9 +159,9 @@ MCMCsummary <- function(object,
         }
       }
       if (HPD == TRUE) {
-        if (length(prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
-        bind_q <- data.frame(round(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = prob), digits = round))
-        colnames(bind_q) <- c(paste0(signif(prob * 100, digits = 3), "%_HPDL"), paste0(signif(prob * 100, digits = 3), "%_HPDU"))  
+        if (length(hpd_prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
+        bind_q <- data.frame(round(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob), digits = round))
+        colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
       }
     }
     
@@ -182,9 +182,9 @@ MCMCsummary <- function(object,
         }
       }
       if (HPD == TRUE) {
-        if (length(prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
-        bind_q <- data.frame(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = prob))
-        colnames(bind_q) <- c(paste0(signif(prob * 100, digits = 3), "%_HPDL"), paste0(signif(prob * 100, digits = 3), "%_HPDU"))  
+        if (length(hpd_prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
+        bind_q <- data.frame(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob))
+        colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
       }
     }
     x[[1]] <- cbind(bind_mn, bind_sd, bind_q) 
@@ -418,9 +418,9 @@ MCMCsummary <- function(object,
         }
       } 
       if (HPD == TRUE) {
-        if (length(prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
-        bind_q <- data.frame(signif(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = prob), digits = digits))
-        colnames(bind_q) <- c(paste0(signif(prob * 100, digits = 3), "%_HPDL"), paste0(signif(prob * 100, digits = 3), "%_HPDU"))  
+        if (length(hpd_prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
+        bind_q <- data.frame(signif(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob), digits = digits))
+        colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
       }
     }
       
@@ -449,9 +449,9 @@ MCMCsummary <- function(object,
         }
       }
       if (HPD == TRUE) {
-        if (length(prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
-        bind_q <- data.frame(round(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = prob), digits = round))
-        colnames(bind_q) <- c(paste0(signif(prob * 100, digits = 3), "%_HPDL"), paste0(signif(prob * 100, digits = 3), "%_HPDU"))  
+        if (length(hpd_prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
+        bind_q <- data.frame(round(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob), digits = round))
+        colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
       }
     }
     
@@ -480,9 +480,9 @@ MCMCsummary <- function(object,
         }
       }
       if (HPD == TRUE) {
-        if (length(prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
-        bind_q <- data.frame(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = prob))
-        colnames(bind_q) <- c(paste0(signif(prob * 100, digits = 3), "%_HPDL"), paste0(signif(prob * 100, digits = 3), "%_HPDU"))  
+        if (length(hpd_prob) > 1) { stop('specify only a single probability for HPD interval computation.') }
+        bind_q <- data.frame(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob))
+        colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
       }
     }
     x[[1]] <- cbind(bind_mn, bind_sd, bind_q) 

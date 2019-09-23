@@ -5,7 +5,7 @@
 \title{Summarize MCMC output}
 \usage{
 MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE,
-  probs = c(0.025, 0.5, 0.975), prob = 0.95, HPD = FALSE,
+  probs = c(0.025, 0.5, 0.975), hpd_prob = 0.95, HPD = FALSE,
   digits = NULL, round = NULL, Rhat = TRUE, n.eff = TRUE,
   func = NULL, func_name = NULL)
 }
@@ -22,7 +22,7 @@ Default \code{'all'} returns all parameters in summary output.}
 
 \item{probs}{Numeric vector where each element in (0,1) representing probabilities used to calculate posterior sample quantiles for the selected parameters. Default is c(0.025, 0.5, 0.975).}
 
-\item{prob}{Scalar in (0,1) representing probability used to calculate highest posterior density intervals for the selected parameters. Default is 0.95.}
+\item{hpd_prob}{Scalar in (0,1) representing probability used to calculate highest posterior density intervals for the selected parameters. Default is 0.95.}
 
 \item{HPD}{Logical specifying whether to calculate equal-tailed credible intervals (\code{HPD = FALSE}) or highest posterior density intervals (\code{HPD = TRUE}) for the selected parameters. Default is \code{HPD = FALSE}.}
 
