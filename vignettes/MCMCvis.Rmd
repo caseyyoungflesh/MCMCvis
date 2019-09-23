@@ -23,7 +23,7 @@ The package contains five functions:
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable, 'publication-ready' output.
 
-All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Modeloutput objects can be inserted directly into the `MCMCvis` functions as an argument.
+All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Model output objects can be inserted directly into the `MCMCvis` functions as an argument.
 
 #### JAGS model
 
@@ -444,7 +444,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis. Guidelines can be produced using the `guide_lines` argument. This can be helpful when there are a large number of parameters and matching labels to ploted 'caterpillars' becomes difficult.
+Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis. Guidelines can be produced using the `guide_lines` argument. This can be helpful when there are a large number of parameters and matching labels to plotted 'caterpillars' becomes difficult.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
