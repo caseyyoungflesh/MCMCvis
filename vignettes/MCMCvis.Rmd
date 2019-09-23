@@ -180,7 +180,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Sample quantiles can now be specified directly using the `probs` argument in MCMCsummary, removing the need to define custom quantiles with the `func` argument. The default behavior is to provide 2.5%, 50%, and 97.5% quantiles. These probabilities can be changed by supplying a numeric vector or scalar to the `probs` argument. 
+Sample quantiles in MCMCsummary can now be specified directly using the `probs` argument, removing the need to define custom quantiles with the `func` argument. The default behavior is to provide 2.5%, 50%, and 97.5% quantiles. These probabilities can be changed by supplying a numeric vector to the `probs` argument. 
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -193,7 +193,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
   
-Setting `HPD = TRUE` will cause MCMCsummary to use `HPDinterval` from the `coda` package to compute highest posterior density intervals specific to the probability specified in the `probs` argument. In this case, `probs` should be a scalar. If it is not, MCMCsummary will use the first value in the `probs` vector. Note that for each parameter `HPDinterval` normally returns one interval chain. For convenience, the chains are pooled in MCMCsummary such that HPD intervals is computed across all posterior samples.
+Setting `HPD = TRUE` will cause MCMCsummary to use `HPDinterval` from the `coda` package to compute highest posterior density intervals based on the probability specified in the `prob` argument (this argument is different than `probs` argument, which is reserved for quantiles). Note that for each parameter `HPDinterval` normally returns one interval per chain. However, MCMCsummary first pools the chains, forcing `HPDinterval` to compute a single interval across all posterior samples for each parameter. This step is done for user convenience.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -201,13 +201,13 @@ MCMCsummary(MCMC_data,
           Rhat = TRUE,
           n.eff = TRUE,
           HPD = TRUE,
-          probs = 0.8,
-          round = 2)
+          prob = 0.8,
+          digits = 2)
 ```
 
 &nbsp;
 
-The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empiricial cumulative distribution function `ecdf` to compute the proportion of `alpha` posterior samples that are less than -10.
+The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empirical cumulative distribution function `ecdf` to compute the proportion of posterior samples that are less than -10 for each `alpha` parameter.
 
 ```{r}
 MCMCsummary(MCMC_data, 
