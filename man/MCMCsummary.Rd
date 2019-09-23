@@ -39,7 +39,7 @@ Default \code{'all'} returns all parameters in summary output.}
 \item{func_name}{Character string (or vector of character strings) specifying labels for output from \code{func} argument. If \code{func_name} is not specified, columns with \code{func} argument will be labeled 'func'.}
 }
 \value{
-Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, potential scale reduction statistic statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
+Function returns summary information (including parameter posterior mean, posterior sd, quantiles, potential scale reduction statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
 }
 \description{
 Extract summary information from MCMC output (mean, median, quantiles, Gelman-Rubin convergence statistic, number of effective samples, and specified custom metrics)

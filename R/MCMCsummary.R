@@ -39,7 +39,7 @@
 #'
 #' For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} objects (as well as \code{stanreg} and \code{brmsfit} objects), n.eff is calculated using the \code{rstan} package which (in a similar way to the Rhat computation noted above) employs a slightly different (and more conservative) method of computation for the number of effective samples (Stan Development Team 2018).
 #'
-#' @return Function returns summary information (including parameter posterior mean, posterior sd, 2.5\% quantile, median, 97.5\% quantile, potential scale reduction statistic statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
+#' @return Function returns summary information (including parameter posterior mean, posterior sd, quantiles, potential scale reduction statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
 #'
 #'
 #' @section References:
@@ -68,8 +68,8 @@ MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
                       ISB = TRUE,
-                      probs = c(.025, .5, .975),
-                      hpd_prob = .95,
+                      probs = c(0.025, 0.5, 0.975),
+                      hpd_prob = 0.95,
                       HPD = FALSE,
                       digits = NULL,
                       round = NULL,
