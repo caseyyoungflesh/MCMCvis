@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.13.1:
+
+- `MCMCsummary` fix bug that caused stanfit parameter names to be numbers
+
+
 0.13.0:
 
 - `MCMCsummary` now takes `quantiles` as an argument, allowing user to specify which quantiles to return
