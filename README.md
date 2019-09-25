@@ -24,7 +24,7 @@ Youngflesh, C. (2018) MCMCvis: Tools to visualize, manipulate, and summarize MCM
 Installation
 ------------
 
-You can install the released verson on CRAN with:
+You can install the released version on CRAN with:
 ```{r}
 install.packages('MCMCvis')
 ```

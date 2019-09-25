@@ -10,20 +10,20 @@ vignette: >
 
 ## Intro
 
-`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
+`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. This may be Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
 
 The package contains five functions:
 
 - `MCMCsummary` - summarize MCMC output for particular parameters of interest
 - `MCMCpstr` - summarize MCMC output and extract posterior chains for particular parameters of interest while preserving parameter structure
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
-- `MCMCchains` - easily extract posterior chains from MCMC output for particular parameters of interest
+- `MCMCchains` - extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
 
 
-`MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
+`MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable, 'publication-ready' output.
 
-All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Output objects can be inserted directly into the `MCMCvis` functions as an argument.
+All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Model output objects can be inserted directly into the `MCMCvis` functions as an argument.
 
 #### JAGS model
 
@@ -110,7 +110,7 @@ MCMCsummary(stan_out, round = 2)
 
 ## MCMCsummary
 
-`MCMCsummary` is used to output summary information from MCMC output as a data frame. All digits are reported by default. 
+`MCMCsummary` is used to output summary information from MCMC output as a data.frame. All digits are reported by default. 
 
 We'll use the built in `mcmc.list` object for the examples below, but model output of any of the supported types will behave in the same way. 
 
@@ -207,7 +207,7 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empirical cumulative distribution function `ecdf` to compute the proportion of posterior samples that are less than -10 for each `alpha` parameter.
+The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by the function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empirical cumulative distribution function `ecdf` to compute the proportion of posterior samples that are less than -10 for each `alpha` parameter.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -225,7 +225,7 @@ MCMCsummary(MCMC_data,
 
 `MCMCpstr` is used to output summary information and posterior chains from MCMC output while preserving the original structure of the specified parameters (i.e., scalar, vector, matrix, array). Preserving the original structure can be helpful when plotting or summarizing parameters with multidimensional structure. Particular parameters of interest can be specified as with other functions with the `params` argument.
 
-Function output has two types. When `type = 'summary'` (the default),  a `list` with calculated values for each specified parameter is returned, similar to output obtained when fitting models with the `jags.samples` function (as opposed to `coda.samples`) from the `rjags` package. 
+Function output has two types. When `type = 'summary'` (the default), a `list` with calculated values for each specified parameter is returned, similar to output obtained when fitting models with the `jags.samples` function (as opposed to `coda.samples`) from the `rjags` package. 
 
 The function calculates summary information only for the specified function. The function to be used is specified using the `func` argument.
 
@@ -249,7 +249,7 @@ MCMCpstr(MCMC_data,
 
 &nbsp;
 
-When `type = 'chains'`,  a `list` with posterior chain values for each specified parameter is returned. The structure of the parameter is preserved - posterior chain values are concatenated are placed in an additional dimension. For instance, output for a vector parameter will be in `matrix` format for that element of the `list`. Similarly, output for a matrix parameter will be in a three dimensional `array`.
+When `type = 'chains'`,  a `list` with posterior chain values for each specified parameter is returned. The structure of the parameter is preserved - posterior chain values are concatenated and placed in an additional dimension. For instance, output for a vector parameter will be in `matrix` format for that element of the `list`. Similarly, output for a matrix parameter will be in a three dimensional `array`.
 
 ```{r}
 ex <- MCMCpstr(MCMC_data, type = 'chains')
@@ -271,7 +271,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-Just trace plot can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputs both trace and density plots. Individual chains for the density plot can be output using the `ind` argument.
+Just trace plots can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputs both trace and density plots. Density plots for individual chains can be output using the `ind` argument.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
@@ -283,7 +283,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-PDF document will be output to the current working directory by default, but another directory can be specified. The `open_pdf` argument can be used to prevent the produced pdf from opening in a viewer once generated.
+The PDF document will be output to the current working directory by default, but another directory can be specified. The `open_pdf` argument can be used to prevent the produced PDF from opening in a viewer once generated.
 
 ```{r, eval=FALSE}
 MCMCtrace(MCMC_data, 
@@ -295,7 +295,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-`iter` denotes how many iterations should be plotted for the chain the trace and density plots. The default is 5000, meaning that the last 5000 iterations of each chain are plotted. Remember, this is the final posterior chain, not including the specified burn-in (specified when the model was run). If less than 5000 iterations are run, the full number of iterations will be plotted.
+`iter` denotes how many iterations should be plotted for the chain the trace and density plots. The default is 5000, meaning that the last 5000 iterations of each chain are plotted. Remember, this is the final posterior chain, not including the specified burn-in or warm-up (specified when the model was run). If less than 5000 iterations are run, the full number of iterations will be plotted.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
@@ -326,7 +326,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-Plots can be scaled to see both the posterior and the prior distribution using the `post_zm` argument.
+Plots can be scaled to visualize both the posterior and the prior distribution using the `post_zm` argument.
 
 ```{r, fig.width=5, fig.height=6}
 #same prior used for all parameters
@@ -385,8 +385,7 @@ MCMCtrace(MCMC_data,
 
 &nbsp;
 
-If simulated data were used to fit the model, the generating values used to simulate the data can be specified using the `gvals` argument. This makes it possible to compare posterior estimates with the true parameter values. Generating values will be displayed as vertical dotted lines. Similar to the `priors` argument, if one value is specified when more than one parameter is used, this one generating value will be used for all parameters. If the lines are not apparent in the 
-
+If simulated data were used to fit the model, the generating values used to simulate the data can be specified using the `gvals` argument. This makes it possible to compare posterior estimates with the true parameter values. Generating values will be displayed as vertical dotted lines. Similar to the `priors` argument, if one value is specified when more than one parameter is used, this one generating value will be used for all parameters.
 
 ```{r, fig.width=5, fig.height=6}
 #generating values for each parameter used to simulate data
@@ -400,7 +399,7 @@ MCMCtrace(MCMC_data,
 
 ## MCMCchains
 
-`MCMCchains` is used to extract MCMC chains from MCMC objects. Chains can then be manipulated directly. Particular parameters can be specified as with other functions.
+`MCMCchains` is used to extract posterior chains from MCMC objects. Chains can then be manipulated directly. Particular parameters can be specified as with other functions.
 
 ```{r}
 ex <- MCMCchains(MCMC_data, 
@@ -435,7 +434,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-`ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. Parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. All median dots are represented as 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
+`ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. Parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
@@ -445,7 +444,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis. Guidelines can be produced using the `guide_lines` argument. This can be helpful when there are a large number of parameters and matching labels to lines becomes difficult.
+Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis. Guidelines can be produced using the `guide_lines` argument. This can be helpful when there are a large number of parameters and matching labels to plotted 'caterpillars' becomes difficult.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
