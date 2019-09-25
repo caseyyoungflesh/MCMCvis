@@ -1,7 +1,7 @@
 MCMCvis
 ====
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.13.0](https://img.shields.io/badge/devel-0.13.0-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.13.1](https://img.shields.io/badge/devel-0.13.0-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
 
 
 
