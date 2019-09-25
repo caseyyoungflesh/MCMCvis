@@ -540,6 +540,7 @@ MCMCsummary <- function(object,
 # bind them  
   
     mcmc_summary <- do.call("cbind", x)
+    row.names(mcmc_summary) <- all_params[f_ind]
 
   }
 
