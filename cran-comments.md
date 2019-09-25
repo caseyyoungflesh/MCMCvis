@@ -11,7 +11,10 @@ CRAN comments
 
 ## R CMD check results
 
-There were no ERRORs, WARNINGs, or NOTEs.
+There were no ERRORs, WARNINGs, and 1 NOTE.
+
+The NOTE specifies it has been 2 days since the last update. This quick update was pushed due to a rather glaring bug that compromises the usability of the package.
+
 
 ## Downstream dependencies
 

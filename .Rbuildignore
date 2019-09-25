@@ -14,3 +14,4 @@
 ^codemeta.json
 ^generate.rb
 ^R/MCMCdiag\.R$
+^CRAN-RELEASE$
