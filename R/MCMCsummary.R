@@ -487,31 +487,18 @@ MCMCsummary <- function(object,
     }
     x[[1]] <- cbind(bind_mn, bind_sd, bind_q) 
 
-# rhat 
+# rhat - rhat in Stan calculated within chain (different than with coda package)
 
     if (Rhat == TRUE) {
-      if (dim(rstan::summary(object2)$c_summary)[3] > 1) {
-        r_hat <- data.frame(round(rs_df["Rhat"][f_ind, 1], digits = 2))
-        colnames(r_hat) <- "r_hat"
-      } else {
-        warning("Rhat statistic cannot be calculated with one chain. NAs inserted.")
-        r_hat <- data.frame(rep(NA, length(f_ind)))
-        colnames(r_hat) <- "r_hat"
-      }
+      r_hat <- data.frame(round(rs_df["Rhat"][f_ind, 1], digits = 2))
+      colnames(r_hat) <- "r_hat"
       x[[(length(x) + 1)]] <- r_hat  
     }  
 
-# neff      
-      
+# neff - neff in Stan is calculated within chain (different than with coda package)    
     if (n.eff == TRUE) {
-      if (dim(rstan::summary(object2)$c_summary)[3] > 1) {
       neff <- data.frame(round(rs_df["n_eff"][f_ind, 1], digits = 0))
       colnames(neff) <- "n.eff"
-    } else {
-        warning('Number of effective samples cannot be calculated without individual chains. NAs inserted.')
-        neff <- data.frame(rep(NA, np))
-        colnames(neff) <- "n.eff"
-      }  
       x[[(length(x) + 1)]] <- neff
     }
  

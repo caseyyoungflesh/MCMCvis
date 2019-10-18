@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.13.2:
+
+- `MCMCsummary` fix bug thrown when one only one chain run for Stan models
+
+
 0.13.1:
 
 - `MCMCsummary` fix bug that caused stanfit parameter names to be numbers
