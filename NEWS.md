@@ -4,6 +4,7 @@ NEWS
 0.13.2:
 
 - `MCMCsummary` fix bug thrown when one only one chain run for Stan models
+- `MCMCsummary` fix Rhat label issue (from r_hat to Rhat)
 
 
 0.13.1:
