@@ -491,7 +491,7 @@ MCMCsummary <- function(object,
 
     if (Rhat == TRUE) {
       r_hat <- data.frame(round(rs_df["Rhat"][f_ind, 1], digits = 2))
-      colnames(r_hat) <- "r_hat"
+      colnames(r_hat) <- "Rhat"
       x[[(length(x) + 1)]] <- r_hat  
     }  
 
