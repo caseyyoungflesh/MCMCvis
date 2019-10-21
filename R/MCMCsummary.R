@@ -114,7 +114,7 @@ MCMCsummary <- function(object,
       if (np > 1) ch_bind <- do.call("rbind", object2) else ch_bind <- as.matrix(object2)
     }
 
-    x <- list()  
+    x <- list()
   
 # mean, sd, and quantiles  
     
@@ -187,6 +187,7 @@ MCMCsummary <- function(object,
         colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
       }
     }
+    
     x[[1]] <- cbind(bind_mn, bind_sd, bind_q) 
   
 # rhat 

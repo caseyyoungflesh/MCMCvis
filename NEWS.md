@@ -1,6 +1,13 @@
 NEWS
 ====
 
+0.13.3:
+
+- `MCMCpstr` fix bug where dimensions were not displayed properly for Stan models
+- `MCMCpstr` fix warning with objects derived from `rstanarm` and `brms`
+- `MCMCsummary` change variable names to reflect what is displayed by `brms` package (rather than raw Stan output)
+
+
 0.13.2:
 
 - `MCMCsummary` fix bug thrown when one only one chain run for Stan models
