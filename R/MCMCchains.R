@@ -47,6 +47,8 @@ MCMCchains <- function(object,
                      mcmc.list = FALSE,
                      chain_num = NULL)
 {
+  #for rstanarm/brms obejcts - set to NULL by default
+  sp_names <- NULL
   if (length(class(object)) > 1)
   {
     #if from R2jags::jags.parallel
