@@ -70,6 +70,7 @@ MCMCchains <- function(object,
     if (class(object)[1] == 'stanreg')
     {
       object <- object$stanfit
+      sp_names <- object@sim$fnames_oi
     }
   }
   if (coda::is.mcmc.list(object) != TRUE &
@@ -87,6 +88,18 @@ MCMCchains <- function(object,
   {
     #extract stanfit portion of object
     object <- object$fit
+    #Stan names
+    sp_names_p <- names(object@sim$samples[[1]])
+    #remove b_ and r_
+    st_nm <- substr(sp_names_p, start = 1, stop = 2)
+    sp_names <- rep(NA, length(sp_names_p))
+    b_idx <- which(st_nm == 'b_')
+    r_idx <- which(st_nm == 'r_')
+    ot_idx <- which(st_nm != 'b_' & st_nm != 'r_')
+    #fill names vec with b_ and r_ removed
+    sp_names[b_idx] <- gsub('b_', '', sp_names_p[b_idx])
+    sp_names[r_idx] <- gsub('r_', '', sp_names_p[r_idx])
+    sp_names[ot_idx] <- sp_names_p[ot_idx]
   }
   
   #NAME SORTING BLOCK
@@ -94,8 +107,12 @@ MCMCchains <- function(object,
   {
     #convert to mcmc.list
     temp_in <- rstan::As.mcmc.list(object)
-    #assign new colnames for mccm.list object (important for stanreg obj)
-    coda::varnames(temp_in) <- object@sim$fnames_oi
+    
+    #assign new colnames for mcmc.list object if object exists (for stanreg and brms objs so parameter names are interpretable) - do not rename params for model fit directly with Stan
+    if (!is.null(sp_names))
+    {
+      coda::varnames(temp_in) <- sp_names
+    }
     
     if (ISB == TRUE)
     {
