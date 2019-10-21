@@ -66,6 +66,9 @@ test_that('MCMCpstr displays dimensions correctly for all object types',
           })
 
 
+# Insert test to make sure MCMpstr output matches MCMCsummary output (to make sure values are being placed in the correct position)
+
+
 test_that('MCMCchains converts all supported object types to mcmc.list',
           {
             #mcmc.list
@@ -207,4 +210,4 @@ test_that('MCMCsummary returns no errors for default and non-default specificati
 })
 
 
-
+# Add test to make sure colnames and rownames are correct for each object type (MCMCsummary, MCMCchains, MCMCpstr?)
