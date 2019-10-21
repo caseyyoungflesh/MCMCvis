@@ -267,6 +267,26 @@ MCMCsummary <- function(object,
     all_params <- row.names(rstan::summary(object2)$summary)
     rs_df <- data.frame(rstan::summary(object2)$summary)
     
+    #if brms, reassign names without b_ and r_ (as in MCMCchains)
+    if (class(object) == 'brmsfit')
+    {
+      sp_names_p <- names(object2@sim$samples[[1]])
+      #remove b_ and r_
+      st_nm <- substr(sp_names_p, start = 1, stop = 2)
+      sp_names <- rep(NA, length(sp_names_p))
+      b_idx <- which(st_nm == 'b_')
+      r_idx <- which(st_nm == 'r_')
+      ot_idx <- which(st_nm != 'b_' & st_nm != 'r_')
+      #fill names vec with b_ and r_ removed
+      sp_names[b_idx] <- gsub('b_', '', sp_names_p[b_idx])
+      sp_names[r_idx] <- gsub('r_', '', sp_names_p[r_idx])
+      sp_names[ot_idx] <- sp_names_p[ot_idx]
+      
+      #assign names to df
+      all_params <- sp_names
+      row.names(rs_df) <- all_params
+    }
+    
     # filtering of parameters from rstan object - from MCMCchains
     if (ISB == TRUE) {
       names <- vapply(strsplit(all_params, split = "[", fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
@@ -274,7 +294,7 @@ MCMCsummary <- function(object,
       names <- all_params
     }
     
-    x <- list()  
+    x <- list()
   
 # INDEX BLOCK exclusions
     
@@ -386,9 +406,10 @@ MCMCsummary <- function(object,
 # end sort
     
 # convert stan object to matrix if computing non default intervals or using custom func
-    if (!is.null(func) | HPD==TRUE | identical(probs, c(0.025, 0.5, 0.975))==FALSE) {
+    if (!is.null(func) | HPD==TRUE | 
+        identical(probs, c(0.025, 0.5, 0.975))==FALSE) {
       ch_bind <- as.matrix(object2)[, f_ind]
-    }    
+    } 
 
 # mean, sd, and quantiles  
     
