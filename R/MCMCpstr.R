@@ -47,7 +47,7 @@ MCMCpstr <- function(object,
     temp_in <- object2
     cti <- colnames(temp_in[[1]])
     
-    if (class(object) == 'brmsfit' &  length(grep('Intercept]', cti)) > 1)
+    if (class(object)[1] == 'brmsfit' & length(grep('Intercept]', cti)) > 1)
     {
       #remove Intercept and close bracket
       i_idx <- grep('Intercept]', cti)
