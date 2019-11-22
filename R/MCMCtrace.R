@@ -935,9 +935,9 @@ MCMCtrace <- function(object,
       invisible(grDevices::dev.off())
       if(open_pdf == TRUE)
       {
-        system(paste0('open ', paste0('"', file_out, '"')))
+        system(paste0('open ', file_out))
       }
-    }else{
+    } else {
       graphics::par(.pardefault)
     }
   }
