@@ -242,21 +242,20 @@ MCMCtrace <- function(object,
   #PLOT BLOCK
   if (plot == TRUE)
   {
-    if(pdf == TRUE)
+    if (pdf == TRUE)
     {
-      setwd(wd)
-      if(missing(filename))
+      if (missing(filename))
       {
-        file_out <- 'MCMCtrace.pdf'
-      }else{
-        if(grepl('.pdf', filename, fixed = TRUE))
+        file_out <- paste0(wd, '/MCMCtrace.pdf')
+      } else {
+        if (grepl('.pdf', filename, fixed = TRUE))
         {
-          file_out <- paste0(filename)
-        }else{
-          file_out <- paste0(filename, '.pdf')
+          file_out <- paste0(wd, '/', filename)
+        } else {
+          file_out <- paste0(wd, '/', filename, '.pdf')
         }
       }
-      pdf(file= file_out)
+      pdf(file = file_out)
     }
     
     #plotting parameters

@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.13.4:
+
+- `MCMCtrace` no longer changes working dir when `wd` is specified - just puts pdf there
+
+
 0.13.3:
 
 - `MCMCpstr` fix bug where dimensions were not displayed properly for Stan models
