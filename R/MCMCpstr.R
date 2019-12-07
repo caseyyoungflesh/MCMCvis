@@ -35,19 +35,19 @@ MCMCpstr <- function(object,
                    type = 'summary')
 {
   #SORTING BLOCK
-  if(typeof(object) == 'double')
+  if (is(object, 'matrix'))
   {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
-  }else{
+  } else {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
   }
 
-  if(coda::is.mcmc.list(object2) == TRUE)
+  if (coda::is.mcmc.list(object2) == TRUE)
   {
     temp_in <- object2
     cti <- colnames(temp_in[[1]])
     
-    if (class(object)[1] == 'brmsfit' & length(grep('Intercept]', cti)) > 1)
+    if (is(object, 'brmsfit') & length(grep('Intercept]', cti)) > 1)
     {
       #remove Intercept and close bracket
       i_idx <- grep('Intercept]', cti)
@@ -55,19 +55,19 @@ MCMCpstr <- function(object,
       colnames(temp_in[[1]]) <- cti
     }
     
-    if(ISB == TRUE)
+    if (ISB == TRUE)
     {
       names <- vapply(strsplit(cti,
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    }else{
+    } else {
       names <- cti
     }
     np <- NCOL(object2[[1]])
 
-    if(np > 1)
+    if (np > 1)
     {
       ch_bind <- do.call('rbind', object2)
-    }else{
+    } else {
       ch_bind <- as.matrix(object2)
     }
 
@@ -76,14 +76,14 @@ MCMCpstr <- function(object,
     onames <- colnames(temp_in[[1]])
   }
 
-  if(typeof(object2) == 'double')
+  if (is(object2, 'matrix'))
   {
     temp_in <- object2
-    if(ISB == TRUE)
+    if (ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    }else{
+    } else {
       names <- colnames(temp_in)
     }
     np <- NCOL(object2)
@@ -126,7 +126,7 @@ MCMCpstr <- function(object,
           {
             temp_obj[j,] <- func(ch_bind[,ind[j]])
           }
-        } else{
+        } else {
           temp_obj <- rep(NA, length(ind))
           for (j in 1:length(ind))
           {
@@ -368,7 +368,7 @@ MCMCpstr <- function(object,
       #fill list
       out_list[[i]] <- temp_obj
     }
-    if(dims > 4)
+    if (dims > 4)
     {
       stop('This function does not currently support parameters with > 4 dimensions. If you have a need for this functionality, please create an "issue" at https://github.com/caseyyoungflesh/MCMCvis.')
     }

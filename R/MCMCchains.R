@@ -49,44 +49,43 @@ MCMCchains <- function(object,
 {
   #for rstanarm/brms obejcts - set to NULL by default
   sp_names <- NULL
-  if (length(class(object)) > 1)
+  
+  #if from R2jags::jags.parallel
+  if (is(object, 'rjags.parallel'))
   {
-    #if from R2jags::jags.parallel
-    if (class(object)[1] == 'rjags.parallel')
+    #modified coda::as.mcmc (removing ordering of param names)
+    x <- object$BUGSoutput
+    mclist <- vector('list', x$n.chains)
+    mclis <- vector('list', x$n.chains)
+    ord <- dimnames(x$sims.array)[[3]]
+    for (i in 1:x$n.chains)
     {
-      #modified coda::as.mcmc (removing ordering of param names)
-      x <- object$BUGSoutput
-      mclist <- vector("list", x$n.chains)
-      mclis <- vector("list", x$n.chains)
-      ord <- dimnames(x$sims.array)[[3]]
-      for (i in 1:x$n.chains)
-      {
-        tmp1 <- x$sims.array[, i, ord]
-        mclis[[i]] <- coda::mcmc(tmp1, thin = x$n.thin)
-      }
-      object <- coda::as.mcmc.list(mclis)
-      #end mod as.mcmc
+      tmp1 <- x$sims.array[, i, ord]
+      mclis[[i]] <- coda::mcmc(tmp1, thin = x$n.thin)
     }
-    
-    #if from rstanarm::stan_glm
-    if (class(object)[1] == 'stanreg')
-    {
-      object <- object$stanfit
-      sp_names <- object@sim$fnames_oi
-    }
+    object <- coda::as.mcmc.list(mclis)
+    #end mod as.mcmc
   }
+    
+  #if from rstanarm::stan_glm
+  if (is(object, 'stanreg'))
+  {
+    object <- object$stanfit
+    sp_names <- object@sim$fnames_oi
+  }
+  
   if (coda::is.mcmc.list(object) != TRUE &
-     typeof(object) != 'double' &
-     class(object) != 'rjags' &
-     class(object) != 'stanfit' &
-     class(object) != 'brmsfit' &
-     class(object) != 'jagsUI')
+     !is(object, 'matrix') &
+     !is(object, 'rjags') &
+     !is(object, 'stanfit') &
+     !is(object, 'brmsfit') &
+     !is(object, 'jagsUI'))
   {
     stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
   
   #if from brms::brm
-  if (class(object) == 'brmsfit')
+  if (is(object, 'brmsfit'))
   {
     #extract stanfit portion of object
     object <- object$fit
@@ -105,7 +104,7 @@ MCMCchains <- function(object,
   }
   
   #NAME SORTING BLOCK
-  if (class(object) == 'stanfit')
+  if (is(object, 'stanfit'))
   {
     #convert to mcmc.list
     temp_in <- rstan::As.mcmc.list(object)
@@ -119,104 +118,104 @@ MCMCchains <- function(object,
     if (ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in[[1]]),
-                               split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    } else{
+                               split = '[', fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
+    } else {
       names <- colnames(temp_in[[1]])
     }
   }
 
-  if (class(object) == 'jagsUI')
+  if (is(object, 'jagsUI'))
   {
     object <- object$samples
   }
 
-  if(coda::is.mcmc.list(object) == TRUE)
+  if (coda::is.mcmc.list(object) == TRUE)
   {
     temp_in <- object
-    if(is.null(colnames(temp_in[[1]])))
+    if (is.null(colnames(temp_in[[1]])))
     {
       warning('No parameter names provided. Assigning arbitrary names.')
       sub_cn <- paste0('Param_', 1:NCOL(temp_in[[1]]))
       colnames(temp_in[[1]]) <- sub_cn
     }
     
-    if(ISB == TRUE)
+    if (ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in[[1]]),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    }else{
+    } else {
       names <- colnames(temp_in[[1]])
     }
   }
 
-  if(typeof(object) == 'double')
+  if (is(object, 'matrix'))
   {
     temp_in <- object
-    if(is.null(colnames(temp_in)))
+    if (is.null(colnames(temp_in)))
     {
       warning('No parameter names (column names) provided. Assigning arbitrary names.')
       sub_cn <- paste0('Param_', 1:NCOL(temp_in))
       colnames(temp_in) <- sub_cn
     }
 
-    if(ISB == TRUE)
+    if (ISB == TRUE)
     {
       names <- vapply(strsplit(colnames(temp_in),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    }else{
+    } else {
       names <- colnames(temp_in)
     }
   }
 
-  if(class(object) == 'rjags')
+  if (is(object, 'rjags'))
   {
     temp_in <- object$BUGSoutput$sims.matrix
-    if(ISB == TRUE)
+    if (ISB == TRUE)
     {
       names <- vapply(strsplit(rownames(object$BUGSoutput$summary),
                                split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-    }else{
+    } else {
       names <- rownames(object$BUGSoutput$summary)
     }
   }
 
   #INDEX BLOCK
   #exclusions
-  if(!is.null(excl))
+  if (!is.null(excl))
   {
     rm_ind <- c()
     for (i in 1:length(excl))
     {
-      if(ISB == TRUE)
+      if (ISB == TRUE)
       {
         n_excl <- vapply(strsplit(excl,
                                   split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
         ind_excl <- which(names %in% n_excl[i])
-        if(length(ind_excl) < 1)
+        if (length(ind_excl) < 1)
         {
           warning(paste0('"', excl[i], '"', ' not found in MCMC output.'))
         }
         rm_ind <- c(rm_ind, ind_excl)
-      }else{
+      } else {
         n_excl <- excl
         ind_excl <- grep(n_excl[i], names, fixed = FALSE)
-        if(length(ind_excl) < 1)
+        if (length(ind_excl) < 1)
         {
           warning(paste0('"', excl[i], '"', ' not found in MCMC output.'))
         }
         rm_ind <- c(rm_ind, ind_excl)
       }
     }
-    if(length(rm_ind) > 0)
+    if (length(rm_ind) > 0)
     {
       dups <- which(duplicated(rm_ind))
-      if(length(dups) > 0)
+      if (length(dups) > 0)
       {
         rm_ind2 <- rm_ind[-dups]
-      }else{
+      } else {
         rm_ind2 <- rm_ind
       }
-    }else{
+    } else {
       excl <- NULL
     }
   }
@@ -226,17 +225,17 @@ MCMCchains <- function(object,
   {
     if (params == 'all')
     {
-      if(is.null(excl))
+      if (is.null(excl))
       {
         f_ind <- 1:length(names)
-      }else{
+      } else {
         f_ind <- (1:length(names))[-rm_ind2]
       }
-    }else {
+    } else {
       if(ISB == TRUE)
       {
         get_ind <- which(names %in% params)
-      }else{
+      } else {
         get_ind <- grep(paste(params), names, fixed = FALSE)
       }
 
@@ -244,9 +243,9 @@ MCMCchains <- function(object,
       {
         stop(paste0('"', params, '"', ' not found in MCMC output.'))
       }
-      if(!is.null(excl))
+      if (!is.null(excl))
       {
-        if(identical(get_ind, rm_ind2))
+        if (identical(get_ind, rm_ind2))
         {
           stop('No parameters selected.')
         }
@@ -254,21 +253,21 @@ MCMCchains <- function(object,
         if (length(matched) > 0)
         {
           f_ind <- get_ind[-matched]
-        }else {
+        } else {
           f_ind <- get_ind
         }
-      }else {
+      } else {
         f_ind <- get_ind
       }
     }
-  }else {
+  } else {
     grouped <- c()
     for (i in 1:length(params))
     {
-      if(ISB == TRUE)
+      if (ISB == TRUE)
       {
         get_ind <- which(names %in% params[i])
-      }else{
+      } else {
         get_ind <- grep(paste(params[i]), names, fixed=FALSE)
       }
 
@@ -279,9 +278,9 @@ MCMCchains <- function(object,
       }
       grouped <- c(grouped, get_ind)
     }
-    if(!is.null(excl))
+    if (!is.null(excl))
     {
-      if(identical(grouped, rm_ind2))
+      if (identical(grouped, rm_ind2))
       {
         stop('No parameters selected.')
       }
@@ -289,24 +288,22 @@ MCMCchains <- function(object,
       if (length(matched) > 0)
       {
         t_ind <- grouped[-matched]
-      } else{
+      } else {
         t_ind <- grouped
       }
       to.rm <- which(duplicated(t_ind))
-      if(length(to.rm) > 0)
+      if (length(to.rm) > 0)
       {
         f_ind <- t_ind[-to.rm]
-      }else
-      {
+      } else {
         f_ind <- t_ind
       }
-    } else{
+    } else {
       to.rm <- which(duplicated(grouped))
-      if(length(to.rm) > 0)
+      if (length(to.rm) > 0)
       {
         f_ind <- grouped[-to.rm]
-      }else
-      {
+      } else {
         f_ind <- grouped
       }
     }
@@ -315,30 +312,30 @@ MCMCchains <- function(object,
   #PROCESSING BLOCK
   if (is.null(chain_num))
   {
-    if(coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
+    if (coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
     {
-      if(length(f_ind) > 1)
+      if (length(f_ind) > 1)
       {
         dsort_mcmc <- do.call(coda::mcmc.list, temp_in[,f_ind])
         OUT <- do.call('rbind', dsort_mcmc)
-      }else{
+      } else {
         dsort_mcmc <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
         OUT <- as.matrix(do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE]), ncol = 1)
       }
     }
-    if(typeof(object) == 'double')
+    if (is(object, 'matrix'))
     {
       OUT <- temp_in[,f_ind, drop = FALSE]
-      if(mcmc.list == TRUE)
+      if (mcmc.list == TRUE)
       {
         stop('Cannot produce mcmc.list output with matrix input')
       }
     }
 
-    if(class(object) == 'rjags')
+    if (is(object, 'rjags'))
     {
       OUT <- temp_in[,f_ind, drop = FALSE]
-      if(mcmc.list == TRUE)
+      if (mcmc.list == TRUE)
       {
         #modified coda::as.mcmc (removing ordering of param names)
         x <- object$BUGSoutput
@@ -359,9 +356,9 @@ MCMCchains <- function(object,
 
   if (!is.null(chain_num))
   {
-    if(coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
+    if (coda::is.mcmc.list(object) == TRUE | typeof(object) == 'S4')
     {
-      if(length(f_ind) > 1)
+      if (length(f_ind) > 1)
       {
         dsort <- do.call(coda::mcmc.list, temp_in[,f_ind])
 
@@ -371,7 +368,7 @@ MCMCchains <- function(object,
         }
         dsort_mcmc <- dsort[[chain_num]]
         OUT <- as.matrix(dsort_mcmc)
-      }else{
+      } else {
         dsort <- do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE])
 
         if (chain_num > length(dsort))
@@ -383,12 +380,12 @@ MCMCchains <- function(object,
       }
     }
 
-    if(typeof(object) == 'double')
+    if (is(object, 'matrix'))
     {
       stop('Cannot extract posterior information for individual chains from matrix input.')
     }
 
-    if(class(object) == 'rjags')
+    if (is(object, 'rjags'))
     {
       #modified coda::as.mcmc (removing ordering of param names)
       x <- object$BUGSoutput
@@ -412,11 +409,11 @@ MCMCchains <- function(object,
     }
   }
 
-  if(mcmc.list == FALSE)
+  if (mcmc.list == FALSE)
   {
     return(OUT)
   }
-  if(mcmc.list == TRUE)
+  if (mcmc.list == TRUE)
   {
     return(dsort_mcmc)
   }
