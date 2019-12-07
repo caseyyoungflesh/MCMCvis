@@ -169,7 +169,7 @@ MCMCtrace <- function(object,
   .pardefault <- graphics::par(no.readonly = T)
   
   #SORTING BLOCK
-  if (is(object, 'matrix'))
+  if (methods::is(object, 'matrix'))
   {
     warning('Input type matrix - assuming only one chain for each parameter.')
     object1 <- coda::as.mcmc.list(coda::as.mcmc(object))

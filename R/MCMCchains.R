@@ -51,7 +51,7 @@ MCMCchains <- function(object,
   sp_names <- NULL
   
   #if from R2jags::jags.parallel
-  if (is(object, 'rjags.parallel'))
+  if (methods::is(object, 'rjags.parallel'))
   {
     #modified coda::as.mcmc (removing ordering of param names)
     x <- object$BUGSoutput
@@ -68,24 +68,24 @@ MCMCchains <- function(object,
   }
     
   #if from rstanarm::stan_glm
-  if (is(object, 'stanreg'))
+  if (methods::is(object, 'stanreg'))
   {
     object <- object$stanfit
     sp_names <- object@sim$fnames_oi
   }
   
   if (coda::is.mcmc.list(object) != TRUE &
-     !is(object, 'matrix') &
-     !is(object, 'rjags') &
-     !is(object, 'stanfit') &
-     !is(object, 'brmsfit') &
-     !is(object, 'jagsUI'))
+     !methods::is(object, 'matrix') &
+     !methods::is(object, 'rjags') &
+     !methods::is(object, 'stanfit') &
+     !methods::is(object, 'brmsfit') &
+     !methods::is(object, 'jagsUI'))
   {
     stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
   
   #if from brms::brm
-  if (is(object, 'brmsfit'))
+  if (methods::is(object, 'brmsfit'))
   {
     #extract stanfit portion of object
     object <- object$fit
@@ -104,7 +104,7 @@ MCMCchains <- function(object,
   }
   
   #NAME SORTING BLOCK
-  if (is(object, 'stanfit'))
+  if (methods::is(object, 'stanfit'))
   {
     #convert to mcmc.list
     temp_in <- rstan::As.mcmc.list(object)
@@ -124,7 +124,7 @@ MCMCchains <- function(object,
     }
   }
 
-  if (is(object, 'jagsUI'))
+  if (methods::is(object, 'jagsUI'))
   {
     object <- object$samples
   }
@@ -148,7 +148,7 @@ MCMCchains <- function(object,
     }
   }
 
-  if (is(object, 'matrix'))
+  if (methods::is(object, 'matrix'))
   {
     temp_in <- object
     if (is.null(colnames(temp_in)))
@@ -167,7 +167,7 @@ MCMCchains <- function(object,
     }
   }
 
-  if (is(object, 'rjags'))
+  if (methods::is(object, 'rjags'))
   {
     temp_in <- object$BUGSoutput$sims.matrix
     if (ISB == TRUE)
@@ -323,7 +323,7 @@ MCMCchains <- function(object,
         OUT <- as.matrix(do.call(coda::mcmc.list, temp_in[,f_ind, drop = FALSE]), ncol = 1)
       }
     }
-    if (is(object, 'matrix'))
+    if (methods::is(object, 'matrix'))
     {
       OUT <- temp_in[,f_ind, drop = FALSE]
       if (mcmc.list == TRUE)
@@ -332,7 +332,7 @@ MCMCchains <- function(object,
       }
     }
 
-    if (is(object, 'rjags'))
+    if (methods::is(object, 'rjags'))
     {
       OUT <- temp_in[,f_ind, drop = FALSE]
       if (mcmc.list == TRUE)
@@ -380,12 +380,12 @@ MCMCchains <- function(object,
       }
     }
 
-    if (is(object, 'matrix'))
+    if (methods::is(object, 'matrix'))
     {
       stop('Cannot extract posterior information for individual chains from matrix input.')
     }
 
-    if (is(object, 'rjags'))
+    if (methods::is(object, 'rjags'))
     {
       #modified coda::as.mcmc (removing ordering of param names)
       x <- object$BUGSoutput

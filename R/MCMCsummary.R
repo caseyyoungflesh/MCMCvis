@@ -81,18 +81,18 @@ MCMCsummary <- function(object,
 #--------------------------------------------------------------------------------------------------------------                        
 # SORTING BLOCK
                       
-  if (is(object, 'matrix')) {
+  if (methods::is(object, 'matrix')) {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
   } else {
-    if (is(object, 'stanfit')) {
+    if (methods::is(object, 'stanfit')) {
       object2 <- object
     } else {
       # rstanarm
-      if (is(object, 'stanreg')) {
+      if (methods::is(object, 'stanreg')) {
         object2 <- object$stanfit
       } else {
         # brms
-        if (is(object, 'brmsfit')) {
+        if (methods::is(object, 'brmsfit')) {
           object2 <- object$fit
         } else {
           object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
@@ -104,9 +104,9 @@ MCMCsummary <- function(object,
 #--------------------------------------------------------------------------------------------------------------                        
 # PROCESSING BLOCK - JAGS AND MATRIX MCMC OUTPUT
 
-  if (coda::is.mcmc.list(object2) == TRUE | is(object, 'matrix'))
+  if (coda::is.mcmc.list(object2) == TRUE | methods::is(object, 'matrix'))
   {
-    if (is(object, 'matrix'))
+    if (methods::is(object, 'matrix'))
     {
       np <- NCOL(object2)
       ch_bind <- object2
@@ -217,7 +217,7 @@ MCMCsummary <- function(object,
 
     if (Rhat == TRUE)
     {
-      if (is(object, 'matrix'))
+      if (!methods::is(object, 'matrix'))
       {
         if (length(object2) > 1)
         {
@@ -238,7 +238,7 @@ MCMCsummary <- function(object,
           colnames(r_hat) <- "Rhat"
         }
       } else {
-        warning("Rhat statistic cannot be calculated with one chain. NAs inserted.")
+        warning("Rhat statistic cannot be calculated with one chain (matrix input). NAs inserted.")
         r_hat <- data.frame(rep(NA, np))
         colnames(r_hat) <- "Rhat"
       }
@@ -249,12 +249,12 @@ MCMCsummary <- function(object,
    
     if (n.eff == TRUE)
     {
-      if (!is(object, 'matrix'))
+      if (!methods::is(object, 'matrix'))
       {
         neff <- data.frame(round(coda::effectiveSize(object2), digits = 0))
         colnames(neff) <- "n.eff"
       } else {
-        warning('Number of effective samples cannot be calculated without individual chains. NAs inserted.')
+        warning('Number of effective samples cannot be calculated without individual chains (matrix input). NAs inserted.')
         neff <- data.frame(rep(NA, np))
         colnames(neff) <- "n.eff"
       }  
@@ -298,14 +298,14 @@ MCMCsummary <- function(object,
 #--------------------------------------------------------------------------------------------------------------                        
 # PROCESSING BLOCK - STAN MCMC OUTPUT
   
-  if (is(object2, 'stanfit'))
+  if (methods::is(object2, 'stanfit'))
   {
     # rhat and n_eff directly from rstan output
     all_params <- row.names(rstan::summary(object2)$summary)
     rs_df <- data.frame(rstan::summary(object2)$summary)
     
     #if brms, reassign names without b_ and r_ (as in MCMCchains)
-    if (is(object, 'brmsfit'))
+    if (methods::is(object, 'brmsfit'))
     {
       sp_names_p <- names(object2@sim$samples[[1]])
       #remove b_ and r_

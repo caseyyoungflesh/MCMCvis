@@ -71,16 +71,16 @@ test_that('MCMCpstr displays dimensions correctly for all object types',
 
 test_that('MCMCchains converts all supported object types to mcmc.list',
           {
-            # #mcmc.list
-            # expect_is(MCMCchains(MCMC_data, mcmc.list = TRUE), 'mcmc.list')
-            # #R2jags
-            # expect_is(MCMCchains(R2jags_data, mcmc.list = TRUE), 'mcmc.list')
-            # #jags.parallel
-            # expect_is(MCMCchains(jagsparallel_data, mcmc.list = TRUE), 'mcmc.list')
-            # #jagsUI
-            # expect_is(MCMCchains(jagsUI_data, mcmc.list = TRUE), 'mcmc.list')
-            # #stan.fit
-            # expect_is(MCMCchains(stan_data, mcmc.list = TRUE), 'mcmc.list')
+            #mcmc.list
+            expect_is(MCMCchains(MCMC_data, mcmc.list = TRUE), 'mcmc.list')
+            #R2jags
+            expect_is(MCMCchains(R2jags_data, mcmc.list = TRUE), 'mcmc.list')
+            #jags.parallel
+            expect_is(MCMCchains(jagsparallel_data, mcmc.list = TRUE), 'mcmc.list')
+            #jagsUI
+            expect_is(MCMCchains(jagsUI_data, mcmc.list = TRUE), 'mcmc.list')
+            #stan.fit
+            expect_is(MCMCchains(stan_data, mcmc.list = TRUE), 'mcmc.list')
             #matrix
             expect_error(MCMCchains(matrix_data, mcmc.list = TRUE))
             #jags.samples - expect warning

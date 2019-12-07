@@ -35,7 +35,7 @@ MCMCpstr <- function(object,
                    type = 'summary')
 {
   #SORTING BLOCK
-  if (is(object, 'matrix'))
+  if (methods::is(object, 'matrix'))
   {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
   } else {
@@ -47,7 +47,7 @@ MCMCpstr <- function(object,
     temp_in <- object2
     cti <- colnames(temp_in[[1]])
     
-    if (is(object, 'brmsfit') & length(grep('Intercept]', cti)) > 1)
+    if (methods::is(object, 'brmsfit') & length(grep('Intercept]', cti)) > 1)
     {
       #remove Intercept and close bracket
       i_idx <- grep('Intercept]', cti)
@@ -76,7 +76,7 @@ MCMCpstr <- function(object,
     onames <- colnames(temp_in[[1]])
   }
 
-  if (is(object2, 'matrix'))
+  if (methods::is(object2, 'matrix'))
   {
     temp_in <- object2
     if (ISB == TRUE)
