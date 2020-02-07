@@ -376,9 +376,9 @@ MCMCtrace <- function(object,
       {
         if (length(md) == 1)
         {
-          return(paste0(md))
+          return(md)
         } else {
-          return(paste0(md[idx]))
+          return(md[idx])
         }
       } else {
         return(paste0('Density - ', x))
@@ -391,9 +391,9 @@ MCMCtrace <- function(object,
       {
         if (length(mtr) == 1)
         {
-          return(paste0(mtr))
+          return(mtr)
         } else {
-          return(paste0(mtr[idx]))
+          return(mtr[idx])
         }
       } else {
         return(paste0('Trace - ', x))

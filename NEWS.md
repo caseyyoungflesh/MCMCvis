@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.13.6:
+
+- `MCMCtrace` now accepts expression input (for Greek characters etc.) from R for `main_den` and `main_tr` args
+
+
 0.13.5:
 
 - All functions now avoid using function `class` (and use `is` instead) as `matrix` objects will also be `array` as of R 4.0.0
