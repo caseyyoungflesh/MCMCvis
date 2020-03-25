@@ -4,7 +4,9 @@
 \name{MCMC_data}
 \alias{MCMC_data}
 \title{Simulated MCMC output data}
-\format{\code{mcmc.list} object with 3 chains for each parameter, 6000 iterations for each chain.}
+\format{
+\code{mcmc.list} object with 3 chains for each parameter, 6000 iterations for each chain.
+}
 \usage{
 MCMC_data
 }
