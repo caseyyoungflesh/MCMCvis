@@ -4,16 +4,50 @@
 \alias{MCMCtrace}
 \title{Trace and density plots from MCMC output}
 \usage{
-MCMCtrace(object, params = "all", excl = NULL, ISB = TRUE,
-  iter = 5000, gvals = NULL, priors = NULL, post_zm = TRUE,
-  PPO_out = FALSE, Rhat = FALSE, n.eff = FALSE, ind = FALSE,
-  pdf = TRUE, plot = TRUE, open_pdf = TRUE, filename, wd = getwd(),
-  type = "both", ylim = NULL, xlim = NULL, xlab_tr, ylab_tr,
-  xlab_den, ylab_den, main_den = NULL, main_tr = NULL, lwd_den = 1,
-  lwd_pr = 1, lty_den = 1, lty_pr = 1, col_den, col_pr, col_txt,
-  sz_txt = 1.2, sz_ax = 1, sz_ax_txt = 1, sz_tick_txt = 1,
-  sz_main_txt = 1.2, pos_tick_x_tr = NULL, pos_tick_y_tr = NULL,
-  pos_tick_x_den = NULL, pos_tick_y_den = NULL)
+MCMCtrace(
+  object,
+  params = "all",
+  excl = NULL,
+  ISB = TRUE,
+  iter = 5000,
+  gvals = NULL,
+  priors = NULL,
+  post_zm = TRUE,
+  PPO_out = FALSE,
+  Rhat = FALSE,
+  n.eff = FALSE,
+  ind = FALSE,
+  pdf = TRUE,
+  plot = TRUE,
+  open_pdf = TRUE,
+  filename,
+  wd = getwd(),
+  type = "both",
+  ylim = NULL,
+  xlim = NULL,
+  xlab_tr,
+  ylab_tr,
+  xlab_den,
+  ylab_den,
+  main_den = NULL,
+  main_tr = NULL,
+  lwd_den = 1,
+  lwd_pr = 1,
+  lty_den = 1,
+  lty_pr = 1,
+  col_den,
+  col_pr,
+  col_txt,
+  sz_txt = 1.2,
+  sz_ax = 1,
+  sz_ax_txt = 1,
+  sz_tick_txt = 1,
+  sz_main_txt = 1.2,
+  pos_tick_x_tr = NULL,
+  pos_tick_y_tr = NULL,
+  pos_tick_x_den = NULL,
+  pos_tick_y_den = NULL
+)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -122,7 +156,7 @@ MCMCtrace(MCMC_data, params = 'beta', pdf = FALSE)
 
 #Traceplots (individual density lines for each chain) just for 'beta[1]'
 #'params' takes regular expressions when ISB = FALSE, square brackets 
-#must be escaped with '\\\\'
+#must be escaped with '\\'
 MCMCtrace(MCMC_data, params = 'beta\\\\[1\\\\]', 
           ISB = FALSE, ind = TRUE, pdf = FALSE)
 
@@ -130,7 +164,7 @@ MCMCtrace(MCMC_data, params = 'beta\\\\[1\\\\]',
 #just for 'beta[1]'
 #Add Rhat and n.eff values to density plots
 #'params' takes regular expressions when ISB = FALSE, square brackets must 
-#be escaped with '\\\\'
+#be escaped with '\\'
 PR <- rnorm(15000, 0, 32)
 MCMCtrace(MCMC_data, params = 'beta\\\\[1\\\\]', ISB = FALSE, priors = PR, 
           pdf = FALSE, Rhat = TRUE, n.eff = TRUE)

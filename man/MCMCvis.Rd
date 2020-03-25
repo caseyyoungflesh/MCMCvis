@@ -3,7 +3,6 @@
 \docType{package}
 \name{MCMCvis}
 \alias{MCMCvis}
-\alias{MCMCvis-package}
 \title{The 'MCMCvis' package}
 \description{
 `MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.

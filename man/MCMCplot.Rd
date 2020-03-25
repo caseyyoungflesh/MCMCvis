@@ -4,13 +4,38 @@
 \alias{MCMCplot}
 \title{Caterpillar plots of posterior distributions from MCMC output}
 \usage{
-MCMCplot(object, object2 = NULL, params = "all", excl = NULL,
-  ISB = TRUE, ref = 0, ref_ovl = FALSE, col = "black",
-  col2 = "red", offset = 0.1, rank = FALSE, horiz = TRUE, xlim,
-  ylim, xlab, ylab, main, labels, guide_lines = FALSE,
-  guide_axis = TRUE, sz_labels = 1.2, sz_med = 1.5, sz_thick = 5,
-  sz_thin = 2, sz_ax = 3, sz_ax_txt = 1.3, sz_tick_txt = 1.2,
-  sz_main_txt = 1.2, pos_tick, mar = c(5.1, 4.1, 4.1, 2.1))
+MCMCplot(
+  object,
+  object2 = NULL,
+  params = "all",
+  excl = NULL,
+  ISB = TRUE,
+  ref = 0,
+  ref_ovl = FALSE,
+  col = "black",
+  col2 = "red",
+  offset = 0.1,
+  rank = FALSE,
+  horiz = TRUE,
+  xlim,
+  ylim,
+  xlab,
+  ylab,
+  main,
+  labels,
+  guide_lines = FALSE,
+  guide_axis = TRUE,
+  sz_labels = 1.2,
+  sz_med = 1.5,
+  sz_thick = 5,
+  sz_thin = 2,
+  sz_ax = 3,
+  sz_ax_txt = 1.3,
+  sz_tick_txt = 1.2,
+  sz_main_txt = 1.2,
+  pos_tick,
+  mar = c(5.1, 4.1, 4.1, 2.1)
+)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -126,7 +151,7 @@ MCMCplot(MCMC_data, labels = NULL)
 MCMCplot(MCMC_data, params = 'beta')
 
 #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
-#'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\\\'
+#'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
 MCMCplot(MCMC_data, params = c('beta\\\\[1\\\\]', 'beta\\\\[4\\\\]', 'alpha\\\\[3\\\\]'), ISB = FALSE)
 
 #Rank parameters by posterior mean

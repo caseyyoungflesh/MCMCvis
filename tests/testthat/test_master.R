@@ -113,8 +113,14 @@ test_that('MCMCsummary values agree with manual values derived from posterior ch
   # mcmc.list - rhat
   expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[6]),
     round(coda::gelman.diag(MCMCchains(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 2))
-  
+
+  # stanfit - func = mean
+  expect_equal(as.numeric(MCMCsummary(stan_data, param = 'mu', ISB = FALSE, round = 2, func = mean)$func),
+               as.numeric(MCMCsummary(stan_data, param = 'mu', ISB = FALSE, round = 2)['mean']))
+    
   })
+
+
 
 
 test_that('MCMCsummary returns no errors for default and non-default specifications', { 

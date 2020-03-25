@@ -35,9 +35,9 @@
 #'
 #' @section Notes:
 #'
-#' For \code{mcmc.list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} objects (as well as \code{stanreg} and \code{brmsfit} objects), Rhat is calculated using the \code{rstan} package which computes a 'split chain' Rhat, which is thought to be a more conservative diagnostic (Stan Development Team 2018).
+#' For \code{mcmc.list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, Rhat is calculated using a 'split chain' Rhat (in their respective packages), which is thought to be a more conservative diagnostic (Stan Development Team 2018).
 #'
-#' For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} objects (as well as \code{stanreg} and \code{brmsfit} objects), n.eff is calculated using the \code{rstan} package which (in a similar way to the Rhat computation noted above) employs a slightly different (and more conservative) method of computation for the number of effective samples (Stan Development Team 2018).
+#' For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, n.eff is calculated using a slightly different method of computation for the number of effective samples (Stan Development Team 2018).
 #'
 #' @return Function returns summary information (including parameter posterior mean, posterior sd, quantiles, potential scale reduction statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
 #'
@@ -95,13 +95,18 @@ MCMCsummary <- function(object,
         if (methods::is(object, 'brmsfit')) {
           object2 <- object$fit
         } else {
+          #jagsUI
+          if (methods::is(object, 'jagsUI')) { 
+            object2 <- MCMCchains(object)
+          }
           object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
         }
       }
     }
   }
 
-#--------------------------------------------------------------------------------------------------------------                        
+#--------------------------------------------------------------------------------------------------------------           
+
 # PROCESSING BLOCK - JAGS AND MATRIX MCMC OUTPUT
 
   if (coda::is.mcmc.list(object2) == TRUE | methods::is(object, 'matrix'))
@@ -242,7 +247,7 @@ MCMCsummary <- function(object,
         r_hat <- data.frame(rep(NA, np))
         colnames(r_hat) <- "Rhat"
       }
-    x[[(length(x) + 1)]] <- r_hat  
+      x[[(length(x) + 1)]] <- r_hat  
     }
 
 # neff
@@ -257,9 +262,11 @@ MCMCsummary <- function(object,
         warning('Number of effective samples cannot be calculated without individual chains (matrix input). NAs inserted.')
         neff <- data.frame(rep(NA, np))
         colnames(neff) <- "n.eff"
-      }  
+      } 
       x[[(length(x) + 1)]] <- neff
     }
+    
+    
   
 # custom function
   
@@ -283,11 +290,17 @@ MCMCsummary <- function(object,
       } else { 
         tmp <- data.frame(tmp)
       }
-      if (length(func_name) != NCOL(tmp))
+      if (!is.null(func_name))
       {
-        stop("length(func_name) must equal number of func outputs")
+        if (length(func_name) != NCOL(tmp))
+        {
+          stop("length(func_name) must equal number of func outputs")
+        }  
+        colnames(tmp) <- func_name
+      } else {
+        colnames(tmp) <- 'func'  
       }
-      colnames(tmp) <- func_name
+      
       x[[(length(x) + 1)]] <- tmp
     }
   
@@ -296,32 +309,41 @@ MCMCsummary <- function(object,
   }
   
 #--------------------------------------------------------------------------------------------------------------                        
-# PROCESSING BLOCK - STAN MCMC OUTPUT
+# PROCESSING BLOCK - STAN OR JAGSUI MCMC OUTPUT
   
-  if (methods::is(object2, 'stanfit'))
+  if (methods::is(object2, 'stanfit') | methods::is(object, 'jagsUI'))
   {
-    # rhat and n_eff directly from rstan output
-    all_params <- row.names(rstan::summary(object2)$summary)
-    rs_df <- data.frame(rstan::summary(object2)$summary)
-    
-    #if brms, reassign names without b_ and r_ (as in MCMCchains)
-    if (methods::is(object, 'brmsfit'))
+    if (methods::is(object2, 'stanfit'))
     {
-      sp_names_p <- names(object2@sim$samples[[1]])
-      #remove b_ and r_
-      st_nm <- substr(sp_names_p, start = 1, stop = 2)
-      sp_names <- rep(NA, length(sp_names_p))
-      b_idx <- which(st_nm == 'b_')
-      r_idx <- which(st_nm == 'r_')
-      ot_idx <- which(st_nm != 'b_' & st_nm != 'r_')
-      #fill names vec with b_ and r_ removed
-      sp_names[b_idx] <- gsub('b_', '', sp_names_p[b_idx])
-      sp_names[r_idx] <- gsub('r_', '', sp_names_p[r_idx])
-      sp_names[ot_idx] <- sp_names_p[ot_idx]
+      # rhat and n_eff directly from rstan output
+      all_params <- row.names(rstan::summary(object2)$summary)
+      rs_df <- data.frame(rstan::summary(object2)$summary)
+    
+      #if brms, reassign names without b_ and r_ (as in MCMCchains)
+      if (methods::is(object, 'brmsfit'))
+      {
+        sp_names_p <- names(object2@sim$samples[[1]])
+        #remove b_ and r_
+        st_nm <- substr(sp_names_p, start = 1, stop = 2)
+        sp_names <- rep(NA, length(sp_names_p))
+        b_idx <- which(st_nm == 'b_')
+        r_idx <- which(st_nm == 'r_')
+        ot_idx <- which(st_nm != 'b_' & st_nm != 'r_')
+        #fill names vec with b_ and r_ removed
+        sp_names[b_idx] <- gsub('b_', '', sp_names_p[b_idx])
+        sp_names[r_idx] <- gsub('r_', '', sp_names_p[r_idx])
+        sp_names[ot_idx] <- sp_names_p[ot_idx]
       
-      #assign names to df
-      all_params <- sp_names
-      row.names(rs_df) <- all_params
+        #assign names to df
+        all_params <- sp_names
+        row.names(rs_df) <- all_params
+      }
+    }
+    
+    if (methods::is(object, 'jagsUI'))
+    {
+      all_params <- row.names(object$summary)
+      rs_df <- data.frame(object$summary)
     }
     
     # filtering of parameters from rstan object - from MCMCchains
@@ -464,12 +486,20 @@ MCMCsummary <- function(object,
     }
 
 # end sort
-    
-# convert stan object to matrix if computing non default intervals or using custom func
+
+# convert object to matrix if computing non default intervals or using custom func
     if (!is.null(func) | HPD==TRUE | 
         identical(probs, c(0.025, 0.5, 0.975))==FALSE)
     {
-      ch_bind <- as.matrix(object2)[, f_ind]
+      if (methods::is(object2, 'stanfit'))
+      {
+        #ensure is matrix, not vector
+        ch_bind <- as.matrix(as.matrix(object2)[, f_ind])
+      }
+      if (methods::is(object, 'jagsUI'))
+      {
+        ch_bind <- MCMCchains(object, params, excl, ISB)
+      }
     } 
 
 # mean, sd, and quantiles  
@@ -606,7 +636,14 @@ MCMCsummary <- function(object,
 # neff - neff in Stan is calculated within chain (different than with coda package)    
     if (n.eff == TRUE)
     {
-      neff <- data.frame(round(rs_df["n_eff"][f_ind, 1], digits = 0))
+      if (methods::is(object2, 'stanfit'))
+      {
+        neff <- data.frame(round(rs_df["n_eff"][f_ind, 1], digits = 0))
+      }
+      if (methods::is(object, 'jagsUI'))
+      {
+        neff <- data.frame(round(rs_df["n.eff"][f_ind, 1], digits = 0))
+      }
       colnames(neff) <- "n.eff"
       x[[(length(x) + 1)]] <- neff
     }
@@ -633,11 +670,17 @@ MCMCsummary <- function(object,
       } else { 
         tmp <- data.frame(tmp)
       }
-      if (length(func_name) != NCOL(tmp))
+      if (!is.null(func_name))
       {
-        stop("length(func_name) must equal number of func outputs")
+        if (length(func_name) != NCOL(tmp))
+        {
+          stop("length(func_name) must equal number of func outputs")
+        }
+        colnames(tmp) <- func_name
+      } else {
+        colnames(tmp) <- 'func'  
       }
-      colnames(tmp) <- func_name
+      
       x[[(length(x) + 1)]] <- tmp
     }
 

@@ -4,8 +4,14 @@
 \alias{MCMCchains}
 \title{Extract posterior chains from MCMC output}
 \usage{
-MCMCchains(object, params = "all", excl = NULL, ISB = TRUE,
-  mcmc.list = FALSE, chain_num = NULL)
+MCMCchains(
+  object,
+  params = "all",
+  excl = NULL,
+  ISB = TRUE,
+  mcmc.list = FALSE,
+  chain_num = NULL
+)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -45,7 +51,7 @@ ex2 <- MCMCchains(MCMC_data, params = 'beta')
 apply(ex2, 2, mean)
 
 #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
-#'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\\\'
+#'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
 ex3 <- MCMCchains(MCMC_data, params = c('beta\\\\[1\\\\]', 'beta\\\\[4\\\\]', 'alpha\\\\[3\\\\]'), ISB = FALSE)
 apply(ex3, 2, sd)
 

@@ -4,10 +4,21 @@
 \alias{MCMCsummary}
 \title{Summarize MCMC output}
 \usage{
-MCMCsummary(object, params = "all", excl = NULL, ISB = TRUE,
-  probs = c(0.025, 0.5, 0.975), hpd_prob = 0.95, HPD = FALSE,
-  digits = NULL, round = NULL, Rhat = TRUE, n.eff = TRUE,
-  func = NULL, func_name = NULL)
+MCMCsummary(
+  object,
+  params = "all",
+  excl = NULL,
+  ISB = TRUE,
+  probs = c(0.025, 0.5, 0.975),
+  hpd_prob = 0.95,
+  HPD = FALSE,
+  digits = NULL,
+  round = NULL,
+  Rhat = TRUE,
+  n.eff = TRUE,
+  func = NULL,
+  func_name = NULL
+)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
@@ -53,9 +64,9 @@ for specific parameters of interest.
 \section{Notes}{
 
 
-For \code{mcmc.list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} objects (as well as \code{stanreg} and \code{brmsfit} objects), Rhat is calculated using the \code{rstan} package which computes a 'split chain' Rhat, which is thought to be a more conservative diagnostic (Stan Development Team 2018).
+For \code{mcmc.list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, Rhat is calculated using a 'split chain' Rhat (in their respective packages), which is thought to be a more conservative diagnostic (Stan Development Team 2018).
 
-For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} objects (as well as \code{stanreg} and \code{brmsfit} objects), n.eff is calculated using the \code{rstan} package which (in a similar way to the Rhat computation noted above) employs a slightly different (and more conservative) method of computation for the number of effective samples (Stan Development Team 2018).
+For \code{mcmc.list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, n.eff is calculated using a slightly different method of computation for the number of effective samples (Stan Development Team 2018).
 }
 
 \section{References}{
@@ -77,7 +88,7 @@ MCMCsummary(MCMC_data, digits = 2)
 MCMCsummary(MCMC_data, params = 'beta', round = 2)
 
 #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
-#'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\\\'
+#'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
 MCMCsummary(MCMC_data, params = c('beta\\\\[1\\\\]', 'beta\\\\[4\\\\]', 'alpha\\\\[3\\\\]'), ISB = FALSE)
 
 }

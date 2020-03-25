@@ -4,8 +4,14 @@
 \alias{MCMCpstr}
 \title{Summarize and extract posterior chains from MCMC output while preserving parameter structure}
 \usage{
-MCMCpstr(object, params = "all", excl = NULL, ISB = TRUE,
-  func = mean, type = "summary")
+MCMCpstr(
+  object,
+  params = "all",
+  excl = NULL,
+  ISB = TRUE,
+  func = mean,
+  type = "summary"
+)
 }
 \arguments{
 \item{object}{Object containing MCMC output. See DETAILS below.}
