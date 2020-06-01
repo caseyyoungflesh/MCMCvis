@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.14.1:
+
+- `MCMCtrace` fix undesired behavior when `post_zm` is specified as `FALSE`
+
+
 0.14.0:
 
 - `MCMCsummary` for model objects fit with `jagsUI`, the function now returns Rhat and n.eff values that coincide with values calculated in that package (e.g., split-chain Rhat), rather than calculating these with the `coda` package. These values are fed into `MCMCtrace` when `Rhat` and/or `n.eff` are specified as `TRUE`.

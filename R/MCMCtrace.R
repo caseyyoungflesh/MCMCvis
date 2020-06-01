@@ -466,7 +466,7 @@ MCMCtrace <- function(object,
     {
       for (j in 1:length(np))
       {
-        #j <- 1
+        #j <- 2
         #trace
         tmlt <- do.call('cbind', object2[it, np[j]]) #make into matrix with three chains in columns
         graphics::matplot(it, tmlt, lwd = 1, lty = 1, type = 'l', main = NULL,
@@ -550,22 +550,22 @@ MCMCtrace <- function(object,
           #set axes limits according to inputs
           if (!is.null(priors) & post_zm == FALSE & is.null(ylim) & is.null(xlim))
           {
-            ylim <- range(c(0, max(max_den_y), PPO_y_rng))
-            xlim <- range(c(range(rng_den_x), PPO_x_rng))
+            YLIM2 <- range(c(0, max(max_den_y), PPO_y_rng))
+            XLIM2 <- range(c(range(rng_den_x), PPO_x_rng))
           } else {
             if (!is.null(ylim))
             {
-              ylim <- YLIM
-              xlim <- XLIM
+              YLIM2 <- YLIM
+              XLIM2 <- XLIM
             }
             if (is.null(ylim) & is.null(xlim))
             {
-              ylim <- c(0, max(max_den_y))
-              xlim <- NULL
+              YLIM2 <- c(0, max(max_den_y))
+              XLIM2 <- NULL
             }
           }
           
-          graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
+          graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = YLIM2, xlim = XLIM2,
                          lty = lty_den, lwd = lwd_den, main = '',
                          col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                               blue = gg_cols[3,1]),
@@ -599,24 +599,24 @@ MCMCtrace <- function(object,
           #set axes limits according to inputs
           if (!is.null(priors) & post_zm == FALSE & is.null(ylim) & is.null(xlim))
           {
-            ylim <- range(c(range(dens$y), PPO_y_rng))
-            xlim <- range(c(range(dens$x), PPO_x_rng))
+            YLIM2 <- range(c(range(dens$y), PPO_y_rng))
+            XLIM2 <- range(c(range(dens$x), PPO_x_rng))
           } else {
             if (!is.null(ylim))
             {
-              ylim <- YLIM
-              xlim <- XLIM
+              YLIM2 <- YLIM
+              XLIM2 <- XLIM
             }
             if (is.null(ylim) & is.null(xlim))
             {
-              ylim <- NULL
-              xlim <- NULL
+              YLIM2 <- NULL
+              XLIM2 <- NULL
             }
           }
           
           #density plot
-          graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = ylim, 
-                         main = '', col = COL_DEN, xlim = xlim, lty = lty_den, 
+          graphics::plot(dens, xlab = xlab_den, ylab = ylab_den, ylim = YLIM2, 
+                         main = '', col = COL_DEN, xlim = XLIM2, lty = lty_den, 
                          lwd = lwd_den, cex.axis = sz_tick_txt,
                          cex.lab = sz_ax_txt, xaxt = XAXT_DEN, yaxt = YAXT_DEN)
           
@@ -785,22 +785,22 @@ MCMCtrace <- function(object,
           #set axes limits according to inputs
           if (!is.null(priors) & post_zm == FALSE & is.null(ylim) & is.null(xlim))
           {
-            ylim <- range(c(0, max(max_den_y), PPO_y_rng))
-            xlim <- range(c(range(rng_den_x), PPO_x_rng))
+            YLIM2 <- range(c(0, max(max_den_y), PPO_y_rng))
+            XLIM2 <- range(c(range(rng_den_x), PPO_x_rng))
           } else {
             if (!is.null(ylim))
             {
-              ylim <- YLIM
-              xlim <- XLIM
+              YLIM2 <- YLIM
+              XLIM2 <- XLIM
             }
             if (is.null(ylim) & is.null(xlim))
             {
-              ylim <- c(0, max(max_den_y))
-              xlim <- NULL
+              YLIM2 <- c(0, max(max_den_y))
+              XLIM2 <- NULL
             }
           }
           
-          graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = ylim, xlim = xlim,
+          graphics::plot(dens[[1]], xlab = xlab_den, ylab = ylab_den, ylim = YLIM2, xlim = XLIM2,
                          lty = lty_den, lwd = lwd_den, main = '',
                          col = grDevices::rgb(red = gg_cols[1,1], green = gg_cols[2,1], 
                                               blue = gg_cols[3,1]),
@@ -833,24 +833,24 @@ MCMCtrace <- function(object,
           #set axes limits according to inputs
           if (!is.null(priors) & post_zm == FALSE & is.null(ylim) & is.null(xlim))
           {
-            ylim <- range(c(range(dens$y), PPO_y_rng))
-            xlim <- range(c(range(dens$x), PPO_x_rng))
+            YLIM2 <- range(c(range(dens$y), PPO_y_rng))
+            XLIM2 <- range(c(range(dens$x), PPO_x_rng))
           } else {
             if (!is.null(ylim))
             {
-              ylim <- YLIM
-              xlim <- XLIM
+              YLIM2 <- YLIM
+              XLIM2 <- XLIM
             }
             if (is.null(ylim) & is.null(xlim))
             {
-              ylim <- NULL
-              xlim <- NULL
+              YLIM2 <- NULL
+              XLIM2 <- NULL
             }
           }
           
           #density plot
-          graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = ylim,
-                         col = COL_DEN, xlim = xlim, lty = lty_den, lwd = lwd_den, main = '',
+          graphics::plot(stats::density(rbind(tmlt)), xlab = xlab_den, ylab = ylab_den, ylim = YLIM2,
+                         col = COL_DEN, xlim = XLIM2, lty = lty_den, lwd = lwd_den, main = '',
                          cex.axis = sz_tick_txt, cex.lab = sz_ax_txt, xaxt = XAXT_DEN, 
                          yaxt = YAXT_DEN)
           
