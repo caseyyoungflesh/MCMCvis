@@ -17,7 +17,7 @@ The package contains five functions:
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
-**This package can be sighted as:**
+**This package can be cited as:**
 
 Youngflesh, C. (2018) MCMCvis: Tools to visualize, manipulate, and summarize MCMC output. *Journal of Open Source Software*, 3(24), 640, https://doi.org/10.21105/joss.00640
 
