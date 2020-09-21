@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.14.2:
+
+- `MCMCplot` can now plot models that have NA for posterior estimates. Useful when plotting two models side-by-side is desired and one model has parameters that the other does not (use MCMCchains to create matrix of draws, add NA-filled cols with missing parameter names, and plot)
+
+
 0.14.1:
 
 - `MCMCtrace` fix undesired behavior when `post_zm` is specified as `FALSE`
