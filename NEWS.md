@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.14.3:
+
+- `MCMCplot` fix bug where error would result when trying to plot a single parameter
+
+
 0.14.2:
 
 - `MCMCplot` can now plot models that have NA for posterior estimates. Useful when plotting two models side-by-side is desired and one model has parameters that the other does not (use MCMCchains to create matrix of draws, add NA-filled cols with missing parameter names, and plot)

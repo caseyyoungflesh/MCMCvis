@@ -274,9 +274,9 @@ MCMCplot <- function(object,
         thin_ci <- c((100 - ((100 - thin)/2)), ((100 - thin)/2)) * 0.01
 
         thick_q <- as.matrix(apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[,idx])
-        thin_q <- as.matrix(apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[,idx])
+        thin_q <- as.matrix(apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[,idx])
 
-        medians <- apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[idx]
+        medians <- apply(chains, 2, function(x) stats::quantile(x, probs = 0.5, na.rm = TRUE))[idx]
       } else {
         stop("'thick' and 'thin' must be single numbers")
       }
