@@ -252,10 +252,10 @@ MCMCplot <- function(object,
         thick_ci <- c((100 - ((100 - thick)/2)), ((100 - thick)/2)) * 0.01
         thin_ci <- c((100 - ((100 - thin)/2)), ((100 - thin)/2)) * 0.01
 
-        thick_q <- apply(chains, 2, stats::quantile, probs = thick_ci)[,idx]
-        thin_q <- apply(chains, 2, stats::quantile, probs = thin_ci)[,idx]
+        thick_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[,idx]
+        thin_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[,idx]
 
-        medians <- apply(chains, 2, stats::quantile, probs = 0.5)[idx]
+        medians <- apply(chains, 2, function(x) stats::quantile(x, probs = 0.5, na.rm = TRUE))[idx]
       } else {
         stop("'thick' and 'thin' must be scalars")
       }
@@ -273,10 +273,10 @@ MCMCplot <- function(object,
         thick_ci <- c((100- ((100 - thick)/2)), ((100 - thick)/2)) * 0.01
         thin_ci <- c((100 - ((100 - thin)/2)), ((100 - thin)/2)) * 0.01
 
-        thick_q <- as.matrix(apply(chains, 2, stats::quantile, probs= thick_ci)[,idx])
-        thin_q <- as.matrix(apply(chains, 2, stats::quantile, probs= thin_ci)[,idx])
+        thick_q <- as.matrix(apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[,idx])
+        thin_q <- as.matrix(apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[,idx])
 
-        medians <- apply(chains, 2, stats::quantile, probs = 0.5)[idx]
+        medians <- apply(chains, 2, function(x) stats::quantile(x, probs = 0.5, na.rm = TRUE))[idx]
       } else {
         stop("'thick' and 'thin' must be single numbers")
       }
@@ -387,8 +387,8 @@ MCMCplot <- function(object,
     if (missing(xlim))
     {
       thin_comb <- c(thin_q, thin_q2)
-      rn <- diff(range(thin_comb)) * PL_SC
-      XLIM <- c((min(thin_comb) - rn), (max(thin_comb) + rn))
+      rn <- diff(range(thin_comb, na.rm = TRUE)) * PL_SC
+      XLIM <- c((min(thin_comb, na.rm = TRUE) - rn), (max(thin_comb, na.rm = TRUE) + rn))
     } else {
       XLIM <- xlim
     }
@@ -644,8 +644,8 @@ MCMCplot <- function(object,
      if (missing(ylim))
      {
        thin_comb <- c(thin_q, thin_q2)
-       rn <- diff(range(thin_comb)) * PL_SC
-       YLIM <- c((min(thin_comb) - rn), (max(thin_comb) + rn))
+       rn <- diff(range(thin_comb, na.rm = TRUE)) * PL_SC
+       YLIM <- c((min(thin_comb, na.rm = TRUE) - rn), (max(thin_comb, na.rm = TRUE) + rn))
      } else {
        YLIM <- ylim
      }

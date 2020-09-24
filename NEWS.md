@@ -1,6 +1,21 @@
 NEWS
 ====
 
+0.14.3:
+
+- `MCMCplot` fix bug where error would result when trying to plot a single parameter
+
+
+0.14.2:
+
+- `MCMCplot` can now plot models that have NA for posterior estimates. Useful when plotting two models side-by-side is desired and one model has parameters that the other does not (use MCMCchains to create matrix of draws, add NA-filled cols with missing parameter names, and plot)
+
+
+0.14.1:
+
+- `MCMCtrace` fix undesired behavior when `post_zm` is specified as `FALSE`
+
+
 0.14.0:
 
 - `MCMCsummary` for model objects fit with `jagsUI`, the function now returns Rhat and n.eff values that coincide with values calculated in that package (e.g., split-chain Rhat), rather than calculating these with the `coda` package. These values are fed into `MCMCtrace` when `Rhat` and/or `n.eff` are specified as `TRUE`.
