@@ -10,7 +10,8 @@ vignette: >
 
 ## Intro
 
-`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. This may be Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
+`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. This may be Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
+
 
 The package contains five functions:
 
@@ -23,7 +24,7 @@ The package contains five functions:
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable, 'publication-ready' output.
 
-All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Model output objects can be inserted directly into the `MCMCvis` functions as an argument.
+All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `mcmc` objects (created with the `coda` or `nimble` packages), `list` objects (created with the `nimble` package), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (chains combined into a single column per parameter - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Model output objects can be inserted directly into the `MCMCvis` functions as an argument.
 
 #### JAGS model
 
@@ -66,6 +67,38 @@ MCMCsummary(jags_out, round = 2)
 ## mu -0.28 2.97 -6.13 -0.14  5.22    1  1397
 ```
 
+
+#### NIMBLE model
+
+```{r, eval = FALSE}
+library(nimble)
+
+# create NIMBLE model
+mf2 <- nimbleCode({
+  for (i in 1:10)
+  {
+    y[i] ~ dnorm(mu, 0.01);
+  }
+  mu ~ dnorm(0, 0.01)
+})
+
+nimble_out <- nimbleMCMC(code = mf2, 
+                         constants = list(N = 10), 
+                         data = data, 
+                         inits = list(mu = 0),
+                         nchains = 4,
+                         niter = 500)
+```
+
+```{r, eval = FALSE}
+# plug object directly into package function
+MCMCsummary(nimble_out, round = 2)
+```
+
+```{r, eval = FALSE}
+##     mean   sd  2.5%   50% 97.5% Rhat n.eff
+## mu -0.03 2.99 -5.76 -0.1  5.88    1  2000
+```
 
 #### Stan model
 

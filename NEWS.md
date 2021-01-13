@@ -3,6 +3,7 @@ NEWS
 
 0.15.0:
 
+- Add support for objects output from the `nimble` package
 -`MCMCpstr` fix bug where the incorrect number of dimensions would be returned when subsetting a param with >1 dim
 
 

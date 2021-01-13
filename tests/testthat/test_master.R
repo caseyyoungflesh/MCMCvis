@@ -14,6 +14,7 @@ load('../testdata/stan_data.rda')
 load('../testdata/matrix_data.rda')
 load('../testdata/jagssamps_data.rda')
 load('../testdata/threed_data.rda')
+load('../testdata/nimble_mF_ch4.rda')
 
 
 
@@ -33,6 +34,8 @@ test_that('MCMCsummary returns output for all supported object types',
             expect_equal(NROW(MCMCsummary(stan_data)), 2)
             #matrix
             expect_equal(NROW(MCMCsummary(matrix_data, Rhat = FALSE)), 3)
+            #NIMBLE (list of matrices output)
+            expect_equal(NROW(MCMCsummary(nimble_mF_ch4)), 1)
             #jags.samples - expect warning
             expect_error(MCMCsummary(jagssamps_data))
           })
@@ -61,6 +64,9 @@ test_that('MCMCpstr displays dimensions correctly for all object types',
             #matrix
             expect_output(str(MCMCpstr(matrix_data)), 'List of 3')
             expect_equal(length(MCMCpstr(matrix_data)$alpha), 1)
+            #NIMBLE (list of matrices output)
+            expect_output(str(MCMCpstr(nimble_mF_ch4)), 'List of 1')
+            expect_equal(length(MCMCpstr(nimble_mF_ch4)$mu), 1)
             #jags.samples - expect warning
             expect_error(MCMCpstr(jagssamps_data))
           })
@@ -83,6 +89,8 @@ test_that('MCMCchains converts all supported object types to mcmc.list',
             expect_is(MCMCchains(stan_data, mcmc.list = TRUE), 'mcmc.list')
             #matrix
             expect_error(MCMCchains(matrix_data, mcmc.list = TRUE))
+            #NIMBLE (list of matrices)
+            expect_is(MCMCchains(nimble_mF_ch4, mcmc.list = TRUE), 'mcmc.list')
             #jags.samples - expect warning
             expect_error(MCMCchains(jagssamps_data, mcmc.list = TRUE))
           })
@@ -212,6 +220,17 @@ test_that('MCMCsummary returns no errors for default and non-default specificati
   expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9)), NA)
   expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9), round = 2), NA)
   expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9), digits = 2), NA)
+  
+  # nimble_mF_ch4 - NIMBLE (list of matrices)
+  expect_error(MCMCsummary(nimble_mF_ch4), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, round = 2), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, digits = 2), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, HPD = TRUE, prob = .9), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, HPD = TRUE, prob = .9, round = 2), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, HPD = TRUE, prob = .9, digits = 2), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, probs = c(.1, .5, .9)), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, probs = c(.1, .5, .9), round = 2), NA)
+  expect_error(MCMCsummary(nimble_mF_ch4, probs = c(.1, .5, .9), digits = 2), NA)
 
 })
 
