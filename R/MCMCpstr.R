@@ -104,8 +104,14 @@ MCMCpstr <- function(object,
     ind <- which(un[i] == names)
 
     #determine how many ',' and therefore how many dimensions for parameter
-    dims <- length(strsplit(onames[ind[1]], split = ',', fixed = TRUE)[[1]])
-
+    #if only one ind, there should only be one dim
+    if (length(ind) == 1)
+    {
+      dims <- 1
+    } else {
+      dims <- length(strsplit(onames[ind[1]], split = ',', fixed = TRUE)[[1]])
+    }
+    
     #scalar or vector
     if (dims == 1)
     {

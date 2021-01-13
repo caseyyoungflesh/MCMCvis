@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.15.0:
+
+-`MCMCpstr` fix bug where the incorrect number of dimensions would be returned when subsetting a param with >1 dim
+
+
 0.14.3:
 
 - `MCMCplot` fix bug where error would result when trying to plot a single parameter
