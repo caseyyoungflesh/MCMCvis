@@ -76,30 +76,38 @@ MCMCsummary <- function(object,
                       Rhat = TRUE,
                       n.eff = TRUE,
                       func = NULL,
-                      func_name = NULL) {
-  
-#--------------------------------------------------------------------------------------------------------------                        
+                      func_name = NULL)
+{
+
+#--------------------------------------------------------------------------------------------------------------
+
 # SORTING BLOCK
-                      
-  if (methods::is(object, 'matrix')) {
+
+  if (methods::is(object, 'matrix'))
+  {
     object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
   } else {
-    if (methods::is(object, 'stanfit')) {
+    if (methods::is(object, 'stanfit'))
+    {
       object2 <- object
     } else {
       # rstanarm
-      if (methods::is(object, 'stanreg')) {
+      if (methods::is(object, 'stanreg'))
+      {
         object2 <- object$stanfit
       } else {
         # brms
-        if (methods::is(object, 'brmsfit')) {
+        if (methods::is(object, 'brmsfit'))
+        {
           object2 <- object$fit
         } else {
           #jagsUI
-          if (methods::is(object, 'jagsUI')) { 
+          if (methods::is(object, 'jagsUI'))
+          { 
             object2 <- MCMCchains(object)
+          } else {
+            object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
           }
-          object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
         }
       }
     }

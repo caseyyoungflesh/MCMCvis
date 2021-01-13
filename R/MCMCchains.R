@@ -66,7 +66,19 @@ MCMCchains <- function(object,
     object <- coda::as.mcmc.list(mclis)
     #end mod as.mcmc
   }
-    
+  
+  #if mcmc object (from nimble) - convert to mcmc.list
+  if (methods::is(object, 'mcmc'))
+  {
+    object <- coda::mcmc.list(object)
+  }
+  
+  #if list object of matrices (from nimble) - convert to mcmc.list
+  if (methods::is(object, 'list'))
+  {
+    object <- coda::mcmc.list(lapply(object, function(x) coda::mcmc(x)))
+  }
+
   #if from rstanarm::stan_glm
   if (methods::is(object, 'stanreg'))
   {
@@ -76,12 +88,14 @@ MCMCchains <- function(object,
   
   if (coda::is.mcmc.list(object) != TRUE &
      !methods::is(object, 'matrix') &
+     !methods::is(object, 'mcmc') &
+     !methods::is(object, 'list') &
      !methods::is(object, 'rjags') &
      !methods::is(object, 'stanfit') &
      !methods::is(object, 'brmsfit') &
      !methods::is(object, 'jagsUI'))
   {
-    stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+    stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
   
   #if from brms::brm
