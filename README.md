@@ -14,7 +14,7 @@ The package contains five functions:
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `MCMCchains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
-
+- `MCMCdiag` - create a text file that summarizes model inputs and outputs
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
@@ -60,6 +60,13 @@ MCMCsummary(MCMC_data, params = 'beta', round = 2)
 #> beta[4]   6.17 10.72 -14.67   6.11  27.27    1 10500
 #> beta[5]   8.42  3.46   1.63   8.45  15.13    1 10500
 #> beta[6] -12.05  2.34 -16.66 -12.05  -7.54    1 10500
+```
+
+```{r}
+MCMCdiag(MCMC_data, file_name = 'model_summary.txt', 
+          object_name = 'model-fit-YYYY-MM-DD.rds', round = 2)
+
+#saves a text file summarizing model input and outputs and saves model output as a '.rds' file
 ```
 
 #### Evaluate
