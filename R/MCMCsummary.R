@@ -10,7 +10,9 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
+#'
+#' @param exact Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). #' If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).
 #'
 #' @param probs Numeric vector where each element in (0,1) representing probabilities used to calculate posterior sample quantiles for the selected parameters. Default is c(0.025, 0.5, 0.975).
 #' 
@@ -59,8 +61,7 @@
 #' MCMCsummary(MCMC_data, params = 'beta', round = 2)
 #'
 #' #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
-#' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
-#' MCMCsummary(MCMC_data, params = c('beta\\[1\\]', 'beta\\[4\\]', 'alpha\\[3\\]'), ISB = FALSE)
+#' MCMCsummary(MCMC_data, params = c('beta[1]', 'beta[4]', 'alpha[3]'), ISB = FALSE, exact = TRUE)
 #'
 #' @export
 
@@ -68,6 +69,7 @@ MCMCsummary <- function(object,
                       params = 'all',
                       excl = NULL,
                       ISB = TRUE,
+                      exact = TRUE,
                       probs = c(0.025, 0.5, 0.975),
                       hpd_prob = 0.95,
                       HPD = FALSE,
@@ -85,7 +87,7 @@ MCMCsummary <- function(object,
 
   if (methods::is(object, 'matrix'))
   {
-    object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = FALSE)
+    object2 <- MCMCchains(object, params, excl, ISB, exact = exact, mcmc.list = FALSE)
   } else {
     if (methods::is(object, 'stanfit'))
     {
@@ -106,7 +108,7 @@ MCMCsummary <- function(object,
           { 
             object2 <- MCMCchains(object)
           } else {
-            object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
+            object2 <- MCMCchains(object, params, excl, ISB, exact = exact, mcmc.list = TRUE)
           }
         }
       }
@@ -202,9 +204,9 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (HPD==FALSE)
+      if (HPD == FALSE)
       {
-        if (length(probs)==1)
+        if (length(probs) == 1)
         {
           bind_q <- data.frame(apply(ch_bind, 2, stats::quantile, probs = probs))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits =3), "%")
@@ -354,7 +356,7 @@ MCMCsummary <- function(object,
       rs_df <- data.frame(object$summary)
     }
     
-    # filtering of parameters from rstan object - from MCMCchains
+    # filtering of parameters from rstan/jagsUI object - from MCMCchains
     if (ISB == TRUE)
     {
       names <- vapply(strsplit(all_params, split = "[", fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
@@ -373,22 +375,26 @@ MCMCsummary <- function(object,
       {
         if (ISB == TRUE)
         {
-          n_excl <- vapply(strsplit(excl, split = "[", fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
-          ind_excl <- which(names %in% n_excl[i])
-          if (length(ind_excl) < 1)
-          {
-            warning(paste0("\"", excl[i], "\"", " not found in MCMC output."))
-          }
-          rm_ind <- c(rm_ind, ind_excl)
+          n_excl <- vapply(strsplit(excl,
+                                    split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
         } else {
           n_excl <- excl
-          ind_excl <- grep(n_excl[i], names, fixed = FALSE)
-          if (length(ind_excl) < 1) {
-            warning(paste0("\"", excl[i], "\"", " not found in MCMC output."))
-          }
-          rm_ind <- c(rm_ind, ind_excl)
         }
+        
+        if (exact == TRUE)
+        {
+          ind_excl <- which(names %in% n_excl[i])
+        } else {
+          ind_excl <- grep(n_excl[i], names, fixed = FALSE)
+        }
+        
+        if (length(ind_excl) < 1)
+        {
+          warning(paste0("\"", excl[i], "\"", " not found in MCMC output. Check 'ISB'' and 'exact' arguments to make sure the desired parsing methods are being used."))
+        }
+        rm_ind <- c(rm_ind, ind_excl)
       }
+      
       if (length(rm_ind) > 0)
       {
         dups <- which(duplicated(rm_ind))
@@ -416,7 +422,7 @@ MCMCsummary <- function(object,
           f_ind <- (1:length(names))[-rm_ind2]
         }
       } else {
-        if (ISB == TRUE)
+        if (exact == TRUE)
         {
           get_ind <- which(names %in% params)
         } else {
@@ -425,7 +431,7 @@ MCMCsummary <- function(object,
         
         if (length(get_ind) < 1)
         {
-          stop(paste0("\"", params, "\"", " not found in MCMC output."))
+          stop(paste0("\"", params, "\"", " not found in MCMC output. Check 'ISB' and 'exact' arguments to make sure the desired parsing methods are being used."))
         }
         if (!is.null(excl))
         {
@@ -448,7 +454,7 @@ MCMCsummary <- function(object,
       grouped <- c()
       for (i in 1:length(params))
       {
-        if (ISB == TRUE)
+        if (exact == TRUE)
         {
           get_ind <- which(names %in% params[i])
         } else {
@@ -457,7 +463,7 @@ MCMCsummary <- function(object,
         
         if (length(get_ind) < 1)
         {
-          warning(paste0("\"", params[i], "\"", " not found in MCMC output."))
+          warning(paste0("\"", params[i], "\"", " not found in MCMC output. Check 'ISB' and 'exact' arguments to make sure the desired parsing methods are being used."))
           (next)()
         }
         grouped <- c(grouped, get_ind)
@@ -496,8 +502,8 @@ MCMCsummary <- function(object,
 # end sort
 
 # convert object to matrix if computing non default intervals or using custom func
-    if (!is.null(func) | HPD==TRUE | 
-        identical(probs, c(0.025, 0.5, 0.975))==FALSE)
+    if (!is.null(func) | HPD == TRUE | 
+        identical(probs, c(0.025, 0.5, 0.975)) == FALSE)
     {
       if (methods::is(object2, 'stanfit'))
       {
@@ -524,14 +530,14 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (HPD==FALSE)
+      if (HPD == FALSE)
       {
         if (length(probs)==1)
         {
           bind_q <- data.frame(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")
         } else {
-          if (identical(probs, c(0.025, 0.5, 0.975))==TRUE)
+          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE)
           {
             bind_LCI <- signif(rs_df["X2.5."][f_ind, 1], digits = digits)
             bind_med <- signif(rs_df["X50."][f_ind, 1], digits = digits)
@@ -548,7 +554,7 @@ MCMCsummary <- function(object,
       {
         if (length(hpd_prob) > 1)
         {
-          stop('specify only a single probability for HPD interval computation.')
+          stop('Specify only a single probability for HPD interval computation.')
         }
         bind_q <- data.frame(signif(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob), digits = digits))
         colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
@@ -562,14 +568,14 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (HPD==FALSE)
+      if (HPD == FALSE)
       {
         if (length(probs)==1)
         {    
           bind_q <- data.frame(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")         
         } else {
-          if (identical(probs, c(0.025, 0.5, 0.975))==TRUE)
+          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE)
           {    
             bind_LCI <- round(rs_df["X2.5."][f_ind, 1], digits = round)
             bind_med <- round(rs_df["X50."][f_ind, 1], digits = round)
@@ -586,7 +592,7 @@ MCMCsummary <- function(object,
       {
         if (length(hpd_prob) > 1)
         {
-          stop('specify only a single probability for HPD interval computation.')
+          stop('Specify only a single probability for HPD interval computation.')
         }
         bind_q <- data.frame(round(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob), digits = round))
         colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  
@@ -600,14 +606,14 @@ MCMCsummary <- function(object,
       colnames(bind_mn) <- "mean"  
       colnames(bind_sd) <- "sd"  
       
-      if (HPD==FALSE)
+      if (HPD == FALSE)
       {
         if (length(probs)==1)
         {
           bind_q <- data.frame(apply(ch_bind, 2, stats::quantile, probs = probs))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
-          if (identical(probs, c(0.025, 0.5, 0.975))==TRUE)
+          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE)
           {    
             bind_LCI <- rs_df["X2.5."][f_ind, 1]
             bind_med <- rs_df["X50."][f_ind, 1]
@@ -624,7 +630,7 @@ MCMCsummary <- function(object,
       {
         if (length(hpd_prob) > 1)
         {
-          stop('specify only a single probability for HPD interval computation.')
+          stop('Specify only a single probability for HPD interval computation.')
         }
         bind_q <- data.frame(coda::HPDinterval(coda::as.mcmc(ch_bind), prob = hpd_prob))
         colnames(bind_q) <- c(paste0(signif(hpd_prob * 100, digits = 3), "%_HPDL"), paste0(signif(hpd_prob * 100, digits = 3), "%_HPDU"))  

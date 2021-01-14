@@ -175,26 +175,40 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
+Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to prevent square brackets from being ignored (ISB is short for 'Ignore Square Brackets'). The `exact` argument can be used to specify whether the parameter name should be matched exactly (after taking into account the `ISB` argument). Therefore, to return a single `alpha` parameter, `ISB = FALSE` and `exact = TRUE` can be used in the following way.
 
 ```{r}
 MCMCsummary(MCMC_data, 
-          params = 'alpha\\[1\\]', 
+          params = 'alpha[1]', 
           ISB = FALSE,
+          exact = TRUE,
           round = 2)
 ```
 
 &nbsp;
 
-If `alpha` has 10 or more parameters (i.e., more than two digits for the index), the `|` (OR) may be needed. For instance, while one could use `alpha[1:10]` to select the first ten indices of the vector `alpha` in R, the regex equivalent to do the same with `MCMCvis` would be `alpha\\[(\\d|[1][0])\\]`. The `\\d` specifies any digit, the `|` represents OR (so any one digit number OR), the `[1]` specifies that the first digit must be one, and the `[0]` specifies that the second digit must be zero (so return any one digit number, or 10, resulting in the equivalent of `alpha[1:10]`). Ranges for each digit can also be specified. For instance, the regex equivalent of the R `alpha[5:15]` would be `alpha\\[([5-9]|[1][0-5])\\]`.
-
-The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `params` argument. This is particularly useful when specifying `ISB = FALSE`. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `params = 'alpha', excl = 'alpha\\[1\\]', ISB = FALSE` can be used. Once again, since the `params` argument takes a regular expression, the square brackets must be escaped using `\\`. When `ISB = TRUE`, an exact match of the specified parameter is required (excluding the square brackets). When `ISB = FALSE`, partial names will be matched. Leaving the default (`ISB = TRUE`) is generally recommended for simplicity. These arguments can be used in any of the functions in the package.
+When `exact = FALSE`, the `params` argument reads like a regular expression. Because of this, square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. This can be useful for returning a specific set of a large number of parameters. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
 
 ```{r}
 MCMCsummary(MCMC_data, 
-          params = 'alpha',
-          excl = 'alpha\\[1\\]', 
+          params = 'alpha\\[1\\]', 
           ISB = FALSE,
+          exact = FALSE,
+          round = 2)
+```
+
+&nbsp;
+
+When using `exact = FALSE`, if `alpha` has 10 or more parameters (i.e., more than two digits for the index), the `|` (OR) may be needed. For instance, while one could use `alpha[1:10]` to select the first ten indices of the vector `alpha` in R, the regex equivalent to do the same with `MCMCvis` would be `alpha\\[(\\d|[1][0])\\]`. The `\\d` specifies any digit, the `|` represents OR (so any one digit number OR), the `[1]` specifies that the first digit must be one, and the `[0]` specifies that the second digit must be zero (so return any one digit number, or 10, resulting in the equivalent of `alpha[1:10]`). Ranges for each digit can also be specified. For instance, the regex equivalent of the R `alpha[5:15]` would be `alpha\\[([5-9]|[1][0-5])\\]`.
+
+The `excl` argument can be used to exclude any parameters. For instance, if all parameters are desired **except** for the `alphas`, `params = 'all', excl = 'alpha', ISB = FALSE, exact = FALSE` can be used. These arguments can be used in any of the functions in the package.
+
+```{r}
+MCMCsummary(MCMC_data, 
+          params = 'all',
+          excl = 'alpha', 
+          ISB = FALSE,
+          exact = FALSE,
           round = 2)
 ```
 
@@ -297,8 +311,9 @@ dim(ex$alpha)
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
-        params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+        params = c('beta[1]', 'beta[2]', 'beta[3]'),
         ISB = FALSE,
+        exact = TRUE,
         pdf = FALSE)
 ```
 
@@ -332,8 +347,9 @@ MCMCtrace(MCMC_data,
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
-        params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+        params = c('beta[1]', 'beta[2]', 'beta[3]'),
         ISB = FALSE,
+        exact = TRUE,
         iter = 100,
         ind = TRUE,
         pdf = FALSE)
@@ -349,8 +365,9 @@ The `priors` argument takes a matrix as input, with each column representing a p
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data,
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           pdf = FALSE,
           Rhat = TRUE,
@@ -365,8 +382,9 @@ Plots can be scaled to visualize both the posterior and the prior distribution u
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data, 
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           pdf = FALSE,
           post_zm = FALSE)
@@ -379,8 +397,9 @@ Percent overlap can be output to an R object as well using the `PPO_out` argumen
 ```{r}
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 PPO <- MCMCtrace(MCMC_data, 
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           plot = FALSE,
           PPO_out = TRUE)
@@ -397,8 +416,9 @@ Additional arguments can be used to change the limits of the density plots, axes
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data,
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           pdf = FALSE,
           Rhat = TRUE,
@@ -424,8 +444,9 @@ If simulated data were used to fit the model, the generating values used to simu
 #generating values for each parameter used to simulate data
 GV <- c(-10, -5.5, -15)
 MCMCtrace(MCMC_data,
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           gvals = GV,
           pdf = FALSE)
 ```
@@ -538,8 +559,9 @@ Other elements can be added to `MCMCplot` figures as well. For instance, to add 
 ```{r}
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 PPO <- MCMCtrace(MCMC_data, 
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           plot = FALSE,
           PPO_out = TRUE)
@@ -552,8 +574,9 @@ Then use `MCMCplot` to create the posterior plot and loop to plot PPO as text on
 ```{r, fig.width=5, fig.height=6}
 #make caterpillar plot for beta parameters
 MCMCplot(MCMC_data, 
-         params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
-         ISB = FALSE,
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          ISB = FALSE,
+          exact = TRUE,
          xlim = c(-60, 35))
 
 #each parameter is a y-unit of 1

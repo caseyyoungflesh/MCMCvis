@@ -99,32 +99,44 @@ test_that('MCMCchains converts all supported object types to mcmc.list',
 test_that('MCMCsummary values agree with manual values derived from posterior chains', { 
 
   # mcmc.list - mean
-  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[1]),
-    round(mean(MCMCchains(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE)), 2))
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+                                      ISB = FALSE, exact = TRUE, round = 2)[1]),
+    round(mean(MCMCchains(MCMC_data, param = 'alpha[1]', ISB = FALSE, exact = TRUE)), 2))
   
   # mcmc.list - sd
-  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[2]),
-    round(sd(MCMCchains(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE)), 2))
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', ISB = FALSE, 
+                                      exact = TRUE, round = 2)[2]),
+    round(sd(MCMCchains(MCMC_data, param = 'alpha[1]', ISB = FALSE, exact = TRUE)), 2))
 
   # mcmc.list - 2.5%
-  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[3]),
-    round(quantile(MCMCchains(MCMC_data,param = 'alpha\\[1\\]', ISB = FALSE), probs = 0.025)[[1]], 2))
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+                                      ISB = FALSE, exact = TRUE, round = 2)[3]),
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]', ISB = FALSE, 
+                              exact = TRUE), probs = 0.025)[[1]], 2))
 
   # mcmc.list - 50%
-  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[4]),
-    round(quantile(MCMCchains(MCMC_data,param = 'alpha\\[1\\]', ISB = FALSE), probs = 0.5)[[1]], 2))
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+                                      ISB = FALSE, exact = TRUE, round = 2)[4]),
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]', 
+                              ISB = FALSE, exact = TRUE), probs = 0.5)[[1]], 2))
 
   # mcmc.list - 97.5%
-  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[5]),
-    round(quantile(MCMCchains(MCMC_data,param = 'alpha\\[1\\]', ISB = FALSE), probs = 0.975)[[1]], 2))
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+                                      ISB = FALSE, exact = TRUE, round = 2)[5]),
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]', 
+                              ISB = FALSE, exact = TRUE), probs = 0.975)[[1]], 2))
   
   # mcmc.list - rhat
-  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, round = 2)[6]),
-    round(coda::gelman.diag(MCMCchains(MCMC_data, param = 'alpha\\[1\\]', ISB = FALSE, mcmc.list = TRUE))$psrf[,1], 2))
+  expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+                                      ISB = FALSE, exact = TRUE, round = 2)[6]),
+    round(coda::gelman.diag(MCMCchains(MCMC_data, param = 'alpha[1]', 
+                                       ISB = FALSE, exact = TRUE, mcmc.list = TRUE))$psrf[,1], 2))
 
   # stanfit - func = mean
-  expect_equal(as.numeric(MCMCsummary(stan_data, param = 'mu', ISB = FALSE, round = 2, func = mean)$func),
-               as.numeric(MCMCsummary(stan_data, param = 'mu', ISB = FALSE, round = 2)['mean']))
+  expect_equal(as.numeric(MCMCsummary(stan_data, param = 'mu', 
+                                      ISB = FALSE, exact = TRUE, round = 2, func = mean)$func),
+               as.numeric(MCMCsummary(stan_data, param = 'mu', 
+                                      ISB = FALSE, exact = TRUE, round = 2)['mean']))
     
   })
 
@@ -233,6 +245,5 @@ test_that('MCMCsummary returns no errors for default and non-default specificati
   expect_error(MCMCsummary(nimble_mF_ch4, probs = c(.1, .5, .9), digits = 2), NA)
 
 })
-
 
 # Add test to make sure colnames and rownames are correct for each object type (MCMCsummary, MCMCchains, MCMCpstr?)

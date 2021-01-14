@@ -13,7 +13,9 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
+#'
+#' @param exact Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). #' If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).
 #'
 #' @param ref Value indicating where vertical reference line should be created and what value to use a reference for caterpillar median coloration.
 #'
@@ -107,8 +109,7 @@
 #' MCMCplot(MCMC_data, params = 'beta')
 #'
 #' #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
-#' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
-#' MCMCplot(MCMC_data, params = c('beta\\[1\\]', 'beta\\[4\\]', 'alpha\\[3\\]'), ISB = FALSE)
+#' MCMCplot(MCMC_data, params = c('beta[1]', 'beta[4]', 'alpha[3]'), ISB = FALSE, exact = TRUE)
 #'
 #' #Rank parameters by posterior mean
 #' MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
@@ -125,6 +126,7 @@ MCMCplot <- function(object,
                      params = 'all',
                      excl = NULL,
                      ISB = TRUE,
+                     exact = TRUE,
                      ref = 0,
                      ref_ovl = FALSE,
                      col = 'black',
@@ -151,11 +153,11 @@ MCMCplot <- function(object,
                      pos_tick,
                      mar = c(5.1, 4.1, 4.1, 2.1))
 {
-  data <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
+  data <- MCMCchains(object, params = params, excl = excl, ISB = ISB, exact = exact)
 
   if (!is.null(object2))
   {
-    data2 <- MCMCchains(object2, params = params, excl = excl, ISB = ISB)
+    data2 <- MCMCchains(object2, params = params, excl = excl, ISB = ISB, exact = exact)
     
     if (!identical(colnames(data), colnames(data2)))
     {
