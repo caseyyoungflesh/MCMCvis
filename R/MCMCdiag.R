@@ -57,6 +57,41 @@ MCMCdiag <- function(object,
                      digits = NULL,
                      round = NULL)
 {
+  #sort object types 
+  if (methods::is(object, 'brmsfit'))
+  {
+    #extract stanfit portion of object
+    object2 <- object$fit
+  } else {
+    if (methods::is(object, 'stanreg'))
+    {
+      object2 <- object$stanfit
+    } else {
+      #if mcmc object (from nimble) - convert to mcmc.list
+      if (methods::is(object, 'mcmc'))
+      {
+        object2 <- coda::mcmc.list(object)
+      } else {
+        #if mcmc object (from nimble) - convert to mcmc.list
+        if (methods::is(object, 'list'))
+        {
+          object2 <- coda::mcmc.list(lapply(object, function(x) coda::mcmc(x)))
+        } else {
+          object2 <- object
+        }
+      }
+    }
+  }
+  
+  if (coda::is.mcmc.list(object2) != TRUE &
+      !methods::is(object2, 'matrix') &
+      !methods::is(object2, 'rjags') &
+      !methods::is(object2, 'stanfit') &
+      !methods::is(object2, 'jagsUI'))
+  {
+    stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+  }
+  
   #filename
   if (!missing(file_name))
   {
@@ -71,322 +106,246 @@ MCMCdiag <- function(object,
     fn2 <- paste0(wd, '/MCMCdiag.txt')
   }
   
-  # #rstanarm and brms object types -> convert to stan
-  # if (methods::is(object, ''))
-  # {
-  # }
   
-  # #other object types -> convert to mcmc.list
-  # if (methods::is(object, ''))
-  # {
-  # }
-  
-  #stan object class
-  if (methods::is(object, 'stanfit'))
+  #Stan object class
+  if (methods::is(object2, 'stanfit'))
   {
     #get total elapsed time - in mins
-    t_elapsed_time_pch <- rstan::get_elapsed_time(object)
-    t_elapsed_time <- round(max(apply(t_elapsed_time_pch, 1, sum)) / 60, 2)
+    t_elapsed_time_pch <- rstan::get_elapsed_time(object2)
+    time <- round(max(apply(t_elapsed_time_pch, 1, sum)) / 60, 2)
     
     #sampler inputs
-    stan_args <- object@stan_args[[1]]
+    stan_args <- object2@stan_args[[1]]
     
     iter <- stan_args$iter
     warmup <- stan_args$warmup
     thin <- stan_args$thin
-    nchains <- length(object@stan_args)
+    nchains <- length(object2@stan_args)
+    burnin <- NULL
     
     #may or may not have this info
     adapt_delta <- stan_args$control$adapt_delta
     max_treedepth <- stan_args$control$max_treedepth
     initial_stepsize <- stan_args$control$stepsize
     
-    SUMMARY <- MCMCvis::MCMCsummary(object, params = params, excl = excl, 
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
                                     ISB = ISB, exact = exact, digits = digits, round = round)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     
-    sampler_params <- rstan::get_sampler_params(object, inc_warmup = FALSE)
+    sampler_params <- rstan::get_sampler_params(object2, inc_warmup = FALSE)
     mn_stepsize <- sapply(sampler_params, 
                           function(x) mean(x[, 'stepsize__']))
     mn_treedepth <- sapply(sampler_params, 
                            function(x) mean(x[, 'treedepth__']))
     accept_stat <- sapply(sampler_params, 
                           function(x) mean(x[, 'accept_stat__']))
-    num_diverge <- rstan::get_num_divergent(object)
-    num_tree <- rstan::get_num_max_treedepth(object)
-    num_BFMI <- length(rstan::get_low_bfmi_chains(object))
-    
-    #sampler stats for each chain
-    # sampler_params <- rstan::get_sampler_params(object, inc_warmup = inc_warmup)
-    # mn_stepsize <- round(sapply(sampler_params, 
-    #                           function(x) mean(x[, 'stepsize__'])), round)
-    # mn_treedepth <- round(sapply(sampler_params, 
-    #                           function(x) mean(x[, 'treedepth__'])), round)
-    # # # mn_energy <- round(sapply(sampler_params, 
-    # # #                           function(x) mean(x[, 'energy__'])), round)
-    # accept_stat <- round(sapply(sampler_params, 
-    #                             function(x) mean(x[, 'accept_stat__'])), round)
-
-    # #get elapsed time per chain
-    # etime <- get_elapsed_time(object)
-    # warmup_time <- round(etime[,1], 0)
-    # sampling_time <- round(etime[,1], 0)
-    # #elapsed_time <- as.character(round(get_elapsed_time(object), 0)) #in seconds
-    # #colnames(elapsed_time) <- c('warmup_time', 'sampling_time')
-    
-    # #chain specific metrics
-    # ch_metrics <- data.frame(warmup_time, sampling_time, 
-    #                          n_divergent, n_exceed_max_tree, 
-    #                          BFMI, mn_stepsize, mn_treedepth,
-    #                          mn_energy, accept_stat)
-
-    # colnames(ch_metrics) <- c('Total\ runtime\ (sec)',
-    #                           'Total iterations',
-    #                           'Warmup',
-    #                           'Number\ divergent\ iter',
-    #                           'Number\ iter\ exceeding\ max\ tree\ depth',
-    #                           'BFMI\ (warnings\ generated\ < 0.2)',
-    #                           'Mean\ stepsize',
-    #                           'Mean\ treedepth',
-    #                           'Mean\ energy',
-    #                           'Accept\ stat')
-    
-    # #calc max digits for row names
-    # digits_rows <- nchar(colnames(ch_metrics))
-    # max_dr <- max(digits_rows) + 2
-    
-    # #calc max digits for spaces to separate cols
-    # #NEED SEPARATE METRICS FOR EACH COLUMN (due to potential differing lengths)
-    # for (i in 1:nchains)
-    # {
-    #   print(nchar(ch_metrics[i,]))
-    # }
-    # apply(paste0(ch_metrics), 2, function(x) nchar(paste0(x)))
-    # digits_ch <- paste0(ch_metrics[1,])
-    # max_dch <- max(digits_ch) + 2
-    # 
-    # 
-    # #need at least 9 spaces between cols for chain-level diagnostics (for colnames)
-    # vdch <- as.vector(digits_ch)
-    # if (max_dch > 9)
-    # {
-    #   spaces <- (max_dch - vdch)
-    #   ch_sp <- max_dch + 2
-    # } else {
-    #   spaces <- rep(9, length(digits_ch)) - vdch
-    #   ch_sp <- 2
-    # }
-    
-    #create .txt file
-    options(max.print = 1e8)
-    sink(fn2)
-    cat(paste0('Information and diagnostics \n'))
-    cat(paste0('=========================== \n'))
-    if (!missing(model_name))
-    {
-    cat(paste0('Model name:                       ', model_name, ' \n'))
-    }
-    cat(paste0('Time elapsed (min):               ', t_elapsed_time, ' \n'))
-    cat(paste0('Total iter:                       ', iter, ' \n'))
-    cat(paste0('Warmup:                           ', warmup, ' \n'))
-    cat(paste0('Thin:                             ', thin, ' \n'))
-    cat(paste0('Num chains:                       ', nchains, ' \n'))
-    if (!is.null(adapt_delta))
-    {
-    cat(paste0('Adapt delta (specified):          ', adapt_delta, ' \n'))
-    }
-    if (!is.null(max_treedepth))
-    {
-    cat(paste0('Max treedepth (specified):        ', max_treedepth, ' \n'))
-    }
-    if (!is.null(initial_stepsize))
-    {
-    cat(paste0('Initial stepsize (specified):     ', initial_stepsize, ' \n'))
-    }
-    cat(paste0('Mean accept stat:                 ', round(mean(accept_stat), 2), ' \n'))
-    cat(paste0('Mean treedepth:                   ', round(mean(mn_treedepth), 1), ' \n'))
-    cat(paste0('Mean stepsize:                    ', round(mean(mn_stepsize), 5), ' \n'))
-    cat(paste0('Num divergent transitions:        ', num_diverge, ' \n'))
-    cat(paste0('Num max tree depth exceeds:       ', num_tree, ' \n'))
-    cat(paste0('Num chains with BFMI warnings:    ', num_BFMI, ' \n'))
-    cat(paste0('Max Rhat:                         ', max_Rhat, ' \n'))
-    cat(paste0('Min n.eff:                        ', min_n.eff, ' \n'))
-    cat(paste0('\n'))
-    cat(paste0('\n'))
-    # cat(paste0('Chain-level diagnostics \n'))
-    # cat(paste0('======================= \n'))
-    # cat(paste0(paste(rep(' ', max_dr + 2), collapse = ''),
-    #            'chain 1',
-    #            paste(rep(' ', ch_sp), collapse = ''),
-    #            'chain 2',
-    #            paste(rep(' ', ch_sp), collapse = ''),
-    #            'chain 3',
-    #            ' \n'))
-    # 
-    # #generalize to arbitrary # of chains
-    # cat(paste0('Warmup time (sec): ', 
-    #            paste(rep(' ', c(max_dr - digits_rows[1])), collapse = ''),
-    #            warmup_time[1], 
-    #            paste(rep(' ', spaces[1]), collapse = ''),
-    #            warmup_time[2],
-    #            paste(rep(' ', spaces[2]), collapse = ''),
-    #            warmup_time[3], ' \n'))
-    # cat(paste0('Sampling time (sec): ',
-    #            paste(rep(' ', c(max_dr - digits_rows[2])), collapse = ''),
-    #            sampling_time[1], 
-    #            paste(rep(' ', spaces[4]), collapse = ''),
-    #            sampling_time[2],
-    #            paste(rep(' ', spaces[5]), collapse = ''),
-    #            sampling_time[3], ' \n'))
-    # cat(paste0('Number iter divergent: ', 
-    #            paste(rep(' ', c(max_dr - digits_rows[3])), collapse = ''),
-    #            n_divergent[1], 
-    #            paste(rep(' ', spaces[7]), collapse = ''),
-    #            n_divergent[2],
-    #            paste(rep(' ', spaces[8]), collapse = ''),
-    #            n_divergent[3], ' \n'))
-    # cat(paste0('Number iter exceeding max treedepth: ',
-    #            paste(rep(' ', c(max_dr - digits_rows[4]) + 1), collapse = ''),
-    #            n_exceed_max_tree[1], 
-    #            paste(rep(' ', spaces[10]), collapse = ''),
-    #            n_exceed_max_tree[2],
-    #            paste(rep(' ', spaces[11]), collapse = ''),
-    #            n_exceed_max_tree[3], ' \n'))
-    # cat(paste0('BFMI (warnings generated < 0.2): ', 
-    #            paste(rep(' ', c(max_dr - digits_rows[5])), collapse = ''),
-    #            BFMI[1], 
-    #            paste(rep(' ', spaces[13]), collapse = ''),
-    #            BFMI[2],
-    #            paste(rep(' ', spaces[14]), collapse = ''),
-    #            BFMI[3], ' \n'))
-    # cat(paste0('Mean stepsize: ', 
-    #            paste(rep(' ', c(max_dr - digits_rows[6])), collapse = ''),
-    #            mn_stepsize[1], 
-    #            paste(rep(' ', spaces[16]), collapse = ''),
-    #            mn_stepsize[2],
-    #            paste(rep(' ', spaces[17]), collapse = ''),
-    #            mn_stepsize[3], ' \n'))
-    # cat(paste0('Mean treedepth: ', 
-    #            paste(rep(' ', c(max_dr - digits_rows[7])), collapse = ''),
-    #            mn_treedepth[1], 
-    #            paste(rep(' ', spaces[19]), collapse = ''),
-    #            mn_treedepth[2],
-    #            paste(rep(' ', spaces[20]), collapse = ''),
-    #            mn_treedepth[3], ' \n'))
-    # cat(paste0('Mean energy: ', 
-    #            paste(rep(' ', c(max_dr - digits_rows[8])), collapse = ''),
-    #            mn_energy[1], 
-    #            paste(rep(' ', spaces[22]), collapse = ''),
-    #            mn_energy[2],
-    #            paste(rep(' ', spaces[23]), collapse = ''),
-    #            mn_energy[3], ' \n'))
-    # cat(paste0('Accept stat: ', 
-    #            paste(rep(' ', c(max_dr - digits_rows[9])), collapse = ''),
-    #            accept_stat[1], 
-    #            paste(rep(' ', spaces[25]), collapse = ''),
-    #            accept_stat[2],
-    #            paste(rep(' ', spaces[26]), collapse = ''),
-    #            accept_stat[3], ' \n'))
-    # cat(paste0('\n'))
-    # cat(paste0('\n'))
-    if (summary == TRUE)
-    {
-      cat(paste0('Model summary \n'))
-      cat(paste0('============= \n'))
-      print(SUMMARY)
-    }
-    sink()
+    num_diverge <- rstan::get_num_divergent(object2)
+    num_tree <- rstan::get_num_max_treedepth(object2)
+    num_BFMI <- length(rstan::get_low_bfmi_chains(object2))
   }
   
-  #non-stan/non-jagsUI object types - convert to mcmc.list object
-  if (methods::is(object, 'mcmc.list'))
+  #jagsUI object
+  if (methods::is(object2, 'jagsUI'))
   {
     #jagsUI has runtime, iter, burnin, iter, thin
-    t_elapsed_time <- round(object$mcmc.info$elapsed.mins, 2)
-    iter <- object$mcmc.info$n.samples #n.samples is total iter from jagsUI
-    burnin <- object$mcmc.info$n.burnin
-    thin <- object$mcmc.info$n.thin
-    nchains <- object$mcmc.info$n.chains
+    time <- round(object2$mcmc.info$elapsed.mins, 2)
+    iter <- object2$mcmc.info$n.iter
+    burnin <- object2$mcmc.info$n.burnin
+    thin <- object2$mcmc.info$n.thin
+    nchains <- object2$mcmc.info$n.chains
     
-    SUMMARY <- MCMCvis::MCMCsummary(object, params = params, excl = excl, 
+    #define as NULL for non-stan models
+    warmup <- NULL
+    adapt_delta <- NULL
+    max_treedepth <- NULL
+    initial_stepsize <- NULL
+    mn_stepsize <- NULL
+    mn_treedepth <- NULL
+    accept_stat <- NULL
+    num_diverge <- NULL
+    num_tree <- NULL
+    num_BFMI <- NULL
+    
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
                                     ISB = ISB, exact = exact, digits = digits, round = round)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
-    
-    #create .txt file
-    options(max.print = 1e8)
-    sink(fn2)
-    cat(paste0('Model-level information and diagnostics \n'))
-    cat(paste0('======================================= \n'))
-    if (!missing(model_name))
-    {
-      cat(paste0('Model name:             ', model_name, ' \n'))
-    }
-    cat(paste0('Time elapsed (min):     ', t_elapsed_time, ' \n'))
-    cat(paste0('Total iter:             ', iter, ' \n'))
-    cat(paste0('Burn-in:                ', burnin, ' \n'))
-    cat(paste0('Thin:                   ', thin, ' \n'))
-    cat(paste0('Num chains:             ', nchains, ' \n'))
-    cat(paste0('Max Rhat:               ', max_Rhat, ' \n'))
-    cat(paste0('Min n.eff:              ', min_n.eff, ' \n'))
-    cat(paste0('\n'))
-    cat(paste0('\n'))
-    if (summary == TRUE)
-    {
-      cat(paste0('Model summary \n'))
-      cat(paste0('============= \n'))
-      print(SUMMARY)
-    }
-    sink()
   }
   
-  
-  #non-stan/non-jagsUI object types - convert to mcmc.list object
-  if (methods::is(object, 'mcmc.list'))
+  #mcmc.list objects
+  if (methods::is(object2, 'mcmc.list'))
   {
     #mcmc.list
-    #no runtime for mcmc.list
-    set <- attr(object[[1]], 'mcpar') #start, end, thin  
+    time <- NULL #no runtime for mcmc.list
+    set <- attr(object2[[1]], 'mcpar') #start, end, thin  
     iter <- set[2]
     burnin <- set[1] - 1
     thin <- set[3]
-    nchains <- length(object)
+    nchains <- length(object2)
     
-    SUMMARY <- MCMCvis::MCMCsummary(object, params = params, excl = excl, 
+    if (burnin == 0)
+    {
+      warning("According to provided 'object', burn-in = 0. Burn-in will not be printed to the diagnostic text file. Note that burn-in information cannot be extracted from 'nimble' output.")
+      burnin <- NULL
+    }
+    
+    #define as NULL for non-stan models
+    warmup <- NULL
+    adapt_delta <- NULL
+    max_treedepth <- NULL
+    initial_stepsize <- NULL
+    mn_stepsize <- NULL
+    mn_treedepth <- NULL
+    accept_stat <- NULL
+    num_diverge <- NULL
+    num_tree <- NULL
+    num_BFMI <- NULL
+    
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
                                     ISB = ISB, exact = exact, digits = digits, round = round)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
-    
-    #create .txt file
-    options(max.print = 1e8)
-    sink(fn2)
-    cat(paste0('Model-level information and diagnostics \n'))
-    cat(paste0('======================================= \n'))
-    if (!missing(model_name))
-    {
-    cat(paste0('Model name:             ', model_name, ' \n'))
-    }
-    if (!missing(t_elapsed_time))
-    {
-    cat(paste0('Time elapsed (min):     ', t_elapsed_time, ' \n'))
-    }
-    cat(paste0('Total iter:             ', iter, ' \n'))
-    cat(paste0('Burn-in:                ', burnin, ' \n'))
-    cat(paste0('Thin:                   ', thin, ' \n'))
-    cat(paste0('Num chains:             ', nchains, ' \n'))
-    cat(paste0('Max Rhat:               ', max_Rhat, ' \n'))
-    cat(paste0('Min n.eff:              ', min_n.eff, ' \n'))
-    cat(paste0('\n'))
-    cat(paste0('\n'))
-    if (summary == TRUE)
-    {
-      cat(paste0('Model summary \n'))
-      cat(paste0('============= \n'))
-      print(SUMMARY)
-    }
-    sink()
   }
+  
+  #rjags objects
+  if (methods::is(object2, 'rjags'))
+  {
+    #rjags
+    time <- NULL #no runtime for mcmc.list
+    iter <- object2$BUGSoutput$n.iter
+    burnin <- object2$BUGSoutput$n.burnin
+    thin <- object2$BUGSoutput$n.thin
+    nchains <- object2$BUGSoutput$n.chains
+    
+    #define as NULL for non-stan models
+    warmup <- NULL
+    adapt_delta <- NULL
+    max_treedepth <- NULL
+    initial_stepsize <- NULL
+    mn_stepsize <- NULL
+    mn_treedepth <- NULL
+    accept_stat <- NULL
+    num_diverge <- NULL
+    num_tree <- NULL
+    num_BFMI <- NULL
+    
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
+                                    ISB = ISB, exact = exact, digits = digits, round = round)
+    max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
+    min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
+  }
+  
+  #matrix objects
+  if (methods::is(object2, 'matrix'))
+  {
+    #mcmc.list
+    time <- NULL #no runtime for mcmc.list
+    iter <- NROW(object2)
+    burnin <- NULL
+    thin <- NULL
+    nchains <- 1
+    
+    #define as NULL for non-stan models
+    warmup <- NULL
+    adapt_delta <- NULL
+    max_treedepth <- NULL
+    initial_stepsize <- NULL
+    mn_stepsize <- NULL
+    mn_treedepth <- NULL
+    accept_stat <- NULL
+    num_diverge <- NULL
+    num_tree <- NULL
+    num_BFMI <- NULL
+    
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
+                                    ISB = ISB, exact = exact, digits = digits, round = round)
+    max_Rhat <- NULL
+    min_n.eff <- NULL
+  }
+  
+  #create .txt file
+  options(max.print = 1e8)
+  sink(fn2)
+  cat(paste0('Information and diagnostics \n'))
+  cat(paste0('=========================== \n'))
+  if (!missing(model_name))
+  {
+  cat(paste0('Model name:                       ', model_name, ' \n'))
+  }
+  if (!is.null(time))
+  {
+  cat(paste0('Run time (min):                   ', time, ' \n'))
+  }
+  cat(paste0('Total iter:                       ', iter, ' \n'))
+  if (!is.null(warmup))
+  {
+  cat(paste0('Warmup:                           ', warmup, ' \n'))
+  }
+  if (!is.null(burnin))
+  {
+  cat(paste0('Burn-in:                          ', burnin, ' \n'))
+  }
+  if (!is.null(thin))
+  {
+  cat(paste0('Thin:                             ', thin, ' \n'))
+  }
+  cat(paste0('Num chains:                       ', nchains, ' \n'))
+  if (!is.null(adapt_delta))
+  {
+  cat(paste0('Adapt delta (specified):          ', adapt_delta, ' \n'))
+  }
+  if (!is.null(max_treedepth))
+  {
+  cat(paste0('Max tree depth (specified):       ', max_treedepth, ' \n'))
+  }
+  if (!is.null(initial_stepsize))
+  {
+  cat(paste0('Initial step size (specified):    ', initial_stepsize, ' \n'))
+  }
+  if (!is.null(accept_stat))
+  {
+  cat(paste0('Mean accept stat:                 ', round(mean(accept_stat), 2), ' \n'))
+  }
+  if (!is.null(mn_treedepth))
+  {
+  cat(paste0('Mean tree depth:                  ', round(mean(mn_treedepth), 1), ' \n'))
+  }
+  if (!is.null(mn_stepsize))
+  {
+  cat(paste0('Mean step size:                   ', round(mean(mn_stepsize), 4), ' \n'))
+  }
+  if (!is.null(num_diverge))
+  {
+  cat(paste0('Num divergent transitions:        ', num_diverge, ' \n'))
+  }
+  if (!is.null(num_tree))
+  {
+  cat(paste0('Num max tree depth exceeds:       ', num_tree, ' \n'))
+  }
+  if (!is.null(num_BFMI))
+  {
+  cat(paste0('Num chains with BFMI warnings:    ', num_BFMI, ' \n'))
+  }
+  if (!is.null(max_Rhat))
+  {
+  cat(paste0('Max Rhat:                         ', max_Rhat, ' \n'))
+  }
+  if (!is.null(min_n.eff))
+  {
+  cat(paste0('Min n.eff:                        ', min_n.eff, ' \n'))
+  }
+  cat(paste0('\n'))
+  cat(paste0('\n'))
+  if (summary == TRUE)
+  {
+    cat(paste0('Model summary \n'))
+    cat(paste0('============= \n'))
+    print(SUMMARY)
+  }
+  sink()
+  
+  
   
   #save model object
   if (save_object == TRUE)
@@ -402,7 +361,7 @@ MCMCdiag <- function(object,
       }
       saveRDS(object, file = on2)
     } else {
-      saveRDS(object, files = paste0(wd, '/model_fit.rds'))
+      saveRDS(object, file = paste0(wd, '/model_fit.rds'))
     }
   }
   
