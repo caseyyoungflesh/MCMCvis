@@ -20,7 +20,7 @@ The package contains six functions:
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `MCMCchains` - extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
-- `MCMCdiag` - create a .txt file and save specified objects that summarize model inputs, outputs, and diagnostics
+- `MCMCdiag` - create a `.txt` file and save specified objects that summarize model inputs, outputs, and diagnostics
 
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable, 'publication-ready' output.
@@ -489,7 +489,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-`ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. Parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
+`ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
@@ -593,8 +593,38 @@ for (i in 1:NROW(PPO))
 
 ## MCMCdiag
 
+`MCMCdiag` is used to create a `.txt` file to summarize model inputs, output, and diagnostics. Options can be specified to save model output as an `.rds` file, create a new directory to store this file, save other objects of interest (such as data files or session information) as `.rds` files, and to copy files of interest (such as the version of the `R` script used to fit a model or the associated `.stan` or `.jags` file) to the created directory.
 
+Output presented in the `.txt` file varies by model fit object type but includes: model run time, number of warmup/burn-in iterations, total iterations, thinning rate, number of chains, specified adapt delta, specified max tree depth, specific initial step size, mean accept stat, mean tree depth, mean step size, number of divergent transitions, number max tree depth exceeds, number of chains with BHMI warnings, max Rhat (maximum Rhat of any parameter printed), min n.eff (minimum n.eff of any parameter printed), parameter summary information (passed from `MCMCsummary`), and any additional information fed to the `add_field` argument. See documentation for specific software used to fit model for more information on particular diagnostics. As with the other functions in the package, particular parameters of interest can be specified for the summary information (though typically all parameters will be of interest as the purpose of this function is to have a record of the summary information). 
 
+This function can facilitate more reproducible workflows and more organized versioning of model results. For instance the following function call:
+
+-creates a directory within `Results/` named `model-YYYY-MM-DD/`
+-saves a `.txt` file named `model-summary-YYYY-MM-DD.txt` within that new directory containing model inputs, outputs, and diagnostics (with an additional user-specified field denoting the data version used to fit the model)
+-saves the `model_fit` object provided to the function as a `.rds` file (named `model-fit-YYYY-MM-DD.rds`) within the new directory
+-saves the `DATA` object (in this case, used to fit the model) as a `.rds` file (named `model-data-YYYY-MM-DD.rds`)
+-saves the output from `sessionInfo`, which provides information on the `R` session when the function was run as a `.rds` file (named `session-info-YYYY-MM-DD.rds`)
+-copies two files, `model.stan` (`.stan` file specifying the model) and `fit-model.R` (the script used to fit the model) into the new directory as `model-YYYY-MM-DD.stan` and `fit-model-YYYY-MM-DD.R`, respectively
+
+```{r, eval = FALSE}
+MCMCdiag(model_fit, 
+         round = 3,
+         file_name = 'model-summary-YYYY-MM-DD',
+         dir = 'Results',
+         mkdir = 'model-YYYY-MM-DD',
+         add_field = '1.0',
+         add_field_names = 'Data version',
+         save_obj = TRUE,
+         obj_name = 'model-fit-YYYY-MM-DD',
+         add_obj = list(DATA, sessionInfo()),
+         add_obj_names = c('model-data-YYYY-MM-DD', 
+                           'session-info-YYYY-MM-DD'),
+         cp_file = c('model.stan', 'fit-model.R'),
+         cp_file_names = c('model-YYYY-MM-DD.stan, fit-model-YYYY-MM-DD.R'))
+
+```
+
+In this way, a complete record of the script, the model file, and the data used to fit the model, the model output, `R` session information, and a summary of the model output are stored in a dated directory. Results from a particular model run can then be easily referenced in the future. A particular version of the model/data can be easily rerun using these resources. While this is one use case, any combination of options can be used and any additional objects can be saved and files copied depending on the desires of the user.
 
 
 ## References
