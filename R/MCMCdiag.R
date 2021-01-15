@@ -43,16 +43,18 @@
 
 
 MCMCdiag <- function(object, 
-                     open_txt = TRUE,
                      file_name,
+                     wd = getwd(), #absolute path or relative to current dir
+                     mkdir,
                      add_field,
                      add_field_names,
-                     save_obj = TRUE,
+                     save_object = FALSE,
                      obj_name,
-                     add_obj, #additional objects to save
+                     add_obj, #LIST - additional objects in env to save
                      add_obj_names, #additional object names
-                     wd = getwd(),
-                     mkdir,
+                     cp_file, #absolute path or relative to current dir
+                     cp_file_names, #just file name (missing will just copy file without renaming)
+                     open_txt = TRUE,
                      summary = TRUE,
                      params = 'all',
                      excl = NULL,
@@ -102,29 +104,39 @@ MCMCdiag <- function(object,
     if (missing(add_field_names))
     {
       add_field_names <- NULL
-      warning('Name(s) for additional field(s) missing. Using arbitrary names in text document.')
+      warning('Name(s) for additional field(s) missing. Using arbitrary name(s) in text document.')
     } else {
       if (length(add_field) != length(add_field_names))
       {
-        warning('length(add_field_names) does not equal length(add_field). Using arbitrary names in text document for additional fields.')
+        warning('length(add_field_names) does not equal length(add_field). Using arbitrary name(s) in text document for additional field(s).')
         add_field_names <- NULL
       }
     }
   }
   
-  #additional objects anmes
+  #additional objects names
   if (!missing(add_obj))
   {
     if (missing(add_obj_names))
     {
       add_obj_names <- NULL
-      warning('Name(s) for additional object(s) missing. Using arbitrary names for file name(s).')
+      warning('Name(s) for additional object(s) missing. Using arbitrary name(s) for file(s).')
     } else {
       if (length(add_obj) != length(add_obj_names))
       {
-        warning('length(add_obj_names) does not equal length(add_obj). Using arbitrary names for file names.')
+        warning('length(add_obj_names) does not equal length(add_obj). Using arbitrary name(s) for file(s).')
         add_obj_names <- NULL
       }
+    }
+  }
+  
+  #cp file names
+  if (!missing(cp_file) & !missing(cp_file_names))
+  {
+    if (length(cp_file) != length(cp_file_names))
+    {
+      warning('length(cp_file_names) does not equal length(cp_file). Using original file name(s).')
+      cp_file_names <- NULL
     }
   }
   
@@ -399,10 +411,27 @@ MCMCdiag <- function(object,
   }
   sink()
   
-  
+  #copy files
+  if (!missing(cp_file))
+  {
+    if (!missing(cp_file_names))
+    {
+      for (i in 1:length(cp_file))
+      {
+        invisible(file.copy(from = cp_file[i], 
+                            to = paste0(wd, '/', cp_file_names[i])))
+      }
+    } else {
+      for (i in 1:length(cp_file))
+      {
+        invisible(file.copy(from = cp_file[i], 
+                            to = wd))
+      }
+    }
+  }
   
   #save model object
-  if (save_obj == TRUE)
+  if (save_object == TRUE)
   {
     if (!missing(obj_name))
     {
