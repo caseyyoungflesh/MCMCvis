@@ -46,8 +46,12 @@ MCMCdiag <- function(object,
                      open_txt = TRUE,
                      model_name,
                      file_name,
-                     save_object = TRUE,
-                     object_name,
+                     add_field,
+                     add_field_names,
+                     save_obj = TRUE,
+                     obj_name,
+                     add_obj, #additional objects to save
+                     add_obj_names, #additional object names
                      wd = getwd(),
                      summary = TRUE,
                      params = 'all',
@@ -90,6 +94,21 @@ MCMCdiag <- function(object,
       !methods::is(object2, 'jagsUI'))
   {
     stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+  }
+  
+  if (!missing(add_field))
+  {
+    if (missing(add_field_names))
+    {
+      add_field_names <- NULL
+      warning('Name(s) for additional field(s) missing. Using arbitrary names in text document.')
+    } else {
+      if (length(add_field) != length(add_field_names))
+      {
+        warning('length(add_field_names) does not equal length(add_field). Using arbitrary names in text document for additional fields.')
+        add_field_names <- NULL
+      }
+    }
   }
   
   #filename
@@ -335,6 +354,18 @@ MCMCdiag <- function(object,
   {
   cat(paste0('Min n.eff:                        ', min_n.eff, ' \n'))
   }
+  if (!missing(add_field))
+  {
+    if (is.null(add_field_names))
+    {
+      add_field_names <- paste0('Additional field ', 1:length(add_field))
+    }
+    for (i in 1:length(add_field))
+    {
+      sp_rep <- 34 - nchar(add_field_names[i]) - 1
+      cat(paste0(add_field_names[i], ':', paste0(rep(' ', sp_rep), collapse = ''), add_field[i], ' \n'))
+    }
+  }
   cat(paste0('\n'))
   cat(paste0('\n'))
   if (summary == TRUE)
@@ -348,16 +379,16 @@ MCMCdiag <- function(object,
   
   
   #save model object
-  if (save_object == TRUE)
+  if (save_obj == TRUE)
   {
-    if (!missing(object_name))
+    if (!missing(obj_name))
     {
       #add .rds if it isn't in file_name
-      if (length(grep('.rds', object_name)) > 0)
+      if (length(grep('.rds', obj_name)) > 0)
       {
-        on2 <- paste0(wd, '/', object_name)
+        on2 <- paste0(wd, '/', obj_name)
       } else {
-        on2 <- paste0(wd, '/', object_name, '.rds')
+        on2 <- paste0(wd, '/', obj_name, '.rds')
       }
       saveRDS(object, file = on2)
     } else {
