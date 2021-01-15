@@ -6,7 +6,7 @@ MCMCvis
 
 `MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
 
-The package contains five functions:
+The package contains six functions:
 
 - `MCMCsummary` - summarize MCMC output for particular parameters of interest
 - `MCMCpstr` - summarize MCMC output for particular parameters of interest while preserving parameter structure
@@ -63,9 +63,10 @@ MCMCsummary(MCMC_data, params = 'beta', round = 2)
 
 ```{r}
 MCMCdiag(MCMC_data, file_name = 'model_summary.txt', 
-          object_name = 'model-fit-YYYY-MM-DD.rds', round = 2)
+          object_name = 'model-fit.rds', save_object = TRUE,
+          mkdir = 'results-YYYY-MM-DD', round = 3)
 
-#saves a text file summarizing model input and outputs and saves model output as a '.rds' file
+#saves a text file summarizing model inputs, outputs, and diagnostics (and optionally saves model output and other objects of interest as '.rds' files into a new user-specified directory)
 ```
 
 #### Evaluate
