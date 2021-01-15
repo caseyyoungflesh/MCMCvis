@@ -14,7 +14,7 @@ The package contains five functions:
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `MCMCchains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
-- `MCMCdiag` - create a text file that summarizes model inputs and outputs
+- `MCMCdiag` - create a .txt file and save specified objects that summarize model inputs, outputs, and diagnostics
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
