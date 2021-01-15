@@ -172,9 +172,11 @@ MCMCtrace <- function(object,
   {
     warning('Input type matrix - assuming only one chain for each parameter.')
     object1 <- coda::as.mcmc.list(coda::as.mcmc(object))
-    object2 <- MCMCchains(object1, params, excl, ISB, mcmc.list = TRUE)
+    object2 <- MCMCchains(object1, params = params, excl = excl, 
+                          ISB = ISB, exact = exact, mcmc.list = TRUE)
   } else {
-    object2 <- MCMCchains(object, params, excl, ISB, mcmc.list = TRUE)
+    object2 <- MCMCchains(object, params = params, excl = excl, 
+                          ISB = ISB, exact = exact, mcmc.list = TRUE)
   }
   
   
@@ -192,7 +194,7 @@ MCMCtrace <- function(object,
   } else {
     it <- 1 : nrow(object2[[1]])
   }
-  
+
   
   #WARNING/ERROR BLOCK
   if (!is.null(priors))
