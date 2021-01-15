@@ -1,18 +1,35 @@
 #' Diagnostics summaries for models
 #'
-#' Model diagnostics for models. Output includes: time elapsed, max Rhat, min number of effective samples, summary information (output from MCMCsummary - optional), as well as Stan-specific sampler diagnostics (for each chain: adapt delta, max tree depth, initial step size, number of divergences, mean tree depth, mean accept state, mean energy, step size, number of iterations exceeding max tree depth, and whether the low BFMI threshold was reached). More information on Stan-specific diagnostic can be found [here - ref manual] and [here - warnings page]. Max Rhat and min neff are calculated using only the parameters specified.
+#' Model diagnostics and summary. Function reads information embedded in model fit object. Output varies by model fit object type but includes model run intputs, diagnostic information, and parameter summary. See DETAILS below for more information.
+#'
 #' 
 #' @param object Object containing MCMC output. See DETAILS below.
 #'
-#' @param txt Logical whether to print results to a .txt file
+#' @param file_name Character string with name of .txt file to be saved to \code{dir} (or \code{mkdir} if specified). If not specified, 'MCMCdiag.txt' will be used.
 #' 
-#' @param open_txt Logical - if \code{open_txt = TRUE} .txt file will open in viewer after being generated.
-#'
-#' @param file_name Name of .txt file to be printed. Default is 'MCMCtxt.txt'.
-#'
-#' @param wd Working directory for .txt file output and obj output. Default is current directory.
+#' @param dir Character string with directory where file(s) (or directory is argument for \code{mkdir} is specified) will be created. Defaults to working directory. An absolute or relative (to the working directory) path can be used.
 #' 
-#' @param summary Logical specifying whether or not to output summary information from MCMCsummary (posterior mean, sd, 2.5th and 97.5th quantiles, Rhat, and n.eff).
+#' @param mkdir Character string with name of directory to be created. If specified, a directory will be created within the directory specified by \code{dir}.
+#' 
+#' @param add_field Object (or vector of objects) to be added to the .txt file.
+#' 
+#' @param add_field_names Character string (or vector of character strings) specifying the name(s) of the \code{add_field} object(s).
+#' 
+#' @param save_object Logical specifying whether the model output provided to the function (\code{object}) should be saved as a \code{.rds} file to \code{dir} (or \code{mkdir} if specified). Note that \code{.rds} files can be opened with \code{rdsRDS()}.
+#' 
+#' @param obj_name Character string specifying the file name of the \code{.rds} file (created from \code{object}) if \code{save_object = TRUE}.
+#' 
+#' @param add_obj List with additional object(s) to be saved as \code{.rds} files to \code{dir} (or \code{mkdir} if specified). Objects can be of any types. Multiple objects can be specified. Note that \code{.rds} files can be opened with \code{rdsRDS()}.
+#' 
+#' @param add_obj_names Character string (or vector of character strings) specifying the name(s) of the objects to be saved as \code{.rds} files, specified with \code{add_obj}.
+#' 
+#' @param cp_file Character string (or vector of character strings) specifying file(s) to be copied to \code{dir} (or \code{mkdir} if specified). Absolute or relative (to the working directory) paths can be used.
+#' 
+#' @param cp_file_names Character string (or vector of character strings) specifying new names for files to be copied specified by \code{cp_file}. If not argument is provided, the copy names will be identical to the originals.
+#'
+#' @param open_txt Logical - if \code{open_txt = TRUE} .txt file will open in deafulty .txt viewer after being generated.
+#'
+#' @param summary Logical specifying whether or not to output summary information from MCMCsummary (posterior mean, sd, 2.5th and 97.5th quantiles, Rhat, and n.eff) at the bottom of the .txt file.
 #' 
 #' @param params Character string (or vector of character strings) denoting parameters to be returned in summary output. Argument is ignored if \code{summary = FALSE}.
 #' 
@@ -29,14 +46,28 @@
 #' @param round Number of decimal places to round to for posterior summary. Cannot be used in conjunction with \code{digits} argument. Note that Rhat is always rounded to 2 decimal places.
 #'
 #' @section Details:
-#' Some diagnostic information is only provided for models fit with Stan. This information provides beter understanding of for the NUTS sampler performed during the model run. Many of these diagnostics are not relevant for model fit with samplers using Gibbs or Metropolis-Hastings sampling methods (as used by JAGS).
+#' Some diagnostic information is only provided for models fit with particular pieces of software. For example, \code{rstan} output includes additional diagnostics related to the NUTS sampler. Output from \code{jagsUI} includes runtime information, but output from \code{rjags} does not. Note that this information could be fed manually to the function using the \code{add_field} argument.
 #'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' 
+#' Output presented in .txt file varies by model fit object type but includes: model run time, number of warmup/burn-in iterations, total iterations, thinning rate, number of chains, specified adapt delta, specified max tree depth, specific initial step size, mean accept stat, mean tree depth, mean step size, number of divergent transitions, number max tree depth exceeds, number of chains with BHMI warnings, max rhat (maximum rhat of any parameter printed), min n.eff (minimum n.eff of any parameter printed), parameter summary information, and any additional information fed to the \code{add_field} argument. See documentation for specific software used to fit model for more information on particular diagnostics.
 #'
 #'
 #' @examples
 #' #Load data
 #' data(MCMC_data)
+#'
+#' MCMCdiag(MCMC_data, 
+#'          #name of .txt file to be saved
+#'          file_name = 'blog-model-summary-2021-01-15',
+#'          #directory within which to save .txt file
+#'          dir = '~/Desktop',
+#'          #round MCMCsummary output in .txt file to two digits
+#'          round = 2,
+#'          #add two fields to .txt file
+#'          add_field = c(50, '1.0'),
+#'          #names of two additional fields to add to .txt file
+#'          add_field_names = c('Time (min)', 'Data version'))
 #'
 #' @export
 #'
@@ -44,7 +75,7 @@
 
 MCMCdiag <- function(object, 
                      file_name,
-                     wd = getwd(), #absolute path or relative to current dir
+                     dir = getwd(), #absolute path or relative to current dir
                      mkdir,
                      add_field,
                      add_field_names,
@@ -104,11 +135,11 @@ MCMCdiag <- function(object,
     if (missing(add_field_names))
     {
       add_field_names <- NULL
-      warning('Name(s) for additional field(s) missing. Using arbitrary name(s) in text document.')
+      warning('Name(s) for additional field(s) missing. Using arbitrary name(s) in .txt files')
     } else {
       if (length(add_field) != length(add_field_names))
       {
-        warning('length(add_field_names) does not equal length(add_field). Using arbitrary name(s) in text document for additional field(s).')
+        warning('length(add_field_names) does not equal length(add_field). Using arbitrary name(s) in .txt file for additional field(s).')
         add_field_names <- NULL
       }
     }
@@ -143,8 +174,8 @@ MCMCdiag <- function(object,
   #mkdir
   if (!missing(mkdir))
   {
-    wd <- paste0(wd, '/', mkdir)
-    dir.create(wd)
+    dir <- paste0(dir, '/', mkdir)
+    dir.create(dir)
   }
   
   #filename
@@ -153,12 +184,12 @@ MCMCdiag <- function(object,
     #add .txt if it isn't in file_name
     if (length(grep('.txt', file_name)) > 0)
     {
-      fn2 <- paste0(wd, '/', file_name)
+      fn2 <- paste0(dir, '/', file_name)
     } else {
-      fn2 <- paste0(wd, '/', file_name, '.txt')
+      fn2 <- paste0(dir, '/', file_name, '.txt')
     }
   } else {
-    fn2 <- paste0(wd, '/MCMCdiag.txt')
+    fn2 <- paste0(dir, '/MCMCdiag.txt')
   }
   
   #Stan object class
@@ -240,7 +271,7 @@ MCMCdiag <- function(object,
     
     if (burnin == 0)
     {
-      warning("According to provided 'object', burn-in = 0. Burn-in will not be printed to the diagnostic text file. Note that burn-in information cannot be extracted from 'nimble' output.")
+      warning("According to provided 'object', burn-in = 0. Burn-in will not be printed to the diagnostic .txt file. Note that burn-in information cannot be extracted from 'nimble' output.")
       burnin <- NULL
     }
     
@@ -419,13 +450,13 @@ MCMCdiag <- function(object,
       for (i in 1:length(cp_file))
       {
         invisible(file.copy(from = cp_file[i], 
-                            to = paste0(wd, '/', cp_file_names[i])))
+                            to = paste0(dir, '/', cp_file_names[i])))
       }
     } else {
       for (i in 1:length(cp_file))
       {
         invisible(file.copy(from = cp_file[i], 
-                            to = wd))
+                            to = dir))
       }
     }
   }
@@ -438,13 +469,13 @@ MCMCdiag <- function(object,
       #add .rds if it isn't in file_name
       if (length(grep('.rds', obj_name)) > 0)
       {
-        on2 <- paste0(wd, '/', obj_name)
+        on2 <- paste0(dir, '/', obj_name)
       } else {
-        on2 <- paste0(wd, '/', obj_name, '.rds')
+        on2 <- paste0(dir, '/', obj_name, '.rds')
       }
       saveRDS(object, file = on2)
     } else {
-      saveRDS(object, file = paste0(wd, '/model_fit.rds'))
+      saveRDS(object, file = paste0(dir, '/model_fit.rds'))
     }
   }
   
@@ -463,9 +494,9 @@ MCMCdiag <- function(object,
         #add .rds if it isn't in file_name
         if (length(grep('.rds', add_obj_names[i])) > 0)
         {
-          ao2[i] <- paste0(wd, '/', add_obj_names[i])
+          ao2[i] <- paste0(dir, '/', add_obj_names[i])
         } else {
-          ao2[i] <- paste0(wd, '/', add_obj_names[i], '.rds')
+          ao2[i] <- paste0(dir, '/', add_obj_names[i], '.rds')
         }
       }
     }
