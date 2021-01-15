@@ -44,7 +44,6 @@
 
 MCMCdiag <- function(object, 
                      open_txt = TRUE,
-                     model_name,
                      file_name,
                      add_field,
                      add_field_names,
@@ -53,6 +52,7 @@ MCMCdiag <- function(object,
                      add_obj, #additional objects to save
                      add_obj_names, #additional object names
                      wd = getwd(),
+                     mkdir,
                      summary = TRUE,
                      params = 'all',
                      excl = NULL,
@@ -96,6 +96,7 @@ MCMCdiag <- function(object,
     stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
   
+  #additional fields anmes
   if (!missing(add_field))
   {
     if (missing(add_field_names))
@@ -111,6 +112,29 @@ MCMCdiag <- function(object,
     }
   }
   
+  #additional objects anmes
+  if (!missing(add_obj))
+  {
+    if (missing(add_obj_names))
+    {
+      add_obj_names <- NULL
+      warning('Name(s) for additional object(s) missing. Using arbitrary names for file name(s).')
+    } else {
+      if (length(add_obj) != length(add_obj_names))
+      {
+        warning('length(add_obj_names) does not equal length(add_obj). Using arbitrary names for file names.')
+        add_obj_names <- NULL
+      }
+    }
+  }
+  
+  #mkdir
+  if (!missing(mkdir))
+  {
+    wd <- paste0(wd, '/', mkdir)
+    dir.create(wd)
+  }
+  
   #filename
   if (!missing(file_name))
   {
@@ -124,7 +148,6 @@ MCMCdiag <- function(object,
   } else {
     fn2 <- paste0(wd, '/MCMCdiag.txt')
   }
-  
   
   #Stan object class
   if (methods::is(object2, 'stanfit'))
@@ -288,10 +311,6 @@ MCMCdiag <- function(object,
   sink(fn2)
   cat(paste0('Information and diagnostics \n'))
   cat(paste0('=========================== \n'))
-  if (!missing(model_name))
-  {
-  cat(paste0('Model name:                       ', model_name, ' \n'))
-  }
   if (!is.null(time))
   {
   cat(paste0('Run time (min):                   ', time, ' \n'))
@@ -363,6 +382,10 @@ MCMCdiag <- function(object,
     for (i in 1:length(add_field))
     {
       sp_rep <- 34 - nchar(add_field_names[i]) - 1
+      if (sp_rep < 1)
+      {
+        sp_rep <- 1
+      }
       cat(paste0(add_field_names[i], ':', paste0(rep(' ', sp_rep), collapse = ''), add_field[i], ' \n'))
     }
   }
@@ -393,6 +416,33 @@ MCMCdiag <- function(object,
       saveRDS(object, file = on2)
     } else {
       saveRDS(object, file = paste0(wd, '/model_fit.rds'))
+    }
+  }
+  
+  #save add objects
+  if (!missing(add_obj))
+  {
+    if (is.null(add_obj_names))
+    {
+      add_obj_names <- paste0('Additional_object_', 1:length(add_obj), '.rds')
+    }
+    if (!is.null(add_obj_names))
+    {
+      ao2 <- rep(NA, length(add_obj_names))
+      for (i in 1:length(add_obj_names))
+      {
+        #add .rds if it isn't in file_name
+        if (length(grep('.rds', add_obj_names[i])) > 0)
+        {
+          ao2[i] <- paste0(wd, '/', add_obj_names[i])
+        } else {
+          ao2[i] <- paste0(wd, '/', add_obj_names[i], '.rds')
+        }
+      }
+    }
+    for (i in 1:length(add_obj))
+    {
+      saveRDS(add_obj[[i]], file = ao2[i])
     }
   }
   
