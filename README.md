@@ -1,20 +1,19 @@
 MCMCvis
 ====
 
-
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.14.3](https://img.shields.io/badge/devel-0.14.3-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
-
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.15.0](https://img.shields.io/badge/devel-0.15.0-blue.svg) [![Build Status](https://travis-ci.org/caseyyoungflesh/MCMCvis.svg?branch=master)](https://travis-ci.org/caseyyoungflesh/MCMCvis) [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
 
 
-`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
+`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
 
-The package contains five functions:
+The package contains six functions:
 
 - `MCMCsummary` - summarize MCMC output for particular parameters of interest
 - `MCMCpstr` - summarize MCMC output for particular parameters of interest while preserving parameter structure
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `MCMCchains` - easily extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
+- `MCMCdiag` - create a .txt file and save specified objects that summarize model inputs, outputs, and diagnostics
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output.
 
@@ -60,6 +59,14 @@ MCMCsummary(MCMC_data, params = 'beta', round = 2)
 #> beta[4]   6.17 10.72 -14.67   6.11  27.27    1 10500
 #> beta[5]   8.42  3.46   1.63   8.45  15.13    1 10500
 #> beta[6] -12.05  2.34 -16.66 -12.05  -7.54    1 10500
+```
+
+```{r}
+MCMCdiag(MCMC_data, file_name = 'model_summary.txt', 
+          object_name = 'model-fit.rds', save_object = TRUE,
+          mkdir = 'results-YYYY-MM-DD', round = 3)
+
+#saves a text file summarizing model inputs, outputs, and diagnostics (and optionally saves model output and other objects of interest as '.rds' files into a new user-specified directory)
 ```
 
 #### Evaluate

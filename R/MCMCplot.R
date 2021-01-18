@@ -13,7 +13,9 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using grep, which can take arguments in regular expression format. This allows partial names to be used when specifying parameters of interest.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
+#'
+#' @param exact Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). #' If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).
 #'
 #' @param ref Value indicating where vertical reference line should be created and what value to use a reference for caterpillar median coloration.
 #'
@@ -82,7 +84,7 @@
 #' 
 #' When \code{object2} is specified, paired caterpillar plots of each parameter are produced. For this reason, parameter names of \code{object} and \code{object2} specified with the \code{params} argument must be identical (to be used for comparing posterior estimates of similar models). \code{col} and \code{col2} arguments can be specified to change the color of output from \code{object} and \code{object2}, respectively. By default, output from \code{object} is plotted in black and \code{object2} is plotted in red. The \code{ref_ovl} argument can also be specified.
 #'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
 #' @section Notes:
 #'
@@ -107,8 +109,7 @@
 #' MCMCplot(MCMC_data, params = 'beta')
 #'
 #' #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
-#' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
-#' MCMCplot(MCMC_data, params = c('beta\\[1\\]', 'beta\\[4\\]', 'alpha\\[3\\]'), ISB = FALSE)
+#' MCMCplot(MCMC_data, params = c('beta[1]', 'beta[4]', 'alpha[3]'), ISB = FALSE, exact = TRUE)
 #'
 #' #Rank parameters by posterior mean
 #' MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
@@ -125,6 +126,7 @@ MCMCplot <- function(object,
                      params = 'all',
                      excl = NULL,
                      ISB = TRUE,
+                     exact = TRUE,
                      ref = 0,
                      ref_ovl = FALSE,
                      col = 'black',
@@ -151,11 +153,11 @@ MCMCplot <- function(object,
                      pos_tick,
                      mar = c(5.1, 4.1, 4.1, 2.1))
 {
-  data <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
+  data <- MCMCchains(object, params = params, excl = excl, ISB = ISB, exact = exact)
 
   if (!is.null(object2))
   {
-    data2 <- MCMCchains(object2, params = params, excl = excl, ISB = ISB)
+    data2 <- MCMCchains(object2, params = params, excl = excl, ISB = ISB, exact = exact)
     
     if (!identical(colnames(data), colnames(data2)))
     {

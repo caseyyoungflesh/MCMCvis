@@ -10,20 +10,22 @@ vignette: >
 
 ## Intro
 
-`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. This may be Bayesian model output fit with JAGS, Stan, or other MCMC samplers.
+`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. This may be Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
 
-The package contains five functions:
+
+The package contains six functions:
 
 - `MCMCsummary` - summarize MCMC output for particular parameters of interest
 - `MCMCpstr` - summarize MCMC output and extract posterior chains for particular parameters of interest while preserving parameter structure
 - `MCMCtrace` - create trace and density plots of MCMC chains for particular parameters of interest
 - `MCMCchains` - extract posterior chains from MCMC output for particular parameters of interest
 - `MCMCplot` - create caterpillar plots from MCMC output for particular parameters of interest
+- `MCMCdiag` - create a `.txt` file and save specified objects that summarize model inputs, outputs, and diagnostics
 
 
 `MCMCvis` was designed to perform key functions for MCMC analysis using minimal code, in order to free up time/brainpower for interpretation of analysis results. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable, 'publication-ready' output.
 
-All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (one chain per column - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Model output objects can be inserted directly into the `MCMCvis` functions as an argument.
+All functions in the package accept `stanfit` objects (created with the `rstan` package), `stanreg` objects (created with the `rstanarm` package), `brmsfit` objects (created with the `brms` package), `mcmc.list` objects (created with the `rjags` or `coda` packages), `mcmc` objects (created with the `coda` or `nimble` packages), `list` objects (created with the `nimble` package), `R2jags` output (created with the `R2jags` package), `jagsUI` output (created with the `jagsUI` package), and matrices of MCMC output (chains combined into a single column per parameter - columns to be named with parameter names). The functions automatically detect the object type and proceed accordingly. Model output objects can be inserted directly into the `MCMCvis` functions as an argument.
 
 #### JAGS model
 
@@ -66,6 +68,38 @@ MCMCsummary(jags_out, round = 2)
 ## mu -0.28 2.97 -6.13 -0.14  5.22    1  1397
 ```
 
+
+#### NIMBLE model
+
+```{r, eval = FALSE}
+library(nimble)
+
+# create NIMBLE model
+mf2 <- nimbleCode({
+  for (i in 1:10)
+  {
+    y[i] ~ dnorm(mu, 0.01);
+  }
+  mu ~ dnorm(0, 0.01)
+})
+
+nimble_out <- nimbleMCMC(code = mf2, 
+                         constants = list(N = 10), 
+                         data = data, 
+                         inits = list(mu = 0),
+                         nchains = 4,
+                         niter = 500)
+```
+
+```{r, eval = FALSE}
+# plug object directly into package function
+MCMCsummary(nimble_out, round = 2)
+```
+
+```{r, eval = FALSE}
+##     mean   sd  2.5%   50% 97.5% Rhat n.eff
+## mu -0.03 2.99 -5.76 -0.1  5.88    1  2000
+```
 
 #### Stan model
 
@@ -142,26 +176,40 @@ MCMCsummary(MCMC_data,
 
 &nbsp;
 
-Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to specify particular parameters that contain brackets. ISB is short for 'Ignore Square Brackets'. When `ISB = FALSE`, the `params` argument reads like a regular expression. Because of this, the square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
+Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to prevent square brackets from being ignored (ISB is short for 'Ignore Square Brackets'). The `exact` argument can be used to specify whether the parameter name should be matched exactly (after taking into account the `ISB` argument). Therefore, to return a single `alpha` parameter, `ISB = FALSE` and `exact = TRUE` can be used in the following way.
 
 ```{r}
 MCMCsummary(MCMC_data, 
-          params = 'alpha\\[1\\]', 
+          params = 'alpha[1]', 
           ISB = FALSE,
+          exact = TRUE,
           round = 2)
 ```
 
 &nbsp;
 
-If `alpha` has 10 or more parameters (i.e., more than two digits for the index), the `|` (OR) may be needed. For instance, while one could use `alpha[1:10]` to select the first ten indices of the vector `alpha` in R, the regex equivalent to do the same with `MCMCvis` would be `alpha\\[(\\d|[1][0])\\]`. The `\\d` specifies any digit, the `|` represents OR (so any one digit number OR), the `[1]` specifies that the first digit must be one, and the `[0]` specifies that the second digit must be zero (so return any one digit number, or 10, resulting in the equivalent of `alpha[1:10]`). Ranges for each digit can also be specified. For instance, the regex equivalent of the R `alpha[5:15]` would be `alpha\\[([5-9]|[1][0-5])\\]`.
-
-The `excl` argument can be used to exclude any parameters. This can be used in conjunction with the `params` argument. This is particularly useful when specifying `ISB = FALSE`. For instance, if all `alpha` parameters are desired **except** for `alpha[1]`, `params = 'alpha', excl = 'alpha\\[1\\]', ISB = FALSE` can be used. Once again, since the `params` argument takes a regular expression, the square brackets must be escaped using `\\`. When `ISB = TRUE`, an exact match of the specified parameter is required (excluding the square brackets). When `ISB = FALSE`, partial names will be matched. Leaving the default (`ISB = TRUE`) is generally recommended for simplicity. These arguments can be used in any of the functions in the package.
+When `exact = FALSE`, the `params` argument reads like a regular expression. Because of this, square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. This can be useful for returning a specific set of a large number of parameters. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
 
 ```{r}
 MCMCsummary(MCMC_data, 
-          params = 'alpha',
-          excl = 'alpha\\[1\\]', 
+          params = 'alpha\\[1\\]', 
           ISB = FALSE,
+          exact = FALSE,
+          round = 2)
+```
+
+&nbsp;
+
+When using `exact = FALSE`, if `alpha` has 10 or more parameters (i.e., more than two digits for the index), the `|` (OR) may be needed. For instance, while one could use `alpha[1:10]` to select the first ten indices of the vector `alpha` in R, the regex equivalent to do the same with `MCMCvis` would be `alpha\\[(\\d|[1][0])\\]`. The `\\d` specifies any digit, the `|` represents OR (so any one digit number OR), the `[1]` specifies that the first digit must be one, and the `[0]` specifies that the second digit must be zero (so return any one digit number, or 10, resulting in the equivalent of `alpha[1:10]`). Ranges for each digit can also be specified. For instance, the regex equivalent of the R `alpha[5:15]` would be `alpha\\[([5-9]|[1][0-5])\\]`.
+
+The `excl` argument can be used to exclude any parameters. For instance, if all parameters are desired **except** for the `alphas`, `params = 'all', excl = 'alpha', ISB = FALSE, exact = FALSE` can be used. These arguments can be used in any of the functions in the package.
+
+```{r}
+MCMCsummary(MCMC_data, 
+          params = 'all',
+          excl = 'alpha', 
+          ISB = FALSE,
+          exact = FALSE,
           round = 2)
 ```
 
@@ -264,8 +312,9 @@ dim(ex$alpha)
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
-        params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+        params = c('beta[1]', 'beta[2]', 'beta[3]'),
         ISB = FALSE,
+        exact = TRUE,
         pdf = FALSE)
 ```
 
@@ -299,8 +348,9 @@ MCMCtrace(MCMC_data,
 
 ```{r, fig.width=5, fig.height=6}
 MCMCtrace(MCMC_data, 
-        params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+        params = c('beta[1]', 'beta[2]', 'beta[3]'),
         ISB = FALSE,
+        exact = TRUE,
         iter = 100,
         ind = TRUE,
         pdf = FALSE)
@@ -316,8 +366,9 @@ The `priors` argument takes a matrix as input, with each column representing a p
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data,
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           pdf = FALSE,
           Rhat = TRUE,
@@ -332,8 +383,9 @@ Plots can be scaled to visualize both the posterior and the prior distribution u
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data, 
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           pdf = FALSE,
           post_zm = FALSE)
@@ -346,8 +398,9 @@ Percent overlap can be output to an R object as well using the `PPO_out` argumen
 ```{r}
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 PPO <- MCMCtrace(MCMC_data, 
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           plot = FALSE,
           PPO_out = TRUE)
@@ -364,8 +417,9 @@ Additional arguments can be used to change the limits of the density plots, axes
 #same prior used for all parameters
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 MCMCtrace(MCMC_data,
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           pdf = FALSE,
           Rhat = TRUE,
@@ -391,8 +445,9 @@ If simulated data were used to fit the model, the generating values used to simu
 #generating values for each parameter used to simulate data
 GV <- c(-10, -5.5, -15)
 MCMCtrace(MCMC_data,
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           gvals = GV,
           pdf = FALSE)
 ```
@@ -434,7 +489,7 @@ MCMCplot(MCMC_data,
 
 &nbsp;
 
-`ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' grey circles. Parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
+`ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters where 50% credible intervals overlap 0 are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
 
 ```{r, fig.width=5, fig.height=6}
 MCMCplot(MCMC_data, 
@@ -505,8 +560,9 @@ Other elements can be added to `MCMCplot` figures as well. For instance, to add 
 ```{r}
 PR <- rnorm(15000, 0, 32) #equivalent to dnorm(0, 0.001) in JAGS
 PPO <- MCMCtrace(MCMC_data, 
-          params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
           ISB = FALSE,
+          exact = TRUE,
           priors = PR,
           plot = FALSE,
           PPO_out = TRUE)
@@ -519,8 +575,9 @@ Then use `MCMCplot` to create the posterior plot and loop to plot PPO as text on
 ```{r, fig.width=5, fig.height=6}
 #make caterpillar plot for beta parameters
 MCMCplot(MCMC_data, 
-         params = c('beta\\[1\\]', 'beta\\[2\\]', 'beta\\[3\\]'),
-         ISB = FALSE,
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          ISB = FALSE,
+          exact = TRUE,
          xlim = c(-60, 35))
 
 #each parameter is a y-unit of 1
@@ -533,6 +590,42 @@ for (i in 1:NROW(PPO))
 ```
 
 &nbsp;
+
+## MCMCdiag
+
+`MCMCdiag` is used to create a `.txt` file to summarize model inputs, output, and diagnostics. Options can be specified to save model output as an `.rds` file, create a new directory to store this file, save other objects of interest (such as data files or session information) as `.rds` files, and to copy files of interest (such as the version of the `R` script used to fit a model or the associated `.stan` or `.jags` file) to the created directory.
+
+Output presented in the `.txt` file varies by model fit object type but includes: model run time, number of warmup/burn-in iterations, total iterations, thinning rate, number of chains, specified adapt delta, specified max tree depth, specific initial step size, mean accept stat, mean tree depth, mean step size, number of divergent transitions, number max tree depth exceeds, number of chains with BHMI warnings, max Rhat (maximum Rhat of any parameter printed), min n.eff (minimum n.eff of any parameter printed), parameter summary information (passed from `MCMCsummary`), and any additional information fed to the `add_field` argument. See documentation for specific software used to fit model for more information on particular diagnostics. As with the other functions in the package, particular parameters of interest can be specified for the summary information (though typically all parameters will be of interest as the purpose of this function is to have a record of the summary information). 
+
+This function can facilitate more reproducible workflows and more organized versioning of model results. For instance the following function call:
+
+-creates a directory within `Results/` named `model-YYYY-MM-DD/`
+-saves a `.txt` file named `model-summary-YYYY-MM-DD.txt` within that new directory containing model inputs, outputs, and diagnostics (with an additional user-specified field denoting the data version used to fit the model)
+-saves the `model_fit` object provided to the function as a `.rds` file (named `model-fit-YYYY-MM-DD.rds`) within the new directory
+-saves the `DATA` object (in this case, used to fit the model) as a `.rds` file (named `model-data-YYYY-MM-DD.rds`)
+-saves the output from `sessionInfo`, which provides information on the `R` session when the function was run as a `.rds` file (named `session-info-YYYY-MM-DD.rds`)
+-copies two files, `model.stan` (`.stan` file specifying the model) and `fit-model.R` (the script used to fit the model) into the new directory as `model-YYYY-MM-DD.stan` and `fit-model-YYYY-MM-DD.R`, respectively
+
+```{r, eval = FALSE}
+MCMCdiag(model_fit, 
+         round = 3,
+         file_name = 'model-summary-YYYY-MM-DD',
+         dir = 'Results',
+         mkdir = 'model-YYYY-MM-DD',
+         add_field = '1.0',
+         add_field_names = 'Data version',
+         save_obj = TRUE,
+         obj_name = 'model-fit-YYYY-MM-DD',
+         add_obj = list(DATA, sessionInfo()),
+         add_obj_names = c('model-data-YYYY-MM-DD', 
+                           'session-info-YYYY-MM-DD'),
+         cp_file = c('model.stan', 'fit-model.R'),
+         cp_file_names = c('model-YYYY-MM-DD.stan, fit-model-YYYY-MM-DD.R'))
+
+```
+
+In this way, a complete record of the script, the model file, and the data used to fit the model, the model output, `R` session information, and a summary of the model output are stored in a dated directory. Results from a particular model run can then be easily referenced in the future. A particular version of the model/data can be easily rerun using these resources. While this is one use case, any combination of options can be used and any additional objects can be saved and files copied depending on the desires of the user.
+
 
 ## References
 

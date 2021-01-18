@@ -9,7 +9,9 @@
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored - input from \code{params} and \code{excl} are otherwise matched exactly. If \code{FALSE}, square brackets are not ignored - input from \code{params} and \code{excl} are matched using regular expression format. This allows partial names to be used when specifying parameters of interest.
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
+#'
+#' @param exact Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). #' If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).
 #'
 #' @param mcmc.list Logical specifying whether to return an mcmc.list. If \code{TRUE}, an \code{mcmc.list} object is returned, rather than a matrix.
 #'
@@ -18,7 +20,7 @@
 #' @section Details:
 #' Function returns matrix with one parameter per column (for specified parameters). Each iteration is represented as a row. Multiple chains for each parameter are combined to one posterior chain (unless \code{chain_num} is specified, in which case only the specified chain will be returned). Parameters are arranged in columns alphabetically.
 #'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #'
 #'
 #' @examples
@@ -34,8 +36,8 @@
 #' apply(ex2, 2, mean)
 #'
 #' #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
-#' #'params' takes regular expressions when ISB = FALSE, square brackets must be escaped with '\\'
-#' ex3 <- MCMCchains(MCMC_data, params = c('beta\\[1\\]', 'beta\\[4\\]', 'alpha\\[3\\]'), ISB = FALSE)
+#' ex3 <- MCMCchains(MCMC_data, params = c('beta[1]', 'beta[4]', 'alpha[3]'), 
+#'                  ISB = FALSE, exact = TRUE)
 #' apply(ex3, 2, sd)
 #'
 #' @export
@@ -44,6 +46,7 @@ MCMCchains <- function(object,
                      params = 'all',
                      excl = NULL,
                      ISB = TRUE,
+                     exact = TRUE,
                      mcmc.list = FALSE,
                      chain_num = NULL)
 {
@@ -66,7 +69,19 @@ MCMCchains <- function(object,
     object <- coda::as.mcmc.list(mclis)
     #end mod as.mcmc
   }
-    
+  
+  #if mcmc object (from nimble) - convert to mcmc.list
+  if (methods::is(object, 'mcmc'))
+  {
+    object <- coda::mcmc.list(object)
+  }
+  
+  #if list object of matrices (from nimble) - convert to mcmc.list
+  if (methods::is(object, 'list'))
+  {
+    object <- coda::mcmc.list(lapply(object, function(x) coda::mcmc(x)))
+  }
+
   #if from rstanarm::stan_glm
   if (methods::is(object, 'stanreg'))
   {
@@ -76,12 +91,14 @@ MCMCchains <- function(object,
   
   if (coda::is.mcmc.list(object) != TRUE &
      !methods::is(object, 'matrix') &
+     !methods::is(object, 'mcmc') &
+     !methods::is(object, 'list') &
      !methods::is(object, 'rjags') &
      !methods::is(object, 'stanfit') &
      !methods::is(object, 'brmsfit') &
      !methods::is(object, 'jagsUI'))
   {
-    stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+    stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
   
   #if from brms::brm
@@ -190,21 +207,22 @@ MCMCchains <- function(object,
       {
         n_excl <- vapply(strsplit(excl,
                                   split = "[", fixed = TRUE), `[`, 1, FUN.VALUE=character(1))
-        ind_excl <- which(names %in% n_excl[i])
-        if (length(ind_excl) < 1)
-        {
-          warning(paste0('"', excl[i], '"', ' not found in MCMC output.'))
-        }
-        rm_ind <- c(rm_ind, ind_excl)
       } else {
         n_excl <- excl
-        ind_excl <- grep(n_excl[i], names, fixed = FALSE)
-        if (length(ind_excl) < 1)
-        {
-          warning(paste0('"', excl[i], '"', ' not found in MCMC output.'))
-        }
-        rm_ind <- c(rm_ind, ind_excl)
       }
+      
+      if (exact == TRUE)
+      {
+        ind_excl <- which(names %in% n_excl[i])
+      } else {
+        ind_excl <- grep(n_excl[i], names, fixed = FALSE)
+      }
+      
+      if (length(ind_excl) < 1)
+      {
+        warning(paste0("\"", excl[i], "\"", " not found in MCMC output. Check 'ISB' and 'exact' arguments to make sure the desired parsing methods are being used."))
+      }
+      rm_ind <- c(rm_ind, ind_excl)
     }
     if (length(rm_ind) > 0)
     {
@@ -232,7 +250,7 @@ MCMCchains <- function(object,
         f_ind <- (1:length(names))[-rm_ind2]
       }
     } else {
-      if(ISB == TRUE)
+      if (exact == TRUE)
       {
         get_ind <- which(names %in% params)
       } else {
@@ -241,7 +259,7 @@ MCMCchains <- function(object,
 
       if (length(get_ind) < 1)
       {
-        stop(paste0('"', params, '"', ' not found in MCMC output.'))
+        stop(paste0("\"", params, "\"", " not found in MCMC output. Check `ISB` and `exact` arguments to make sure the desired parsing methods are being used."))
       }
       if (!is.null(excl))
       {
@@ -264,16 +282,16 @@ MCMCchains <- function(object,
     grouped <- c()
     for (i in 1:length(params))
     {
-      if (ISB == TRUE)
+      if (exact == TRUE)
       {
         get_ind <- which(names %in% params[i])
       } else {
-        get_ind <- grep(paste(params[i]), names, fixed=FALSE)
+        get_ind <- grep(paste(params[i]), names, fixed = FALSE)
       }
 
       if (length(get_ind) < 1)
       {
-        warning(paste0('"', params[i], '"', ' not found in MCMC output.'))
+        warning(paste0("\"", params[i], "\"", " not found in MCMC output. Check 'ISB' and 'exact' arguments to make sure the desired parsing methods are being used."))
         next()
       }
       grouped <- c(grouped, get_ind)
