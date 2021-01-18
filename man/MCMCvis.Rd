@@ -33,5 +33,6 @@ The vignette can be run using \code{vignette('MCMCvis')} if vignette is built wh
 \section{Author(s)}{
 
 Casey Youngflesh <caseyyoungflesh@gmail.com>
+Christian Che-Castaldo <chrischecastaldo@protonmail.com>
 }
 
