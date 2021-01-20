@@ -449,14 +449,24 @@ MCMCdiag <- function(object,
     {
       for (i in 1:length(cp_file))
       {
-        invisible(file.copy(from = cp_file[i], 
-                            to = paste0(dir, '/', cp_file_names[i])))
+        if (file.exists(cp_file[i]) == FALSE)
+        {
+          warning(paste0('Could not copy ', cp_file[i],' as it does not exist.'))
+        } else {
+          invisible(file.copy(from = cp_file[i], 
+                              to = paste0(dir, '/', cp_file_names[i]))) 
+        }
       }
     } else {
       for (i in 1:length(cp_file))
       {
-        invisible(file.copy(from = cp_file[i], 
-                            to = dir))
+        if (file.exists(cp_file[i]) == FALSE)
+        {
+          warning(paste0('Could not copy ', cp_file[i],' as it does not exist.'))
+        } else {
+          invisible(file.copy(from = cp_file[i], 
+                              to = dir))
+        }
       }
     }
   }
