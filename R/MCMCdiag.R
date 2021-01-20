@@ -451,7 +451,7 @@ MCMCdiag <- function(object,
       {
         if (file.exists(cp_file[i]) == FALSE)
         {
-          warning(paste0('Could not copy ', cp_file[i],' as it does not exist.'))
+          warning(paste0("Could not copy '", cp_file[i],"' as it does not exist. Check that the provided file path is correct."))
         } else {
           invisible(file.copy(from = cp_file[i], 
                               to = paste0(dir, '/', cp_file_names[i]))) 
@@ -462,7 +462,7 @@ MCMCdiag <- function(object,
       {
         if (file.exists(cp_file[i]) == FALSE)
         {
-          warning(paste0('Could not copy ', cp_file[i],' as it does not exist.'))
+          warning(paste0("Could not copy '", cp_file[i],"' as it does not exist. Check that the provided file path is correct."))
         } else {
           invisible(file.copy(from = cp_file[i], 
                               to = dir))
