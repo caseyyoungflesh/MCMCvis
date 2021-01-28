@@ -16,7 +16,8 @@ Imports:
     coda,
     rstan,
     methods,
-    overlapping
+    overlapping,
+    rlang
 Depends:
     R (>= 3.3.0)
 RoxygenNote: 7.1.1

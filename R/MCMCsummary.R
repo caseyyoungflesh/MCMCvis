@@ -81,9 +81,13 @@ MCMCsummary <- function(object,
                       func_name = NULL)
 {
 
-#--------------------------------------------------------------------------------------------------------------
+  #check to make sure object exists in global env
+  if (!exists(rlang::quo_name(rlang::enquo(object))))
+  {
+    stop("Argument for 'object' not found in global environment")
+  }
 
-# SORTING BLOCK
+  # SORTING BLOCK
 
   if (methods::is(object, 'matrix'))
   {

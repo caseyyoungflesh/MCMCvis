@@ -50,6 +50,11 @@ MCMCchains <- function(object,
                      mcmc.list = FALSE,
                      chain_num = NULL)
 {
+  #check to make sure object exists in global env
+  if (!exists(rlang::quo_name(rlang::enquo(object))))
+  {
+    stop("Argument for 'object' not found in global environment")
+  }
   #for rstanarm/brms obejcts - set to NULL by default
   sp_names <- NULL
   
