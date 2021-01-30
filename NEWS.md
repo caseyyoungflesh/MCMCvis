@@ -7,7 +7,6 @@ NEWS
 - All functions now take `exact` as an argument to parse desired parameter. `ISB = TRUE` no longer uses regex matching (`exact` should be used to specify this).
 - Add support for objects output from the `nimble` package
 - `MCMCpstr` fix bug where the incorrect number of dimensions would be returned when subsetting a param with >1 dim
-- Better error arguments when specified `object` argument does not exist
 
 
 0.14.3:
