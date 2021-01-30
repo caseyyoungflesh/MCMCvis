@@ -165,12 +165,6 @@ MCMCtrace <- function(object,
                       pos_tick_x_den = NULL,
                       pos_tick_y_den = NULL)
 {
-  #check to make sure object exists in global env
-  if (!exists(rlang::quo_name(rlang::enquo(object))))
-  {
-    stop("Argument for 'object' not found in global environment")
-  }
-  
   .pardefault <- graphics::par(no.readonly = T)
   
   #SORTING BLOCK

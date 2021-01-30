@@ -94,11 +94,6 @@ MCMCdiag <- function(object,
                      digits = NULL,
                      round = NULL)
 {
-  #check to make sure object exists in global env
-  if (!exists(rlang::quo_name(rlang::enquo(object))))
-  {
-    stop("Argument for 'object' not found in global environment")
-  }
   #sort object types 
   if (methods::is(object, 'brmsfit'))
   {

@@ -149,8 +149,6 @@ MCMCsummary(stan_out, round = 2)
 We'll use the built in `mcmc.list` object for the examples below, but model output of any of the supported types will behave in the same way. 
 
 ```{r, message=FALSE}
-data(MCMC_data)
-
 MCMCsummary(MCMC_data)
 ```
 
@@ -526,7 +524,7 @@ MCMCplot(MCMC_data,
 Output from two models can also be plotted side-by-side, as long as the parameter names are identical (NOTE: not ALL parameters need to be identical, just the parameters specified in the `params` argument). This is useful for comparing output from similar models. By default, the the first model input (`object`) will be plotted in black, while the second model input (`object2`) will be plotted in red. Different colors for each model output can be specified with `col` and `col2`. The spacing between the plotted posteriors for each parameter can be adjusted with `offset` (as the desired spacing will depend on the size of the image as well as the specified thickness/size of the lines/dots).
 
 ```{r, fig.width=5, fig.height=6}
-MCMCplot(object = MCMC_data, 
+MCMCplot(object = MCMC_data,
          object2 = MCMC_data2,
          params = 'beta',
          offset = 0.1)

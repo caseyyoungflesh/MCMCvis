@@ -1,4 +1,4 @@
 library(testthat)
 library(MCMCvis)
 
-test_check("MCMCvis")
+testthat::test_check("MCMCvis")
