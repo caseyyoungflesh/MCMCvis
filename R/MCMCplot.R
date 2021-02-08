@@ -135,7 +135,7 @@ MCMCplot <- function(
   object2 = NULL,
   params = 'all',
   HPD = FALSE,
-  ci = c(.5, .95),
+  ci = c(50, 95),
   excl = NULL,
   ISB = TRUE,
   exact = TRUE,
