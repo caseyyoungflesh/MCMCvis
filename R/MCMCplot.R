@@ -11,6 +11,12 @@
 #'
 #' Default \code{'all'} plots posteriors for all parameters. See VALUE below.
 #'
+#' @param HPD Logical specifying whether to calculate equal-tailed credible intervals (\code{HPD = FALSE}) or highest posterior density intervals (\code{HPD = TRUE}) for the selected parameters. Default is \code{HPD = FALSE}.
+#' 
+#' @param ci Numeric vector of length 2, where each element is (0,100] and represents the width of an equal-tailed (\code{HPD = FALSE}) or highest posterior density (\code{HPD = TRUE}) credible interval. The first element of this vector corresponds to the thicker (narrower) credible interval displayed on the plot (default is 0.5) and the second element of this vector corresponds to the thinner (wider) credible interval (default is 0.95). The first credible interval width (`code{ci[1]}) must be less than or equal to the width of the second credible interval (`code{ci[2]}).
+#' 
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
+#'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'
 #' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
@@ -92,11 +98,9 @@
 #'
 #' Thanks to Cinner et al. 2016, whose Fig. 1 inspired this plot.
 #'
-#'
 #' @section References:
 #'
 #' Cinner, J. E., C. Huchery, M. A. MacNeil, N. A. J. Graham, T. R. McClanahan, J. Maina, E. Maire, J. N. Kittinger, C. C. Hicks, C. Mora, E. H. Allison, S. D'Agata, A. Hoey, D. A. Feary, L. Crowder, I. D. Williams, M. Kulbicki, L. Vigliola, L. Wantiez, G. Edgar, R. D. Stuart-Smith, S. A. Sandin, A. L. Green, M. J. Hardt, M. Beger, A. Friedlander, S. J. Campbell, K. E. Holmes, S. K. Wilson, E. Brokovich, A. J. Brooks, J. J. Cruz-Motta, D. J. Booth, P. Chabanet, C. Gough, M. Tupper, S. C. A. Ferse, U. R. Sumaila, and D. Mouillot. 2016. Bright spots among the world's coral reefs. Nature 535:416-419.
-#'
 #'
 #' @examples
 #' #Load data
@@ -108,8 +112,14 @@
 #' #Just 'beta' parameters
 #' MCMCplot(MCMC_data, params = 'beta')
 #'
+#' #Just 'beta' parameters using highest posterior density intervals
+#' MCMCplot(MCMC_data, params = 'beta', HPD = TRUE)
+#
 #' #Just 'beta[1]', 'beta[4]', and 'alpha[3]'
 #' MCMCplot(MCMC_data, params = c('beta[1]', 'beta[4]', 'alpha[3]'), ISB = FALSE, exact = TRUE)
+#'
+#' #Just 'beta[1]', 'beta[4]', and 'alpha[3]' and change the credible interval widths
+#' MCMCplot(MCMC_data, ci = c(0.5, .089), params = c('beta[1]', 'beta[4]', 'alpha[3]'), ISB = FALSE, exact = TRUE)
 #'
 #' #Rank parameters by posterior mean
 #' MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
@@ -176,12 +186,12 @@ MCMCplot <- function(
   guide_col <- 'gray80'
   PL_SC <- 0.3 # how much whitespace flanks plotted estimates
   
-  if (length(ci) == 2 & typeof(ci) == 'double' & ci[1] < ci[2] & ci[1] > 0 & 
-    ci[1] <= 1 & ci[2] > 0 & ci[2] <= 1) {
+  if (length(ci) == 2 & typeof(ci) == 'double' & ci[1] <= ci[2] & ci[1] > 0 & 
+    ci[1] <= 100 & ci[2] > 0 & ci[2] <= 100) {
       thin <- ci[2] # CI for thin line
       thick <- ci[1]  # CI for thick line
   } else {
-    stop("ci must be a numeric vector of length 2 where each element is (0, 1] and ci[1] < ci[2]")  
+    stop("ci must be a numeric vector of length 2 where each element is (0, 100] and ci[1] <= ci[2]")  
   }
 
   # Colors 
@@ -241,8 +251,8 @@ MCMCplot <- function(
     } 
     medians <- tsrt[idx]
     if (HPD == FALSE) {
-      thick_ci <- c((100 - ((100 - (thick * 100)) / 2)), ((100 - (thick * 100)) / 2)) * 0.01
-      thin_ci <- c((100 - ((100 - (thin * 100)) / 2)), ((100 - (thin * 100)) / 2)) * 0.01
+      thick_ci <- c((100 - ((100 - thick) / 2)), ((100 - thick) / 2)) * 0.01
+      thin_ci <- c((100 - ((100 - thin) / 2)), ((100 - thin) / 2)) * 0.01
       thick_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[, idx]
       thin_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[, idx]
     } else {
