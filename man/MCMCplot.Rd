@@ -165,7 +165,8 @@ MCMCplot(MCMC_data, params = 'beta', HPD = TRUE)
 MCMCplot(MCMC_data, params = c('beta[1]', 'beta[4]', 'alpha[3]'), ISB = FALSE, exact = TRUE)
 
 #Just 'beta[1]', 'beta[4]', and 'alpha[3]' and change the credible interval widths
-MCMCplot(MCMC_data, ci = c(0.5, .089), params = c('beta[1]', 'beta[4]', 'alpha[3]'), ISB = FALSE, exact = TRUE)
+MCMCplot(MCMC_data, ci = c(50, 89), params = c('beta[1]', 'beta[4]', 'alpha[3]'), 
+  ISB = FALSE, exact = TRUE)
 
 #Rank parameters by posterior mean
 MCMCplot(MCMC_data, params = 'beta', rank = TRUE)
