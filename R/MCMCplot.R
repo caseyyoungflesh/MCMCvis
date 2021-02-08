@@ -256,8 +256,8 @@ MCMCplot <- function(
       thick_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[, idx]
       thin_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[, idx]
     } else {
-      thick_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[1], digits = digits)[idx, ])
-      thin_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[2], digits = digits)[idx, ])
+      thick_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[1])[idx, ])
+      thin_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[2])[idx, ])
     }  
     return(list(len, idx, thick_q, thin_q, medians))
   } # closes pro_fun
