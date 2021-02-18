@@ -2,9 +2,8 @@ CRAN comments
 ====
 
 ## Test environments
-* local macOS install - R 3.6.3
-* Ubuntu 16.04 (on travis-ci) - R 3.6.2
-* Ubuntu 16.04 (on rhub) - R-release
+* local macOS install - R 4.0.2
+* Ubuntu 20.04.1 (on rhub) - R-release
 * Windows Server 2008 (on rhub) - R-devel
 * Fedora (on rhub) - R-devel
 

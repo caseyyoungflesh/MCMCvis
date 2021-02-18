@@ -7,6 +7,8 @@ NEWS
 - All functions now take `exact` as an argument to parse desired parameter. `ISB = TRUE` no longer uses regex matching (`exact` should be used to specify this).
 - Add support for objects output from the `nimble` package
 - `MCMCpstr` fix bug where the incorrect number of dimensions would be returned when subsetting a param with >1 dim
+- `MCMCplot` now takes the argument `ci` which can be used to specify the credible interval displayed in the caterpillar plot
+- `MCMCplot` now takes the argument `HPD` which can be used to specify whether highest posterior density intervals or equal-tailed intervals should be displayed in the caterpillar plot
 
 
 0.14.3:

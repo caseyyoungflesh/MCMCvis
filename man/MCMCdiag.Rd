@@ -52,7 +52,7 @@ MCMCdiag(
 
 \item{cp_file_names}{Character string (or vector of character strings) specifying new names for files to be copied specified by \code{cp_file}. If not argument is provided, the copy names will be identical to the originals.}
 
-\item{open_txt}{Logical - if \code{open_txt = TRUE} .txt file will open in deafulty .txt viewer after being generated.}
+\item{open_txt}{Logical - if \code{open_txt = TRUE} .txt file will open in default .txt viewer after being generated.}
 
 \item{summary}{Logical specifying whether or not to output summary information from MCMCsummary (posterior mean, sd, 2.5th and 97.5th quantiles, Rhat, and n.eff) at the bottom of the .txt file.}
 
@@ -64,7 +64,7 @@ MCMCdiag(
 
 \item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.}
 
-\item{exact}{Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). #' If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).}
+\item{exact}{Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).}
 
 \item{digits}{Number of significant digits to include for posterior summary. All computed digits will be included by default. Note that Rhat is always rounded to 2 decimal places.}
 

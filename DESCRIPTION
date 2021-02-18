@@ -9,8 +9,8 @@ Authors@R: c(
 Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
 Description: Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
 License: GPL-3
-URL: http://github.com/caseyyoungflesh/MCMCvis
-BugReports: http://github.com/caseyyoungflesh/MCMCvis/issues
+URL: https://github.com/caseyyoungflesh/MCMCvis
+BugReports: https://github.com/caseyyoungflesh/MCMCvis/issues
 LazyData: TRUE
 Imports:
     coda,
@@ -19,7 +19,7 @@ Imports:
     overlapping,
     rlang
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.5.0)
 RoxygenNote: 7.1.1
 Suggests: knitr,
     rmarkdown,
