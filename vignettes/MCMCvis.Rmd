@@ -164,19 +164,29 @@ MCMCsummary(MCMC_data, round = 2)
 Specific parameters can be specified to subset summary information. Square brackets in parameter names are ignored by default. For instance, all `alpha` parameters can be plotted using `params = 'alpha'`.
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'alpha', round = 2)
+MCMCsummary(MCMC_data, 
+            params = 'alpha', 
+            round = 2)
 ```
 
 Individual parameters can also be specified. For example, one `alpha` (of many) may be specified. In this case, the square brackets should not be ignored, so that only the `alpha[1]` parameter can be specified. Use the argument `ISB = FALSE` to prevent square brackets from being ignored (ISB is short for 'Ignore Square Brackets'). The `exact` argument can be used to specify whether the parameter name should be matched exactly (after taking into account the `ISB` argument). Therefore, to return a single `alpha` parameter, `ISB = FALSE` and `exact = TRUE` can be used in the following way.
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'alpha[1]', ISB = FALSE, exact = TRUE, round = 2)
+MCMCsummary(MCMC_data, 
+            params = 'alpha[1]', 
+            ISB = FALSE, 
+            exact = TRUE, 
+            round = 2)
 ```
 
 When `exact = FALSE`, the `params` argument reads like a regular expression. Because of this, square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. This can be useful for returning a specific set of a large number of parameters. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'alpha\\[1\\]', ISB = FALSE, exact = FALSE, round = 2)
+MCMCsummary(MCMC_data, 
+            params = 'alpha\\[1\\]', 
+            ISB = FALSE, 
+            exact = FALSE, 
+            round = 2)
 ```
 
 When using `exact = FALSE`, if `alpha` has 10 or more parameters (i.e., more than two digits for the index), the `|` (OR) may be needed. For instance, while one could use `alpha[1:10]` to select the first ten indices of the vector `alpha` in R, the regex equivalent to do the same with `MCMCvis` would be `alpha\\[(\\d|[1][0])\\]`. The `\\d` specifies any digit, the `|` represents OR (so any one digit number OR), the `[1]` specifies that the first digit must be one, and the `[0]` specifies that the second digit must be zero (so return any one digit number, or 10, resulting in the equivalent of `alpha[1:10]`). Ranges for each digit can also be specified. For instance, the regex equivalent of the R `alpha[5:15]` would be `alpha\\[([5-9]|[1][0-5])\\]`.
@@ -184,34 +194,56 @@ When using `exact = FALSE`, if `alpha` has 10 or more parameters (i.e., more tha
 The `excl` argument can be used to exclude any parameters. For instance, if all parameters are desired **except** for the `alphas`, use `params = 'all', excl = 'alpha', ISB = FALSE, exact = FALSE`. These arguments can be used in any of the functions in the package.
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'all', excl = 'alpha', ISB = FALSE, exact = FALSE, round = 2)
+MCMCsummary(MCMC_data, 
+            params = 'all', 
+            excl = 'alpha', 
+            ISB = FALSE, 
+            exact = FALSE, 
+            round = 2)
 ```
 
 Setting the `Rhat` and `n.eff` arguments to `FALSE` can be used to avoid calculating the Rhat statistic and number of effective samples, respectively (defaults for both `Rhat` and `n.eff` are `TRUE`). Specifying `FALSE` may greatly increase function speed with very large `mcmc.list` objects. Values for Rhat near 1 suggest convergence (Brooks and Gelman 1998). Rhat and n.eff values for `mcmc.list` objects are calculated using the `coda` package (what is typically returned by packages that utilize JAGS). Rhat and n.eff values for `stanfit` and `jagsUI` objects are calculated using a 'split chain' Rhat (as used by their respective packages). The approaches differ slightly between the `coda` and `stanfit`/`jagsUI` packages. Details on calculation of Rhat and number of effective samples using `rstan` can be found in the Stan manual (Stan Development Team 2018).
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'alpha', Rhat = TRUE,n.eff = TRUE,round = 2)
+MCMCsummary(MCMC_data, 
+            params = 'alpha', 
+            Rhat = TRUE, 
+            n.eff = TRUE, 
+            round = 2)
 ```
 
 Sample quantiles in MCMCsummary can now be specified directly using the `probs` argument, removing the need to define custom quantiles with the `func` argument. The default behavior is to provide 2.5%, 50%, and 97.5% quantiles. These probabilities can be changed by supplying a numeric vector to the `probs` argument. 
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'alpha', Rhat = TRUE, n.eff = TRUE, probs = c(0.1, 0.5, 0.9), 
-  round = 2)
+MCMCsummary(MCMC_data, 
+            params = 'alpha', 
+            Rhat = TRUE, 
+            n.eff = TRUE, 
+            probs = c(0.1, 0.5, 0.9), 
+            round = 2)
 ```
 
 Setting `HPD = TRUE` will cause MCMCsummary to use `HPDinterval` from the `coda` package to compute highest posterior density intervals based on the probability specified in the `hpd_prob` argument (this argument is different than `probs` argument, which is reserved for quantiles). Note that for each parameter `HPDinterval` normally returns one interval per chain. However, MCMCsummary first pools the chains, forcing `HPDinterval` to compute a single interval across all posterior samples for each parameter. This step is done for user convenience.
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'alpha', Rhat = TRUE, n.eff = TRUE, HPD = TRUE, hpd_prob = 0.8,
-  round = 2)
+MCMCsummary(MCMC_data, 
+            params = 'alpha', 
+            Rhat = TRUE, 
+            n.eff = TRUE, 
+            HPD = TRUE, 
+            hpd_prob = 0.8,
+            round = 2)
 ```
 
 The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by the function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empirical cumulative distribution function `ecdf` to compute the proportion of posterior samples that are less than -10 for each `alpha` parameter.
 
 ```{r}
-MCMCsummary(MCMC_data, params = 'alpha', Rhat = TRUE, n.eff = TRUE, round = 2, 
-  func = function(x) ecdf(x)(-10), func_name = "ecdf-10")
+MCMCsummary(MCMC_data, 
+            params = 'alpha', 
+            Rhat = TRUE, 
+            n.eff = TRUE, 
+            round = 2, 
+            func = function(x) ecdf(x)(-10), func_name = "ecdf-10")
 ```
 
 <br>
@@ -226,7 +258,10 @@ The function calculates summary information only for the specified function. The
 
 
 ```{r}
-MCMCpstr(MCMC_data, params = 'alpha', func = mean, type = 'summary')
+MCMCpstr(MCMC_data, 
+         params = 'alpha', 
+         func = mean,
+         type = 'summary')
 ```
 
 Custom functions can be specified as well. If the output length of the specified function is greater than 1 when `type = 'summary'`, an extra dimension is added to the function output. For instance, a `vector` becomes a `matrix`, a `matrix` a three dimensional `array`, and so forth.
@@ -249,27 +284,43 @@ dim(ex$alpha)
 `MCMCtrace` is used to create trace and density plots for MCMC output. This is useful for diagnostic purposes. Particular parameters can also be specified, as with `MCMCsummary`. Output is written to PDF by default to enable more efficient review of posteriors - this also reduces computation time. PDF output is particularly recommended for large numbers of parameters. `pdf = FALSE` can be used to prevent output to PDF.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCtrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]'), ISB = FALSE, exact = TRUE,
-  pdf = FALSE)
+MCMCtrace(MCMC_data, 
+          params = c('beta[1]', 'beta[2]', 'beta[3]'), 
+          ISB = FALSE, 
+          exact = TRUE,
+          pdf = FALSE)
 ```
 
 Just trace plots can be plotted with `type = 'trace'`. Just density plots can be plotted with `type = 'density'`. Default is `type = 'both'` which outputs both trace and density plots. Density plots for individual chains can be output using the `ind` argument.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCtrace(MCMC_data, params = 'beta', type = 'density', ind = TRUE, pdf = FALSE)
+MCMCtrace(MCMC_data, 
+          params = 'beta', 
+          type = 'density', 
+          ind = TRUE, 
+          pdf = FALSE)
 ```
 
 The PDF document will be output to the current working directory by default, but another directory can be specified. The `open_pdf` argument can be used to prevent the produced PDF from opening in a viewer once generated.
 
 ```{r, eval = FALSE, fig.align = 'center'}
-MCMCtrace(MCMC_data, pdf = TRUE, open_pdf = FALSE, filename = 'MYpdf', wd = 'DIRECTORY_HERE')
+MCMCtrace(MCMC_data, 
+          pdf = TRUE, 
+          open_pdf = FALSE, 
+          filename = 'MYpdf', 
+          wd = 'DIRECTORY_HERE')
 ```
 
 `iter` denotes how many iterations should be plotted for the chain the trace and density plots. The default is 5000, meaning that the last 5000 iterations of each chain are plotted. Remember, this is the final posterior chain, not including the specified burn-in or warm-up (specified when the model was run). If less than 5000 iterations are run, the full number of iterations will be plotted.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCtrace(MCMC_data, params = c('beta[1]', 'beta[2]', 'beta[3]'), ISB = FALSE, exact = TRUE, 
-  iter = 100, ind = TRUE, pdf = FALSE)
+MCMCtrace(MCMC_data, 
+          params = c('beta[1]', 'beta[2]', 'beta[3]'), 
+          ISB = FALSE, 
+          exact = TRUE, 
+          iter = 100, 
+          ind = TRUE, 
+          pdf = FALSE)
 ```
 
 Overlap between the priors and posteriors (PPO - prior posterior overlap) can also be calculated by specifying the priors associated with each parameter using the `priors` argument. This is particularly useful when investigating how large the effect of the prior is on the posterior distribution - this can be informative when trying to determine how identifiable a particular parameter is in a model.
@@ -281,67 +332,63 @@ The `priors` argument takes a matrix as input, with each column representing a p
 # the following prior is equivalent to dnorm(0, 0.001) in JAGS
 PR <- rnorm(15000, 0, 32)
 
-MCMCtrace(
-  MCMC_data, 
-  params = c('beta[1]', 'beta[2]', 'beta[3]'),
-  ISB = FALSE,
-  exact = TRUE,
-  priors = PR,
-  pdf = FALSE,
-  Rhat = TRUE,
-  n.eff = TRUE)
+MCMCtrace(MCMC_data, 
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          ISB = FALSE,
+          exact = TRUE,
+          priors = PR,
+          pdf = FALSE,
+          Rhat = TRUE,
+          n.eff = TRUE)
 ```
 
 Plots can be scaled to visualize both the posterior and the prior distribution using the `post_zm` argument.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCtrace(
-  MCMC_data, 
-  params = c('beta[1]', 'beta[2]', 'beta[3]'),
-  ISB = FALSE,
-  exact = TRUE,
-  priors = PR,
-  pdf = FALSE,
-  post_zm = FALSE)
+MCMCtrace(MCMC_data, 
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          ISB = FALSE,
+          exact = TRUE,
+          priors = PR,
+          pdf = FALSE,
+          post_zm = FALSE)
 ```
 
 Percent overlap can be output to an R object as well using the `PPO_out` argument. Plotting of the trace plots can be suppressed with `plot = FALSE`.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-PPO <- MCMCtrace(
-  MCMC_data,
-  params = c('beta[1]', 'beta[2]', 'beta[3]'),
-  ISB = FALSE,
-  exact = TRUE,
-  priors = PR,
-  plot = FALSE,
-  PPO_out = TRUE)
+PPO <- MCMCtrace(MCMC_data,
+                 params = c('beta[1]', 'beta[2]', 'beta[3]'),
+                 ISB = FALSE,
+                 exact = TRUE,
+                 priors = PR,
+                 plot = FALSE,
+                 PPO_out = TRUE)
 PPO
 ```
 
 Additional arguments can be used to change the limits of the density plots, axes labels, plot titles, line width and type, size and color of text, tick and axes label size, position of ticks, color of lines, and thickness of axes.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCtrace(
-  MCMC_data,
-  params = c('beta[1]', 'beta[2]', 'beta[3]'),
-  ISB = FALSE,
-  exact = TRUE,
-  priors = PR,
-  pdf = FALSE,
-  Rhat = TRUE,
-  n.eff = TRUE,
-  xlab_tr = 'This is the x for trace',
-  ylab_tr = 'This is the y for trace',
-  main_den = 'Custom density title',
-  lwd_den = 3,
-  lty_pr = 2,
-  col_pr = 'green',
-  sz_txt = 1.3,
-  sz_ax = 2,
-  sz_ax_txt = 1.2,
-  sz_tick_txt = 1.2,
-  sz_main_txt = 1.3)
+MCMCtrace(MCMC_data,
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          ISB = FALSE,
+          exact = TRUE,
+          priors = PR,
+          pdf = FALSE,
+          Rhat = TRUE,
+          n.eff = TRUE,
+          xlab_tr = 'This is the x for trace',
+          ylab_tr = 'This is the y for trace',
+          main_den = 'Custom density title',
+          lwd_den = 3,
+          lty_pr = 2,
+          col_pr = 'green',
+          sz_txt = 1.3,
+          sz_ax = 2,
+          sz_ax_txt = 1.2,
+          sz_tick_txt = 1.2,
+          sz_main_txt = 1.3)
 ```
 
 If simulated data were used to fit the model, the generating values used to simulate the data can be specified using the `gvals` argument. This makes it possible to compare posterior estimates with the true parameter values. Generating values will be displayed as vertical dotted lines. Similar to the `priors` argument, if one value is specified when more than one parameter is used, this one generating value will be used for all parameters.
@@ -350,13 +397,12 @@ If simulated data were used to fit the model, the generating values used to simu
 # generating values for each parameter used to simulate data
 GV <- c(-10, -5.5, -15)
 
-MCMCtrace(
-  MCMC_data,
-  params = c('beta[1]', 'beta[2]', 'beta[3]'),
-  ISB = FALSE,
-  exact = TRUE,
-  gvals = GV,
-  pdf = FALSE)
+MCMCtrace(MCMC_data,
+          params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          ISB = FALSE,
+          exact = TRUE,
+          gvals = GV,
+          pdf = FALSE)
 ```
 
 <br>
@@ -378,7 +424,9 @@ apply(ex, 2, mean)
 Using the `mcmc.list` argument, `MCMCchains` can return an `mcmc.list` object, instead of a matrix, for the specified parameters. This can be useful when saving posterior information for only a subset of parameters is desired.
 
 ```{r}
-ex2 <- MCMCchains(MCMC_data, params = 'beta',  mcmc.list = TRUE)
+ex2 <- MCMCchains(MCMC_data, 
+                  params = 'beta',  
+                  mcmc.list = TRUE)
 ```
 
 <br>
@@ -388,17 +436,24 @@ ex2 <- MCMCchains(MCMC_data, params = 'beta',  mcmc.list = TRUE)
 `MCMCplot` is used to create caterpillar plots from MCMC output. Points represent posterior medians. Thick and thin lines represent credible intervals specified by the user using the `ci` argument, where the default is 50% and 95% credible intervals, respectively. Note, that the first element in `ci` should be less than or equal to the second element. By default, `MCMCplot` plots equal-tailed credible intervals (`HPD = FALSE`). However, highest posterior density intervals can be visualized using `HPD = TRUE`. As with the other functions in the package, particular parameters of interest can be specified.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(MCMC_data, params = 'beta', ci = c(50, 90))
+MCMCplot(MCMC_data, 
+         params = 'beta', 
+         ci = c(50, 90))
 ```
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(MCMC_data, params = 'beta', ci = c(50, 80), HPD = TRUE)
+MCMCplot(MCMC_data, 
+         params = 'beta', 
+         ci = c(50, 80), 
+         HPD = TRUE)
 ```
 
 `ref_ovl = TRUE` can be used to change how the posterior estimates are plotted based on the credible intervals. Parameters whose `ci[1]` (higher precision / lower certainty) credible intervals overlap 0 are indicated by 'open' circles. Parameters whose `ci[1]` credible intervals DO NOT overlap 0 AND whose `ci[2]` (lower precision / higher certainty) credible intervals DO overlap 0 are indicated by 'closed' gray circles. Parameters whose `ci[2]` credible intervals DO NOT overlap 0 are indicated by 'closed' black circles. A vertical reference at 0 is plotted by default. The position of this reference line can be modified with the `ref` argument. `ref = NULL` removes the reference line altogether.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(MCMC_data, params = 'beta', ref_ovl = TRUE)
+MCMCplot(MCMC_data, 
+         params = 'beta', 
+         ref_ovl = TRUE)
 ```
 
 &nbsp;
@@ -406,44 +461,49 @@ MCMCplot(MCMC_data, params = 'beta', ref_ovl = TRUE)
 Parameters can be ranked by posterior median estimates using the `rank` argument. `xlab` can be used to create an alternative label for the x-axis. Guidelines can be produced using the `guide_lines` argument. This can be helpful when there are a large number of parameters and matching labels to plotted 'caterpillars' becomes difficult.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(MCMC_data, params = 'beta', rank = TRUE, xlab = 'PARAMETER ESTIMATE', guide_lines = TRUE)
+MCMCplot(MCMC_data, 
+         params = 'beta', 
+         rank = TRUE, 
+         xlab = 'PARAMETER ESTIMATE', 
+         guide_lines = TRUE)
 ```
 
 The orientation of the plot can also be change using the `horiz` argument. `ylab` is then used to specify an alternative label on the 'estimate axis'.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(MCMC_data, params = 'beta', rank = TRUE, horiz = FALSE, ylab = 'PARAMETER ESTIMATE')
+MCMCplot(MCMC_data, 
+         params = 'beta', 
+         rank = TRUE, 
+         horiz = FALSE, 
+         ylab = 'PARAMETER ESTIMATE')
 ```
 
 Output from two models can also be plotted side-by-side, as long as the parameter names are identical (NOTE: not ALL parameters need to be identical, just the parameters specified in the `params` argument). This is useful for comparing output from similar models. By default, the the first model input (`object`) will be plotted in black, while the second model input (`object2`) will be plotted in red. Different colors for each model output can be specified with `col` and `col2`. The spacing between the plotted posteriors for each parameter can be adjusted with `offset` (as the desired spacing will depend on the size of the image as well as the specified thickness/size of the lines/dots).
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(object = MCMC_data, object2 = MCMC_data2, params = 'beta', offset = 0.1)
+MCMCplot(object = MCMC_data, 
+         object2 = MCMC_data2, 
+         params = 'beta', 
+         offset = 0.1)
 ```
 
 Graphical parameters for x and y-axis limitation, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, color of posterior estimates, and margins can be specified.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(
-  MCMC_data, 
-  params = 'beta', 
-  xlim = c(-60, 40),
-  xlab = 'My x-axis label',
-  main = 'MCMCvis plot',
-  labels = c(
-    'First param', 
-    'Second param', 
-    'Third param', 
-    'Fourth param', 
-    'Fifth param', 
-    'Sixth param'),
-  col = c('red', 'blue', 'green', 'purple', 'orange', 'black'),
-  sz_labels = 1.5,
-  sz_med = 2,
-  sz_thick = 7,
-  sz_thin = 3,
-  sz_ax = 4,
-  sz_main_txt = 2)
+MCMCplot(MCMC_data, 
+         params = 'beta', 
+         xlim = c(-60, 40),
+         xlab = 'My x-axis label',
+         main = 'MCMCvis plot',
+         labels = c('First param', 'Second param', 'Third param', 
+                    'Fourth param', 'Fifth param', 'Sixth param'),
+          col = c('red', 'blue', 'green', 'purple', 'orange', 'black'),
+          sz_labels = 1.5,
+          sz_med = 2,
+          sz_thick = 7,
+          sz_thin = 3,
+          sz_ax = 4,
+          sz_main_txt = 2)
 ```
 
 Other elements can be added to `MCMCplot` figures as well. For instance, to add PPO (prior posterior overlap) to the posterior plot, first calculate PPO using the `MCMCtrace` function (with `PPO_out = TRUE` and `plot = FALSE` to suppress plotting).
@@ -453,26 +513,24 @@ Other elements can be added to `MCMCplot` figures as well. For instance, to add 
 # the following prior is equivalent to dnorm(0, 0.001) in JAGS
 PR <- rnorm(15000, 0, 32)
 
-PPO <- MCMCtrace(
-  MCMC_data,
-  params = c('beta[1]', 'beta[2]', 'beta[3]'),
-  ISB = FALSE,
-  exact = TRUE,
-  priors = PR,
-  plot = FALSE,
-  PPO_out = TRUE)
+PPO <- MCMCtrace(MCMC_data,
+                 params = c('beta[1]', 'beta[2]', 'beta[3]'),
+                 ISB = FALSE,
+                 exact = TRUE,
+                 priors = PR,
+                 plot = FALSE,
+                 PPO_out = TRUE)
 ```
 
 Then use `MCMCplot` to create the posterior plot and loop to plot PPO as text on plot.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
-MCMCplot(
-  MCMC_data, 
-  params = c('beta[1]', 'beta[2]', 'beta[3]'),
-  ISB = FALSE,
-  exact = TRUE,
-  xlim = c(-60, 35))
-
+MCMCplot(MCMC_data, 
+         params = c('beta[1]', 'beta[2]', 'beta[3]'),
+          ISB = FALSE,
+          exact = TRUE,
+          xlim = c(-60, 35))
+        
 # each parameter is a y-unit of 1
 for (i in 1:NROW(PPO)) {
   text(x = 10, y = NROW(PPO) - i + 1, paste0('PPO: ', PPO[i,2], '%'), pos = 4, col = 'red')
@@ -497,20 +555,19 @@ This function can facilitate more reproducible workflows and more organized vers
 - Copies two files, `model.stan` (`.stan` file specifying the model) and `fit-model.R` (the script used to fit the model) into the new directory as `model-YYYY-MM-DD.stan` and `fit-model-YYYY-MM-DD.R`, respectively
 
 ```{r, eval = FALSE}
-MCMCdiag(
-  model_fit,
-  round = 3,
-  file_name = 'model-summary-YYYY-MM-DD',
-  dir = 'Results',
-  mkdir = 'model-YYYY-MM-DD',
-  add_field = '1.0',
-  add_field_names = 'Data version',
-  save_obj = TRUE,
-  obj_name = 'model-fit-YYYY-MM-DD',
-  add_obj = list(DATA, sessionInfo()),
-  add_obj_names = c('model-data-YYYY-MM-DD', 'session-info-YYYY-MM-DD'),
-  cp_file = c('model.stan', 'fit-model.R'),
-  cp_file_names = c('model-YYYY-MM-DD.stan, fit-model-YYYY-MM-DD.R'))
+MCMCdiag(model_fit,
+         round = 3,
+         file_name = 'model-summary-YYYY-MM-DD',
+         dir = 'Results',
+         mkdir = 'model-YYYY-MM-DD',
+         add_field = '1.0',
+         add_field_names = 'Data version',
+         save_obj = TRUE,
+         obj_name = 'model-fit-YYYY-MM-DD',
+         add_obj = list(DATA, sessionInfo()),
+         add_obj_names = c('model-data-YYYY-MM-DD', 'session-info-YYYY-MM-DD'),
+         cp_file = c('model.stan', 'fit-model.R'),
+         cp_file_names = c('model-YYYY-MM-DD.stan, fit-model-YYYY-MM-DD.R'))
 
 ```
 

@@ -48,7 +48,7 @@
 #'
 #' Brooks, S. P., and A. Gelman. 1998. General methods for monitoring convergence of iterative simulations. Journal of Computational and Graphical Statistics 7:434.
 #'
-#' Stan Development Team. 2018. Stan Modeling Language Users Guide and Reference Manual, Version 2.18.0.   http://mc-stan.org
+#' Stan Development Team. 2018. Stan Modeling Language Users Guide and Reference Manual, Version 2.18.0.   https://mc-stan.org
 #'
 #' @examples
 #' #Load data
