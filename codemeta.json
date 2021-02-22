@@ -159,8 +159,7 @@
     }
   ],
   "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/NEWS.md",
-  "fileSize": "4259.635KB",
-  "contIntegration": "https://travis-ci.org/caseyyoungflesh/MCMCvis",
+  "fileSize": "4261.04KB",
   "citation": [
     {
       "@type": "ScholarlyArticle",
