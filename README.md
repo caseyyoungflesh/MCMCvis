@@ -1,8 +1,8 @@
-MCMCvis
-====
+# MCMCvis <a href='https://cran.r-project.org/web/packages/MCMCvis/vignettes/MCMCvis.html'><img src='figs/MCMC_vis_logo_v3_bw.png' align="right" height="225" /></a>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis) ![devel 0.15.0](https://img.shields.io/badge/devel-0.15.0-blue.svg) [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
 
+## Overview
 
 `MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
 
@@ -21,8 +21,7 @@ The package contains six functions:
 
 Youngflesh, C. (2018) MCMCvis: Tools to visualize, manipulate, and summarize MCMC output. *Journal of Open Source Software*, 3(24), 640, https://doi.org/10.21105/joss.00640
 
-Installation
-------------
+## Installation
 
 You can install the released version on CRAN with:
 ```{r}
@@ -35,16 +34,14 @@ install.packages('devtools')
 devtools::install_github('caseyyoungflesh/MCMCvis', build_vignettes = TRUE)
 ```
 
-Vignette
---------
+## Vignette
 
 The vignette for this package can be run using:
 ```{r}
 vignette('MCMCvis')
 ```
 
-Examples
---------
+## Examples
 
 #### Summarize
 
@@ -77,7 +74,7 @@ MCMCvis::MCMCtrace(MCMC_data, params = 'beta\\[1\\]',
                    ISB = FALSE, priors = PR, ind = TRUE,
                    Rhat = TRUE, n.eff = TRUE, pdf = FALSE)
 ```
-![](Evaluate_ex.png)
+![](figs/Evaluate_ex.png)
 
 
 #### Manipulate
@@ -92,4 +89,4 @@ just_betas_mcmc_obj <- MCMCchains(MCMC_data, params = 'beta', mcmc.list = TRUE)
 MCMCplot(object = MCMC_data, object2 = MCMC_data2,
          params = 'beta', rank = TRUE, offset = 0.14)
 ```
-![](Viz_ex.png)
+![](figs/Viz_ex.png)
