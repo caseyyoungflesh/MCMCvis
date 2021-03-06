@@ -30,12 +30,12 @@
 #' @export
 
 MCMCpstr <- function(object,
-                   params = 'all',
-                   excl = NULL,
-                   ISB = TRUE,
-                   exact = TRUE,
-                   func = mean,
-                   type = 'summary')
+                     params = 'all',
+                     excl = NULL,
+                     ISB = TRUE,
+                     exact = TRUE,
+                     func = mean,
+                     type = 'summary')
 {
   #SORTING BLOCK
   if (methods::is(object, 'matrix'))

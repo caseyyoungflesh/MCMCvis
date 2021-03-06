@@ -66,20 +66,20 @@
 #' @export
 
 MCMCsummary <- function(object,
-                      params = 'all',
-                      excl = NULL,
-                      ISB = TRUE,
-                      exact = TRUE,
-                      probs = c(0.025, 0.5, 0.975),
-                      hpd_prob = 0.95,
-                      HPD = FALSE,
-                      digits = NULL,
-                      round = NULL,
-                      Rhat = TRUE,
-                      n.eff = TRUE,
-                      func = NULL,
-                      func_name = NULL)
-{
+                        params = 'all',
+                        excl = NULL,
+                        ISB = TRUE,
+                        exact = TRUE,
+                        probs = c(0.025, 0.5, 0.975),
+                        hpd_prob = 0.95,
+                        HPD = FALSE,
+                        digits = NULL,
+                        round = NULL,
+                        Rhat = TRUE,
+                        n.eff = TRUE,
+                        func = NULL,
+                        func_name = NULL)
+{ 
   # SORTING BLOCK
 
   if (methods::is(object, 'matrix'))

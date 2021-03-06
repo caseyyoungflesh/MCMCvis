@@ -43,12 +43,12 @@
 #' @export
 
 MCMCchains <- function(object,
-                     params = 'all',
-                     excl = NULL,
-                     ISB = TRUE,
-                     exact = TRUE,
-                     mcmc.list = FALSE,
-                     chain_num = NULL)
+                       params = 'all',
+                       excl = NULL,
+                       ISB = TRUE,
+                       exact = TRUE,
+                       mcmc.list = FALSE,
+                       chain_num = NULL)
 {
   #for rstanarm/brms obejcts - set to NULL by default
   sp_names <- NULL
