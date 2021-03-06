@@ -70,8 +70,8 @@ MCMCdiag(MCMC_data, file_name = 'model_summary.txt',
 
 ```{r}
 PR <- rnorm(15000, 0, 32)
-MCMCvis::MCMCtrace(MCMC_data, params = 'beta\\[1\\]', 
-                   ISB = FALSE, priors = PR, ind = TRUE,
+MCMCvis::MCMCtrace(MCMC_data, params = 'beta[1]', 
+                   ISB = FALSE, exact = TRUE, priors = PR, ind = TRUE,
                    Rhat = TRUE, n.eff = TRUE, pdf = FALSE)
 ```
 ![](figs/Evaluate_ex.png)
