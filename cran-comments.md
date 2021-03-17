@@ -16,3 +16,13 @@ There were no ERRORs, WARNINGs, or NOTEs.
 
 I have run R CMD check on downstream dependencies of MCMCvis. All packages passed.
 
+
+## NOTES
+
+I have corrected the following corrections from the previous submission:
+
+Please change http --> https, add trailing slashes, or follow moved 
+content as appropriate.
+
+Please single quote software names such as 'JAGS' in the Description 
+field of the DESCRIPTION file.

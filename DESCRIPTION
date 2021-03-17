@@ -7,7 +7,7 @@ Authors@R: c(
     person("Christian", "Che-Castaldo", role = c("aut"), email = "christian.che-castaldo@stonybrook.edu", comment = c(ORCID = "0000-0002-7670-2178")),
     person("Tyler", "Hardy", role = c("ctb")))
 Maintainer: Casey Youngflesh <caseyyoungflesh@gmail.com>
-Description: Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
+Description: Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with 'Stan', 'NIMBLE', 'JAGS', and other software.
 License: GPL-3
 URL: https://github.com/caseyyoungflesh/MCMCvis
 BugReports: https://github.com/caseyyoungflesh/MCMCvis/issues
