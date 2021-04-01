@@ -1,7 +1,7 @@
 # MCMCvis <a href='https://cran.r-project.org/web/packages/MCMCvis/vignettes/MCMCvis.html'><img src='figs/MCMC_vis_logo_v3_bw.png' align="right" height="225" /></a>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis)
-[![devel 0.15.0](https://img.shields.io/badge/devel-0.15.0-red.svg)
+![devel 0.15.0](https://img.shields.io/badge/devel-0.15.0-red.svg)
 [![Downloads](http://cranlogs.r-pkg.org/badges/MCMCvis?color=blue)](http://cran.rstudio.com/package=MCMCvis)
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
 
