@@ -253,12 +253,27 @@ MCMCplot <- function(object,
     if (HPD == FALSE) {
       thick_ci <- c((100 - ((100 - thick) / 2)), ((100 - thick) / 2)) * 0.01
       thin_ci <- c((100 - ((100 - thin) / 2)), ((100 - thin) / 2)) * 0.01
-      thick_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[, idx]
-      thin_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[, idx]
+
+      if (np == 1)
+      {
+        thick_q <- as.matrix(apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[, idx], nrow = 2)
+        thin_q <- as.matrix(apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[, idx], nrow = 2)
+      } else {
+        thick_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thick_ci, na.rm = TRUE))[, idx]
+        thin_q <- apply(chains, 2, function(x) stats::quantile(x, probs = thin_ci, na.rm = TRUE))[, idx]
+      }
     } else {
-      thick_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[1] / 100)[idx, ])
-      thin_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[2] / 100)[idx, ])
-    }  
+      if (np == 1)
+      {
+        thick_q <- as.matrix(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[1] / 100)[idx, ])
+        thin_q <- as.matrix(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[2] / 100)[idx, ])
+      }
+       else {
+        thick_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[1] / 100)[idx, ])
+        thin_q <- t(coda::HPDinterval(coda::as.mcmc(chains), prob = ci[2] / 100)[idx, ])
+      }  
+    }
+
     return(list(len, idx, thick_q, thin_q, medians))
   } # closes pro_fun
   
