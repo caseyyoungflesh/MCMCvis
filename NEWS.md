@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.15.1:
+
+- `MCMCplot` fix bug that prevented plotting with a single parameter
+
+
 0.15.0:
 
 - `MCMCdiag` function added to create .txt file summarizing model inputs and outputs and save model object as .rds file
