@@ -24,11 +24,11 @@
   "codeRepository": "https://github.com/caseyyoungflesh/MCMCvis",
   "dateModified": "2018-02-16",
   "dateCreated": "2018-02-16",
-  "description": "Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.",
+  "description": "Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with 'Stan', 'NIMBLE', 'JAGS', and other software.",
   "keywords": "MCMC, Bayesian, Visualization, PPO",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "title": "MCMCvis",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "name": "MCMCvis: Tools to Visualize, Manipulate, and Summarize MCMC Output",
   "issueTracker": "https://github.com/caseyyoungflesh/MCMCvis/issues",
   "programmingLanguage": {
@@ -159,7 +159,7 @@
     }
   ],
   "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/NEWS.md",
-  "fileSize": "4829.799KB",
+  "fileSize": "4830.447KB",
   "citation": [
     {
       "@type": "ScholarlyArticle",
