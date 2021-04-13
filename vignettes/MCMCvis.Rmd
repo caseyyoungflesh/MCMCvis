@@ -179,7 +179,7 @@ MCMCsummary(MCMC_data,
             round = 2)
 ```
 
-When `exact = FALSE`, the `params` argument reads like a regular expression. Because of this, square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. This can be useful for returning a specific set of a large number of parameters. A useful cheatsheet for regular expressions in R can be found <a href="https://rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
+When `exact = FALSE`, the `params` argument reads like a regular expression. Because of this, square brackets must be escaped with `\\`. All other regular expression syntax is accepted, as typically applied in R. This can be useful for returning a specific set of a large number of parameters. A useful cheatsheet for regular expressions in R can be found <a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">here</a>. Another great regex tool can be found <a href ="https://regexr.com/">here</a> (though note two slashes are needed to escape characters in this function rather than one, hence `\\[` as opposed to `\[`). `\\d` can be used to specify any digits in a particular place.
 
 ```{r}
 MCMCsummary(MCMC_data, 

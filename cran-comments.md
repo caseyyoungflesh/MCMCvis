@@ -15,3 +15,11 @@ There were no ERRORs, WARNINGs, or NOTEs.
 ## Downstream dependencies
 
 I have run R CMD check on downstream dependencies of MCMCvis. All packages passed.
+
+
+## Notes
+
+I have correct the following notes from the previous submission:
+
+- Please change http --> https, add trailing slashes, or follow moved 
+content as appropriate.
