@@ -271,7 +271,7 @@ MCMCdiag <- function(object,
     
     if (burnin == 0)
     {
-      warning("According to provided 'object', burn-in = 0. Burn-in will not be printed to the diagnostic .txt file. Note that burn-in information cannot be extracted from 'nimble' output.")
+      warning("According to provided 'object', burn-in = 0. Burn-in will not be printed to the diagnostic .txt file. Note that burn-in and thin information cannot be extracted from 'nimble' output; 'Total iter' reflects the number of iterations kept after thinning and burn-in, and 'Thin' is given as 1 regardless of the thinning rate used.")
       burnin <- NULL
     }
     

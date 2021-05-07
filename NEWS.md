@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.15.2:
+
+- `MCMCdiag` add more desciptive message about output from `nimble` objects
+
+
 0.15.1:
 
 - `MCMCplot` fix bug that prevented plotting with a single parameter
