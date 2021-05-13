@@ -3,7 +3,7 @@ NEWS
 
 0.15.2:
 
-- `MCMCdiag` add more desciptive message about output from `nimble` objects
+- `MCMCdiag` add more descriptive message about output from `nimble` objects
 - `MCMCtrace` fix rdev matrix warning
 
 
