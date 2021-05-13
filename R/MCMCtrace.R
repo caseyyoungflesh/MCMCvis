@@ -274,13 +274,13 @@ MCMCtrace <- function(object,
       }
       if (length(np) == 2)
       {
-        graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
+        graphics::layout(matrix(c(1, 2, 3, 4), 2, 2, byrow = TRUE))
         graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
         MN_LINE <- NULL
       }
       if (length(np) == 1)
       {
-        graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
+        graphics::layout(matrix(c(1, 2), 1, 2, byrow = TRUE))
         graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
         MN_LINE <- 1.1   
       }
@@ -293,19 +293,19 @@ MCMCtrace <- function(object,
       }
       if (length(np) == 3 | length(np) == 4)
       {
-        graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 2, 2, byrow = TRUE))
+        graphics::layout(matrix(c(1, 2, 3, 4), 2, 2, byrow = TRUE))
         graphics::par(mar = c(4.1,4.1,2.1,1.1)) # bottom, left, top, right
         MN_LINE <- NULL
       }
       if (length(np) == 2)
       {
-        graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 2, byrow = TRUE))
+        graphics::layout(matrix(c(1, 2), 1, 2, byrow = TRUE))
         graphics::par(mar = c(8.1,4.1,7.1,1.1)) # bottom, left, top, right
         MN_LINE <- 1.1
       }
       if (length(np) == 1)
       {
-        graphics::layout(matrix(c(1, 2, 3, 4, 5, 6), 1, 1, byrow = TRUE))
+        graphics::layout(matrix(c(1), 1, 1, byrow = TRUE))
         graphics::par(mar = c(5.1, 4.1, 4.1, 2.1)) # bottom, left, top, right
         MN_LINE <- NULL
       }
