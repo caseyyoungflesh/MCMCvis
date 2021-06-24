@@ -146,7 +146,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
 
   # MCMC_data
   testthat::expect_error(MCMCsummary(MCMC_data), NA)
-  testthat::expect_error(MCMCsummary(MCMC_data, round = 2), NA)
+  testthat::expect_error(MCMCsummary(MCMC_data, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(MCMC_data, digits = 2), NA)
   testthat::expect_error(MCMCsummary(MCMC_data, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(MCMC_data, HPD = TRUE, prob = .9, round = 2), NA)
@@ -157,7 +157,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   
   # MCMC_data2
   testthat::expect_error(MCMCsummary(MCMC_data2), NA)
-  testthat::expect_error(MCMCsummary(MCMC_data2, round = 2), NA)
+  testthat::expect_error(MCMCsummary(MCMC_data2, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(MCMC_data2, digits = 2), NA)
   testthat::expect_error(MCMCsummary(MCMC_data2, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(MCMC_data2, HPD = TRUE, prob = .9, round = 2), NA)
@@ -168,7 +168,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
 
   # jags_data
   testthat::expect_error(MCMCsummary(jags_data), NA)
-  testthat::expect_error(MCMCsummary(jags_data, round = 2), NA)
+  testthat::expect_error(MCMCsummary(jags_data, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(jags_data, digits = 2), NA)
   testthat::expect_error(MCMCsummary(jags_data, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(jags_data, HPD = TRUE, prob = .9, round = 2), NA)
@@ -179,7 +179,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   
   # jagsparallel_data
   testthat::expect_error(MCMCsummary(jagsparallel_data), NA)
-  testthat::expect_error(MCMCsummary(jagsparallel_data, round = 2), NA)
+  testthat::expect_error(MCMCsummary(jagsparallel_data, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(jagsparallel_data, digits = 2), NA)
   testthat::expect_error(MCMCsummary(jagsparallel_data, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(jagsparallel_data, HPD = TRUE, prob = .9, round = 2), NA)
@@ -190,7 +190,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   
   # jagsUI_data
   testthat::expect_error(MCMCsummary(jagsUI_data), NA)
-  testthat::expect_error(MCMCsummary(jagsUI_data, round = 2), NA)
+  testthat::expect_error(MCMCsummary(jagsUI_data, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(jagsUI_data, digits = 2), NA)
   testthat::expect_error(MCMCsummary(jagsUI_data, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(jagsUI_data, HPD = TRUE, prob = .9, round = 2), NA)
@@ -201,7 +201,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   
   # R2jags_data
   testthat::expect_error(MCMCsummary(R2jags_data), NA)
-  testthat::expect_error(MCMCsummary(R2jags_data, round = 2), NA)
+  testthat::expect_error(MCMCsummary(R2jags_data, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(R2jags_data, digits = 2), NA)
   testthat::expect_error(MCMCsummary(R2jags_data, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(R2jags_data, HPD = TRUE, prob = .9, round = 2), NA)
@@ -212,7 +212,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   
   # matrix_data
   # testthat::expect_error(MCMCsummary(matrix_data), NA)
-  # testthat::expect_error(MCMCsummary(matrix_data, round = 2), NA)
+  # testthat::expect_error(MCMCsummary(matrix_data, round = 2, pg0 = TRUE), NA)
   # testthat::expect_error(MCMCsummary(matrix_data, digits = 2), NA)
   # testthat::expect_error(MCMCsummary(matrix_data, HPD = TRUE, prob = .9), NA)
   # testthat::expect_error(MCMCsummary(matrix_data, HPD = TRUE, prob = .9, round = 2), NA)
@@ -223,7 +223,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   
   # stan_data
   testthat::expect_error(MCMCsummary(stan_data), NA)
-  testthat::expect_error(MCMCsummary(stan_data, round = 2), NA)
+  testthat::expect_error(MCMCsummary(stan_data, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(stan_data, digits = 2), NA)
   testthat::expect_error(MCMCsummary(stan_data, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(stan_data, HPD = TRUE, prob = .9, round = 2), NA)
@@ -234,7 +234,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   
   # nimble_mF_ch4 - NIMBLE (list of matrices)
   testthat::expect_error(MCMCsummary(nimble_mF_ch4), NA)
-  testthat::expect_error(MCMCsummary(nimble_mF_ch4, round = 2), NA)
+  testthat::expect_error(MCMCsummary(nimble_mF_ch4, round = 2, pg0 = TRUE), NA)
   testthat::expect_error(MCMCsummary(nimble_mF_ch4, digits = 2), NA)
   testthat::expect_error(MCMCsummary(nimble_mF_ch4, HPD = TRUE, prob = .9), NA)
   testthat::expect_error(MCMCsummary(nimble_mF_ch4, HPD = TRUE, prob = .9, round = 2), NA)

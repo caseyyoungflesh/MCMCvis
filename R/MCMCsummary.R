@@ -511,7 +511,7 @@ MCMCsummary <- function(object,
 
 # convert object to matrix if computing non default intervals or using custom func
     if (!is.null(func) | HPD == TRUE | 
-        identical(probs, c(0.025, 0.5, 0.975)) == FALSE)
+        identical(probs, c(0.025, 0.5, 0.975)) == FALSE | pg0 == TRUE)
     {
       if (methods::is(object2, 'stanfit'))
       {

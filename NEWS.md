@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.15.4
+
+- `MCMCsummary` fix bug associated with `pg0 = TRUE` when input was derived from Stan
+
+
 0.15.3
 
 - `MCMCsummary` now takes argument `pg0`. When `pg0 = TRUE` the proportion of the posterior that is greater than 0 is returned as a column
