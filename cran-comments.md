@@ -5,6 +5,7 @@ CRAN comments
 * local macOS install - R 4.0.5
 * Ubuntu 20.04.1 (on rhub) - R-release
 * Windows Server 2008 (on rhub) - R-devel
+* Windows Server 2008 (on winbuilder) - R-devel
 * Fedora (on rhub) - R-devel
 
 ## R CMD check results
