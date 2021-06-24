@@ -13,9 +13,7 @@
 #'
 #' @param HPD Logical specifying whether to calculate equal-tailed credible intervals (\code{HPD = FALSE}) or highest posterior density intervals (\code{HPD = TRUE}) for the selected parameters. Default is \code{HPD = FALSE}.
 #' 
-#' @param ci Numeric vector of length 2, where each element is (0,100] and represents the width of an equal-tailed (\code{HPD = FALSE}) or highest posterior density (\code{HPD = TRUE}) credible interval. The first element of this vector corresponds to the thicker (narrower) credible interval displayed on the plot (default is 0.5) and the second element of this vector corresponds to the thinner (wider) credible interval (default is 0.95). The first credible interval width (`code{ci[1]}) must be less than or equal to the width of the second credible interval (`code{ci[2]}).
-#' 
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
+#' @param ci Numeric vector of length 2, where each element is (0,100] and represents the width of an equal-tailed (\code{HPD = FALSE}) or highest posterior density (\code{HPD = TRUE}) credible interval. The first element of this vector corresponds to the thicker (narrower) credible interval displayed on the plot (default is 0.5) and the second element of this vector corresponds to the thinner (wider) credible interval (default is 0.95). The first credible interval width (\code{ci[1]}) must be less than or equal to the width of the second credible interval (\code{ci[2]}).
 #'
 #' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
 #'

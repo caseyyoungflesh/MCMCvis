@@ -235,7 +235,7 @@ MCMCsummary(MCMC_data,
             round = 2)
 ```
 
-The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by the function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empirical cumulative distribution function `ecdf` to compute the proportion of posterior samples that are less than -10 for each `alpha` parameter.
+The `func` argument can be used to return metrics of interest not already returned by default for `MCMCsummary`. Input is a function to be performed on posteriors for each specified parameter. Values returned by the function will be displayed as a column in the summary output (or multiple columns if the function returns more than one value). In this way, functions from other packages can be used to derive metrics of interest on posterior output. Column name(s) for function output can be specified with the `func_name` argument. The example below uses the empirical cumulative distribution function `ecdf` to compute the proportion of posterior samples that are less than -10 for each `alpha` parameter. The argument `pg0` can be used to specify whether to calculate the proportion of the posterior that is greater than 0.
 
 ```{r}
 MCMCsummary(MCMC_data, 
@@ -243,7 +243,8 @@ MCMCsummary(MCMC_data,
             Rhat = TRUE, 
             n.eff = TRUE, 
             round = 2, 
-            func = function(x) ecdf(x)(-10), func_name = "ecdf-10")
+            func = function(x) ecdf(x)(-10), func_name = "ecdf-10",
+            pg0 = TRUE)
 ```
 
 <br>
@@ -543,7 +544,7 @@ for (i in 1:NROW(PPO)) {
 
 `MCMCdiag` is used to create a `.txt` file to summarize model inputs, output, and diagnostics. Options can be specified to save model output as an `.rds` file, create a new directory to store this file, save other objects of interest (such as data files or session information) as `.rds` files, and to copy files of interest (such as the version of the `R` script used to fit a model or the associated `.stan` or `.jags` file) to the created directory.
 
-Output presented in the `.txt` file varies by model fit object type but includes: model run time, number of warmup/burn-in iterations, total iterations, thinning rate, number of chains, specified adapt delta, specified max tree depth, specific initial step size, mean accept stat, mean tree depth, mean step size, number of divergent transitions, number max tree depth exceeds, number of chains with BFMI warnings, max Rhat (maximum Rhat of any parameter printed), min n.eff (minimum n.eff of any parameter printed), parameter summary information (passed from `MCMCsummary`), and any additional information fed to the `add_field` argument. See documentation for specific software used to fit model for more information on particular diagnostics. As with the other functions in the package, particular parameters of interest can be specified for the summary information (though typically all parameters will be of interest as the purpose of this function is to have a record of the summary information). 
+Output presented in the `.txt` file varies by model fit object type but includes: model run time, number of warmup/burn-in iterations, total iterations, thinning rate, number of chains, specified adapt delta, specified max tree depth, specific initial step size, mean accept stat, mean tree depth, mean step size, number of divergent transitions, number max tree depth exceeds, number of chains with BFMI warnings, max Rhat (maximum Rhat of any parameter printed), min n.eff (minimum n.eff of any parameter printed), parameter summary information (arguments from `MCMCsummary` are accepted to modify this summary information), and any additional information fed to the `add_field` argument. See documentation for specific software used to fit model for more information on particular diagnostics. As with the other functions in the package, particular parameters of interest can be specified for the summary information (though typically all parameters will be of interest as the purpose of this function is to have a record of the summary information). 
 
 This function can facilitate more reproducible workflows and more organized versioning of model results. For instance the following function call:
 

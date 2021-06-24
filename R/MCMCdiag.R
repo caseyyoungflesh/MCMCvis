@@ -29,22 +29,10 @@
 #'
 #' @param open_txt Logical - if \code{open_txt = TRUE} .txt file will open in default .txt viewer after being generated.
 #'
-#' @param summary Logical specifying whether or not to output summary information from MCMCsummary (posterior mean, sd, 2.5th and 97.5th quantiles, Rhat, and n.eff) at the bottom of the .txt file.
+#' @param summary Logical specifying whether or not to output summary information from \link[MCMCvis]{MCMCsummary} at the bottom of the .txt file.
+#'
+#' @param ... Arguments to be passed to \link[MCMCvis]{MCMCsummary} when generating summary if \code{summary = TRUE}. 
 #' 
-#' @param params Character string (or vector of character strings) denoting parameters to be returned in summary output. Argument is ignored if \code{summary = FALSE}.
-#' 
-#' #' Default \code{'all'} returns all parameters in summary output.
-#'
-#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest. Argument is ignored if \code{summary = FALSE}.
-#'
-#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
-#'
-#' @param exact Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).
-#' 
-#' @param digits Number of significant digits to include for posterior summary. All computed digits will be included by default. Note that Rhat is always rounded to 2 decimal places.
-#'
-#' @param round Number of decimal places to round to for posterior summary. Cannot be used in conjunction with \code{digits} argument. Note that Rhat is always rounded to 2 decimal places.
-#'
 #' @section Details:
 #' Some diagnostic information is only provided for models fit with particular pieces of software. For example, \code{rstan} output includes additional diagnostics related to the NUTS sampler. Output from \code{jagsUI} includes runtime information, but output from \code{rjags} does not. Note that this information could be fed manually to the function using the \code{add_field} argument.
 #'
@@ -87,12 +75,7 @@ MCMCdiag <- function(object,
                      cp_file_names,
                      open_txt = TRUE,
                      summary = TRUE,
-                     params = 'all',
-                     excl = NULL,
-                     ISB = TRUE,
-                     exact = TRUE,
-                     digits = NULL,
-                     round = NULL)
+                     ...)
 {
   #sort object types 
   if (methods::is(object, 'brmsfit'))
@@ -213,8 +196,7 @@ MCMCdiag <- function(object,
     max_treedepth <- stan_args$control$max_treedepth
     initial_stepsize <- stan_args$control$stepsize
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
-                                    ISB = ISB, exact = exact, digits = digits, round = round)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     
@@ -252,8 +234,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
-                                    ISB = ISB, exact = exact, digits = digits, round = round)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
   }
@@ -287,8 +268,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
-                                    ISB = ISB, exact = exact, digits = digits, round = round)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
   }
@@ -315,8 +295,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
-                                    ISB = ISB, exact = exact, digits = digits, round = round)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
   }
@@ -343,8 +322,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params = params, excl = excl, 
-                                    ISB = ISB, exact = exact, digits = digits, round = round)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- NULL
     min_n.eff <- NULL
   }

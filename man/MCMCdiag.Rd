@@ -19,12 +19,7 @@ MCMCdiag(
   cp_file_names,
   open_txt = TRUE,
   summary = TRUE,
-  params = "all",
-  excl = NULL,
-  ISB = TRUE,
-  exact = TRUE,
-  digits = NULL,
-  round = NULL
+  ...
 )
 }
 \arguments{
@@ -54,21 +49,9 @@ MCMCdiag(
 
 \item{open_txt}{Logical - if \code{open_txt = TRUE} .txt file will open in default .txt viewer after being generated.}
 
-\item{summary}{Logical specifying whether or not to output summary information from MCMCsummary (posterior mean, sd, 2.5th and 97.5th quantiles, Rhat, and n.eff) at the bottom of the .txt file.}
+\item{summary}{Logical specifying whether or not to output summary information from \link[MCMCvis]{MCMCsummary} at the bottom of the .txt file.}
 
-\item{params}{Character string (or vector of character strings) denoting parameters to be returned in summary output. Argument is ignored if \code{summary = FALSE}.
-
-#' Default \code{'all'} returns all parameters in summary output.}
-
-\item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest. Argument is ignored if \code{summary = FALSE}.}
-
-\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.}
-
-\item{exact}{Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).}
-
-\item{digits}{Number of significant digits to include for posterior summary. All computed digits will be included by default. Note that Rhat is always rounded to 2 decimal places.}
-
-\item{round}{Number of decimal places to round to for posterior summary. Cannot be used in conjunction with \code{digits} argument. Note that Rhat is always rounded to 2 decimal places.}
+\item{...}{Arguments to be passed to \link[MCMCvis]{MCMCsummary} when generating summary if \code{summary = TRUE}.}
 }
 \description{
 Model diagnostics and summary. Function reads information embedded in model fit object. Output varies by model fit object type but includes model run inputs, diagnostic information, and parameter summary. See DETAILS below for more information.

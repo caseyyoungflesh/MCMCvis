@@ -20,6 +20,8 @@
 #' 
 #' @param HPD Logical specifying whether to calculate equal-tailed credible intervals (\code{HPD = FALSE}) or highest posterior density intervals (\code{HPD = TRUE}) for the selected parameters. Default is \code{HPD = FALSE}.
 #' 
+#' @param pg0 Logical specifying whether to calculate the proportion of the posterior that is greater than 0, rounded to 2 digits.
+#' 
 #' @param digits Number of significant digits to include for posterior summary. All computed digits will be included by default. Note that Rhat is always rounded to 2 decimal places.
 #'
 #' @param round Number of decimal places to round to for posterior summary. Cannot be used in conjunction with \code{digits} argument. Note that Rhat is always rounded to 2 decimal places.
@@ -73,6 +75,7 @@ MCMCsummary <- function(object,
                         probs = c(0.025, 0.5, 0.975),
                         hpd_prob = 0.95,
                         HPD = FALSE,
+                        pg0 = FALSE,
                         digits = NULL,
                         round = NULL,
                         Rhat = TRUE,
@@ -272,7 +275,15 @@ MCMCsummary <- function(object,
       } 
       x[[(length(x) + 1)]] <- neff
     }
+
+# p>0
     
+    if (pg0 == TRUE)
+    {
+      tpg <- data.frame(apply(ch_bind, 2, function(x) round(sum(x > 0) / length(x), 2)))
+      colnames(tpg) <- 'p>0'
+      x[[(length(x) + 1)]] <- tpg
+    }
     
   
 # custom function
@@ -645,6 +656,7 @@ MCMCsummary <- function(object,
     }  
 
 # neff - neff in Stan is calculated within chain (different than with coda package)    
+    
     if (n.eff == TRUE)
     {
       if (methods::is(object2, 'stanfit'))
@@ -659,6 +671,15 @@ MCMCsummary <- function(object,
       x[[(length(x) + 1)]] <- neff
     }
  
+# p>0
+    
+    if (pg0 == TRUE)
+    {
+      tpg <- data.frame(apply(ch_bind, 2, function(x) round(sum(x > 0) / length(x), 2)))
+      colnames(tpg) <- 'p>0'
+      x[[(length(x) + 1)]] <- tpg
+    }
+    
 # custom function
   
     if (!is.null(func))

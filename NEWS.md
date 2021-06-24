@@ -1,6 +1,13 @@
 NEWS
 ====
 
+0.15.3
+
+- `MCMCsummary` now takes argument `pg0`. When `pg0 = TRUE` the proportion of the posterior that is greater than 0 is returned as a column
+- `MCMCdiag` now takes any argument from `MCMCsummary` to modify printed summary output
+- Clean up documentation
+
+
 0.15.2:
 
 - `MCMCdiag` add more descriptive message about output from `nimble` objects
