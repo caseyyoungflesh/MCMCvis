@@ -2,7 +2,7 @@ CRAN comments
 ====
 
 ## Test environments
-* local macOS install - R 4.0.5
+* local macOS install - R 4.1.1
 * Ubuntu 20.04.1 (on rhub) - R-release
 * Windows Server 2008 (on rhub) - R-devel
 * Windows Server 2008 (on winbuilder) - R-devel
