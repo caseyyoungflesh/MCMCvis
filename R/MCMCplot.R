@@ -27,7 +27,7 @@
 #'
 #' Argument \code{NULL} will plot no reference line.
 #'
-#' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the 50 \% and 95 \% credible intervals overlap the reference line. See DETAILS for more information.
+#' @param ref_ovl Logical specifying whether the style/color of plotted median dots and CI should be changed based on whether the specified credible intervals (50 \% and 95 \% by default) overlap the reference line. See DETAILS for more information.
 #'
 #' @param col Character string (or vector of character strings) specifying which color to render estimates on plot. When \code{ref_ovl = TRUE}, this argument has no effect and colors plotted will be based on the credible intervals and reference line. Number of specified colors must equal the number of specified parameters or one.
 #' 
@@ -84,7 +84,7 @@
 #' Default is c(5.1, 4.1, 4.1, 2.1) - the R plot default.
 #'
 #' @section Details:
-#' Points represent posterior medians. Parameters where 50\% credible intervals overlap 0 (or other specified value) are indicated by 'open' circles. Parameters where 50 percent credible intervals DO NOT overlap 0 AND 95 percent credible intervals DO overlap 0 (or other specified value) are indicated by 'closed' gray circles. Parameters where 95 percent credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' black circles. Thick lines represent 50 percent credible intervals while thin lines represent 95 \% credible intervals. \code{ref_ovl = TRUE} can be used to enable this feature.
+#' Points represent posterior medians. Parameters where the smaller specified credible intervals (first value in vector provided to \code{ci} argument; 50\% by default) overlap 0 (or other value specified by the \code{ref} argument) are indicated by 'open' circles and a lighter color than that specified (e.g., gray will be displayed with the default black is specified for \code{col}). Parameters where the specific smaller credible intervals DO NOT overlap 0 (or other specified value) AND the larger specified credible intervals (second value in vector provided to \code{ci} argument; 95\% by default) DO overlap 0 (or other specified value) are indicated by 'closed' circles and a lighter color that that specified. Parameters where the larger specified credible intervals DO NOT overlap 0 (or other specified value) are indicated by 'closed' circles and the color specified (black by default). Thick lines represent the smaller specified credible intervals percent credible intervals (50\% by default) while thin lines represent the larger specified credible intervals (95 \% by default). \code{ref_ovl = TRUE} can be used to enable this feature. When two model objects are supplied to the function (with \code{object} and \code{object2}) and no argument is supplied to \code{col} or \code{col2}, light red lines can be interpreted as analogous to gray lines. When \code{ref_ovl = TRUE} and a color (or colors) other than the default are specified (with the \code{col} and \code{col2} arguments) lighter versions of the color specified are used in black of the light gray and/or light red lines.
 #' 
 #' When \code{object2} is specified, paired caterpillar plots of each parameter are produced. For this reason, parameter names of \code{object} and \code{object2} specified with the \code{params} argument must be identical (to be used for comparing posterior estimates of similar models). \code{col} and \code{col2} arguments can be specified to change the color of output from \code{object} and \code{object2}, respectively. By default, output from \code{object} is plotted in black and \code{object2} is plotted in red. The \code{ref_ovl} argument can also be specified.
 #'
@@ -178,8 +178,7 @@ MCMCplot <- function(object,
 # user and non-user defined plotting parameters  
 
   if (missing(pos_tick)) pos_tick = NULL
-
-  gr_col <- 'gray60' # color used for CI and medians
+  LA <- 0.4 #amount to lighten colors when ref_ovl = TRUE
   ref_col <- 'gray60' # color used for 0 line
   guide_col <- 'gray80'
   PL_SC <- 0.3 # how much whitespace flanks plotted estimates
@@ -301,9 +300,10 @@ MCMCplot <- function(object,
     marker <- 0
   }
 
-  # coloring with regards to reference line for credible intervals
+  # position for coloring with regards to reference line for credible intervals
   if (ref_ovl == TRUE) {
     # Determine which params have CI that overlap 0 (or ref line if specified)
+    # kept object names to avoid changing variable names - SHOULD CHANGE
     black_cl <- c() #95% CI (default) does not overlap 0
     gray_cl <- c() #50% CI (default) does not overlap 0
     white_cl <- c() #Both 50% and 95% CI overlap 0
@@ -347,8 +347,8 @@ MCMCplot <- function(object,
         v_gray_cl2 <- rev(gray_cl2)
         v_white_cl2 <- rev(white_cl2)
       }
-    }
-  } # closes (!is.null(object2))
+    } # closes (!is.null(object2))
+  } # closes (ref_ovl  == TRUE)
 
 ####################################################################################################  
 # Horizontal plot - CI lines parallel to x-axis 
@@ -448,8 +448,22 @@ MCMCplot <- function(object,
        blk_bnd <- rbind(black_cl, black_cl)
        gry_bnd <- rbind(gray_cl, gray_cl)
        wht_bnd <- rbind(white_cl, white_cl)
+       
+       #lightened colors
+       lcol <- colorspace::lighten(COL, LA)
+
+       bl_col <- COL[black_cl]
+       gr_col <- lcol[gray_cl]
+       wh_col <- lcol[white_cl]
+
+       #if any colors are 'black', change them to 'grey60' (for consistency with older pkg versions)
+       bl_idx <- which(COL == 'black')
+       gr_col[which(gray_cl %in% bl_idx)] <- 'grey60'
+       wh_col[which(white_cl %in% bl_idx)] <- 'grey60'
+       
        # Black CI
        if (!is.null(black_cl)) {
+         #only one object
          if (is.null(object2)) {
            # Thick
            graphics::matlines(
@@ -458,7 +472,7 @@ MCMCplot <- function(object,
              type = 'l', 
              lty = 1, 
              lwd = sz_thick, 
-             col = 'black')
+             col = bl_col)
            # Thin
            graphics::matlines(
              thin_q[,black_cl], 
@@ -466,9 +480,13 @@ MCMCplot <- function(object,
              type = 'l', 
              lty = 1, 
              lwd = sz_thin, 
-             col = 'black')
+             col = bl_col)
          } else {
+           #two objects
            blk_bnd2 <- rbind(black_cl2, black_cl2)
+           
+           bl_col2 <- COL2[black_cl2]
+           
            # object
            graphics::matlines(
              thick_q[,black_cl], 
@@ -476,14 +494,14 @@ MCMCplot <- function(object,
              type = 'l', 
              lty = 1, 
              lwd = sz_thick, 
-             col = 'black')
+             col = bl_col)
            graphics::matlines(
              thin_q[,black_cl], 
              (blk_bnd + offset),
              type = 'l', 
              lty = 1, 
              lwd = sz_thin, 
-             col = 'black')
+             col = bl_col)
            # object2
            graphics::matlines(
              thick_q2[, black_cl2], 
@@ -491,19 +509,20 @@ MCMCplot <- function(object,
              type = 'l', 
              lty = 1, 
              lwd = sz_thick, 
-             col = 'black')
+             col = bl_col2)
            graphics::matlines(
              thin_q2[, black_cl2], 
              (blk_bnd2 - offset),
              type = 'l', 
              lty = 1, 
              lwd = sz_thin, 
-             col = 'black')
+             col = bl_col2)
          } # closes if (is.null(object2))
        } # closes if (!is.null(black_cl))
 
        # Gray CI
        if (!is.null(gray_cl)) {
+         #only one object
          if (is.null(object2)) {
           # Thick
           graphics::matlines(
@@ -522,7 +541,17 @@ MCMCplot <- function(object,
             lwd = sz_thin, 
             col = gr_col)
          } else {
+           #two objects
            gry_bnd2 <- rbind(gray_cl2, gray_cl2)
+           
+           #lightened colors for obj 2
+           lcol2 <- colorspace::lighten(COL2, LA)
+           gr_col2 <- lcol2[gray_cl2]
+           
+           #if any colors are 'black', change them to 'grey60' (for consistency with older pkg versions)
+           bl_idx2 <- which(COL2 == 'black')
+           gr_col2[which(gray_cl2 %in% bl_idx2)] <- 'grey60'
+           
            # object
            graphics::matlines(
              thick_q[,gray_cl], 
@@ -545,19 +574,20 @@ MCMCplot <- function(object,
              type = 'l', 
              lty = 1, 
              lwd = sz_thick,
-             col = gr_col)
+             col = gr_col2)
            graphics::matlines(
              thin_q2[,gray_cl2],
              (gry_bnd2 - offset),
              type = 'l', 
              lty = 1, 
              lwd = sz_thin,
-             col = gr_col)
+             col = gr_col2)
          } # closes if (is.null(object2))
        } # closes if (!is.null(gray_cl))
 
        # White CI
        if (!is.null(white_cl)) {
+         #only one object
          if (is.null(object2)) {
           graphics::matlines(
             thick_q[,white_cl], 
@@ -565,16 +595,26 @@ MCMCplot <- function(object,
             type = 'l', 
             lty = 1, 
             lwd = sz_thick,
-            col = gr_col) # white (gray)
+            col = wh_col) # white (gray)
           graphics::matlines(
             thin_q[,white_cl], 
             wht_bnd,
             type = 'l',
             lty = 1,
             lwd = sz_thin, 
-            col = gr_col) # white (gray)
+            col = wh_col) # white (gray)
          } else {
+           #two objects
            wht_bnd2 <- rbind(white_cl2, white_cl2)
+           
+           #lightened colors for obj 2
+           lcol2 <- colorspace::lighten(COL2, LA)
+           wh_col2 <- lcol2[white_cl2]
+           
+           #if any colors are 'black', change them to 'grey60' (for consistency with older pkg versions)
+           bl_idx2 <- which(COL2 == 'black')
+           wh_col2[which(white_cl2 %in% bl_idx2)] <- 'grey60'
+           
            # object
            graphics::matlines(
              thick_q[,white_cl], 
@@ -582,14 +622,14 @@ MCMCplot <- function(object,
              type = 'l', 
              lty = 1, 
              lwd = sz_thick,
-             col = gr_col) # white (gray)
+             col = wh_col) # white (gray)
            graphics::matlines(
              thin_q[,white_cl], 
              (wht_bnd + offset),
              type = 'l', 
              lty = 1,
              lwd = sz_thin, 
-             col = gr_col) # white (gray)
+             col = wh_col) # white (gray)
            # object2
            graphics::matlines(
              thick_q2[,white_cl2], 
@@ -597,35 +637,36 @@ MCMCplot <- function(object,
              type = 'l', 
              lty = 1, 
              lwd = sz_thick,
-             col = gr_col) # white (gray)
+             col = wh_col2) # white (gray)
            graphics::matlines(
              thin_q2[,white_cl2], 
              (wht_bnd2 - offset),
              type = 'l',
              lty = 1, 
              lwd = sz_thin,
-             col = gr_col) #white (gray)
+             col = wh_col2) #white (gray)
          } # closes if (is.null(object2))
        } # closes  if (!is.null(white_cl))
 
        # Medians
        if (is.null(object2)) {
+         #only one object
         graphics::points(medians, 1:len, pch = 16, col = 'white', cex = sz_med)
-        graphics::points(medians[black_cl], black_cl, pch = 16, col = 'black', cex = sz_med)
+        graphics::points(medians[black_cl], black_cl, pch = 16, col = bl_col, cex = sz_med)
         graphics::points(medians[gray_cl], gray_cl, pch = 16, col = gr_col, cex = sz_med)
-        graphics::points(medians[white_cl], white_cl, pch = 21, col = gr_col, cex = sz_med, lwd = 2) 
+        graphics::points(medians[white_cl], white_cl, pch = 21, col = wh_col, cex = sz_med, lwd = 2) 
        } else {
-         # object
+         # two objects
          graphics::points(medians, (1:len + offset), pch = 16, col = 'white', cex = sz_med)
-         graphics::points(medians[black_cl], (black_cl + offset), pch = 16, col = 'black', cex = sz_med)
+         graphics::points(medians[black_cl], (black_cl + offset), pch = 16, col = bl_col, cex = sz_med)
          graphics::points(medians[gray_cl], (gray_cl + offset), pch = 16, col = gr_col, cex = sz_med)
-         graphics::points(medians[white_cl], (white_cl + offset), pch = 21, col = gr_col, cex = sz_med, lwd = 2) 
+         graphics::points(medians[white_cl], (white_cl + offset), pch = 21, col = wh_col, cex = sz_med, lwd = 2) 
          
          # object2
          graphics::points(medians2, (1:len - offset), pch = 16, col = 'white', cex = sz_med)
-         graphics::points(medians2[black_cl2], (black_cl2 - offset), pch = 16, col = 'black', cex = sz_med)
-         graphics::points(medians2[gray_cl2], (gray_cl2 - offset), pch = 16, col = gr_col, cex = sz_med)
-         graphics::points(medians2[white_cl2], (white_cl2 - offset), pch = 21, col = gr_col, cex = sz_med, lwd = 2) 
+         graphics::points(medians2[black_cl2], (black_cl2 - offset), pch = 16, col = bl_col2, cex = sz_med)
+         graphics::points(medians2[gray_cl2], (gray_cl2 - offset), pch = 16, col = gr_col2, cex = sz_med)
+         graphics::points(medians2[white_cl2], (white_cl2 - offset), pch = 21, col = wh_col2, cex = sz_med, lwd = 2) 
        }
      } else {
        if (is.null(object2))

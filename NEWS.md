@@ -1,6 +1,11 @@
 NEWS
 ====
 
+0.15.5
+
+- `MCMCplot` fix bug associated with `ref_ovl = TRUE` and the specification of multiple objects. Function also now automatically lightens colors specificied (instead of defaulting to gray) when `ref_ovl = TRUE`
+
+
 0.15.4
 
 - `MCMCsummary` fix bug associated with `pg0 = TRUE` when input was derived from Stan

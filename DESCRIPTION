@@ -17,6 +17,7 @@ Imports:
     rstan,
     methods,
     overlapping,
+    colorspace,
     rlang
 Depends:
     R (>= 3.5.0)

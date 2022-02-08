@@ -479,13 +479,14 @@ MCMCplot(MCMC_data,
          ylab = 'PARAMETER ESTIMATE')
 ```
 
-Output from two models can also be plotted side-by-side, as long as the parameter names are identical (NOTE: not ALL parameters need to be identical, just the parameters specified in the `params` argument). This is useful for comparing output from similar models. By default, the the first model input (`object`) will be plotted in black, while the second model input (`object2`) will be plotted in red. Different colors for each model output can be specified with `col` and `col2`. The spacing between the plotted posteriors for each parameter can be adjusted with `offset` (as the desired spacing will depend on the size of the image as well as the specified thickness/size of the lines/dots).
+Output from two models can also be plotted side-by-side, as long as the parameter names are identical (NOTE: not ALL parameters need to be identical, just the parameters specified in the `params` argument). This is useful for comparing output from similar models. By default, the the first model input (`object`) will be plotted in black, while the second model input (`object2`) will be plotted in red. Different colors for each model output can be specified with `col` and `col2`. The spacing between the plotted posteriors for each parameter can be adjusted with `offset` (as the desired spacing will depend on the size of the image as well as the specified thickness/size of the lines/dots). The `ref_ovl` argument can also be specified.
 
 ```{r, fig.width = 7, fig.height = 5, fig.align = 'center'}
 MCMCplot(object = MCMC_data, 
          object2 = MCMC_data2, 
          params = 'beta', 
-         offset = 0.1)
+         offset = 0.1,
+         ref_ovl = TRUE)
 ```
 
 Graphical parameters for x and y-axis limitation, row labels, title, median dot size, CI line thickness, axis and tick thickness, text size, color of posterior estimates, and margins can be specified.
