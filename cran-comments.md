@@ -3,10 +3,10 @@ CRAN comments
 
 ## Test environments
 * local macOS install - R 4.1.1
-* Ubuntu 20.04.1 (on rhub) - R-release
-* Windows Server 2008 (on rhub) - R-devel
-* Windows Server 2008 (on winbuilder) - R-devel
+* Ubuntu 20.04.1 (on rhub) - R-devel
 * Fedora (on rhub) - R-devel
+* Windows Server 2022 (on winbuilder) - R-devel
+
 
 ## R CMD check results
 
