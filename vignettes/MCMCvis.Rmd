@@ -1,7 +1,9 @@
 ---
 title: "'MCMCvis' package"
 author: "Casey Youngflesh, Christian Che-Castaldo"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{MCMCvis}
   %\VignetteEngine{knitr::rmarkdown}
