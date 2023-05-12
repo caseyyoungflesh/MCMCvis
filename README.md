@@ -7,7 +7,7 @@
 
 ## Overview
 
-`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.
+`MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian models fit with Stan, NIMBLE, JAGS, and other software. This includes (but is not limited to) output from the `rstan`, `cmdstanr`, `rstanarm`, `brms`, `rjags`, `nimble`, `R2jags`, and `jagsUI` packages - object types are recognized automatically.
 
 The package contains six functions:
 
