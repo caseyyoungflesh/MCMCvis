@@ -9,12 +9,12 @@
 ^Evaluate_ex\.png$
 ^Viz_ex\.png$
 ^LICENSE.md$
-^paper/$
+^paper$
 ^paper.*$
 ^codemeta.json$
 ^generate.rb$
 ^CRAN-RELEASE$
-^figs/$
+^figs$
 ^lastMiKTeXException$
-^revdep/$
+^revdep$
 ^codemeta\.json$
