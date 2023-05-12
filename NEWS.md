@@ -3,7 +3,7 @@ NEWS
 
 0.16.0
 
-- All functions now accept model objects fit with `cmdstanr`
+- All functions now accept model objects fit with `cmdstanr` package
 - Add Table of Contents to vignette
 
 

@@ -40,7 +40,10 @@ testthat::test_that('MCMCsummary returns output for all supported object types',
             #jags.samples - expect warning
             testthat::expect_error(MCMCsummary(jagssamps_data))
             #cmdstan
-            testthat::expect_equal(NROW(MCMCsummary(cmdstanfit)), 2)
+            if (requireNamespace("cmdstanr", quietly = TRUE))
+            {
+              testthat::expect_equal(NROW(MCMCsummary(cmdstanfit)), 2)
+            }
           })
 
 
@@ -73,8 +76,11 @@ testthat::test_that('MCMCpstr displays dimensions correctly for all object types
             #jags.samples - expect warning
             testthat::expect_error(MCMCpstr(jagssamps_data))
             #cmdstan
-            testthat::expect_output(str(MCMCpstr(cmdstanfit)), 'List of 2')
-            testthat::expect_equal(length(MCMCpstr(cmdstanfit)$theta), 1)
+            if (requireNamespace("cmdstanr", quietly = TRUE))
+            {
+              testthat::expect_output(str(MCMCpstr(cmdstanfit)), 'List of 2')
+              testthat::expect_equal(length(MCMCpstr(cmdstanfit)$theta), 1)
+            }
           })
 
 
@@ -99,7 +105,10 @@ testthat::test_that('MCMCchains converts all supported object types to mcmc.list
             #jags.samples - expect warning
             testthat::expect_error(MCMCchains(jagssamps_data, mcmc.list = TRUE))
             #cmdstan
-            testthat::expect_is(MCMCchains(cmdstanfit, mcmc.list = TRUE), 'mcmc.list')
+            if (requireNamespace("cmdstanr", quietly = TRUE))
+            {
+              testthat::expect_is(MCMCchains(cmdstanfit, mcmc.list = TRUE), 'mcmc.list')
+            }
           })
 
 
@@ -252,15 +261,18 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(nimble_mF_ch4, probs = c(.1, .5, .9), digits = 2), NA)
 
   #cmdstan
-  testthat::expect_error(MCMCsummary(cmdstanfit), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, round = 2, pg0 = TRUE), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, digits = 2), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9, round = 2), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9, digits = 2), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9)), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9), round = 2), NA)
-  testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9), digits = 2), NA)
+  if (requireNamespace("cmdstanr", quietly = TRUE))
+  {
+    testthat::expect_error(MCMCsummary(cmdstanfit), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, round = 2, pg0 = TRUE), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, digits = 2), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9, round = 2), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9, digits = 2), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9)), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9), round = 2), NA)
+    testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9), digits = 2), NA)
+  }
 })
 
 # Add test to make sure colnames and rownames are correct for each object type (MCMCsummary, MCMCchains, MCMCpstr?)

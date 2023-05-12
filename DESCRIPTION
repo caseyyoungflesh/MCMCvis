@@ -26,5 +26,7 @@ Suggests: knitr,
     testthat,
     cmdstanr (>= 0.5.0),
     posterior
+Additional_repositories:
+    https://mc-stan.org/r-packages/
 VignetteBuilder: knitr
 Encoding: UTF-8

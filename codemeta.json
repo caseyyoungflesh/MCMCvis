@@ -7,13 +7,13 @@
   "codeRepository": "https://github.com/caseyyoungflesh/MCMCvis",
   "issueTracker": "https://github.com/caseyyoungflesh/MCMCvis/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.15.5",
+  "version": "0.16.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.1.1 (2021-08-10)",
+  "runtimePlatform": "R version 4.2.1 (2022-06-23)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -88,6 +88,24 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=testthat"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "cmdstanr",
+      "name": "cmdstanr",
+      "version": ">= 0.5.0"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "posterior",
+      "name": "posterior",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=posterior"
     }
   ],
   "softwareRequirements": {
@@ -152,7 +170,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "3293.509KB",
+  "fileSize": "465683.661KB",
   "citation": [
     {
       "@type": "ScholarlyArticle",
