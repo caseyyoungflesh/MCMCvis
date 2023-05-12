@@ -35,13 +35,14 @@
 #' @param func_name Character string (or vector of character strings) specifying labels for output from \code{func} argument. If \code{func_name} is not specified, columns with \code{func} argument will be labeled 'func'.
 #'
 #' @section Details:
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{CmdStanMCMC} object (\code{cmdstanr} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+
 #'
 #' @section Notes:
 #'
-#' For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, Rhat is calculated using a 'split chain' Rhat (in their respective packages), which is thought to be a more conservative diagnostic (Stan Development Team 2018).
+#' For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} (as well as \code{CmdStanMCMC}, \code{stanreg}, and \code{brmsfit} objects) and \code{jagsUI} objects, Rhat is calculated using a 'split chain' Rhat (in their respective packages), which is thought to be a more conservative diagnostic (Stan Development Team 2018).
 #'
-#' For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, n.eff is calculated using a slightly different method of computation for the number of effective samples (Stan Development Team 2018).
+#' For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} (as well as \code{CmdStanMCMC}, \code{stanreg}, and \code{brmsfit} objects) and \code{jagsUI} objects, n.eff is calculated using a slightly different method of computation for the number of effective samples (Stan Development Team 2018). For \code{CmdStanMCMC} objects, both bulk and tail n.eff is calculated.
 #'
 #' @return Function returns summary information (including parameter posterior mean, posterior sd, quantiles, potential scale reduction statistic (Rhat), number of effective samples, and other specified metrics) for specified parameters.
 #'
@@ -89,7 +90,7 @@ MCMCsummary <- function(object,
   {
     object2 <- MCMCchains(object, params, excl, ISB, exact = exact, mcmc.list = FALSE)
   } else {
-    if (methods::is(object, 'stanfit'))
+    if (methods::is(object, 'stanfit') | methods::is(object, 'CmdStanMCMC'))
     {
       object2 <- object
     } else {
@@ -327,9 +328,11 @@ MCMCsummary <- function(object,
   }
   
 #--------------------------------------------------------------------------------------------------------------                        
-# PROCESSING BLOCK - STAN OR JAGSUI MCMC OUTPUT
+# PROCESSING BLOCK - STAN OR CMDSTAN OR JAGSUI MCMC OUTPUT
   
-  if (methods::is(object2, 'stanfit') | methods::is(object, 'jagsUI'))
+  if (methods::is(object2, 'stanfit') | 
+      methods::is(object, 'jagsUI') | 
+      methods::is(object2, 'CmdStanMCMC'))
   {
     if (methods::is(object2, 'stanfit'))
     {
@@ -364,7 +367,13 @@ MCMCsummary <- function(object,
       rs_df <- data.frame(object$summary)
     }
     
-    # filtering of parameters from rstan/jagsUI object - from MCMCchains
+    if (methods::is(object2, 'CmdStanMCMC'))
+    {
+      rs_df <- posterior::summarize_draws(object2)
+      all_params <- rs_df$variable
+    }
+    
+    # filtering of parameters from rstan/cmdstan/jagsUI object - from MCMCchains
     if (ISB == TRUE)
     {
       names <- vapply(strsplit(all_params, split = "[", fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
@@ -511,7 +520,8 @@ MCMCsummary <- function(object,
 
 # convert object to matrix if computing non default intervals or using custom func
     if (!is.null(func) | HPD == TRUE | 
-        identical(probs, c(0.025, 0.5, 0.975)) == FALSE | pg0 == TRUE)
+        identical(probs, c(0.025, 0.5, 0.975)) == FALSE | pg0 == TRUE |
+        methods::is(object2, 'CmdStanMCMC'))
     {
       if (methods::is(object2, 'stanfit'))
       {
@@ -520,7 +530,11 @@ MCMCsummary <- function(object,
       }
       if (methods::is(object, 'jagsUI'))
       {
-        ch_bind <- MCMCchains(object, params, excl, ISB)
+        ch_bind <- MCMCchains(object, params = params, excl = excl, ISB = ISB)
+      }
+      if (methods::is(object2, 'CmdStanMCMC'))
+      {
+        ch_bind <- MCMCchains(object2, params = params, ISB = ISB)
       }
     } 
 
@@ -545,7 +559,9 @@ MCMCsummary <- function(object,
           bind_q <- data.frame(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")
         } else {
-          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE)
+          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE & 
+              (methods::is(object2, 'stanfit') | 
+               methods::is(object, 'jagsUI')))
           {
             bind_LCI <- signif(rs_df["X2.5."][f_ind, 1], digits = digits)
             bind_med <- signif(rs_df["X50."][f_ind, 1], digits = digits)
@@ -553,7 +569,8 @@ MCMCsummary <- function(object,
             bind_q <- data.frame(cbind(bind_LCI, bind_med, bind_UCI))
             colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")
           } else {
-            bind_q <- data.frame(t(signif(apply(ch_bind, 2, stats::quantile, probs = probs), digits = digits)))
+            bind_q <- data.frame(t(signif(apply(ch_bind, 2, stats::quantile, probs = probs), 
+                                          digits = digits)))
             colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
           }
         }
@@ -578,12 +595,14 @@ MCMCsummary <- function(object,
       
       if (HPD == FALSE)
       {
-        if (length(probs)==1)
-        {    
+        if (length(probs) == 1)
+        {
           bind_q <- data.frame(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")         
         } else {
-          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE)
+          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE & 
+              (methods::is(object2, 'stanfit') | 
+               methods::is(object, 'jagsUI')))
           {    
             bind_LCI <- round(rs_df["X2.5."][f_ind, 1], digits = round)
             bind_med <- round(rs_df["X50."][f_ind, 1], digits = round)
@@ -591,7 +610,8 @@ MCMCsummary <- function(object,
             bind_q <- data.frame(cbind(bind_LCI, bind_med, bind_UCI))
             colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")
           } else {
-            bind_q <- data.frame(t(round(apply(ch_bind, 2, stats::quantile, probs = probs), digits = round)))
+            bind_q <- data.frame(t(round(apply(ch_bind, 2, stats::quantile, probs = probs), 
+                                         digits = round)))
             colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")
           }
         }
@@ -621,7 +641,9 @@ MCMCsummary <- function(object,
           bind_q <- data.frame(apply(ch_bind, 2, stats::quantile, probs = probs))
           colnames(bind_q) <-  paste0(signif(probs * 100, digits = 3), "%")                    
         } else {
-          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE)
+          if (identical(probs, c(0.025, 0.5, 0.975)) == TRUE & 
+              (methods::is(object2, 'stanfit') | 
+               methods::is(object, 'jagsUI')))
           {    
             bind_LCI <- rs_df["X2.5."][f_ind, 1]
             bind_med <- rs_df["X50."][f_ind, 1]
@@ -647,17 +669,25 @@ MCMCsummary <- function(object,
     x[[1]] <- cbind(bind_mn, bind_sd, bind_q) 
 
 # rhat - rhat in Stan calculated within chain (different than with coda package)
-
+  
     if (Rhat == TRUE)
     {
-      r_hat <- data.frame(round(rs_df["Rhat"][f_ind, 1], digits = 2))
+      if (methods::is(object2, 'stanfit') | 
+           methods::is(object, 'jagsUI'))
+      {
+        r_hat <- data.frame(round(rs_df["Rhat"][f_ind, 1], digits = 2))
+      } else {
+        r_hat <- data.frame(round(rs_df["rhat"][f_ind, 1], digits = 2))
+      }
       colnames(r_hat) <- "Rhat"
       x[[(length(x) + 1)]] <- r_hat  
     }  
-
+    
 # neff - neff in Stan is calculated within chain (different than with coda package)    
     
-    if (n.eff == TRUE)
+    if (n.eff == TRUE & 
+        (methods::is(object2, 'stanfit') | 
+         methods::is(object2, 'jagsUI')))
     {
       if (methods::is(object2, 'stanfit'))
       {
@@ -670,7 +700,19 @@ MCMCsummary <- function(object,
       colnames(neff) <- "n.eff"
       x[[(length(x) + 1)]] <- neff
     }
- 
+    
+    #both bulk and tail for CmdStan
+    if (n.eff == TRUE & 
+        methods::is(object2, 'CmdStanMCMC'))
+        {
+          neff_bulk <- data.frame(round(rs_df["ess_bulk"][f_ind, 1], digits = 0))
+          colnames(neff_bulk) <- "n.eff_bulk"
+          neff_tail <- data.frame(round(rs_df["ess_tail"][f_ind, 1], digits = 0))
+          colnames(neff_tail) <- "n.eff_tail"
+          x[[(length(x) + 1)]] <- neff_bulk
+          x[[(length(x) + 1)]] <- neff_tail
+        }  
+        
 # p>0
     
     if (pg0 == TRUE)

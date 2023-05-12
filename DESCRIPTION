@@ -1,7 +1,7 @@
 Package: MCMCvis
 Type: Package
 Title: Tools to Visualize, Manipulate, and Summarize MCMC Output
-Version: 0.15.5
+Version: 0.16.0
 Authors@R: c(
     person("Casey", "Youngflesh", role = c("aut", "cre"), email = "caseyyoungflesh@gmail.com", comment = c(ORCID = "0000-0001-6343-3311")),
     person("Christian", "Che-Castaldo", role = c("aut"), email = "christian.che-castaldo@stonybrook.edu", comment = c(ORCID = "0000-0002-7670-2178")),
@@ -20,9 +20,11 @@ Imports:
     colorspace
 Depends:
     R (>= 3.5.0)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Suggests: knitr,
     rmarkdown,
-    testthat
+    testthat,
+    cmdstanr (>= 0.5.0),
+    posterior
 VignetteBuilder: knitr
 Encoding: UTF-8

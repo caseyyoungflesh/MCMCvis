@@ -1,6 +1,12 @@
 NEWS
 ====
 
+0.16.0
+
+- All functions now accept model objects fit with `cmdstanr`
+- Add Table of Contents to vignette
+
+
 0.15.5
 
 - `MCMCplot` fix bug associated with `ref_ovl = TRUE` and the specification of multiple objects. Function also now automatically lightens colors specified (instead of defaulting to gray) when `ref_ovl = TRUE`

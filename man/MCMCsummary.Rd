@@ -64,15 +64,15 @@ for specific parameters of interest.
 }
 \section{Details}{
 
-\code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+\code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{CmdStanMCMC} object (\code{cmdstanr} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 }
 
 \section{Notes}{
 
 
-For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, Rhat is calculated using a 'split chain' Rhat (in their respective packages), which is thought to be a more conservative diagnostic (Stan Development Team 2018).
+For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the potential scale reduction statistic statistic (Rhat) is calculated using the \code{gelman.diag} function in the \code{coda} package (what is typically displayed in the summary output from models fit with JAGS). For \code{stanfit} (as well as \code{CmdStanMCMC}, \code{stanreg}, and \code{brmsfit} objects) and \code{jagsUI} objects, Rhat is calculated using a 'split chain' Rhat (in their respective packages), which is thought to be a more conservative diagnostic (Stan Development Team 2018).
 
-For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} (as well as \code{stanreg} and \code{brmsfit} objects) and \code{jagsUI} objects, n.eff is calculated using a slightly different method of computation for the number of effective samples (Stan Development Team 2018).
+For \code{mcmc.list}, \code{mcmc}, and \code{list} objects, the number of effective samples is calculated using the \code{effectiveSize} function in the \code{coda} package. For \code{stanfit} (as well as \code{CmdStanMCMC}, \code{stanreg}, and \code{brmsfit} objects) and \code{jagsUI} objects, n.eff is calculated using a slightly different method of computation for the number of effective samples (Stan Development Team 2018). For \code{CmdStanMCMC} objects, both bulk and tail n.eff is calculated.
 }
 
 \section{References}{

@@ -15,6 +15,7 @@ load('../testdata/matrix_data.rda')
 load('../testdata/jagssamps_data.rda')
 load('../testdata/threed_data.rda')
 load('../testdata/nimble_mF_ch4.rda')
+load('../testdata/cmdstanfit.rda')
 
 
 
@@ -38,6 +39,8 @@ testthat::test_that('MCMCsummary returns output for all supported object types',
             testthat::expect_equal(NROW(MCMCsummary(nimble_mF_ch4)), 1)
             #jags.samples - expect warning
             testthat::expect_error(MCMCsummary(jagssamps_data))
+            #cmdstan
+            testthat::expect_equal(NROW(MCMCsummary(cmdstanfit)), 2)
           })
 
 
@@ -69,6 +72,9 @@ testthat::test_that('MCMCpstr displays dimensions correctly for all object types
             testthat::expect_equal(length(MCMCpstr(nimble_mF_ch4)$mu), 1)
             #jags.samples - expect warning
             testthat::expect_error(MCMCpstr(jagssamps_data))
+            #cmdstan
+            testthat::expect_output(str(MCMCpstr(cmdstanfit)), 'List of 2')
+            testthat::expect_equal(length(MCMCpstr(cmdstanfit)$theta), 1)
           })
 
 
@@ -92,57 +98,59 @@ testthat::test_that('MCMCchains converts all supported object types to mcmc.list
             testthat::expect_is(MCMCchains(nimble_mF_ch4, mcmc.list = TRUE), 'mcmc.list')
             #jags.samples - expect warning
             testthat::expect_error(MCMCchains(jagssamps_data, mcmc.list = TRUE))
+            #cmdstan
+            testthat::expect_is(MCMCchains(cmdstanfit, mcmc.list = TRUE), 'mcmc.list')
           })
 
 
-testthat::test_that('MCMCsummary values agree with manual values derived from posterior chains', { 
+testthat::test_that('MCMCsummary values agree with manual values derived from posterior chains', {
 
   # mcmc.list - mean
-  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]',
                                       ISB = FALSE, exact = TRUE, round = 2)[1]),
     round(mean(MCMCchains(MCMC_data, param = 'alpha[1]', ISB = FALSE, exact = TRUE)), 2))
-  
+
   # mcmc.list - sd
-  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', ISB = FALSE, 
+  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', ISB = FALSE,
                                       exact = TRUE, round = 2)[2]),
     round(sd(MCMCchains(MCMC_data, param = 'alpha[1]', ISB = FALSE, exact = TRUE)), 2))
 
   # mcmc.list - 2.5%
-  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]',
                                       ISB = FALSE, exact = TRUE, round = 2)[3]),
-    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]', ISB = FALSE, 
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]', ISB = FALSE,
                               exact = TRUE), probs = 0.025)[[1]], 2))
 
   # mcmc.list - 50%
-  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]',
                                       ISB = FALSE, exact = TRUE, round = 2)[4]),
-    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]', 
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]',
                               ISB = FALSE, exact = TRUE), probs = 0.5)[[1]], 2))
 
   # mcmc.list - 97.5%
-  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]',
                                       ISB = FALSE, exact = TRUE, round = 2)[5]),
-    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]', 
+    round(quantile(MCMCchains(MCMC_data,param = 'alpha[1]',
                               ISB = FALSE, exact = TRUE), probs = 0.975)[[1]], 2))
-  
+
   # mcmc.list - rhat
-  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]', 
+  testthat::expect_equal(as.numeric(MCMCsummary(MCMC_data, param = 'alpha[1]',
                                       ISB = FALSE, exact = TRUE, round = 2)[6]),
-    round(coda::gelman.diag(MCMCchains(MCMC_data, param = 'alpha[1]', 
+    round(coda::gelman.diag(MCMCchains(MCMC_data, param = 'alpha[1]',
                                        ISB = FALSE, exact = TRUE, mcmc.list = TRUE))$psrf[,1], 2))
 
   # stanfit - func = mean
-  testthat::expect_equal(as.numeric(MCMCsummary(stan_data, param = 'mu', 
+  testthat::expect_equal(as.numeric(MCMCsummary(stan_data, param = 'mu',
                                       ISB = FALSE, exact = TRUE, round = 2, func = mean)$func),
-               as.numeric(MCMCsummary(stan_data, param = 'mu', 
+               as.numeric(MCMCsummary(stan_data, param = 'mu',
                                       ISB = FALSE, exact = TRUE, round = 2)['mean']))
-    
+
   })
 
 
 
 
-testthat::test_that('MCMCsummary returns no errors for default and non-default specifications', { 
+testthat::test_that('MCMCsummary returns no errors for default and non-default specifications', {
 
   # MCMC_data
   testthat::expect_error(MCMCsummary(MCMC_data), NA)
@@ -154,7 +162,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(MCMC_data, probs = c(.1, .5, .9)), NA)
   testthat::expect_error(MCMCsummary(MCMC_data, probs = c(.1, .5, .9), round = 2), NA)
   testthat::expect_error(MCMCsummary(MCMC_data, probs = c(.1, .5, .9), digits = 2), NA)
-  
+
   # MCMC_data2
   testthat::expect_error(MCMCsummary(MCMC_data2), NA)
   testthat::expect_error(MCMCsummary(MCMC_data2, round = 2, pg0 = TRUE), NA)
@@ -176,7 +184,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(jags_data, probs = c(.1, .5, .9)), NA)
   testthat::expect_error(MCMCsummary(jags_data, probs = c(.1, .5, .9), round = 2), NA)
   testthat::expect_error(MCMCsummary(jags_data, probs = c(.1, .5, .9), digits = 2), NA)
-  
+
   # jagsparallel_data
   testthat::expect_error(MCMCsummary(jagsparallel_data), NA)
   testthat::expect_error(MCMCsummary(jagsparallel_data, round = 2, pg0 = TRUE), NA)
@@ -187,7 +195,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(jagsparallel_data, probs = c(.1, .5, .9)), NA)
   testthat::expect_error(MCMCsummary(jagsparallel_data, probs = c(.1, .5, .9), round = 2), NA)
   testthat::expect_error(MCMCsummary(jagsparallel_data, probs = c(.1, .5, .9), digits = 2), NA)
-  
+
   # jagsUI_data
   testthat::expect_error(MCMCsummary(jagsUI_data), NA)
   testthat::expect_error(MCMCsummary(jagsUI_data, round = 2, pg0 = TRUE), NA)
@@ -198,7 +206,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(jagsUI_data, probs = c(.1, .5, .9)), NA)
   testthat::expect_error(MCMCsummary(jagsUI_data, probs = c(.1, .5, .9), round = 2), NA)
   testthat::expect_error(MCMCsummary(jagsUI_data, probs = c(.1, .5, .9), digits = 2), NA)
-  
+
   # R2jags_data
   testthat::expect_error(MCMCsummary(R2jags_data), NA)
   testthat::expect_error(MCMCsummary(R2jags_data, round = 2, pg0 = TRUE), NA)
@@ -209,7 +217,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(R2jags_data, probs = c(.1, .5, .9)), NA)
   testthat::expect_error(MCMCsummary(R2jags_data, probs = c(.1, .5, .9), round = 2), NA)
   testthat::expect_error(MCMCsummary(R2jags_data, probs = c(.1, .5, .9), digits = 2), NA)
-  
+
   # matrix_data
   # testthat::expect_error(MCMCsummary(matrix_data), NA)
   # testthat::expect_error(MCMCsummary(matrix_data, round = 2, pg0 = TRUE), NA)
@@ -220,7 +228,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   # testthat::expect_error(MCMCsummary(matrix_data, probs = c(.1, .5, .9)), NA)
   # testthat::expect_error(MCMCsummary(matrix_data, probs = c(.1, .5, .9), round = 2), NA)
   # testthat::expect_error(MCMCsummary(matrix_data, probs = c(.1, .5, .9), digits = 2), NA)
-  
+
   # stan_data
   testthat::expect_error(MCMCsummary(stan_data), NA)
   testthat::expect_error(MCMCsummary(stan_data, round = 2, pg0 = TRUE), NA)
@@ -231,7 +239,7 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9)), NA)
   testthat::expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9), round = 2), NA)
   testthat::expect_error(MCMCsummary(stan_data, probs = c(.1, .5, .9), digits = 2), NA)
-  
+
   # nimble_mF_ch4 - NIMBLE (list of matrices)
   testthat::expect_error(MCMCsummary(nimble_mF_ch4), NA)
   testthat::expect_error(MCMCsummary(nimble_mF_ch4, round = 2, pg0 = TRUE), NA)
@@ -243,6 +251,16 @@ testthat::test_that('MCMCsummary returns no errors for default and non-default s
   testthat::expect_error(MCMCsummary(nimble_mF_ch4, probs = c(.1, .5, .9), round = 2), NA)
   testthat::expect_error(MCMCsummary(nimble_mF_ch4, probs = c(.1, .5, .9), digits = 2), NA)
 
+  #cmdstan
+  testthat::expect_error(MCMCsummary(cmdstanfit), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, round = 2, pg0 = TRUE), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, digits = 2), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9, round = 2), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, HPD = TRUE, prob = .9, digits = 2), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9)), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9), round = 2), NA)
+  testthat::expect_error(MCMCsummary(cmdstanfit, probs = c(.1, .5, .9), digits = 2), NA)
 })
 
 # Add test to make sure colnames and rownames are correct for each object type (MCMCsummary, MCMCchains, MCMCpstr?)

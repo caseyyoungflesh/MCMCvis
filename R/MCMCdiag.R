@@ -25,7 +25,7 @@
 #' 
 #' @param cp_file Character string (or vector of character strings) specifying file(s) to be copied to \code{dir} (or \code{mkdir} if specified). Absolute or relative (to the working directory) paths can be used.
 #' 
-#' @param cp_file_names Character string (or vector of character strings) specifying new names for files to be copied specified by \code{cp_file}. If not argument is provided, the copy names will be identical to the originals.
+#' @param cp_file_names Character string (or vector of character strings) specifying new names for files to be copied specified by \code{cp_file}. If no argument is provided, the copy names will be identical to the originals.
 #'
 #' @param open_txt Logical - if \code{open_txt = TRUE} .txt file will open in default .txt viewer after being generated.
 #'
@@ -36,7 +36,7 @@
 #' @section Details:
 #' Some diagnostic information is only provided for models fit with particular pieces of software. For example, \code{rstan} output includes additional diagnostics related to the NUTS sampler. Output from \code{jagsUI} includes runtime information, but output from \code{rjags} does not. Note that this information could be fed manually to the function using the \code{add_field} argument.
 #'
-#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
+#' \code{object} argument can be a \code{stanfit} object (\code{rstan} package), a \code{CmdStanMCMC} object (\code{cmdstanr} package), a \code{stanreg} object (\code{rstanarm} package), a \code{brmsfit} object (\code{brms} package), an \code{mcmc.list} object (\code{coda} and \code{rjags} packages), \code{mcmc} object (\code{coda} and \code{nimble} packages), \code{list} object (\code{nimble} package), an \code{R2jags} model object (\code{R2jags} package), a \code{jagsUI} model object (\code{jagsUI} package), or a matrix containing MCMC chains (each column representing MCMC output for a single parameter, rows representing iterations in the chain). The function automatically detects the object type and proceeds accordingly.
 #' 
 #' Output presented in .txt file varies by model fit object type but includes: model run time, number of warmup/burn-in iterations, total iterations, thinning rate, number of chains, specified adapt delta, specified max tree depth, specific initial step size, mean accept stat, mean tree depth, mean step size, number of divergent transitions, number max tree depth exceeds, number of chains with BFMI warnings, max Rhat (maximum Rhat of any parameter printed), min n.eff (minimum n.eff of any parameter printed), parameter summary information (passed from \code{MCMCsummary}), and any additional information fed to the \code{add_field} argument. See documentation for specific software used to fit model for more information on particular diagnostics.
 #'
@@ -107,9 +107,10 @@ MCMCdiag <- function(object,
       !methods::is(object2, 'matrix') &
       !methods::is(object2, 'rjags') &
       !methods::is(object2, 'stanfit') &
-      !methods::is(object2, 'jagsUI'))
+      !methods::is(object2, 'jagsUI') &
+      !methods::is(object, 'CmdStanMCMC'))
   {
-    stop('Invalid object type. Input must be stanfit object (rstan), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
+    stop('Invalid object type. Input must be stanfit object (rstan), CmdStanMCMC object (cmdstanr), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
   
   #additional fields anmes
@@ -199,6 +200,8 @@ MCMCdiag <- function(object,
     SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
+    min_n.eff_bulk <- NULL
+    min_n.eff_tail <- NULL
     
     sampler_params <- rstan::get_sampler_params(object2, inc_warmup = FALSE)
     mn_stepsize <- sapply(sampler_params, 
@@ -211,6 +214,44 @@ MCMCdiag <- function(object,
     num_tree <- rstan::get_num_max_treedepth(object2)
     num_BFMI <- length(rstan::get_low_bfmi_chains(object2))
   }
+  
+  #CmdStanMCMC object class
+  if (methods::is(object2, 'CmdStanMCMC'))
+  {
+    #get total elapsed time - in mins
+    t_elapsed_time_pch <- object2$time()$total
+    time <- round(t_elapsed_time_pch / 60, 2)
+
+    #sampler inputs
+    metadata <- object2$metadata()
+
+    iter <- metadata$iter_sampling
+    warmup <- metadata$iter_warmup
+    thin <- metadata$thin
+    nchains <- length(metadata$id)
+    burnin <- NULL
+
+    #may or may not have this info
+    adapt_delta <- metadata$adapt_delta
+    max_treedepth <- metadata$max_treedepth
+    initial_stepsize <- mean(metadata$step_size)
+
+    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
+    max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
+    min_n.eff_bulk <- min(SUMMARY[,'n.eff_bulk'], na.rm = TRUE)
+    min_n.eff_tail <- min(SUMMARY[,'n.eff_tail'], na.rm = TRUE)
+    min_n.eff <- NULL
+
+    sampler_params <- object2$sampler_diagnostics(inc_warmup = FALSE, format = 'df')
+
+    mn_stepsize <- mean(sampler_params$stepsize__)
+    mn_treedepth <- mean(sampler_params$treedepth__)
+    accept_stat <- mean(sampler_params$accept_stat__)
+    num_diverge <- sum(object2$diagnostic_summary()$num_divergent)
+    num_tree <- sum(object2$diagnostic_summary()$num_max_treedepth)
+    num_BFMI <- sum(object2$diagnostic_summary()$ebfmi < 0.2)
+  }
+  
   
   #jagsUI object
   if (methods::is(object2, 'jagsUI'))
@@ -237,6 +278,8 @@ MCMCdiag <- function(object,
     SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
+    min_n.eff_bulk <- NULL
+    min_n.eff_tail <- NULL
   }
   
   #mcmc.list objects
@@ -271,6 +314,8 @@ MCMCdiag <- function(object,
     SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
+    min_n.eff_bulk <- NULL
+    min_n.eff_tail <- NULL
   }
   
   #rjags objects
@@ -298,6 +343,8 @@ MCMCdiag <- function(object,
     SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
+    min_n.eff_bulk <- NULL
+    min_n.eff_tail <- NULL
   }
   
   #matrix objects
@@ -325,6 +372,8 @@ MCMCdiag <- function(object,
     SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
     max_Rhat <- NULL
     min_n.eff <- NULL
+    min_n.eff_bulk <- NULL
+    min_n.eff_tail <- NULL
   }
   
   #create .txt file
@@ -393,6 +442,14 @@ MCMCdiag <- function(object,
   if (!is.null(min_n.eff))
   {
     cat(paste0('Min n.eff:                        ', min_n.eff, ' \n'))
+  }
+  if (!is.null(min_n.eff_bulk))
+  {
+    cat(paste0('Min n.eff_bulk:                 ', min_n.eff_bulk, ' \n'))
+  }
+  if (!is.null(min_n.eff_tail))
+  {
+    cat(paste0('Min n.eff_tail:               ', min_n.eff_tail, ' \n'))
   }
   if (!missing(add_field))
   {
