@@ -1,6 +1,11 @@
 NEWS
 ====
 
+# 0.16.1
+
+- Fix bug in `MCMCsummary` that prevented `n.eff` from being displayed for `jagsUI` objects
+
+
 # 0.16.0
 
 - All functions now accept model objects fit with `cmdstanr` package

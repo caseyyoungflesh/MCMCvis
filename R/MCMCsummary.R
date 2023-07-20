@@ -687,7 +687,7 @@ MCMCsummary <- function(object,
     
     if (n.eff == TRUE & 
         (methods::is(object2, 'stanfit') | 
-         methods::is(object2, 'jagsUI')))
+         methods::is(object, 'jagsUI')))
     {
       if (methods::is(object2, 'stanfit'))
       {
