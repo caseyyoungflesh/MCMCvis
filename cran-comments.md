@@ -15,9 +15,9 @@ There is one ERROR on Fedora via rhub, due to a [known issue](https://github.com
 There are no WARNINGs.
 
 There are currently 4 NOTES, all of which are expected.
-#1: all systems
-#2,3: only on Windows Server 2022, R-devel
-#4: only Ubuntu Linux 20.04.1
+#1: Ubuntu 20.04.1, Fedora, Windows Server 2022
+#2,3: Windows Server 2022
+#4: Ubuntu 20.04.1
 
 1) The `cmdstanr` package is in Suggests and is not on CRAN:
 

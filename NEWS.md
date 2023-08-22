@@ -1,6 +1,11 @@
 NEWS
 ====
 
+# 0.16.2
+
+- Fix CRAN documentation issue
+
+
 # 0.16.1
 
 - Fix bug in `MCMCsummary` that prevented `n.eff` from being displayed for `jagsUI` objects

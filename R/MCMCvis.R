@@ -27,8 +27,4 @@
 #' Casey Youngflesh <caseyyoungflesh@gmail.com>
 #' Christian Che-Castaldo <chrischecastaldo@protonmail.com>
 #'
-#' @docType package
-#' @name MCMCvis
-
-NULL
-
+'_PACKAGE'
