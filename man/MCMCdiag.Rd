@@ -29,7 +29,7 @@ MCMCdiag(
 
 \item{dir}{Character string with directory where file(s) (or directory is argument for \code{mkdir} is specified) will be created. Defaults to working directory. An absolute or relative (to the working directory) path can be used.}
 
-\item{mkdir}{Character string with name of directory to be created. If specified, a directory will be created within the directory specified by \code{dir}.}
+\item{mkdir}{Character string with name of directory to be created. If specified, a directory will be created within the directory specified by \code{dir}. If directory exists, '_1' will be appended to specified name.}
 
 \item{add_field}{Object (or vector of objects) to be added to the .txt file.}
 
