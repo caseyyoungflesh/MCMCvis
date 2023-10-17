@@ -4,7 +4,7 @@ NEWS
 # 0.16.3
 
 - `MCMCdiag` fix spacing issue for min neff in summary file for `cmdstanr` objects
-- `MCMCdiag` change behavior so that if specified `dir` does exist, save to home dir ('~')
+- `MCMCdiag` change behavior so that if specified `dir` does exist, save to working dir
 - `MCMCdiag` if `mkdir` name exists, append '_1' to filename and create
 
 
