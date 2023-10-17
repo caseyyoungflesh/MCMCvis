@@ -9,7 +9,7 @@
 #' 
 #' @param dir Character string with directory where file(s) (or directory is argument for \code{mkdir} is specified) will be created. Defaults to working directory. An absolute or relative (to the working directory) path can be used.
 #' 
-#' @param mkdir Character string with name of directory to be created. If specified, a directory will be created within the directory specified by \code{dir}.
+#' @param mkdir Character string with name of directory to be created. If specified, a directory will be created within the directory specified by \code{dir}. If directory exists, '_1' will be appended to specified name.
 #' 
 #' @param add_field Object (or vector of objects) to be added to the .txt file.
 #' 
@@ -158,7 +158,19 @@ MCMCdiag <- function(object,
   #mkdir
   if (!missing(mkdir))
   {
+    # if specified dir to write to doesn't exist, write to home dir
+    if (!dir.exists(dir))
+    {
+      warning("Specified `dir` does not exist. Using current working directory.")
+      dir <- getwd()
+    }
     dir <- paste0(dir, '/', mkdir)
+    # if specified dir name (mkdir) exists, append _1 to name to avoid overwriting files
+    if (dir.exists(dir))
+    {
+      warning("Specified `mkdir` exists. Appending '_1' to directory name.")
+      dir <- paste0(dir, '_1')
+    }
     dir.create(dir)
   }
   
@@ -445,11 +457,11 @@ MCMCdiag <- function(object,
   }
   if (!is.null(min_n.eff_bulk))
   {
-    cat(paste0('Min n.eff_bulk:                 ', min_n.eff_bulk, ' \n'))
+    cat(paste0('Min n.eff_bulk:                   ', min_n.eff_bulk, ' \n'))
   }
   if (!is.null(min_n.eff_tail))
   {
-    cat(paste0('Min n.eff_tail:               ', min_n.eff_tail, ' \n'))
+    cat(paste0('Min n.eff_tail:                   ', min_n.eff_tail, ' \n'))
   }
   if (!missing(add_field))
   {
