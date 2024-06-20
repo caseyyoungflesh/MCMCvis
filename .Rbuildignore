@@ -1,2 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+figs
+paper
+LICENSE.md
+codemeta.json

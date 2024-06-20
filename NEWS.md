@@ -1,6 +1,11 @@
 NEWS
 ====
 
+# 0.16.4
+
+- `MCMCdiag` now accepts `params`, `excl`, `ISB`, and `exact` arguments to summarize and save out a subset of parameters (useful for model runs with many params where object may exceed memory limit)
+
+
 # 0.16.3
 
 - `MCMCdiag` fix spacing issue for min neff in summary file for `cmdstanr` objects

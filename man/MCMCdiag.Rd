@@ -12,6 +12,10 @@ MCMCdiag(
   add_field,
   add_field_names,
   save_object = FALSE,
+  params = "all",
+  excl = NULL,
+  ISB = TRUE,
+  exact = TRUE,
   obj_name,
   add_obj,
   add_obj_names,
@@ -36,6 +40,14 @@ MCMCdiag(
 \item{add_field_names}{Character string (or vector of character strings) specifying the name(s) of the \code{add_field} object(s).}
 
 \item{save_object}{Logical specifying whether the model output provided to the function (\code{object}) should be saved as a \code{.rds} file to \code{dir} (or \code{mkdir} if specified). Note that \code{.rds} files can be opened with \code{rdsRDS()}.}
+
+\item{params}{Character string (or vector of character strings) denoting parameters of interest for summary. Object to be saved out will be a subset of parameters and will be an \code{mcmc.list} object object, losing other object types.}
+
+\item{excl}{Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.}
+
+\item{ISB}{Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.}
+
+\item{exact}{Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).}
 
 \item{obj_name}{Character string specifying the file name of the \code{.rds} file (created from \code{object}) if \code{save_object = TRUE}.}
 

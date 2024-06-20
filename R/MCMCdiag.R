@@ -19,6 +19,14 @@
 #' 
 #' @param obj_name Character string specifying the file name of the \code{.rds} file (created from \code{object}) if \code{save_object = TRUE}.
 #' 
+#' @param params Character string (or vector of character strings) denoting parameters of interest for summary. Object to be saved out will be a subset of parameters and will be an \code{mcmc.list} object object, losing other object types.
+#'
+#' @param excl Character string (or vector of character strings) denoting parameters to exclude. Used in conjunction with \code{params} argument to select parameters of interest.
+#'
+#' @param ISB Ignore Square Brackets (ISB). Logical specifying whether square brackets should be ignored in the \code{params} and \code{excl} arguments. If \code{TRUE}, square brackets are ignored. If \code{FALSE}, square brackets are not ignored.  This allows partial names to be used when specifying parameters of interest. Use \code{exact} argument to specify whether input from \code{params} and \code{excl} arguments should be matched exactly.
+#'
+#' @param exact Logical specifying whether input from \code{params} and \code{excl} arguments should be matched exactly (after ignoring square brackets if \code{ISB = FALSE}). If \code{TRUE}, input from \code{params} and \code{excl} are matched exactly (after taking \code{ISB} argument into account). If \code{FALSE}, input from \code{params} and \code{excl} are matched using regular expression format (after taking \code{ISB} argument into account).
+#'
 #' @param add_obj List with additional object(s) to be saved as \code{.rds} files to \code{dir} (or \code{mkdir} if specified). Objects can be of any types. Multiple objects can be specified. Note that \code{.rds} files can be opened with \code{rdsRDS()}.
 #' 
 #' @param add_obj_names Character string (or vector of character strings) specifying the name(s) of the objects to be saved as \code{.rds} files, specified with \code{add_obj}.
@@ -68,6 +76,10 @@ MCMCdiag <- function(object,
                      add_field,
                      add_field_names,
                      save_object = FALSE,
+                     params = 'all',
+                     excl = NULL,
+                     ISB = TRUE,
+                     exact = TRUE,
                      obj_name,
                      add_obj,
                      add_obj_names,
@@ -209,7 +221,7 @@ MCMCdiag <- function(object,
     max_treedepth <- stan_args$control$max_treedepth
     initial_stepsize <- stan_args$control$stepsize
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -248,7 +260,7 @@ MCMCdiag <- function(object,
     max_treedepth <- metadata$max_treedepth
     initial_stepsize <- mean(metadata$step_size)
 
-    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff_bulk <- min(SUMMARY[,'n.eff_bulk'], na.rm = TRUE)
     min_n.eff_tail <- min(SUMMARY[,'n.eff_tail'], na.rm = TRUE)
@@ -287,7 +299,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -323,7 +335,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -352,7 +364,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -381,7 +393,7 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, ...)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
     max_Rhat <- NULL
     min_n.eff <- NULL
     min_n.eff_bulk <- NULL
@@ -521,6 +533,15 @@ MCMCdiag <- function(object,
   #save model object
   if (save_object == TRUE)
   {
+    #save subset of object if specified
+    if (params != 'all' | !is.null(excl))
+    {
+      object_sv <- MCMCvis::MCMCchains(object2, params, excl, ISB, 
+                                       exact = exact, mcmc.list = TRUE)
+    } else {
+      object_sv <- object
+    }
+    
     if (!missing(obj_name))
     {
       #add .rds if it isn't in file_name
@@ -530,9 +551,10 @@ MCMCdiag <- function(object,
       } else {
         on2 <- paste0(dir, '/', obj_name, '.rds')
       }
-      saveRDS(object, file = on2)
+      
+      saveRDS(object_sv, file = on2)
     } else {
-      saveRDS(object, file = paste0(dir, '/model_fit.rds'))
+      saveRDS(object_sv, file = paste0(dir, '/model_fit.rds'))
     }
   }
   
