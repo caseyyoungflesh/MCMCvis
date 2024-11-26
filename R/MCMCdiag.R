@@ -221,7 +221,8 @@ MCMCdiag <- function(object,
     max_treedepth <- stan_args$control$max_treedepth
     initial_stepsize <- stan_args$control$stepsize
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact,
+                                    ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -260,7 +261,8 @@ MCMCdiag <- function(object,
     max_treedepth <- metadata$max_treedepth
     initial_stepsize <- mean(metadata$step_size)
 
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact,
+                                    ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff_bulk <- min(SUMMARY[,'n.eff_bulk'], na.rm = TRUE)
     min_n.eff_tail <- min(SUMMARY[,'n.eff_tail'], na.rm = TRUE)
@@ -299,7 +301,8 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact,
+                                    ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -335,7 +338,8 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact,
+                                    ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -364,7 +368,8 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact,
+                                    ...)
     max_Rhat <- max(SUMMARY[,'Rhat'], na.rm = TRUE)
     min_n.eff <- min(SUMMARY[,'n.eff'], na.rm = TRUE)
     min_n.eff_bulk <- NULL
@@ -393,7 +398,8 @@ MCMCdiag <- function(object,
     num_tree <- NULL
     num_BFMI <- NULL
     
-    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact)
+    SUMMARY <- MCMCvis::MCMCsummary(object2, params, excl, ISB, exact = exact,
+                                    ...)
     max_Rhat <- NULL
     min_n.eff <- NULL
     min_n.eff_bulk <- NULL
