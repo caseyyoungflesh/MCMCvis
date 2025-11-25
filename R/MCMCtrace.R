@@ -965,7 +965,7 @@ MCMCtrace <- function(object,
       if (open_pdf == TRUE)
       {
         #open file
-        browseURL(file_out)
+        utils::browseURL(file_out)
       }
     } else {
       graphics::par(.pardefault)

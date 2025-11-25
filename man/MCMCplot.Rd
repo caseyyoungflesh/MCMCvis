@@ -19,6 +19,7 @@ MCMCplot(
   col2 = "red",
   offset = 0.1,
   rank = FALSE,
+  rank_dir = "desc",
   horiz = TRUE,
   xlim,
   ylim,
@@ -73,7 +74,9 @@ Argument \code{NULL} will plot no reference line.}
 
 \item{offset}{Value indicating how much to offset plotted posteriors when \code{object2} is specified (i.e., control the amount of space between the two  plotted posteriors for each parameter). The distance from one set of parameters to another corresponds to a value of 1.}
 
-\item{rank}{Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.}
+\item{rank}{Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in order (based on specified measure of centrality) from top down.}
+
+\item{rank_dir}{Character string specifying whether output should be ranked descending (default) or ascending. Options are \code{'desc'} or \code{'asce'}.}
 
 \item{horiz}{Logical specifying orientation of plot. If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).}
 

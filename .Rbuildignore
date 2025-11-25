@@ -1,2 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^cran-comments\.md$
+^README\.md$
+^revdep$
+^LICENSE\.md$
+^figs$
+^paper$
+^codemeta\.json$
