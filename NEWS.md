@@ -1,11 +1,16 @@
 NEWS
 ====
 
-# 0.16.4
+# 0.16.5
 
 - `MCMCtrace` fix bug opening .pdf when filename has spaces
 - `MCMCtrace` display both bulk and tail n.eff when available
 - `MCMCplot` add `rank_dir` arg to specify direction of ranked caterpillar plot
+
+
+# 0.16.4
+
+- `MCMCdiag` now accepts `params`, `excl`, `ISB`, `probs`, `pg0`, and `exact` arguments to summarize and save out a subset of parameters (useful for model runs with many params where object may exceed memory limit)
 
 
 # 0.16.3

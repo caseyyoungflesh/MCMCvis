@@ -1,11 +1,10 @@
-# MCMCvis <a href='https://cran.r-project.org/web/packages/MCMCvis/vignettes/MCMCvis.html'><img src='figs/MCMC_vis_logo_v3_bw.png' align="right" height="225" /></a>
+# MCMCvis <a href='https://cran.r-project.org/web/packages/MCMCvis/vignettes/MCMCvis.html'><img src='figs/MCMC_vis_logo_v3_bw.png' align="right" height="245" /></a>
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis)
-![devel 0.16.3](https://img.shields.io/badge/devel-0.16.3-red.svg)
-[![Downloads](http://cranlogs.r-pkg.org/badges/MCMCvis?color=blue)](http://cran.rstudio.com/package=MCMCvis)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/MCMCvis)](http://cran.r-project.org/package=MCMCvis)
+![devel 0.16.5](https://img.shields.io/badge/devel-0.16.5-red.svg)
+[![Downloads](https://cranlogs.r-pkg.org/badges/MCMCvis?color=blue)](http://cran.rstudio.com/package=MCMCvis)
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00640/status.svg)](https://doi.org/10.21105/joss.00640)
 
-## Overview
 
 `MCMCvis` is an R package used to visualize, manipulate, and summarize MCMC output. MCMC output may be derived from Bayesian models fit with Stan, NIMBLE, JAGS, and other software. This includes (but is not limited to) output from the `rstan`, `cmdstanr`, `rstanarm`, `brms`, `rjags`, `nimble`, `R2jags`, and `jagsUI` packages - object types are recognized automatically.
 
@@ -33,8 +32,8 @@ install.packages('MCMCvis')
 
 Or the latest, development version from Github with:
 ```{r}
-install.packages('devtools')
-devtools::install_github('caseyyoungflesh/MCMCvis', build_vignettes = TRUE)
+install.packages('remotes')
+remotes::install_github('caseyyoungflesh/MCMCvis', build_vignettes = TRUE)
 ```
 
 ## Vignette
