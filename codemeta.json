@@ -2,18 +2,18 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "MCMCvis",
-  "description": "Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with 'Stan', 'NIMBLE', 'JAGS', and other software.",
+  "description": "Performs key functions for MCMC analysis using minimal code - visualizes, manipulates, and summarizes MCMC output. Functions support simple and straightforward subsetting of model parameters within the calls, and produce presentable and 'publication-ready' output. MCMC output may be derived from Bayesian model output fit with Stan, NIMBLE, JAGS, and other software.",
   "name": "MCMCvis: Tools to Visualize, Manipulate, and Summarize MCMC Output",
   "codeRepository": "https://github.com/caseyyoungflesh/MCMCvis",
   "issueTracker": "https://github.com/caseyyoungflesh/MCMCvis/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.16.3",
+  "version": "0.16.5",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.2.1 (2022-06-23)",
+  "runtimePlatform": "R version 4.5.2 (2025-10-31)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -170,7 +170,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "3416.732KB",
+  "fileSize": "3422.589KB",
   "citation": [
     {
       "@type": "ScholarlyArticle",
@@ -199,7 +199,7 @@
       }
     }
   ],
-  "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/NEWS.md",
+  "releaseNotes": "https://github.com/caseyyoungflesh/MCMCvis/blob/main/NEWS.md",
   "readme": "https://github.com/caseyyoungflesh/MCMCvis/blob/master/README.md",
   "relatedLink": "https://CRAN.R-project.org/package=MCMCvis"
 }
