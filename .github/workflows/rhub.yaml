@@ -1,10 +1,10 @@
-# R-hub's generic GitHub Actions workflow file. It's canonical location is at
+# R-hub's generic GitHub Actions workflow file. Its canonical location is at
 # https://github.com/r-hub/actions/blob/v1/workflows/rhub.yaml
 # You can update this file to a newer version using the rhub2 package:
 #
 # rhub::rhub_setup()
 #
-# It is unlikely that you need to modify this file manually.
+# It is unlikely that you need to modify this file manually. CY: this has been modified
 
 name: R-hub
 run-name: "${{ github.event.inputs.id }}: ${{ github.event.inputs.name || format('Manually run by {0}', github.triggering_actor) }}"
@@ -60,7 +60,10 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-          extra-packages: cmdstanr=?ignore-before-r=99.0.0
+          #following line to prevent suggests (cmdstanr) from being installed
+          #see here: https://github.com/r-hub/rhub2/issues/11
+          #see here: https://github.com/ms609/TreeDist/blob/main/.github/workflows/rhub.yaml
+          extra-packages: cmdstanr=?ignore-before-r=99.0.0, any::rcmdcheck
       - uses: r-hub/actions/run-check@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
@@ -90,7 +93,10 @@ jobs:
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
-          extra-packages: cmdstanr=?ignore-before-r=99.0.0
+          #following line to prevent suggests (cmdstanr) from being installed
+          #see here: https://github.com/r-hub/rhub2/issues/11
+          #see here: https://github.com/ms609/TreeDist/blob/main/.github/workflows/rhub.yaml
+          extra-packages: cmdstanr=?ignore-before-r=99.0.0, any::rcmdcheck
       - uses: r-hub/actions/run-check@v1
         with:
           job-config: ${{ matrix.config.job-config }}
