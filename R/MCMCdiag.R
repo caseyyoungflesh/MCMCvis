@@ -113,7 +113,7 @@ MCMCdiag <- function(object,
     stop('Invalid object type. Input must be stanfit object (rstan), CmdStanMCMC object (cmdstanr), stanreg object (rstanarm), brmsfit object (brms), mcmc.list object (coda/rjags), mcmc object (coda/nimble), list object (nimble), rjags object (R2jags), jagsUI object (jagsUI), or matrix with MCMC chains.')
   }
   
-  #additional fields anmes
+  #additional field names
   if (!missing(add_field))
   {
     if (missing(add_field_names))
@@ -129,7 +129,7 @@ MCMCdiag <- function(object,
     }
   }
   
-  #additional objects names
+  #additional object names
   if (!missing(add_obj))
   {
     if (missing(add_obj_names))
