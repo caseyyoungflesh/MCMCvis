@@ -35,7 +35,9 @@
 #'
 #' @param offset Value indicating how much to offset plotted posteriors when \code{object2} is specified (i.e., control the amount of space between the two  plotted posteriors for each parameter). The distance from one set of parameters to another corresponds to a value of 1.
 #'
-#' @param rank Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in decreasing order (based on specified measure of centrality) from top down.
+#' @param rank Logical specifying whether output should be ranked. If \code{TRUE} posteriors will be ranked in order (based on specified measure of centrality) from top down.
+#' 
+#' @param rank_dir Character string specifying whether output should be ranked descending (default) or ascending. Options are \code{'desc'} or \code{'asce'}.
 #'
 #' @param horiz Logical specifying orientation of plot. If \code{TRUE} posteriors will be plotted running horizontally (parallel to the x-axis). If \code{FALSE} posteriors will be plotted running vertically (perpendicular to the x-axis).
 #' 
@@ -144,6 +146,7 @@ MCMCplot <- function(object,
                      col2 = 'red',
                      offset = 0.1,
                      rank = FALSE,
+                     rank_dir = 'desc',
                      horiz = TRUE,
                      xlim,
                      ylim,
@@ -238,17 +241,34 @@ MCMCplot <- function(object,
   pro_fun <- function(input, ...) {
     chains <- as.data.frame(input)
     tsrt <- apply(chains, 2, stats::median)
-    if (np > 1) {
+    if (np > 1)
+    {
       len <- np
-      if (rank == TRUE) idx <- order(tsrt, decreasing = TRUE)
+      if (rank == TRUE)
+      {
+        if (rank_dir == 'desc')
+        {
+          idx <- order(tsrt, decreasing = TRUE)  
+        } else {
+          if (rank_dir == 'asce')
+          {
+            idx <- order(tsrt, decreasing = FALSE)  
+          } else {
+            warning("'rank_dir' must be either 'desc' or 'asce'. Using 'desc'.") 
+            idx <- order(tsrt, decreasing = TRUE)  
+          }
+        }
+      }
       if (rank == FALSE) idx <- len:1
     } 
-    if (np == 1) {
+    if (np == 1)
+    {
       len <- 1
       idx <- 1
     } 
     medians <- tsrt[idx]
-    if (HPD == FALSE) {
+    if (HPD == FALSE)
+    {
       thick_ci <- c((100 - ((100 - thick) / 2)), ((100 - thick) / 2)) * 0.01
       thin_ci <- c((100 - ((100 - thin) / 2)), ((100 - thin) / 2)) * 0.01
 
