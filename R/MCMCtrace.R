@@ -653,8 +653,16 @@ MCMCtrace <- function(object,
         #diagnostics plotted on density plots
         if (Rhat == TRUE & n.eff == TRUE)
         {
-          diag_txt <- list(paste0('Rhat: ', rhat[j]),
-                           paste0('n.eff: ', neff[j]))
+          # if both bulk and tail exist (e.g., `cmdstanr`)
+          if (NCOL(neff) > 1)
+          {
+            diag_txt <- list(paste0('Rhat: ', rhat[j]),
+                             paste0('n.eff bulk: ', neff[j, 1]),
+                             paste0('n.eff tail: ', neff[j, 2])) 
+          } else {
+            diag_txt <- list(paste0('Rhat: ', rhat[j]),
+                             paste0('n.eff: ', neff[j])) 
+          }
         } 
         if (Rhat == TRUE & n.eff == FALSE)
         {
@@ -662,7 +670,13 @@ MCMCtrace <- function(object,
         }
         if (Rhat == FALSE & n.eff == TRUE)
         {
-          diag_txt <- paste0('n.eff: ', neff[j])
+          if (NCOL(neff) > 1)
+          {
+            diag_txt <- list(paste0('n.eff bulk: ', neff[j, 1]),
+                             paste0('n.eff tail: ', neff[j, 2])) 
+          } else {
+            diag_txt <- paste0('n.eff: ', neff[j])  
+          }
         }
         
         #don't plot text if NULL specified for SZ or COL
@@ -887,8 +901,16 @@ MCMCtrace <- function(object,
         #diagnostics plotted on density plots
         if (Rhat == TRUE & n.eff == TRUE)
         {
-          diag_txt <- list(paste0('Rhat: ', rhat[j]),
-                           paste0('n.eff: ', neff[j]))
+          # if both bulk and tail exist (e.g., `cmdstanr`)
+          if (NCOL(neff) > 1)
+          {
+            diag_txt <- list(paste0('Rhat: ', rhat[j]),
+                             paste0('n.eff bulk: ', neff[j, 1]),
+                             paste0('n.eff tail: ', neff[j, 2])) 
+          } else {
+            diag_txt <- list(paste0('Rhat: ', rhat[j]),
+                             paste0('n.eff: ', neff[j])) 
+          }
         } 
         if (Rhat == TRUE & n.eff == FALSE)
         {
@@ -896,7 +918,14 @@ MCMCtrace <- function(object,
         }
         if (Rhat == FALSE & n.eff == TRUE)
         {
-          diag_txt <- paste0('n.eff: ', neff[j])
+          # if both bulk and tail exist (e.g., `cmdstanr`)
+          if (NCOL(neff) > 1)
+          {
+            diag_txt <- list(paste0('n.eff bulk: ', neff[j, 1]),
+                             paste0('n.eff tail: ', neff[j, 2])) 
+          } else {
+            diag_txt <- paste0('n.eff: ', neff[j])
+          }
         }
         
         #don't plot text if NULL specified for SZ or COL
